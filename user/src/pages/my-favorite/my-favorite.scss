@@ -1,0 +1,129 @@
+page-my-favorite {
+    $latest-W : calc((145/376)*100vw);
+    $latest-H : calc((181/667)*100vh);
+
+    .shop-button{
+            width : $latest-W;
+            height: $latest-H;
+            background-color:white;
+            color:$default-color;
+            img{
+                height: calc((96/667)*100vh);
+                width: $latest-W;
+                position: absolute;
+                left: 0px;
+                top: 0px;
+            }
+            ion-icon{
+                color:$default-color;
+            }
+            .name-sub{
+                margin:0px;
+                position: absolute;
+                left: 0;
+                top: calc((106/667)*100vh);
+                font-size:3.8vw;  
+                color: #33b9c6;                  
+            }
+            .name-main{
+                margin:0px;
+                position: absolute;
+                left: 0px;
+                top: calc((122/667)*100vh);
+                font-size:4.4vw;
+                color: #4a4a4a;
+                font-family:NotoSansCJKkr-Bold;
+            }
+            .classification{
+                margin:0px;
+                position: absolute;
+                left: 0px;
+                top: calc((142/667)*100vh);
+                font-size:3.8vw;  
+                color: #4a4a4a;
+            }
+            .star_rating{
+                margin:0px;
+                position: absolute;
+                left: 0px;
+                top: calc((160/667)*100vh);
+                font-size:3.8vw;  
+                color: #4a4a4a;
+                ion-icon{
+                    width: calc((10/376)*100vw);
+                }
+                p{
+                    margin:0px;
+                    position:absolute;
+                    top:0px;
+                    left: calc((80/376)*100vw);
+                }
+            }
+    }
+
+    .section-title{
+        font-size:5vw;
+        margin-left: calc((25/376)*100vw);
+        margin-bottom:0px;
+    }
+
+    .section-shop-title{
+        margin-top:calc((29/667)*100vh);
+    }
+
+    .col-left{
+        margin-left: calc((25/376)*100vw);
+    }
+
+
+    .menu-button{
+            width : $latest-W;
+            height: $latest-H;
+            background-color:white;
+            color:$default-color;
+            img{
+                height: calc((96/667)*100vh);
+                width: $latest-W;
+                position: absolute;
+                left: 0px;
+                top: 0px;
+            }
+            ion-icon{
+                color:$default-color;
+            }
+            .menu-shopname-sub{
+                margin:0px;
+                position: absolute;
+                left: 0;
+                top: calc((106/667)*100vh);
+                font-size:3.8vw;  
+                color: #33b9c6;                  
+            }
+            .menu-shopname-main{
+                margin:0px;
+                position: absolute;
+                left: 0;
+                top: calc((122/667)*100vh);
+                font-size:3.8vw;  
+                color: #33b9c6;                  
+            }
+            .menu-name{
+                margin:0px;
+                position: absolute;
+                left: 0px;
+                top: calc((140/667)*100vh);
+                font-size:4.4vw;
+                color: #4a4a4a;
+                font-family:NotoSansCJKkr-Bold;
+            }
+            .menu-price{
+                margin:0px;
+                position: absolute;
+                //left: 0px;
+                left:calc((110/376)*100vw);
+                top: calc((160/667)*100vh);
+                font-size:3.8vw;  
+                color: #4a4a4a;
+            }
+    }
+}

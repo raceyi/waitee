@@ -1,0 +1,76 @@
+<ion-content >
+
+<button text-left ion-button (click)="showSearchBar()" class="searchbar-button">
+  <ion-icon name="ios-search-outline"></ion-icon> 
+  <span text-left>원하는 음식점을 검색하세요!</span>
+</button>
+<!--
+<div class="searchbar-overlay" padding [hidden]="overlayHidden">
+-->
+<div class="searchbar-overlay" padding [hidden]="overlayHidden">
+  <ion-row>
+    <!--
+    <ion-searchbar (ionInput)="getShops($event)" (ionCancel)="onCancel($event)" showCancelButton=true cancelButtonText="취소" placeholder="원하는 음식점을 검색하세요!" [(ngModel)]="searchShop" [hidden]="overlayHidden"></ion-searchbar>
+    -->
+    <ion-col col-10>
+    <ion-searchbar (ionInput)="getShops($event)" cancelButtonText="취소" placeholder="원하는 음식점을 검색하세요!" [(ngModel)]="searchShop" [hidden]="overlayHidden"></ion-searchbar>
+    </ion-col>
+    <ion-col col-2>
+      <button ion-button (click)="onCancel($event)" outline  style="border-color: white;color: white;padding:0px;">취소</button>
+    </ion-col>
+  </ion-row>  
+    <ion-list>
+      <ion-item *ngFor="let item of shops">
+        {{ item }}
+      </ion-item>
+    </ion-list>
+</div>
+
+<p class="section-title"><b>추천 음식점</b></p>
+<div class="scroll-div">
+        <ion-scroll scrollX="true" class="scroll-latest">
+            <ion-row class="scroll-row-latest">
+                 <ion-col *ngFor="let shop of recommendations" class="scroll-col-latest"  no-padding>
+                            <button class="shop-button" no-padding no-margin ion-button>
+                                <img  [src]="awsS3+shop.takitId">
+                                <p class="name-sub">{{shop.name_sub}}</p>
+                                <p class="name-main"><b>{{shop.name_main}}</b></p>
+                                <p class="classification">{{shop.classification}}</p>
+                                <div class="star_rating">
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <p>{{shop.star_rating}}</p>
+                                </div>
+                            </button>
+                </ion-col>
+            </ion-row>
+        </ion-scroll>
+</div>
+
+<p class="section-title"><b>최근 방문</b></p>
+<div class="scroll-div">
+        <ion-scroll scrollX="true" class="scroll-latest">
+            <ion-row class="scroll-row-latest">
+                 <ion-col *ngFor="let shop of recently_visited_shop" class="scroll-col-latest"  no-padding>
+                            <button class="shop-button" no-padding no-margin ion-button>
+                                <img  [src]="awsS3+shop.takitId">
+                                <p class="name-sub">{{shop.name_sub}}</p>
+                                <p class="name-main"><b>{{shop.name_main}}</b></p>
+                                <p class="classification">{{shop.classification}}</p>
+                                <div class="star_rating">
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <ion-icon name="md-star"></ion-icon>
+                                  <p>{{shop.star_rating}}</p>
+                                </div>
+                            </button>
+                </ion-col>
+            </ion-row>
+        </ion-scroll>
+</div>
+</ion-content>

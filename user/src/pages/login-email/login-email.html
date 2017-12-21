@@ -1,0 +1,36 @@
+<!--
+  Generated template for the LoginEmailPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-content>
+    <div class="upper">
+    </div>
+    <ion-list>
+    <ion-item class="keypad-input" >
+    <ion-label> 이메일</ion-label>
+    <ion-input  type="email" [(ngModel)]="email"></ion-input>
+    </ion-item>
+    <ion-item class="keypad-input" >
+    <ion-label> 비밀번호</ion-label>
+    <ion-input type="password" [(ngModel)]="password"></ion-input>
+    </ion-item>
+    </ion-list>
+    <div class="under-input">
+    </div>
+    <ion-row class="buttons-row">
+        <ion-col>
+          <button class="half-button" ion-button outline  round  (click)="emailReset()">임시비밀번호</button>
+        </ion-col>
+        <ion-col>
+          <button class="half-button" ion-button outline round  (click)="emailLogin()">로그인</button>
+        </ion-col>
+      </ion-row>
+    <div class="under-buttons">
+    </div>
+    <p text-center style="font-size:4vw;font-weight:500;color: #8c6dc5;">아직등록된계정이 없으신가요?</p>
+    <div text-center>
+    <button ion-button outline round class="one-button" (click)="signup()">회원가입</button>
+    </div>
+</ion-content>

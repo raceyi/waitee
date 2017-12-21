@@ -1,0 +1,89 @@
+page-login-email {
+	background-color:$default-color; // #6441a5;
+    ion-content{
+     	background-color:$default-color; // #6441a5;   
+    }
+
+    .scroll-content{
+     	background-color:$default-color; // #6441a5;          
+    }
+
+    .upper{
+        height: calc((144/667)*100vh);
+    }
+
+    .list-ios > .item-block:first-child {
+         border-top: 0px; 
+    }
+
+    .list-ios > .item-block:last-child, .list-ios > .item-wrapper:last-child .item-block {
+        border-bottom: 0px;
+    }
+
+    .item-ios{
+        background-color:inherit;
+        color:white;
+    }
+
+    .keypad-input{
+        //margin-left: calc((38/376)*100vw);
+        height: calc((28/667)*100vh);
+        width: calc((290/376)*100vw);
+        font-size: 4vw !important;
+        font-weight: 500;
+        text-align: left;
+        color: #ffffff;
+        ion-label{
+            width:calc((55/376)*100vw);
+        }
+        //.list-ios .item-block .item-inner {
+        .item-inner .input-wrapper{    
+            border-bottom: 0.55px solid white !important;
+        }
+    }
+
+    .list-ios .item-block .item-inner {
+        border-bottom: 0px;
+    }
+
+    .under-buttons{
+        height:calc((28/667)*100vh);
+    }
+
+    .under_input{
+        height:calc((95/667)*100vh);
+    }
+
+    .half-button{
+        width: calc((125/376)*100vw);
+	    height: calc((42/667)*100vh) !important; 
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+        border-color:white;
+        color:white;
+        font-family:$default-font-style;
+        font-size:4vw !important;
+    }
+
+    .buttons-row{
+        margin-left: calc((38/376)*100vw);
+        margin-right: calc((38/376)*100vw);
+    }
+
+    .list-ios {
+        margin-left: calc((38/376)*100vw);
+        margin-right: calc((38/376)*100vw);
+    }
+    
+    .one-button{
+        width:calc((270/376)*100vw);
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+        border-color:white;
+        color:white;
+        font-family:$default-font-style;
+        font-size:4vw !important;
+    }
+}

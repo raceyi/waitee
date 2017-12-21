@@ -1,0 +1,47 @@
+page-my-info {
+    .personal-info-section{
+        margin-left:calc((40/376)*100vw);
+        margin-right:calc((40/376)*100vw);
+        margin-top: calc((49/667)*100vh);
+        height:calc((29/667)*100vh);
+    }
+
+    .user-name{
+        button{
+            height:calc((29/667)*100vh);
+            span{
+                color:#6441a5;
+                font-size:6.3vw;
+            }
+        }
+    }
+
+    .user-email{
+        margin-left:calc((40/376)*100vw);
+        font-size:3.2vw;
+        color:#9b9b9b;
+        margin-bottom:calc((44/667)*100vh);
+    }
+
+    .icon-setting{
+        color:#c7c7cc; 
+        margin-left:calc((33/376)*100vw);
+    }
+
+    .user-img{
+        margin-left:calc((83/376)*100vw); 
+        width: calc((66/376)*100vw);   
+    }
+
+    .group-title{
+        p{
+            font-size:3.8vw;
+            margin-left:calc((36/376)*100vw);
+            margin-top:calc((20/667)*100vh);
+            margin-bottom:calc((11/667)*100vh);
+        }
+        border-top-style: solid;
+        border-width: 1px;
+        border-color: #dfdfdf;  
+    }
+}
