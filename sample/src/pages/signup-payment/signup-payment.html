@@ -1,0 +1,59 @@
+<!--
+  Generated template for the SignupPaymentPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="color:white;background-color:#6441a5;"><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title>  결제 정보 등록
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+    <ion-label class="value-label" >캐쉬아이디(필수)</ion-label>
+    </ion-item>
+    <ion-row>
+      <ion-col col-8>
+        <ion-item>
+        <ion-input class="keypad-input keypad-cashId" type="text" placeholder="영문,숫자조합 5~7자리" pattern="[0-9a-zA-Z]{5,7}" [(ngModel)]="cashId"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col col-4>
+        <ion-item class="duplicate">
+        <button ion-button outline outline  color="skyblue" (click)="checkCashIdDuplicate()">중복확인</button>    
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-item>
+    <ion-label class="value-label" >비밀번호(필수)</ion-label>
+    </ion-item>
+    <ion-item>
+    <button ion-button class="keypad-button" clear (click)="passwordInput()">6자리 숫자</button>
+    </ion-item>
+    <ion-item>
+    <ion-label class="value-label" >비밀번호 확인(필수)</ion-label>
+    </ion-item>
+    <ion-item>
+    <button ion-button class="keypad-button" clear (click)="passwordInput()" >6자리 숫자</button>
+    </ion-item>
+    <ion-item>
+    <ion-label class="value-label" >현금영수증 번호</ion-label>
+    </ion-item>
+    <ion-item>
+    <ion-input class="keypad-input keypad-receiptId" type="number" pattern="[0-9a-zA-Z]{5,7}" ></ion-input>
+    </ion-item>
+    <div>
+      &nbsp;
+    </div>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <button style="margin:0px;" (click)="registerPaymentInfo()" ion-button full>웨이티 시작하기</button>
+</ion-footer>

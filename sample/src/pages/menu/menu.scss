@@ -1,0 +1,158 @@
+page-menu {
+ .toolbar-background-ios {
+        background:$default-color;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: white;
+    }
+
+    .menu-img{
+        height:calc((188/667)*100vh);
+        padding: calc((13/667)*100vh);
+        img{
+            height:calc((156/667)*100vh);
+        }
+    }
+
+    .menu-text-info{
+        padding: calc((20/376)*100vw);
+        font-size:4.5vw;
+        color:$default-color;
+    }
+
+    .option-section{
+        border-top-width:calc((9/376)*100vw);
+        border-bottom-width:calc((9/376)*100vw);
+        border-left-width:0px;
+        border-right-width:0px;
+        border-style: solid;
+        border-color: #f2f2f2;
+        padding-bottom: calc((20/376)*100vw);
+
+        .options{
+            padding-top:calc((5/376)*100vw);
+            font-size: 4vw;
+            ion-row{
+                height:calc((29/667)*100vh);
+                .option-name{
+                    padding-left:calc((20/376)*100vw);
+                    padding-top: calc((5/376)*100vw);
+                    color:#4a4a4a;
+                }
+                .option-price{
+                    padding-top: calc((5/376)*100vw);
+                    padding-right:calc((20/376)*100vw);
+                    color:$default-color;
+                }
+                button{
+                    height:calc((29/376)*100vw);
+                    width:calc((29/376)*100vw);
+                  //  border-radius: 0px;
+                  //  border-width: 1px;
+                  //  border-style: solid;
+                  //  border-color: #bdbdbd;
+                    color: #4a4a4a;
+                    background-color: transparent;
+                    margin:0px;
+                }
+                .number{
+                    border-top-width: 1px;
+                    border-bottom-width: 1px;
+                    border-left-width: 0px;
+                    border-right-width: 0px;
+                    border-style: solid;
+                    border-color: #bdbdbd;
+                    color: #4a4a4a;
+                    padding-top: calc((5/376)*100vw);
+                }
+                .col-border{
+                    border-width: 1px;
+                    border-style: solid;
+                    border-color: #bdbdbd;
+                }
+
+                .choice{
+                    ion-label{
+                        color:#4a4a4a;
+                    }
+                }
+            }
+        }
+    }
+
+    .quantity{
+        font-size:4vw !important;
+        .item-ios.item-block .item-inner {
+            border-bottom: 0px;
+        }        
+        padding:0px;
+        .unit{
+            padding-top: calc((18/376)*100vw);
+        }
+        button{
+            span{
+                font-size:4vw;
+            }
+        }
+        .input-label{
+            padding-left:calc((20/376)*100vw);
+            padding-top: calc((18/376)*100vw);
+        }
+
+        ion-input{
+            border-style: solid;
+            border-width: 1px;
+            border-color: #bdbdbd;
+            input{
+                text-align:right;
+            }
+        }
+    }
+
+    .price{
+        font-size:5vw;
+        height: calc((82/667)*100vh);
+        background-color:#f2f2f2;
+        color:$default-color;
+        padding-top: calc((28/667)*100vh);
+        .left-col{
+            padding-left:calc((20/376)*100vw);
+        }
+        .right-col{
+            padding-right:calc((20/376)*100vw);
+        }
+    }
+    .request{
+         font-size:4vw !important;
+         margin-top:calc((10/376)*100vw);
+         padding-left:calc((20/376)*100vw);
+         color:$default-color;
+         ion-textarea{
+            height: calc((88/667)*100vh);
+            color:black;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #bdbdbd;
+            width: calc((334/376)*100vw);
+            margin-bottom:calc((10/376)*100vw);
+            margin-top: calc((10/376)*100vw);
+         }
+    }
+    
+    .cart{
+        color:$default-color;
+        border-style:solid;
+        border-width:1px;
+        border-color:$default-color;
+    }
+
+}
