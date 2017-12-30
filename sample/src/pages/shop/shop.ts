@@ -19,7 +19,7 @@ export class ShopPage {
   categories;
   menus=[];
   shopInfo:any;
-
+  shopPhoneHref;
   categorySelected=0;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,public storageProvider:StorageProvider) {
@@ -98,7 +98,10 @@ export class ShopPage {
                          "keyword":"세종대",
                          "takeout":"2"};       
           this.shopInfo.businessTimes=JSON.parse(this.shopInfo.businessTime);  
-          this.shopInfo.regularOff="토,일";     
+          this.shopInfo.regularOff="토,일"; 
+          if(this.shopInfo.shopPhone!='null' && this.shopInfo){
+              this.shopPhoneHref="tel:"+this.shopInfo.shopPhone;
+          }    
   }
 
  this.categories=[{"takitId":"세종대@더큰도시락","categoryNO":"1","categoryName":"정식도시락","categoryNameEn":"Basic",sequence:1 ,menus:[]},
@@ -170,5 +173,9 @@ export class ShopPage {
 
   selectMenu(menu){
        this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu)});
+  }
+
+  back(){
+    this.navCtrl.pop();
   }
 }

@@ -6,12 +6,7 @@
 </button>
 <!--
 <div class="searchbar-overlay" padding [hidden]="overlayHidden">
--->
-<div class="searchbar-overlay" padding [hidden]="overlayHidden">
   <ion-row>
-    <!--
-    <ion-searchbar (ionInput)="getShops($event)" (ionCancel)="onCancel($event)" showCancelButton=true cancelButtonText="취소" placeholder="원하는 음식점을 검색하세요!" [(ngModel)]="searchShop" [hidden]="overlayHidden"></ion-searchbar>
-    -->
     <ion-col col-10>
     <ion-searchbar (ionInput)="getShops($event)" cancelButtonText="취소" placeholder="원하는 음식점을 검색하세요!" [(ngModel)]="searchShop" [hidden]="overlayHidden"></ion-searchbar>
     </ion-col>
@@ -25,13 +20,13 @@
       </ion-item>
     </ion-list>
 </div>
-
+-->
 <p class="section-title"><b>추천 음식점</b></p>
 <div class="scroll-div">
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
                  <ion-col *ngFor="let shop of recommendations" class="scroll-col-latest"  no-padding>
-                            <button class="shop-button" no-padding no-margin ion-button>
+                            <button class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
                                 <img  [src]="shop.imagePath">
                                 <!--                               
                                 <img  [src]="awsS3+shop.takitId">
@@ -58,7 +53,7 @@
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
                  <ion-col *ngFor="let shop of recently_visited_shop" class="scroll-col-latest"  no-padding>
-                            <button class="shop-button" no-padding no-margin ion-button>
+                            <button class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
                               <!--
                                 <img  [src]="awsS3+shop.takitId">
                                 -->

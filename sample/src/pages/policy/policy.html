@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="color:white;background-color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title>  웨이티 정책
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="dummy">
+  </div>
+  <ion-row class="each-menu">
+  <ion-col col-8>
+    웨이티 이용약관
+  </ion-col>
+  <ion-col col-4>
+    <button full (click)="goToUserAgreement()" style="color:#c7c7cc;" no-padding no-margin clear ion-button>
+   <ion-icon  name="ios-arrow-forward-outline"></ion-icon>
+    </button>
+  </ion-col>  
+  </ion-row>  
+  <ion-row class="each-menu">
+  <ion-col col-8>
+    개인 정보 처리방침
+  </ion-col>
+  <ion-col col-4>
+    <button full (click)="goToPersonalInfo()" style="color:#c7c7cc;" no-padding no-margin clear ion-button>
+   <ion-icon  name="ios-arrow-forward-outline"></ion-icon>
+    </button>
+  </ion-col>    </ion-row>  
+  <ion-row class="each-menu">
+  <ion-col col-8>
+    전자 금융거래 이용약관
+  </ion-col>
+  <ion-col col-4>
+    <button full (click)="goToTransaction()" style="color:#c7c7cc;" no-padding no-margin clear ion-button>
+   <ion-icon  name="ios-arrow-forward-outline"></ion-icon>
+    </button>
+  </ion-col>    
+  </ion-row>  
+  <ion-row class="each-menu">
+  <ion-col col-8>
+    위치정보 사용
+  </ion-col>
+  <ion-col col-4>
+    <button full (click)="goToLocationInfo()" style="color:#c7c7cc;" no-padding no-margin clear ion-button>
+   <ion-icon  name="ios-arrow-forward-outline"></ion-icon>
+    </button>
+  </ion-col>    
+  </ion-row>  
+  <ion-row class="each-menu">
+  <ion-col col-8>
+    문자인식 사진정보 사용
+  </ion-col>
+  <ion-col col-4>
+    <button full (click)="goToPictureInfo()" style="color:#c7c7cc;" no-padding no-margin clear ion-button>
+   <ion-icon  name="ios-arrow-forward-outline"></ion-icon>
+    </button>
+  </ion-col>  
+  </ion-row>  
+</ion-content>

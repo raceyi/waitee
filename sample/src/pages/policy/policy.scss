@@ -1,0 +1,46 @@
+page-policy {
+    .toolbar-background-ios {
+        background: $default-color;
+        color:white;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: white;
+    }
+
+    .each-menu{
+        padding-left:calc((38/376)*100vw);
+        font-size:4.5vw;
+        button{
+            height: calc((19/667)*100vh);
+            font-size: 3.8vw;
+        }
+        ion-col{
+            height: calc((55/667)*100vh);
+            padding-top:calc((20/667)*100vh);
+            padding-bottom:0px;
+        }
+        border-bottom-style: solid;
+        border-width: 1px;
+        border-color: #dfdfdf;          
+        button{
+            color:#c7c7cc;;
+        }
+    }
+
+    .dummy{
+            height: calc((55/667)*100vh);
+            border-bottom-style: solid;
+            border-width: 1px;
+            border-color: #dfdfdf;   
+    }
+
+}
