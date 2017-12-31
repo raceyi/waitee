@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
 import { PolicyPage} from  '../policy/policy';
-
+import {FaqPage} from '../faq/faq';
+import {CompanyInfoPage} from '../company-info/company-info';
 /**
  * Generated class for the MyInfoPage page.
  *
@@ -26,5 +27,13 @@ export class MyInfoPage {
 
   goToPolicy(){
     this.app.getRootNavs()[0].push(PolicyPage);
+  }
+
+  goToFaq(){
+    this.app.getRootNavs()[0].push(FaqPage);
+  }
+
+  goToCompanyInfo(){
+    this.app.getRootNavs()[0].push(CompanyInfoPage);
   }
 }

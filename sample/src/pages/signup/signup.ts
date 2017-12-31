@@ -32,6 +32,8 @@ export class SignupPage {
   locationShown=false;             //4
   pictureShown=false;              //5
 
+  currentShown;  //undefined
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
@@ -53,8 +55,23 @@ export class SignupPage {
 
   show(title){
     console.log(title+" comes");
-    
-    if(title=="1"){
+
+    if(title=="1" && this.currentShown=="1"){
+        this.color1="#4a4a4a";
+        this.userAgreementShown=false; 
+    }else if(title=="2" && this.currentShown=="2"){
+        this.color2="#4a4a4a";
+        this.userInfoShown=false;       
+    }else if(title=="3" && this.currentShown=="3"){
+        this.color3="#4a4a4a";
+        this.transactionAgreementShown=false; 
+    }else if(title=="4" && this.currentShown=="4"){
+        this.color4="#4a4a4a";
+        this.locationShown=false;       
+    }else if(title=="5" && this.currentShown=="5"){
+        this.color5="#4a4a4a";
+        this.pictureShown=false; 
+    }else if(title=="1"){
         this.color1="#6441a5";
         this.color2="#4a4a4a";
         this.color3="#4a4a4a";
@@ -65,6 +82,7 @@ export class SignupPage {
         this.transactionAgreementShown=false; //3
         this.locationShown=false;             //4
         this.pictureShown=false;              //5
+        this.currentShown="1";
     }else if(title=="2"){
         this.color2="#6441a5";
         this.color1="#4a4a4a";
@@ -76,6 +94,7 @@ export class SignupPage {
         this.transactionAgreementShown=false; //3
         this.locationShown=false;             //4
         this.pictureShown=false;              //5
+        this.currentShown="2";
     }else if(title=="3"){
         this.color3="#6441a5";
         this.color1="#4a4a4a";
@@ -86,7 +105,8 @@ export class SignupPage {
         this.userInfoShown=false;             //2
         this.transactionAgreementShown=true; //3
         this.locationShown=false;             //4
-        this.pictureShown=false;              //5        
+        this.pictureShown=false;              //5  
+        this.currentShown="3";
     }else if(title=="4"){
         this.color4="#6441a5";
         this.color1="#4a4a4a";
@@ -97,7 +117,8 @@ export class SignupPage {
         this.userInfoShown=false;             //2
         this.transactionAgreementShown=false; //3
         this.locationShown=true;             //4
-        this.pictureShown=false;              //5        
+        this.pictureShown=false;              //5 
+        this.currentShown="4";               
     }else if(title=="5"){
         this.color5="#6441a5";
         this.color1="#4a4a4a";
@@ -108,8 +129,12 @@ export class SignupPage {
         this.userInfoShown=false;             //2
         this.transactionAgreementShown=false; //3
         this.locationShown=false;             //4
-        this.pictureShown=true;              //5                
+        this.pictureShown=true;              //5
+        this.currentShown="5";                        
     }
-    
+  }
+
+  back(){
+    this.navCtrl.pop();
   }
 }

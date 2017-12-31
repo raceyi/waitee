@@ -1,0 +1,34 @@
+page-policy-detail {
+    .toolbar-background-ios {
+        background: $default-color;
+        color:white;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: white;
+    }
+
+    .title-div{
+        padding-left:calc((52/376)*100vw);
+        padding-top:calc((58/667)*100vh);
+        padding-bottom:calc((58/667)*100vh);
+        font-size:6.6vw;
+    }
+
+    .explain{
+        background-color:#f7f7f7;
+        padding-top:calc((71/667)*100vh);
+        padding-left:calc((36/376)*100vw);
+        padding-right:calc((36/376)*100vw);
+        padding-bottom:calc((71/667)*100vh);
+        font-size:3.4vw;
+    }
+}

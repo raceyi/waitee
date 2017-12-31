@@ -1,0 +1,45 @@
+page-company-info {
+    .toolbar-background-ios {
+        background: $default-color;
+        color:white;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: white;
+    }
+
+    .company-name{
+        margin-top:calc((44/667)*100vh);
+        margin-left:calc((52/376)*100vw);
+        font-size:6.6vw;
+        color:#4a4a4a;
+    }
+
+    .company-name-eng{
+        margin-left:calc((52/376)*100vw);
+        font-size:4.8vw;
+        color:#9b9b9b;
+        padding-bottom:calc((44/667)*100vh);
+        border-bottom-style:solid;
+        border-bottom-width:2px;
+        border-bottom-color:#bdbdbd;
+        width:calc((280/376)*100vw);
+    }
+
+    .info{
+        margin-top:calc((44/667)*100vh);
+        margin-left:calc((52/376)*100vw);
+    }
+
+    a {
+        text-decoration: none !important;
+    }
+}

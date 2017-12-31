@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
+import {PolicyDetailPage} from '../policy-detail/policy-detail';
+/**
 /**
  * Generated class for the PolicyPage page.
  *
@@ -27,22 +28,22 @@ export class PolicyPage {
   }
 
   goToPictureInfo(){
-
+     this.navCtrl.push(PolicyDetailPage,{kind:5});
   }
 
   goToLocationInfo(){
-
+     this.navCtrl.push(PolicyDetailPage,{kind:4});
   }
 
   goToTransaction(){
-
+     this.navCtrl.push(PolicyDetailPage,{kind:3});
   }
 
   goToPersonalInfo(){
-
+     this.navCtrl.push(PolicyDetailPage,{kind:2});
   }
 
   goToUserAgreement(){
-    
+     this.navCtrl.push(PolicyDetailPage,{kind:1});
   }
 }

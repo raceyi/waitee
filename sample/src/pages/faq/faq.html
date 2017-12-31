@@ -1,18 +1,48 @@
-<!--
-  Generated template for the FaqPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>faq</ion-title>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="color:white;background-color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title> 자주 묻는 질문
+  </ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
-<ion-content padding>
-
+<ion-content>
+<ion-row class="help-section">
+     <ion-col no-padding text-center>
+       <a class="anchor" href="mailto:help@takit.biz">&nbsp;&nbsp;이메일 문의하기</a>
+     </ion-col>
+     <ion-col no-padding class="left-col" text-center>        
+       <a class="anchor" href="tel:0505-170-3636">&nbsp;&nbsp;전화 문의하기</a>
+    </ion-col>
+</ion-row>
+  <ion-list class="question-list">
+    <ion-item *ngFor="let question of questions" no-padding no-margin>
+      <ion-row class="question">
+          <button no-margin no-padding (click)="showAnswerToggle(question)" ion-button clear>
+            <ion-row no-padding no-margin>
+              <ion-col col-1 text-right>
+                <span style="color:#6441a5;">Q</span>
+              </ion-col>
+              <ion-col text-left text-wrap class="left-button-col" col-10>
+                 <p style="font-size:4.8vw;color:black;">{{question.question}}</p>
+              </ion-col>
+              <ion-col col-1 text-left>
+                <ion-icon name="ios-arrow-down"> </ion-icon>
+              </ion-col>
+            </ion-row>
+          </button>
+      </ion-row>
+      <ion-row class="answer" [hidden]="question.hidden">
+        <ion-col text-right col-1>
+          <span style="color: #bdbdbd;font-size:4.5vw">A</span>
+        </ion-col>
+        <ion-col col-11>
+        <p  text-wrap style="color:black;" [innerHTML]="question.answer">
+        </p>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+</ion-list>
 </ion-content>

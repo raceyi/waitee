@@ -17,6 +17,7 @@ import {TabsPage} from '../tabs/tabs';
 })
 export class SignupPaymentPage {
   cashId:string="";
+  receiptType:string="IncomeDeduction";
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
@@ -31,5 +32,9 @@ export class SignupPaymentPage {
 
   registerPaymentInfo(){
     this.navCtrl.push(TabsPage);
+  }
+
+  back(){
+    this.navCtrl.pop();
   }
 }

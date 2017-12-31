@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
 import { SignupPage } from '../signup/signup';
-
+import { PasswordResetPage} from '../password-reset/password-reset';
+import {LoginMainPage} from '../login-main/login-main';
 /**
  * Generated class for the LoginEmailPage page.
  *
@@ -18,7 +19,7 @@ export class LoginEmailPage {
   email:string;
   password:string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,private app:App) {
   }
 
   ionViewDidLoad() {
@@ -26,7 +27,7 @@ export class LoginEmailPage {
   }
 
   emailReset(){
-
+      this.app.getRootNavs()[0].push(PasswordResetPage);
   }
 
   emailLogin(){
@@ -34,6 +35,10 @@ export class LoginEmailPage {
   }
 
   signup(){
-    this.navCtrl.push(SignupPage);
+    this.app.getRootNavs()[0].push(SignupPage);
+  }
+
+  back(){
+        this.navCtrl.pop();
   }
 }

@@ -7,7 +7,7 @@
 <ion-header>
   <ion-navbar hideBackButton>
   <ion-buttons start>
-    <button style="color:white;background-color:#6441a5;"><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+    <button (click)="back()" style="color:white;background-color:#6441a5;"><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
   </ion-buttons>
   <ion-title>  결제 정보 등록
   </ion-title>
@@ -49,11 +49,32 @@
     <ion-item>
     <ion-input class="keypad-input keypad-receiptId" type="number" pattern="[0-9a-zA-Z]{5,7}" ></ion-input>
     </ion-item>
+    <!--
+    <ion-item>
+    <ion-label class="select-label">현금 영수증 발급 목적</ion-label>
+    <ion-select interface='action-sheet' [(ngModel)]="receiptType">
+      <ion-option value="IncomeDeduction">소득공제용(개인)</ion-option>
+      <ion-option value="ExpenseProof">지출증빙용(사업자)</ion-option>
+    </ion-select>
+    </ion-item>
+    <ion-item [hidden]="receiptType!='ExpenseProof'">
+    <ion-label class="value-label" >상호</ion-label>
+    </ion-item>
+    <ion-item [hidden]="receiptType!='ExpenseProof'">
+    <ion-input class="keypad-input keypad-receiptId" type="text" ></ion-input>
+    </ion-item>
+    <ion-item [hidden]="receiptType!='ExpenseProof'">
+    <ion-label class="value-label">이메일(전자세금계산서발급)</ion-label>
+    </ion-item>
+    <ion-item [hidden]="receiptType!='ExpenseProof'">
+    <ion-input class="keypad-input keypad-receiptId" type="email" ></ion-input>
+    </ion-item>
+    -->
     <div>
       &nbsp;
     </div>
   </ion-list>
 </ion-content>
 <ion-footer>
-  <button style="margin:0px;" (click)="registerPaymentInfo()" ion-button full>웨이티 시작하기</button>
+  <button style="margin:0px;" (click)="registerPaymentInfo()" ion-button full>회원정보 저장하기</button>
 </ion-footer>

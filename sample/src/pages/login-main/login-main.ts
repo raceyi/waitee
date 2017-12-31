@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams ,App} from 'ionic-angular';
 import { LoginEmailPage } from '../login-email/login-email';
 
 /**
@@ -16,7 +16,7 @@ import { LoginEmailPage } from '../login-email/login-email';
 })
 export class LoginMainPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,private app:App) {
   }
 
   ionViewDidLoad() {
@@ -24,6 +24,6 @@ export class LoginMainPage {
   }
 
   emaillogin(){
-    this.navCtrl.push(LoginEmailPage);
+    this.app.getRootNavs()[0].push(LoginEmailPage);
   }
 }
