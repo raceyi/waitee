@@ -79,14 +79,10 @@ export class HomePage {
     }
   }
 
-showSearchBar(){
-  this.navCtrl.push(SearchPage);
-}
-/*
   showSearchBar(){
-      this.overlayHidden=false;
+    this.app.getRootNavs()[0].push(SearchPage);
   }
-*/
+
   onCancel(ev:any){
       this.overlayHidden=true;
   }
@@ -95,4 +91,7 @@ showSearchBar(){
     this.app.getRootNavs()[0].push(ShopPage);
   }  
 
+  buttonPressed(){
+    console.log("buttonPressed");  
+  }
 }
