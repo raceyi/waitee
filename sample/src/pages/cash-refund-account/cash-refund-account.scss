@@ -1,0 +1,117 @@
+page-cash-refund-account {
+    .toolbar-background-ios {
+        background: #f2f2f2;
+        color:$default-color; 
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: $default-color; 
+    }
+
+    .round-header{
+        .scroll-content{
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-top-style: solid;
+            border-top-width: 1px;
+            border-top-color: $default-color;
+        }
+        .fixed-content{
+            background-color:$default-color;    
+        }
+    }
+
+    .scroll-content{
+        background-color:#f2f2f2;
+    }
+
+    .header-section{
+        padding-top: calc((14/667)*100vh);
+        padding-bottom: calc((35/667)*100vh);
+    }
+
+    .account-info{
+        margin-left:calc((21/376)*100vw);
+        width: calc((334/376)*100vw);
+        background-color:white;
+        font-size:4vw;
+        .bank-name{
+            span{
+                font-size:4vw !important;
+                padding:0px;
+            }
+            border-right-style:solid;
+            border-bottom-style:solid;
+            border-width:1px;
+            border-color:#dddddd;
+        }
+    }
+
+    .account-owner{
+        height: calc((53/667)*100vh);
+        padding-top: calc((17/667)*100vh);
+        padding-bottom: calc((17/667)*100vh);
+    }
+
+    .bank-select{
+        height: calc((53/667)*100vh);
+        border-bottom-style:solid;
+        border-top-style:solid;
+        border-width:1px;
+        border-color: #dddddd;
+    }
+
+    .bank-select-button{
+
+    }
+
+    .bank-select-label{
+        margin-top: calc((17/667)*100vh) !important;
+        margin-bottom: calc((17/667)*100vh);
+    }
+
+    .right-border{
+        border-right-style:solid;
+        border-right-width:1px;
+        border-color: #dddddd;
+    }
+
+    .account-num{
+        height:calc((53/667)*100vh);
+        color:#4a4a4a;
+    }
+
+    .account-num-label{
+        padding-top:calc((17/667)*100vh) !important;
+        padding-left:calc((17/376)*100vw) !important;
+    }
+
+    .account-num-value{
+        padding-top:calc((5/667)*100vh) !important;  
+
+        ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+            font-size:3.5vw;
+        }
+        ::-moz-placeholder { /* Firefox 19+ */
+            font-size:3.5vw;
+        }
+        :-ms-input-placeholder { /* IE 10+ */
+            font-size:3.5vw;
+        }
+        :-moz-placeholder { /* Firefox 18- */
+            font-size:3.5vw;
+        }
+    }
+
+    .bank-select-value{
+         padding-top:calc((17/667)*100vh) !important;
+    }
+}

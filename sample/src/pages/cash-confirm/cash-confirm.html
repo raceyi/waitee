@@ -1,18 +1,46 @@
-<!--
-  Generated template for the CashConfirmPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>cashConfirm</ion-title>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="color:white;background-color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title> 캐쉬 충전 확인
+  </ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
+<ion-content>
+<div class="cashId" text-center> {{cashId}} </div>
+<div class="amount" text-center> <b>{{amount}}원 충전</b> </div>
+<ion-grid class="info" style="font-size:4vw;">
+  <ion-row>
+    <ion-col class="info-label" col-3>
+      입금시간  
+    </ion-col>
+    <ion-col col-9>
+      {{timeString}}
+    </ion-col>
+  </ion-row>
+  <ion-row  style="padding:0px;border-top:solid;border-width:1px;border-top-color:#dddddd;">
+    <ion-col class="info-label" col-3>
+      입금은행  
+    </ion-col>
+    <ion-col col-9>
+      {{bank}}
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<div style="font-size:4.5vw;" text-center>
+고객님의 입금정보와 일치합니까?
+</div>
 
 </ion-content>
+<ion-footer>
+<div class="warning" text-center>
+*본인의 캐쉬 입금이 아닌 경우, 민형사상의 책임을 져야 합니다.<br><br>
+*타인 입금에 대해 캐쉬 충전 확인을 수행할 경우, <br><br>
+사기죄로 형사 고발될 수 있습니다.
+</div>
+<ion-row>
+<ion-col no-padding no-margin><button no-margin ion-button full class="deny" >아니오</button></ion-col>
+<ion-col no-padding no-margin><button no-margin ion-button full color="primary">네, 충전합니다</button></ion-col>
+</ion-row>
+</ion-footer>

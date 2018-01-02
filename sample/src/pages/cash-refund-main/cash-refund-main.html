@@ -1,0 +1,56 @@
+<!--
+  Generated template for the CashRefundMainPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="background-color:#6441a5;color:white;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title> 캐쉬 환급
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+<div [hidden]="refundAccount" class="refund-account-none" text-center>
+    <div class="message">환급계좌 등록이 필요합니다</div>
+    <button no-padding no-margin ion-button (click)="registerAccount()">
+    <ion-icon style="font-size:5.5vw;color:white;" name="ios-add-circle-outline"></ion-icon>
+    </button>
+</div>
+
+<div [hidden]="!refundAccount" class="refund-account" text-center>
+    <div class="message" *ngIf="refundBank" >{{ refundBank.name}}</div>
+    <div class="account">{{refundAccount}}</div>
+</div>
+<div [hidden]="!refundAccount" text-right class="modify">
+     <button style="color:#4a4a4a;" (click)="modifyAccount()" ion-button clear>환급계좌 수정하기</button>
+</div>
+<div [hidden]="!refundAccount" class="separator">
+</div>
+<ion-row [hidden]="!refundAccount" no-padding no-margin class="refund-amount-area">
+  <ion-col no-padding no-margin class="account-num-label" col-3>
+    환불금액
+  </ion-col>
+  <ion-col no-padding no-margin class="account-num-value" col-9>
+    <ion-input text-right type="number" [(ngModel)]="refundAmount"></ion-input>
+  </ion-col>
+</ion-row>
+<div [hidden]="!refundAccount" class="balance" text-right style="font-size:3.4vw;color:#4a4a4a;">
+  현재잔액: 32500원
+</div>
+</ion-content>
+
+<ion-footer>
+  <div text-center class="warning-section" style="background-color: #f2f2f2;">
+  
+  *이용 제한 시간 : 00:00 - 00:30 , 셋째 주 월요일 23:55 - 04:00
+  </div>
+  <div class="refund-button-area">
+      <button ion-button class="refund-button" full style="color:white;background-color:#6441a5;"> 환급받기</button>    
+  </div>
+</ion-footer>
