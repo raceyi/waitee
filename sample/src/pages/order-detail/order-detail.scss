@@ -1,0 +1,62 @@
+page-order-detail {
+    .toolbar-background-ios {
+        background: white;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: $default-color;
+        background-color:white;
+    }
+
+    .header-ios .toolbar-ios:last-child .toolbar-background-ios {
+        border-width: 0px; 
+    }
+
+    .order-no{
+        height: calc((99/667)*100vh);
+	    background-color: #f2f2f2;
+        .order-value{
+            font-size:12.7vw;
+            color: #33b9c6;
+            padding-top:calc((9/667)*100vh);
+        }
+        .order-label{
+            font-size:4.5vw;
+	        color: #6441a5;
+        }
+    }
+
+    .curr-status{
+        background-color: $default-color;
+        border-radius: 50%;
+        height: calc((47/376)*100vw);
+        width: calc((47/376)*100vw);
+        margin-left:calc((15/376)*100vw);
+    }
+
+    .invalid-status{
+	    background-color: #bdbdbd;
+        border-radius: 50%;
+        height: calc((30/376)*100vw);
+        width:calc((30/376)*100vw);
+        margin-left:calc((20/376)*100vw);
+        margin-top:calc((10/376)*100vw);
+    }
+
+    .order-status{
+        padding-left:calc((50/376)*100vw);
+        padding-right:calc((50/376)*100vw);
+    }
+
+    .detail-section{
+        
+    }
+}

@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="background-color:white;color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="md-close"></ion-icon></button>
+  </ion-buttons>
+  <ion-title> <b>{{order.shopName}}</b>
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+<div class="order-no" text-center>
+  <p no-margin class="order-value">{{order.orderNO}}</p>
+  <p no-margin class="order-label">주문번호</p>
+</div>
+<ion-row  class="order-status" *ngIf="order.orderStatus!='pickup' && order.orderStatus!='cancelled'">
+  <ion-col text-center> 
+    <div class="invalid-status" *ngIf="order.orderStatus!='paid'">
+      &nbsp;
+    </div>
+    <div class="curr-status" *ngIf="order.orderStatus=='paid'">
+      &nbsp;
+    </div>    
+  </ion-col>
+  <ion-col text-center>
+    <div class="invalid-status" *ngIf="order.orderStatus!='checked'">
+      &nbsp;
+    </div>
+    <div class="curr-status" *ngIf="order.orderStatus=='checked'">
+      &nbsp;
+    </div>    
+  </ion-col>
+  <ion-col text-center>
+    <div class="invalid-status" *ngIf="order.orderStatus!='completed'">
+      &nbsp;
+    </div>
+    <div class="curr-status" *ngIf="order.orderStatus=='completed'">
+      &nbsp;
+    </div>    
+  </ion-col>
+</ion-row>
+<ion-row  class="order-status" *ngIf="order.orderStatus!='pickup' && order.orderStatus!='cancelled'">
+  <ion-col text-center> 
+    <div style="color:#bdbdbd" *ngIf="order.orderStatus!='paid'">
+      결제완료
+    </div>
+    <div style="color:#6441a5" *ngIf="order.orderStatus=='paid'">
+      결제완료
+    </div>    
+  </ion-col>
+  <ion-col text-center>
+    <div style="color:#bdbdbd" *ngIf="order.orderStatus!='checked'">
+      주문접수
+    </div>
+    <div style="color:#6441a5" *ngIf="order.orderStatus=='checked'">
+      주문접수
+    </div>    
+  </ion-col>
+  <ion-col text-center>
+    <div style="color:#bdbdbd" *ngIf="order.orderStatus!='completed'">
+      준비완료
+    </div>
+    <div style="color:#6441a5" *ngIf="order.orderStatus=='completed'">
+      준비완료
+    </div>    
+  </ion-col>
+</ion-row>
+<div class="detail-section">
+   {{order.localOrderedTime}} <br>
+   {{order.orderedTime}}
+<ion-row>
+</ion-row>
+</div>
+</ion-content>

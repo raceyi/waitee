@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
 import {ReviewInputPage} from '../review-input/review-input';
+import {OrderDetailPage} from '../order-detail/order-detail';
 
 /**
  * Generated class for the OrderListPage page.
@@ -153,5 +154,9 @@ export class OrderListPage {
 
   inputReview(order){
      this.app.getRootNavs()[0].push(ReviewInputPage,{order:JSON.stringify(order)});
+  }
+
+  orderDetail(order){  
+      this.app.getRootNavs()[0].push(OrderDetailPage,{order:JSON.stringify(order)});
   }
 }

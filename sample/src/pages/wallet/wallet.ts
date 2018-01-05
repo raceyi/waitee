@@ -14,6 +14,12 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'wallet.html',
 })
 export class WalletPage {
+  search_mode="full";
+
+  paymethods=[{name:"비자카드",type:"card"},
+              {name:"마스터카드",type:"card"},
+              {name:"휴대폰결제",tyep:"phone"}
+  ];
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
@@ -22,4 +28,10 @@ export class WalletPage {
     console.log('ionViewDidLoad WalletPage');
   }
 
+  configureSearchMode(){
+    if(this.search_mode=="full")
+      this.search_mode="period";
+    else
+      this.search_mode="full";    
+  }
 }

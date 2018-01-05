@@ -59,7 +59,7 @@
       <span *ngIf="order.orderStatus=='pickup'" style="color:#6441a5;">{{order.orderStatusString}}</span>
     </ion-col>
     <ion-col style="padding-top:0px;" no-margin col-2 text-right>
-      <button full no-padding no-margin ion-button>주문상세</button>
+      <button (click)="orderDetail(order)" full no-padding no-margin ion-button>주문상세</button>
     </ion-col>  
     <ion-col style="padding-top:0px;" no-margin col-3 text-right>
       <button full no-padding no-margin *ngIf="order.orderStatus=='paid'" ion-button>주문취소</button>
