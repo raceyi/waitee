@@ -7,8 +7,8 @@ page-wallet {
         padding-top: calc((15/667)*100vh);
     }
 
-    $scroll-H:  calc((160/667)*100vh);
-    $latest-H : calc((121/667)*100vh);
+    $scroll-H:  calc((180/667)*100vh);
+    $latest-H : calc((180/667)*100vh);
     
     .scroll-latest {
         height: $scroll-H;
@@ -42,7 +42,7 @@ page-wallet {
                  }
                  .cash-value{
                     margin-top:calc((7/667)*100vh);
-                    margin-bottom:calc((7/667)*100vh);
+                    margin-bottom:calc((17/667)*100vh);
                  }
                  ion-row{
                      border-top: solid 0.5px #ffffff;
@@ -84,6 +84,95 @@ page-wallet {
                 border-top: solid 1px #bdbdbd;
                 border-bottom: solid 1px #bdbdbd;
             }
+        }
+    }
+
+    .period-section{
+        font-size:4vw;
+        background-color: #f2f2f2;
+        ion-datetime{
+            color: #bdbdbd;
+            background-color: #ffffff;
+	        border: solid 1px #bdbdbd;
+            width: calc((156/376)*100vw);
+            .datetime-text{
+                padding-top:calc((5/667)*100vh);
+                padding-bottom:calc((5/667)*100vh);
+            }
+        }
+        ion-row{
+            padding-left:calc((21/376)*100vw);
+            .center{
+                padding-left:calc((21/376)*100vw);
+                padding-top:calc((10/667)*100vh);
+                color: #bdbdbd;
+            }
+        }
+        .close-button{
+            height: calc((23/667)*100vh);
+            padding-right: calc((10/376)*100vw);
+            color: #bdbdbd;
+            font-size:4vw;
+        }
+
+        .search-button{
+            background-color:white;
+            border: solid 1px #bdbdbd;
+            margin-left: calc((5/376)*100vw);
+            margin-right: calc((19/376)*100vw);
+            margin-bottom: calc((10/376)*100vw);
+        }
+    }
+
+    .transaction{
+    	border-bottom: solid 1px #bdbdbd;
+        .extra-info{
+            color: #bdbdbd;
+            font-size:3.5vw;
+            ion-col{
+                padding-top:0px;
+            }
+        }
+
+        .refund{
+            font-size:4vw;
+            color: #4a4a4a;
+        }
+
+        .cancel{
+            font-size:4vw;
+            color: #6441a5;            
+        }
+
+        .payment{
+            font-size:4vw;
+            color: #4a4a4a;
+        }
+
+        .charge-done{
+            font-size:4vw;
+            color: #6441a5;
+        }
+
+        .charge-waiting{
+            font-size:4vw;
+	        color: #33b9c6;
+            .button-inner{
+                justify-content: left;
+            }
+            button{
+                span{
+                    font-size: 4vw;
+                    color: #33b9c6;
+                }
+                //height: ;
+            }
+        }
+
+        ion-row{
+            //height: 
+            margin-left:calc((20/376)*100vw);
+            margin-right:calc((20/376)*100vw);
         }
     }
 }

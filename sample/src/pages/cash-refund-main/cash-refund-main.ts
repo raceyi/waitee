@@ -41,4 +41,8 @@ export class CashRefundMainPage {
   modifyAccount(){
       this.navCtrl.push( CashRefundAccountPage,{callback:this.callbackFunction});
   }
+
+  back(){
+    this.navCtrl.pop();
+  }
 }

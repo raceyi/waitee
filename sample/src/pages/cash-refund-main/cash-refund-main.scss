@@ -67,6 +67,9 @@ page-cash-refund-main {
    .refund-button-area{
        height:calc((55/667)*100vh);
        background-color: #f2f2f2;
+       .refund-button{
+            height:calc((55/667)*100vh);
+       }
    }
 
    .separator{

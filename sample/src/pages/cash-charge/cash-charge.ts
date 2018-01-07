@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {CashManualConfirmPage} from '../cash-manual-confirm/cash-manual-confirm';
 
 /**
  * Generated class for the CashChargePage page.
@@ -24,5 +25,14 @@ export class CashChargePage {
 
   back(){
     this.navCtrl.pop();
+  }
+
+  manualCheck(){
+    console.log("manualCheck");
+    this.navCtrl.push(CashManualConfirmPage);
+  }
+
+  moveTutorial(){
+    
   }
 }

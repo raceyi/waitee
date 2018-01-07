@@ -40,4 +40,7 @@ export class OrderDetailPage {
     console.log('ionViewDidLoad OrderDetailPage');
   }
 
+  back(){
+    this.navCtrl.pop();
+  }
 }
