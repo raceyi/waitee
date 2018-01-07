@@ -167,7 +167,7 @@ export class ShopPage {
           return '#bdbdbd';    
   }
 
-  categoryClick(i){
+  categoryClick(i){ // please use the sequence value
 
   }
 

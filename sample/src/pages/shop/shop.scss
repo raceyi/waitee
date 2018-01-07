@@ -66,6 +66,11 @@ page-shop {
               justify-content: left;  
             }
         }
+        .item-ios .item-button {
+            padding-left: 5px;
+            padding-right:0px; 
+            height: calc((30/667)*100vh);
+        }
     }
 
     .no-scroll >.scroll-content{

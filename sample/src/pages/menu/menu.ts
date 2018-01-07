@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
+import {PaymentPage} from '../payment/payment';
 
 /**
  * Generated class for the MenuPage page.
@@ -97,4 +98,7 @@ export class MenuPage {
     }      
   }
 
+  order(){
+    this.navCtrl.push(PaymentPage);
+  }
 }

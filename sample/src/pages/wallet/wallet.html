@@ -143,14 +143,14 @@
 </div>
 <div *ngIf="trans.transactionType=='deposit' && trans.confirm=='0'" class="transaction">
 <ion-row class="charge-waiting">
-     <ion-col col-10 text-left>
-         <button text-left no-padding no-margin ion-button clear full>
+    <button no-padding no-margin ion-button clear full>
+     <ion-col text-left class="charge-waiting-left" text-left>
          <b>입금확인 대기중!</b>
-         </button>
      </ion-col>
-     <ion-col col-2 text-right>
+     <ion-col text-right>
          +{{trans.amount}}원
      </ion-col>
+    </button>
  </ion-row>  
 <ion-row class="extra-info">
      <ion-col text-left>

@@ -1,0 +1,126 @@
+<!--
+  Generated template for the PaymentPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="background-color:#6441a5;color:white;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title style="color:white;"> 결제하기
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+<div class="pickup-area">
+<ion-row  class="pickup-method">
+  <ion-col text-center  > 
+    <button class="circle" [style.background-color]="inStoreColor" (click)="selectInStore()" ion-button> &nbsp;</button>
+  </ion-col>
+  <ion-col text-center>
+    <button class="circle" [style.background-color]="takeoutColor" (click)="selectTakeOut()" ion-button> &nbsp;</button>
+  </ion-col>
+  <ion-col text-center>
+    <button class="circle" [style.background-color]="deliveryColor" (click)="selectDelivery()" ion-button> &nbsp;</button>
+  </ion-col>
+</ion-row>
+<ion-row  class="pickup-method">
+  <ion-col [style.color]="inStoreColor"  no-padding no-margin text-center> 
+    매장
+  </ion-col>
+  <ion-col [style.color]="takeoutColor" no-padding no-margin text-center>
+    포장
+  </ion-col>
+  <ion-col [style.color]="deliveryColor" no-padding no-margin text-center>
+    배달
+  </ion-col>
+</ion-row>
+</div>
+<div class="cash-available">
+<ion-row>
+  <ion-col text-left>
+   <b> 사용 가능 캐쉬</b>
+  </ion-col>
+  <ion-col text-right>
+    <b>32,500원</b>
+  </ion-col>
+</ion-row>
+<ion-row class="receipt-info">
+  * 현금영수증 발행을 원하시면 회원정보에서 설정해주시기 바랍니다.
+</ion-row>
+</div>
+<div class="discount">
+<ion-row no-padding no-margin>
+할인받기
+</ion-row>
+<ion-row no-padding no-margin>
+<ion-col no-padding no-margin>
+쿠폰 적용
+</ion-col>
+<ion-col no-padding no-margin text-right>
+  <ion-icon name="ios-arrow-down"></ion-icon>
+</ion-col>
+</ion-row>
+</div>
+<div class="pay-amount">
+  <ion-row no-padding no-margin>
+    결제내역
+  </ion-row>
+  <ion-row no-padding no-margin>
+    <ion-col no-padding no-margin>
+    쿠폰 할인 금액
+    </ion-col>
+    <ion-col text-right no-padding no-margin>
+      -0원
+    </ion-col>
+  </ion-row>
+  <ion-row no-padding no-margin>
+    <ion-col no-padding no-margin>
+    결제 금액
+    </ion-col>
+    <ion-col text-right no-padding no-margin>
+      3,400원
+    </ion-col>
+  </ion-row>
+</div>
+<div class="notice-section">
+<ion-row no-padding no-margin>
+  <ion-col col-3 no-padding no-margin>
+    제공받는자
+  </ion-col>
+  <ion-col col-9 no-padding no-margin>
+    더큰도시락
+  </ion-col>
+</ion-row>
+<ion-row no-padding no-margin>
+  <ion-col col-3 no-padding no-margin>
+    항목
+  </ion-col>
+  <ion-col  col-9 no-padding no-margin>
+    휴대폰번호
+  </ion-col>
+</ion-row>
+<ion-row no-padding no-margin>
+  <ion-col col-3 no-padding no-margin>
+    목적
+  </ion-col>
+  <ion-col  col-9 no-padding no-margin>
+    판매자와 구매자의 거래의 원활한 진행, 본인 의사의 확인, <br>
+    고객상담 및 불만처리 등
+  </ion-col>  
+</ion-row>
+<ion-row no-padding no-margin>
+  <ion-col col-3 no-padding no-margin>
+    제공기간
+  </ion-col>
+  <ion-col  col-9 no-padding no-margin>
+    주문 시점에서 주문준비 완료 또는 취소 이후 24시간
+  </ion-col>  
+</ion-row>
+</div>
+</ion-content>
+<ion-footer>
+  <button no-margin ion-button full>결제하기</button>
+</ion-footer>

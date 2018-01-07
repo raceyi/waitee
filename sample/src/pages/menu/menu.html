@@ -9,7 +9,7 @@
   <ion-buttons start>
     <button style="background-color:#6441a5;color:white;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
   </ion-buttons>
-  <ion-title> {{menu.menuName}}
+  <ion-title class="menu-name"> {{menu.menuName}}
   </ion-title>
   </ion-navbar>
 </ion-header>
@@ -106,6 +106,6 @@
 <ion-footer>
 <ion-row>
 <ion-col no-padding no-margin><button no-margin ion-button full class="cart" color="white">장바구니</button></ion-col>
-<ion-col no-padding no-margin><button no-margin ion-button full color="primary">바로주문</button></ion-col>
+<ion-col no-padding no-margin><button no-margin ion-button full color="primary" (click)="order()">바로주문</button></ion-col>
 </ion-row>
 </ion-footer>
