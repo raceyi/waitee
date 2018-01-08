@@ -27,6 +27,7 @@ page-login-main {
     .tour{
         position:absolute;
         top:calc((554/667)*100vh);
+        font-size:$default-font-size;
     }
 
     .login-button{

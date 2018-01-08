@@ -61,7 +61,18 @@ page-payment {
         ion-row{
             padding-left:calc((20/376)*100vw);
             padding-right:calc((20/376)*100vw);
-        }                
+        }        
+        margin-top:  calc((10/667)*100vh); 
+        .pay-amount-label{
+            padding-top:calc((15/667)*100vh); 
+            padding-bottom:calc((15/667)*100vh); 
+            color:$default-color;
+        }     
+        .amount-value{
+            padding-top:calc((15/667)*100vh); 
+            padding-bottom:calc((15/667)*100vh); 
+            color:$default-color;            
+        } 
     }
 
     .discount{
@@ -70,7 +81,24 @@ page-payment {
         ion-row{
             padding-left:calc((20/376)*100vw);
             padding-right:calc((20/376)*100vw);
-        }        
+        }       
+        button{
+            height:calc((20/667)*100vh);
+        } 
+
+        .discount-label{
+            padding-top:calc((10/667)*100vh);
+            padding-bottom:calc((10/667)*100vh);
+            color: #6441a5;
+        }
+
+        .coupon-button{
+            padding-bottom:calc((10/667)*100vh);
+            color: #4a4a4a;
+            .coupon-label{
+                padding-top: calc((5/667)*100vh);
+            }
+        }
     }
 
     .notice-section{

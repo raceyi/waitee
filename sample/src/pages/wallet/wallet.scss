@@ -62,6 +62,17 @@ page-wallet {
                  }
             }
 
+            .card-add{
+                background-color:$default-color;
+                color:white;
+                border-radius: 8px;
+ 	            box-shadow: 0 0 7px 0 rgba(70, 70, 70, 0.5);
+                .card-add-label{
+                    justify-content: center;
+                    padding-top: calc((25/667)*100vh);
+                }
+            }
+
             .scroll-col-latest {
                 overflow: inherit; 
                 margin-left: calc((12/376)*100vw);

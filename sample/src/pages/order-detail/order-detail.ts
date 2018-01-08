@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ShopPage} from '../shop/shop';
 
 /**
  * Generated class for the OrderDetailPage page.
@@ -15,7 +16,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class OrderDetailPage {
   order;
-
+  
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.order=JSON.parse(this.navParams.get("order"));
     console.log("order:"+JSON.stringify(this.order));    
@@ -23,6 +24,27 @@ export class OrderDetailPage {
     console.log("date:"+d.getDay());
     let orderTimeString=d.getFullYear()+"/"+d.getMonth()+"/"+d.getDate()+" "+d.getDay()+" "+d.getHours()+" "+d.getMinutes();
     console.log("orderTimeString:"+orderTimeString);
+    
+    this.order.orderListObj=JSON.parse(this.order.orderList);
+
+    /* What is local time? hum... It should be shop time
+    if(this.order.localOrderedTime)
+        this.order.localOrderedTimeString  =
+    if(this.order.localCompleteTime)  
+        this.order.localCompleteTimeString =
+    if(this.order.localCheckedTime)  
+        this.order.localCheckedTimeString  =
+    if(this.order.localCanceledTime)    
+        this.order.localCanceledTimeString =
+    if(this.order.localPickupTime)    
+        this.order.localPickupTime=
+    */
+
+    this.order.localOrderedTimeString = "2017/10/09 월요일  12:19"
+    this.order.localCompleteTimeString ="2017/10/09 월요일  12:19"
+    this.order.localCheckedTimeString = "2017/10/09 월요일  12:19"
+    this.order.localCanceledTimeString ="2017/10/09 월요일  12:19"
+    this.order.localPickupTimeString ="2017/10/09 월요일  12:19"
   }
 
   getGMTtimeInMilliseconds(time:string){
@@ -41,6 +63,10 @@ export class OrderDetailPage {
   }
 
   back(){
-    this.navCtrl.pop();
+    if( this.navCtrl.canGoBack() ){
+        this.navCtrl.pop();
+    }else{
+        this.navCtrl.setRoot(ShopPage);
+    }
   }
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {MenuPage} from '../menu/menu';
+import {TabsPage} from '../tabs/tabs';
 
 /**
  * Generated class for the ShopPage page.
@@ -176,6 +177,9 @@ export class ShopPage {
   }
 
   back(){
-    this.navCtrl.pop();
+    if(this.navCtrl.canGoBack())
+        this.navCtrl.pop();
+    else
+        this.navCtrl.setRoot(TabsPage);
   }
 }
