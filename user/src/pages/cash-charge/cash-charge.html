@@ -1,0 +1,53 @@
+
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="color:white;background-color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title> 충전하기
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+<button no-padding no-margin (click)="moveTutorial()" class="tutorial-button" ion-button full>
+  <ion-row no-padding no-margin> 
+    <ion-col no-padding no-margin class="tutorial" text-left col-11>
+      타킷 캐쉬 충전 방법 알아보기
+    </ion-col>
+    <ion-col no-padding no-margin text-right col-1>
+      <ion-icon name="ios-arrow-down"></ion-icon>
+    </ion-col>
+  </ion-row>
+</button>
+<div  class="account-info" text-center>
+    <div class="message"><b>예금주: 타킷주식회사</b></div>
+    <div class="account">농협 301-2323-3636-21</div>
+</div>
+<div class="account-copy" no-padding no-margin text-right>
+    <button no-padding no-margin ion-button clear>계좌복사</button>
+</div>
+<ion-row class="cash-id">
+  <ion-col no-padding no-margin text-left>
+  받는 통장 표시 내용
+  </ion-col>
+  <ion-col no-padding no-margin text-right>
+    TAKIT
+  </ion-col>
+</ion-row>
+<button class="manual-check" (click)="manualCheck()" no-padding no-margin ion-button full>
+  <ion-row no-padding no-margin> 
+    <ion-col no-padding no-margin class="question" text-left col-11>
+      캐쉬 아이디 입력을 잊으셨나요?
+    </ion-col>
+    <ion-col no-padding no-margin text-right col-1>
+      <ion-icon name="ios-add"></ion-icon>
+    </ion-col>
+  </ion-row>
+</button>
+</ion-content>
+<ion-footer no-padding>
+    <div text-center no-padding class="warning-section" style="background-color: #f2f2f2;">
+  
+  *이용 제한 시간 : 00:00 - 00:30 , 셋째 주 월요일 23:55 - 04:00
+  </div>
+</ion-footer>

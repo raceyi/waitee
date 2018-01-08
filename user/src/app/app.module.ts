@@ -20,6 +20,35 @@ import {MyFavoritePageModule} from '../pages/my-favorite/my-favorite.module';
 import {MyInfoPageModule} from '../pages/my-info/my-info.module';
 import {OrderListPageModule} from '../pages/order-list/order-list.module';
 import {WalletPageModule} from '../pages/wallet/wallet.module';
+import {ShopPageModule} from '../pages/shop/shop.module';
+import {MenuPageModule} from '../pages/menu/menu.module';
+import {SearchPageModule} from '../pages/search/search.module';
+import {PolicyPageModule} from '../pages/policy/policy.module';
+import {FaqPageModule} from '../pages/faq/faq.module';
+
+import { StorageProvider } from '../providers/storage/storage';
+import { HttpClientModule } from '@angular/common/http';
+import {CompanyInfoPageModule} from '../pages/company-info/company-info.module';
+import {PolicyDetailPageModule} from '../pages/policy-detail/policy-detail.module';
+import {PasswordResetPageModule} from '../pages/password-reset/password-reset.module';
+import {CashConfirmPageModule} from '../pages/cash-confirm/cash-confirm.module';
+import {CashRefundMainPageModule} from  '../pages/cash-refund-main/cash-refund-main.module';
+import {CashRefundAccountPageModule} from '../pages/cash-refund-account/cash-refund-account.module';
+import {ReviewInputPageModule} from '../pages/review-input/review-input.module';
+import {OrderDetailPageModule} from '../pages/order-detail/order-detail.module';
+import {CashChargePageModule} from '../pages/cash-charge/cash-charge.module';
+import {CashManualConfirmPageModule} from '../pages/cash-manual-confirm/cash-manual-confirm.module';
+import{PaymentPageModule} from '../pages/payment/payment.module';
+
+import {MyErrorHandler} from '../classes/my-error-handler';
+import { ConfigProvider } from '../providers/config/config';
+import { LoginProvider } from '../providers/login/login';
+import { NativeStorage } from '@ionic-native/native-storage';
+
+import { HTTP } from '@ionic-native/http';
+import { AppAvailability } from '@ionic-native/app-availability';
+import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
+import { Facebook } from '@ionic-native/facebook';
 
 @NgModule({
   declarations: [
@@ -28,6 +57,7 @@ import {WalletPageModule} from '../pages/wallet/wallet.module';
     TabsPage
   ],
   imports: [
+    HttpClientModule,
     CustomIconsModule,
     BrowserModule,
     LoginMainPageModule,
@@ -39,6 +69,22 @@ import {WalletPageModule} from '../pages/wallet/wallet.module';
     MyInfoPageModule,
     OrderListPageModule,
     WalletPageModule,
+    ShopPageModule,
+    MenuPageModule,
+    SearchPageModule,
+    PolicyPageModule,
+    FaqPageModule,
+    CompanyInfoPageModule,
+    PolicyDetailPageModule,
+    PasswordResetPageModule,
+    CashConfirmPageModule,
+    CashRefundMainPageModule,
+    CashRefundAccountPageModule,
+    ReviewInputPageModule,
+    OrderDetailPageModule,
+    CashChargePageModule,
+    CashManualConfirmPageModule,
+    PaymentPageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],
@@ -51,7 +97,15 @@ import {WalletPageModule} from '../pages/wallet/wallet.module';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: MyErrorHandler},
+    ConfigProvider,
+    StorageProvider,
+    LoginProvider,
+    NativeStorage,
+    HTTP,
+    AppAvailability,
+    InAppBrowser,
+    Facebook
   ]
 })
 export class AppModule {}

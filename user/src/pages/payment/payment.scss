@@ -1,0 +1,113 @@
+page-payment {
+ .toolbar-background-ios {
+        background:$default-color;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+        padding:0px;
+    }
+
+   .toolbar-title-ios{
+        color:white;
+   }
+
+   .content-ios{
+        background-color:#f2f2f2;
+   }
+
+    .pickup-area{
+        background-color:white;
+        padding-bottom: calc((10/667)*100vh);  
+    }
+
+   .pickup-method{
+        .circle{
+            background-color: $default-color;
+            width: calc((47/376)*100vw);
+            height: calc((47/376)*100vw);  
+            border-radius: 50%;
+        }
+        padding-left:calc((40/376)*100vw);
+        padding-right:calc((40/376)*100vw);
+        font-size:4.5vw;
+        color:$default-color;
+
+   }
+
+    .cash-available{
+        background-color: #f2f2f2;
+        font-size:4.5vw;
+        color:$default-color;
+        .receipt-info{
+            font-size:3.2vw;
+        }
+
+        ion-row{
+            padding-left:calc((20/376)*100vw);
+            padding-right:calc((20/376)*100vw);
+        }
+        padding-top: calc((10/376)*100vw);
+        padding-bottom:calc((10/376)*100vw);
+    }
+
+    .pay-amount{
+        font-size:4.5vw;
+        background-color:white;
+        ion-row{
+            padding-left:calc((20/376)*100vw);
+            padding-right:calc((20/376)*100vw);
+        }        
+        margin-top:  calc((10/667)*100vh); 
+        .pay-amount-label{
+            padding-top:calc((15/667)*100vh); 
+            padding-bottom:calc((15/667)*100vh); 
+            color:$default-color;
+        }     
+        .amount-value{
+            padding-top:calc((15/667)*100vh); 
+            padding-bottom:calc((15/667)*100vh); 
+            color:$default-color;            
+        } 
+    }
+
+    .discount{
+        font-size:4.5vw;
+        background-color:white;
+        ion-row{
+            padding-left:calc((20/376)*100vw);
+            padding-right:calc((20/376)*100vw);
+        }       
+        button{
+            height:calc((20/667)*100vh);
+        } 
+
+        .discount-label{
+            padding-top:calc((10/667)*100vh);
+            padding-bottom:calc((10/667)*100vh);
+            color: #6441a5;
+        }
+
+        .coupon-button{
+            padding-bottom:calc((10/667)*100vh);
+            color: #4a4a4a;
+            .coupon-label{
+                padding-top: calc((5/667)*100vh);
+            }
+        }
+    }
+
+    .notice-section{
+        background-color: #f2f2f2;
+        color: #4a4a4a;
+        font-size: 3.2vw;
+        padding-top:calc((10/667)*100vh);
+        padding-bottom:calc((10/667)*100vh);
+        padding-left:calc((20/376)*100vw);
+        padding-right:calc((20/376)*100vw);
+    }
+}

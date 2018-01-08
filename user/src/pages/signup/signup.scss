@@ -96,7 +96,21 @@ page-signup {
     .details{
         margin-left: calc((51/376)*100vw);
         margin-right: calc((51/376)*100vw);
-        margin-top:3px;
+        margin-top:calc((20/667)*100vh);
+        color: #4a4a4a;
     }
 
+    .explain{
+        margin-left: calc((33/376)*100vw);  
+        width: calc((310/376)*100vw); 
+        height: calc((317/667)*100vh); 
+        border-radius: 8px;
+        border: solid 1px #6441a5; 
+        font-size:3.4vw;
+    }
+
+    pre{
+        height: calc((300/667)*100vh);
+        padding-left: 5px;
+    }
 }

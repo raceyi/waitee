@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
+import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
+import { PolicyPage} from  '../policy/policy';
+import {FaqPage} from '../faq/faq';
+import {CompanyInfoPage} from '../company-info/company-info';
 /**
  * Generated class for the MyInfoPage page.
  *
@@ -16,11 +18,22 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class MyInfoPage {
   user={name:'김다현', email:'xxxxxx.kim@gmail.com'}
   
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,private app: App) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MyInfoPage');
   }
 
+  goToPolicy(){
+    this.app.getRootNavs()[0].push(PolicyPage);
+  }
+
+  goToFaq(){
+    this.app.getRootNavs()[0].push(FaqPage);
+  }
+
+  goToCompanyInfo(){
+    this.app.getRootNavs()[0].push(CompanyInfoPage);
+  }
 }

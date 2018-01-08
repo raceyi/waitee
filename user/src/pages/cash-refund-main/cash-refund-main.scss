@@ -1,0 +1,101 @@
+page-cash-refund-main {
+    .toolbar-background-ios {
+        background:$default-color;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: white;
+    }
+
+   .refund-account-none{
+        background-color:$default-color;
+        margin-top:calc((26/667)*100vh) !important;  
+        margin-left:calc((55/376)*100vw) !important;
+        margin-right:calc((55/376)*100vw) !important;
+        height:calc((142/667)*100vh) !important;  
+        border-radius: 8px;
+        color:white;
+
+        .message{
+            padding-top:calc((40/667)*100vh);
+            padding-bottom:calc((10/667)*100vh);
+            font-size:4.5vw;
+        }
+   }
+
+   .refund-account{
+        background-color:$default-color;
+        margin-top:calc((26/667)*100vh) !important;  
+        margin-left:calc((55/376)*100vw) !important;
+        margin-right:calc((55/376)*100vw) !important;
+        height:calc((142/667)*100vh) !important;  
+        border-radius: 8px;
+        color:white;
+
+        .message{
+            padding-top:calc((40/667)*100vh);
+            padding-bottom:calc((10/667)*100vh);
+            font-size:4.5vw;
+        }
+   }
+
+   .warning-section{
+       	color: #bdbdbd;
+        background-color: #f2f2f2;
+        height:calc((224/667)*100vh);
+        padding-top:calc((23/667)*100vh);
+        font-size:3.4vw;
+   }
+
+   .modify{
+        margin-right:calc((55/376)*100vw) !important;  
+        button{
+            span{
+                font-size:3.4vw;
+            }
+        }
+   }
+
+   .refund-button-area{
+       height:calc((55/667)*100vh);
+       background-color: #f2f2f2;
+       .refund-button{
+            height:calc((55/667)*100vh);
+       }
+   }
+
+   .separator{
+       height: calc((19/667)*100vh);
+       background-color: #f2f2f2;
+   }
+
+   .refund-amount-area{
+       height: calc((41/667)*100vh);
+       .account-num-label{
+            font-size: 4.5vw;
+            padding-left: calc((20/376)*100vw);
+            color:#6441a5;
+            padding-top:calc((10/667)*100vh);
+       }
+       .account-num-value{
+           ion-input{
+            	border: solid 1px #bdbdbd;
+                margin: calc((5/376)*100vw);
+                height: calc((31/667)*100vh);
+                width: calc((257/376)*100vw);
+           }
+       }
+   }
+
+   .balance{
+       margin-right:calc((20/376)*100vw) !important;  
+   }
+}

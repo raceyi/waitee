@@ -97,4 +97,13 @@ page-signup-payment {
      border-top: 0px; 
   }
 
+  .select-label{
+        height:calc((20/667)*100vh);
+        font-size: $default-font-size;
+        margin-left:calc((24/376)*100vw);
+  }
+
+  .select-text{
+        font-size: $default-font-size;      
+  }
 }

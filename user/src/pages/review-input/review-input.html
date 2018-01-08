@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="color:white;background-color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title> 후기 작성
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+<div class="message" text-center style="font-size:4.8vw;color:#4a4a4a;">
+  <p><b>{{order.shopName}}의</b></p>
+  <p><b>{{order.orderName}}, 어떠셨나요?</b></p>
+</div>
+<ion-row class="five-star">
+<ion-col col-1  no-padding no-margin>
+</ion-col>
+<ion-col col-2 text-center  no-padding no-margin>
+  <button [style.color]="fontColor[0]" style="font-size:9.3vw;" (click)="markStar(0)" no-padding no-margin clear ion-button><ion-icon name="ios-star" ></ion-icon></button>
+</ion-col>
+<ion-col col-2 text-center  no-padding no-margin>
+  <button [style.color]="fontColor[1]" style="font-size:9.3vw;" (click)="markStar(1)" no-padding no-margin clear ion-button><ion-icon name="ios-star" ></ion-icon></button>  
+</ion-col>
+<ion-col col-2 text-center  no-padding no-margin>
+  <button [style.color]="fontColor[2]" style="font-size:9.3vw;" (click)="markStar(2)" no-padding no-margin clear ion-button><ion-icon name="ios-star" ></ion-icon></button>  
+</ion-col>
+<ion-col col-2 text-center  no-padding no-margin>
+  <button [style.color]="fontColor[3]" style="font-size:9.3vw;" (click)="markStar(3)" no-padding no-margin clear ion-button><ion-icon name="ios-star" ></ion-icon></button>  
+</ion-col>
+<ion-col col-2 text-center  no-padding no-margin>
+  <button [style.color]="fontColor[4]" style="font-size:9.3vw;" (click)="markStar(4)" no-padding no-margin clear ion-button><ion-icon name="ios-star" ></ion-icon></button>  
+</ion-col>
+<ion-col col-1  no-padding no-margin>
+</ion-col>
+</ion-row>
+  <div text-center class="review-text-area">
+    <ion-textarea placeholder="솔직하지만 매너있는 평가 부탁드립니다!"></ion-textarea>
+  </div>
+</ion-content>
+<ion-footer style="background-color:#f2f2f2;">
+  <button class="review-button" no-margin full ion-button> 후기 작성하기 </button>
+</ion-footer>

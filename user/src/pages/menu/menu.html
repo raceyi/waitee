@@ -1,0 +1,111 @@
+<!--
+  Generated template for the MenuPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="background-color:#6441a5;color:white;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title class="menu-name"> {{menu.menuName}}
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+<div class="menu-img" text-center>
+  <img [src]="storageProvider.awsS3+menu.imagePath">
+</div>
+
+<ion-row>
+  <ion-col class="menu-text-info" text-left>
+   가격
+  </ion-col>
+  <ion-col class="menu-text-info" text-right>
+  {{menu.price}}원
+  </ion-col>
+</ion-row>
+
+<div class="option-section">
+  <ion-row>
+    <ion-col class="menu-text-info" text-left>
+      추가 옵션 
+    </ion-col>
+  </ion-row>
+
+  <div class="options" no-padding no-margin *ngFor="let option of menu.options;let i=index;">
+  <ion-row no-padding no-margin>
+    <ion-col no-padding no-margin col-3 class="option-name" text-left>
+        {{option.name}}
+    </ion-col>
+    <ion-col class="option-price" no-padding no-margin col-5 text-right>
+        +{{option.price}}원
+    </ion-col>
+    <ion-col class="col-border" no-padding no-margin col-1>
+        <button no-padding ion-button clear><ion-icon name="ios-remove"></ion-icon></button>
+    </ion-col>
+    <ion-col class="number" text-center no-padding no-margin col-1>
+      {{option.number}}
+    </ion-col>
+    <ion-col class="col-border" no-padding no-margin col-1>
+        <button no-padding ion-button clear><ion-icon name="ios-add"></ion-icon></button>
+    </ion-col>
+    <ion-col no-padding no-margin col-1>
+      &nbsp; 
+    </ion-col>
+  </ion-row>
+  <ion-row radio-group class="choice" [(ngModel)]="option.default" *ngIf="option.choice!==undefined">
+                      <ion-col  *ngFor="let choice of option.choice">
+                          <ion-item class="bg-sub1" no-lines >
+                              <ion-label style="font-size:4vw;color:#4a4a4a;">{{choice}}</ion-label>
+                              <ion-radio style="border-style:solid;border-width:1px;border-color:#bdbdbd;" color="subColor2" [value]="choice"></ion-radio>
+                          </ion-item>
+                      </ion-col>
+  </ion-row>
+  </div>
+</div>
+
+<div class="quantity">
+      <ion-row [hidden]="quantityInput(true)">
+        <ion-col col-11>
+        <ion-item  class="orderSelect">
+          <ion-label class="orderQuantity">총 수량</ion-label>
+            <ion-select interface='action-sheet' #actionSheet class="orderSelect0" [(ngModel)]="menu.quantity"  (ionChange)="getQuantity(menu.quantity)">
+              <ion-option value=1>1</ion-option>
+              <ion-option value=2>2</ion-option>
+              <ion-option value=3>3</ion-option>
+              <ion-option value=4>4</ion-option>
+              <ion-option value=5>5</ion-option>
+              <ion-option value=6>직접입력</ion-option>
+            </ion-select>
+        </ion-item>
+        </ion-col>
+        <ion-col class="unit" col-1>
+            개
+        </ion-col>
+      </ion-row>
+       <ion-row [hidden]="quantityInput(false)">
+         <ion-col col-8 class="input-label">총 수량</ion-col>
+         <ion-col col-3><ion-input #quantityNum (blur)="onBlur($event)" type="number"  min="1" [(ngModel)]= "menu.quantity"></ion-input></ion-col>
+         <ion-col class="unit" col-1>개</ion-col>
+       </ion-row>
+</div>
+<div class="price">
+<ion-row>
+  <ion-col class="left-col" text-left>결제금액</ion-col>
+  <ion-col class="right-col" text-right>{{3600}}원</ion-col>
+</ion-row>
+</div>
+<div class="request">
+  요청사항 
+<ion-textarea></ion-textarea>
+</div>
+</ion-content>
+<ion-footer>
+<ion-row>
+<ion-col no-padding no-margin><button no-margin ion-button full class="cart" color="white">장바구니</button></ion-col>
+<ion-col no-padding no-margin><button no-margin ion-button full color="primary" (click)="order()">바로주문</button></ion-col>
+</ion-row>
+</ion-footer>

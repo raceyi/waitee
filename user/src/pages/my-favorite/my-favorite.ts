@@ -69,7 +69,7 @@ export class MyFavoritePage {
                             price:3600}];
 
     this.shops.forEach(shop => {
-      shop.imagePath=this.awsS3+shop.takitId;
+      shop.imagePath=this.awsS3+"shop.png";
     });
 
     this.menus.forEach(menu => {

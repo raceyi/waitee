@@ -1,0 +1,93 @@
+<ion-content class="round-header">
+  <ion-row class="header-section"> 
+    <ion-col col-3>
+        <button clear style="color:#6441a5;background-color:#f2f2f2;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="md-close"></ion-icon></button>  
+    </ion-col>
+    <ion-col col-8 style="font-size:4.8vw;color:#6441a5;">
+      <b>캐쉬 아이디 입력을 잊으셨나요?</b>
+    </ion-col>
+    <ion-col col-1>
+    </ion-col>
+  </ion-row>
+
+  <ion-grid no-padding no-margin class="account-info">
+    <ion-row  text-center class="bank-select" style="font-size:4vw;color: #4a4a4a;">
+      <ion-col class="right-border bank-select-label" col-3>
+          은행명 
+      </ion-col>
+      <ion-col  *ngIf="bankName!=undefined && !bankCodeMode" text-center class="bank-select-value" col-7>
+        {{bankName}}
+      </ion-col>
+      <ion-col text-right style="color:#bdbdbd;" *ngIf="bankName==undefined && !bankCodeMode" text-center class="bank-select-value" col-7>
+        이체 시 사용한 본인 은행
+      </ion-col>      
+      <ion-col text-right *ngIf="bankCodeMode" text-center class="account-num-value" col-7>
+         <ion-input text-right type="number" [(ngModel)]="bankCode"></ion-input>
+      </ion-col>      
+      
+      <ion-col  text-right class="bank-select-button" col-2>
+        <button (click)="clickBanklistShown()" style="color:#bdbdbd;" ion-button clear><ion-icon name="ios-arrow-down"></ion-icon></button>
+      </ion-col>
+    </ion-row>
+  <ion-row [hidden]="!bankListShown"> 
+      <ion-col class="bank-name" col-4 *ngFor="let bank of storageProvider.manualbanklist" no-padding no-margin>
+        <button full (click)="bankSelect(bank)"style="padding:0px;" clear ion-button>
+          {{bank.name}}
+        </button>
+      </ion-col>
+      <ion-col class="bank-name" col-4>
+        <button full (click)="bankCodeInput()" style="padding:0px;" clear ion-button>        
+          은행코드직접입력
+        </button>
+      </ion-col>
+  </ion-row>
+  <ion-row text-center class="bank-select account-num"> 
+    <ion-col class="bank-select-label right-border" col-3>
+      입금액
+    </ion-col>
+    <ion-col class="account-num-value" col-9>
+      <ion-input text-right type="number" [(ngModel)]="amount"></ion-input>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+  </ion-row>
+
+<ion-row text-center class="bank-select account-num"> 
+    <ion-col class="bank-select-label right-border" col-3>
+      입금일
+    </ion-col>
+    <ion-col text-right class="account-num-value" col-9>
+        <ion-datetime displayFormat="YYYY MM DD" min="2018" [(ngModel)]="transferDate"></ion-datetime>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+  </ion-row>
+
+  <ion-row text-center class="bank-select account-num"> 
+    <ion-col class="bank-select-label right-border" col-3>
+      입금시간
+    </ion-col>
+    <ion-col text-right class="account-num-value" col-9>
+      <ion-datetime  displayFormat="HH" [(ngModel)]="transferDate"></ion-datetime>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+  </ion-row>
+
+  <ion-row text-center class="bank-select account-num"> 
+    <ion-col class="bank-select-label right-border" col-3>
+      통장표시
+    </ion-col>
+    <ion-col class="account-num-value" col-9>
+      <ion-input text-right type="text" [(ngModel)]="memo"></ion-input>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+  </ion-row>
+
+
+  </ion-grid>
+</ion-content>
+<ion-footer>
+  <button (click)="check()" ion-button full no-margin no-padding >입금확인</button>
+</ion-footer>

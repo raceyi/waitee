@@ -1,0 +1,66 @@
+page-faq {
+    .toolbar-background-ios {
+        background: $default-color;
+        color:white;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: white;
+    }
+
+    .anchor{
+        text-decoration: none !important;
+        font-size:4.8vw;
+    }
+
+    .help-section{
+        margin-top: calc((15/667)*100vh);
+        margin-bottom: calc((30/667)*100vh);
+    }
+
+    .left-col{
+        border-left-style: solid;
+        border-left-color:$default-color;
+        border-width: 1px;
+    }
+
+    .question{
+        button{
+            color:black;
+            font-size:4.8vw;
+            padding-left:calc((20/376)*100vw);
+        }
+        .left-button-col{
+            width:calc((300/376)*100vw);
+        }
+        height: calc((55/667)*100vh);
+    }
+    
+    .question-list{
+        .label-ios {
+            margin: 0px;
+        }
+    }
+
+    .answer{
+        background-color: #f7f7f7;
+        font-size:3.4vw;
+        a {
+            color: #5ac8fa;
+        }
+        padding-left:calc((20/376)*100vw);
+        padding-right:calc((20/376)*100vw);
+    }
+
+    .item-inner{
+        padding:0px !important;
+    }
+}

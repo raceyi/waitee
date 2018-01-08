@@ -1,0 +1,52 @@
+<ion-content class="round-header">
+  <ion-row class="header-section"> 
+    <ion-col>
+        <button clear style="color:#6441a5;background-color:#f2f2f2;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="md-close"></ion-icon></button>  
+    </ion-col>
+    <ion-col style="font-size:4.8vw;color:#6441a5;">
+      <b>환급계좌 등록</b>
+    </ion-col>
+    <ion-col>
+    </ion-col>
+  </ion-row>
+
+  <ion-grid no-padding no-margin class="account-info">
+    <ion-row  text-center class="account-owner" style="font-size:4vw;color: #4a4a4a;">
+      <ion-col class="right-border" col-3>
+      예금주
+      </ion-col>
+      <ion-col col-9>
+        타킷주식회사
+      </ion-col>
+    </ion-row>
+    <ion-row  text-center class="bank-select" style="font-size:4vw;color: #4a4a4a;">
+      <ion-col class="right-border bank-select-label" col-3>
+          은행 
+      </ion-col>
+      <ion-col  text-center class="bank-select-value" col-7>
+        {{bankName}}
+      </ion-col>
+      <ion-col  text-right class="bank-select-button" col-2>
+        <button (click)="clickBanklistShown()" style="color:#bdbdbd;" ion-button clear><ion-icon name="ios-arrow-down"></ion-icon></button>
+      </ion-col>
+    </ion-row>
+  <ion-row [hidden]="!bankListShown"> 
+      <ion-col class="bank-name" col-4 *ngFor="let bank of storageProvider.banklist" no-padding no-margin>
+        <button full (click)="bankSelect(bank)"style="padding:0px;" clear ion-button>
+          {{bank.name}}
+        </button>
+      </ion-col>
+  </ion-row>
+  <ion-row class="account-num"> 
+    <ion-col class="account-num-label" col-3>
+      계좌번호
+    </ion-col>
+    <ion-col class="account-num-value" col-9>
+      <ion-input type="number" [(ngModel)]="refundAccount" placeholder="\“-\“을 제외한 숫자만 입력 해주시길 바랍니다."></ion-input>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+  </ion-row>
+  <button (click)="checkWithrawAccount()" ion-button full no-margin no-padding >등록하기</button>
+  </ion-grid>
+</ion-content>

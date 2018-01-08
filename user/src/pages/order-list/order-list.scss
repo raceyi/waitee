@@ -1,3 +1,104 @@
 page-order-list {
+    .header{
+        height:calc((50/667)*100vh);
+        font-size:4.8vw;
+        background-color:$default-color;
+        color:white;
+        padding-top: calc((15/667)*100vh);
+    }
 
+    .scroll-content{
+        background-color: #f2f2f2;    
+    }
+    .selection-area{
+            height: calc((27/667)*100vh);
+            margin-left:calc((21/376)*100vw);
+            margin-right:calc((21/376)*100vw);
+            margin-top:calc((10/667)*100vh);
+            margin-bottom:calc((10/667)*100vh);
+            button{
+                height: calc((27/667)*100vh);
+                span{
+                    font-size:4vw;
+                    //color:#bdbdbd;
+                }
+            }
+            border-radius: 13.5px;
+            background-color: #ffffff;
+            border: solid 1px #bdbdbd;
+            color: #bdbdbd;
+    }
+
+   .search-area{
+      margin-left:calc((20/376)*100vw);
+      margin-right:calc((20/376)*100vw);
+      padding:5px;
+      ion-col{
+        border: solid 1px #bdbdbd;    
+      }
+
+      .left-col{
+        border-right-width:0px;
+      }
+
+      .right-col{
+        border-left-width:0px;
+        button{
+            height:calc((20/667)*100vh);
+            color: #bdbdbd;
+        }
+      }
+
+      .text-input-ios {
+          margin: 5px 5px 5px 0;
+      }
+
+        ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+            font-size:4vw;
+            text-align: right;
+        }
+        ::-moz-placeholder { /* Firefox 19+ */
+            font-size:4vw;
+            text-align: right;
+        }
+        :-ms-input-placeholder { /* IE 10+ */
+            font-size:4vw;
+            text-align: right;
+        }
+        :-moz-placeholder { /* Firefox 18- */
+            font-size:4vw;
+            text-align: right;
+        }
+
+   }
+    .history{
+        height:calc((83/667)*100vh);
+        .order-first-line{
+            font-size:4vw;
+            padding-right:calc((20/376)*100vw);            
+        }
+
+        .order-second-line{
+            font-size:3.4vw;
+             padding-right:calc((20/376)*100vw);
+        }
+
+        .order-third-line{
+            font-size:3.4vw;
+            button{
+                background-color:white;
+                color: #4a4a4a;
+                span{
+                    font-size:3.4vw;
+                }
+                height:calc((20/667)*100vh);
+                border: solid 0.5px #bdbdbd;
+                width:calc((55/376)*100vw);
+            }
+        }
+        background-color:white;
+        border-top: solid 1px #bdbdbd;
+        padding-left:calc((20/376)*100vw);
+       
+    }
 }

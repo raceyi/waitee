@@ -1,3 +1,187 @@
 page-wallet {
+    .header{
+        height:calc((50/667)*100vh);
+        font-size:4.8vw;
+        background-color:$default-color;
+        color:white;
+        padding-top: calc((15/667)*100vh);
+    }
 
+    $scroll-H:  calc((180/667)*100vh);
+    $latest-H : calc((180/667)*100vh);
+    
+    .scroll-latest {
+        height: $scroll-H;
+        .scroll-content{
+            padding: 0;
+        }
+    }
+
+    .scroll-div{
+        .scroll-row-latest{
+            flex-wrap : inherit;
+            height: $latest-H;
+            margin-left: calc((62/376)*100vw);
+            margin-right: calc((62/376)*100vw);
+            ion-row{
+                width : calc((227/376)*100vw);   
+            }
+            .card-button{
+                width : calc((227/376)*100vw);
+                height: calc((121/667)*100vh);
+            }
+
+            .cash-card{
+                background-color:$default-color;
+                color:white;
+                border-radius: 8px;
+ 	            box-shadow: 0 0 7px 0 rgba(70, 70, 70, 0.5);
+                padding-top: calc((24/667)*100vh);
+                 .cash-label{
+
+                 }
+                 .cash-value{
+                    margin-top:calc((7/667)*100vh);
+                    margin-bottom:calc((17/667)*100vh);
+                 }
+                 ion-row{
+                     border-top: solid 0.5px #ffffff;
+                     ion-col{
+                        button{
+                                color:white;
+                                padding-bottom:calc((7/667)*100vh);
+                                span{
+                                    font-size:4vw;
+                                }
+                        }
+                     }
+
+                     .left-button{
+                         border-right: solid 0.5px #ffffff;
+                     }
+                 }
+            }
+
+            .card-add{
+                background-color:$default-color;
+                color:white;
+                border-radius: 8px;
+ 	            box-shadow: 0 0 7px 0 rgba(70, 70, 70, 0.5);
+                .card-add-label{
+                    justify-content: center;
+                    padding-top: calc((25/667)*100vh);
+                }
+            }
+
+            .scroll-col-latest {
+                overflow: inherit; 
+                margin-left: calc((12/376)*100vw);
+                margin-right:calc((12/376)*100vw);
+                margin-top:calc((25/667)*100vh);
+                margin-bottom:calc((25/667)*100vh);
+                height:calc((121/667)*100vh);
+            }            
+        }    
+    } 
+
+    .search-button{
+        button{
+            span{
+                font-size:4vw;
+                color: #bdbdbd;
+            }
+            ion-row{
+                background-color: #f2f2f2;
+                border-top: solid 1px #bdbdbd;
+                border-bottom: solid 1px #bdbdbd;
+            }
+        }
+    }
+
+    .period-section{
+        font-size:4vw;
+        background-color: #f2f2f2;
+        ion-datetime{
+            color: #bdbdbd;
+            background-color: #ffffff;
+	        border: solid 1px #bdbdbd;
+            width: calc((156/376)*100vw);
+            .datetime-text{
+                padding-top:calc((5/667)*100vh);
+                padding-bottom:calc((5/667)*100vh);
+            }
+        }
+        ion-row{
+            padding-left:calc((21/376)*100vw);
+            .center{
+                padding-left:calc((21/376)*100vw);
+                padding-top:calc((10/667)*100vh);
+                color: #bdbdbd;
+            }
+        }
+        .close-button{
+            height: calc((23/667)*100vh);
+            padding-right: calc((10/376)*100vw);
+            color: #bdbdbd;
+            font-size:4vw;
+        }
+
+        .search-button{
+            background-color:white;
+            border: solid 1px #bdbdbd;
+            margin-left: calc((5/376)*100vw);
+            margin-right: calc((19/376)*100vw);
+            margin-bottom: calc((10/376)*100vw);
+        }
+    }
+
+    .transaction{
+    	border-bottom: solid 1px #bdbdbd;
+        .extra-info{
+            color: #bdbdbd;
+            font-size:3.5vw;
+            ion-col{
+                padding-top:0px;
+            }
+        }
+
+        .refund{
+            font-size:4vw;
+            color: #4a4a4a;
+        }
+
+        .cancel{
+            font-size:4vw;
+            color: #6441a5;            
+        }
+
+        .payment{
+            font-size:4vw;
+            color: #4a4a4a;
+        }
+
+        .charge-done{
+            font-size:4vw;
+            color: #6441a5;
+        }
+
+        .charge-waiting{
+            font-size:4vw;
+	        color: #33b9c6;
+            .button-inner{
+                justify-content: left;
+            }
+            button{
+                span{
+                    font-size: 4vw;
+                    color: #33b9c6;
+                }
+            }
+        }
+
+        ion-row{
+            margin-left:calc((20/376)*100vw);
+            margin-right:calc((20/376)*100vw);
+        }
+    }
 }

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController,App } from 'ionic-angular';
+import { ShopPage} from '../shop/shop';
+import {SearchPage} from '../search/search';
 
 @Component({
   selector: 'page-home',
@@ -14,7 +16,7 @@ export class HomePage {
   searchShop:string=" ";
   shouldShowCancel:boolean=true;
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController,private app: App) {
     this.shops=[ "세종대 더큰도시락","세종대 헨델과그레텔","세종대 카페드림","서울창업허브 그릿스테이크"];
     // shop에 추가되어야할 필드: name_sub, name_main, classification, star_rating 
     this.recommendations=[ {takitId:"더큰도시락@세종대학교",
@@ -57,7 +59,15 @@ export class HomePage {
                             name_sub:"서울창업허브",
                             name_main:"그릿 스테이크",
                             classification:"양식",
-                            star_rating:4.8} ];                            
+                            star_rating:4.8} ];     
+    //Just for testing                                               
+    this.recently_visited_shop.forEach(shop => {
+      shop.imagePath=this.awsS3+"shop.png";
+    });               
+    this.recommendations.forEach(shop => {
+      shop.imagePath=this.awsS3+"shop.png";
+    });               
+                 
   }
 
   getShops(ev:any){
@@ -70,11 +80,18 @@ export class HomePage {
   }
 
   showSearchBar(){
-      this.overlayHidden=false;
+    this.app.getRootNavs()[0].push(SearchPage);
   }
 
   onCancel(ev:any){
       this.overlayHidden=true;
   }
 
+  enterShop(takitId){
+    this.app.getRootNavs()[0].push(ShopPage);
+  }  
+
+  buttonPressed(){
+    console.log("buttonPressed");  
+  }
 }
