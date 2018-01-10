@@ -27,10 +27,11 @@ export class LoginMainPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginMainPage');
+    console.log('ionViewDidLoad ....LoginMainPage');
   }
 
   emaillogin(){
+    console.log("emailLogin comes");
     this.app.getRootNavs()[0].push(LoginEmailPage);
   }
 
@@ -42,7 +43,8 @@ export class LoginMainPage {
   kakao(){
         this.socialLogin('kakao');
   }
-    socialLogin(type){
+
+  socialLogin(type){
     this.loginProvider.loginSocialLogin(type).then((res:any)=>{
       console.log("socialLogin res:"+JSON.stringify(res));
       if(parseFloat(res.version)>parseFloat(this.storageProvider.version)){

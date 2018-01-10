@@ -1,17 +1,31 @@
-import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { MyApp } from './app.component';
+import { ErrorHandler, NgModule } from '@angular/core';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 
+import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook';
+
+import {MyErrorHandler} from '../classes/my-error-handler';
+import { LoginProvider } from '../providers/login/login';
+import { ConfigProvider } from '../providers/config/config';
+import { StorageProvider } from '../providers/storage/storage';
+import { NativeStorage } from '@ionic-native/native-storage';
+
+import { AppAvailability } from '@ionic-native/app-availability';
+import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { BackgroundMode } from '@ionic-native/background-mode';
+
+import { CustomIconsModule } from 'ionic2-custom-icons';
+
 import {LoginMainPageModule} from '../pages/login-main/login-main.module';
 import {LoginEmailPageModule} from '../pages/login-email/login-email.module';
 
-import { CustomIconsModule } from 'ionic2-custom-icons';
 import {SignupPageModule} from '../pages/signup/signup.module';
 import {SignupPaymentPageModule} from '../pages/signup-payment/signup-payment.module';
 import {CashPasswordPageModule} from '../pages/cash-password/cash-password.module';
@@ -26,8 +40,6 @@ import {SearchPageModule} from '../pages/search/search.module';
 import {PolicyPageModule} from '../pages/policy/policy.module';
 import {FaqPageModule} from '../pages/faq/faq.module';
 
-import { StorageProvider } from '../providers/storage/storage';
-import { HttpClientModule } from '@angular/common/http';
 import {CompanyInfoPageModule} from '../pages/company-info/company-info.module';
 import {PolicyDetailPageModule} from '../pages/policy-detail/policy-detail.module';
 import {PasswordResetPageModule} from '../pages/password-reset/password-reset.module';
@@ -40,26 +52,13 @@ import {CashChargePageModule} from '../pages/cash-charge/cash-charge.module';
 import {CashManualConfirmPageModule} from '../pages/cash-manual-confirm/cash-manual-confirm.module';
 import{PaymentPageModule} from '../pages/payment/payment.module';
 
-import {MyErrorHandler} from '../classes/my-error-handler';
-import { ConfigProvider } from '../providers/config/config';
-import { LoginProvider } from '../providers/login/login';
-import { NativeStorage } from '@ionic-native/native-storage';
-
-import { HTTP } from '@ionic-native/http';
-import { AppAvailability } from '@ionic-native/app-availability';
-import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
-import { Facebook } from '@ionic-native/facebook';
-
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    TabsPage
+    TabsPage    
   ],
   imports: [
-    HttpClientModule,
-    CustomIconsModule,
-    BrowserModule,
     LoginMainPageModule,
     LoginEmailPageModule,
     SignupPageModule,
@@ -84,28 +83,31 @@ import { Facebook } from '@ionic-native/facebook';
     OrderDetailPageModule,
     CashChargePageModule,
     CashManualConfirmPageModule,
-    PaymentPageModule,
+    PaymentPageModule,    
+    LoginMainPageModule,
+    CustomIconsModule,
+    HttpClientModule,
+    BrowserModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
-
-    TabsPage
+    TabsPage    
   ],
   providers: [
-    StatusBar,
-    SplashScreen,
-    {provide: ErrorHandler, useClass: MyErrorHandler},
+    LoginProvider,
     ConfigProvider,
     StorageProvider,
-    LoginProvider,
+    Facebook,
+    StatusBar,
+    SplashScreen,
     NativeStorage,
-    HTTP,
     AppAvailability,
     InAppBrowser,
-    Facebook
+    BackgroundMode,
+    {provide: ErrorHandler, useClass: MyErrorHandler}
   ]
 })
 export class AppModule {}
