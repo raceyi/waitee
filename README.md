@@ -17,10 +17,6 @@ $ionic cordova platform add ios
 
 * login
 
-$ionic cordova plugin add cordova-plugin-advanced-http
-
-$npm install --save @ionic-native/http
-
 $ionic cordova plugin add cordova-plugin-network-information
 
 $npm install --save @ionic-native/network

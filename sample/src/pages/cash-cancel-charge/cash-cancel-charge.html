@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="color:white;background-color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title> 캐쉬 충전 취소
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+<div class="cashId" text-center> {{cashId}} </div>
+<div class="amount" text-center> <b>{{amount}}원 충전</b> </div>
+<ion-grid class="info" style="font-size:4vw;">
+  <ion-row>
+    <ion-col class="info-label" col-3>
+      입금시간  
+    </ion-col>
+    <ion-col col-9>
+      {{timeString}}
+    </ion-col>
+  </ion-row>
+  <ion-row  style="padding:0px;border-top:solid;border-width:1px;border-top-color:#dddddd;">
+    <ion-col class="info-label" col-3>
+      입금은행  
+    </ion-col>
+    <ion-col col-9>
+      {{bank}}
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<div style="font-size:4.5vw;" text-center>
+타인의 입금으로 캐쉬 충전을 취소합니다.
+</div>
+
+</ion-content>
+<ion-footer>
+<div class="warning" text-center>
+*본인의 입금일 경우, 고객센터로 연락 주시면 <br><br>
+다시 충전 확인이 가능합니다.
+</div>
+<ion-row>
+<ion-col no-padding no-margin><button no-margin ion-button full color="primary">확인</button></ion-col>
+</ion-row>
+</ion-footer>

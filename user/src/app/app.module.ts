@@ -51,6 +51,7 @@ import {OrderDetailPageModule} from '../pages/order-detail/order-detail.module';
 import {CashChargePageModule} from '../pages/cash-charge/cash-charge.module';
 import {CashManualConfirmPageModule} from '../pages/cash-manual-confirm/cash-manual-confirm.module';
 import{PaymentPageModule} from '../pages/payment/payment.module';
+import { ServerProvider } from '../providers/server/server';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import{PaymentPageModule} from '../pages/payment/payment.module';
     AppAvailability,
     InAppBrowser,
     BackgroundMode,
-    {provide: ErrorHandler, useClass: MyErrorHandler}
+    {provide: ErrorHandler, useClass: MyErrorHandler},
+    ServerProvider
   ]
 })
 export class AppModule {}

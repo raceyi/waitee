@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="color:white;background-color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title> 주문 취소
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+<div class="message" text-center style="font-size:4.8vw;color:#4a4a4a;">
+  <p><b>{{order.shopName}}의</b></p>
+  <p><b>{{order.orderName}}, 취소하시겠어요?</b></p>
+</div>
+<ion-select interface="action-sheet" placeholder="취소 사유 선택" [(ngModel)]="reasonNumber">  
+    <ion-option value="1">다른 메뉴로 주문</ion-option>
+    <ion-option value="2">주문 접수 지연</ion-option>
+    <ion-option value="3">대기 시간 부족</ion-option>    
+    <ion-option value="0">직접입력</ion-option>
+</ion-select>
+  <div text-center *ngIf="reasonNumber==0" class="review-text-area">
+    <ion-textarea placeholder="취소사유를 입력해 주세요."></ion-textarea>
+  </div>
+</ion-content>
+<ion-footer style="background-color:#f2f2f2;font-size:4vw;">
+  <button class="review-button" no-margin full ion-button> 주문 최소하기 </button>
+</ion-footer>

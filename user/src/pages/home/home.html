@@ -26,7 +26,7 @@
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
                  <ion-col *ngFor="let shop of recommendations" class="scroll-col-latest"  no-padding>
-                            <button class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
+                            <button color="white" class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
                                 <img  [src]="shop.imagePath">
                                 <!--                               
                                 <img  [src]="awsS3+shop.takitId">
@@ -53,7 +53,7 @@
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
                  <ion-col *ngFor="let shop of recently_visited_shop" class="scroll-col-latest"  no-padding>
-                            <button class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
+                            <button color="white" class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
                               <!--
                                 <img  [src]="awsS3+shop.takitId">
                                 -->

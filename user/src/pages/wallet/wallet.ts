@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,App,Platform ,AlertController} from 'ionic-angular';
 import {CashRefundMainPage} from '../cash-refund-main/cash-refund-main';
 import {CashChargePage} from '../cash-charge/cash-charge';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+
 import * as moment from 'moment';
 /**
  * Generated class for the WalletPage page.
@@ -16,16 +18,26 @@ import * as moment from 'moment';
   templateUrl: 'wallet.html',
 })
 export class WalletPage {
+  browserRef;
+  done:boolean=false;
   search_mode="full";
   startDate="";
   endDate="";
-  paymethods=[{name:"비자카드",type:"card"},
-              {name:"마스터카드",type:"card"},
-              {name:"휴대폰결제",tyep:"phone"}
-  ];
+  paymethods=[];
+
+  //paymethods=[{name:"비자카드",type:"card"},
+  //            {name:"마스터카드",type:"card"},
+  //            {name:"휴대폰결제",tyep:"phone"}
+  //];
+  
   cashList;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,private app:App) {
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              private app:App,
+              private platform:Platform,
+              private alertController:AlertController,
+              private iab: InAppBrowser) {
     var date=new Date();
     var month=date.getMonth()+1;
 
@@ -105,4 +117,69 @@ export class WalletPage {
   chargeCash(){
     this.app.getRootNavs()[0].push(CashChargePage);
   }
+
+    registerCard(){
+    let param={
+            pay_method : 'card', // 'card'만 지원됩니다.
+            merchant_uid : 'merchant_' + new Date().getTime(), // 결제건별로 고유한 값을 지정합니다.
+            name : '최초인증결제',
+            amount : 0, // 빌링키 발급
+            customer_uid : 'your-customer-unique-id', //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다. 한번 등록된 값을 가지고 결제를 수행함으로 고객의 등록카드별로 다른값을 사용하시기 바랍니다.
+            buyer_email : 'iamport@siot.do',
+            buyer_name : '아임포트',
+            buyer_tel : '02-1234-1234'
+        }
+
+    const redirectUrl = "http://xxx.xxx.xxx.xxx/iamportResult";//It brings about load error. Please change it with your server address
+    let localfile;
+    if(this.platform.is('android')){
+        console.log("android");
+        localfile='file:///android_asset/www/assets/iamport.html';
+    }else if(this.platform.is('ios')){
+        console.log("ios");
+        localfile='assets/iamport.html';
+    }
+    this.browserRef=this.iab.create(localfile,"_blank");
+    this.browserRef.on("loadstart").subscribe(function (e) {
+        if (e.url.startsWith(redirectUrl)) {
+            console.log("result:"+e.url);
+            this.done=true;
+            this.browserRef.close(); 
+        }
+    });
+    this.browserRef.on("loaderror").subscribe((event)=>{
+        console.log("loaderror:"+event.url);
+        this.done=true; // Please change redirectUrl with your server address to prevent loaderror;
+        this.browserRef.close();
+    });
+    this.browserRef.on("loadstop").subscribe((event)=>{
+        console.log("loadstop event comes "+event.url);
+        let url:string=event.url;
+        if(url.endsWith('iamport.html')){ 
+            const inlineCallback = `(rsp) => {
+                if( rsp.success ) {
+                    location.href = '${redirectUrl}?imp_success=true&imp_uid='+rsp.imp_uid+'&merchant_uid='+rsp.merchant_uid;
+                } else {
+                    location.href = '${redirectUrl}?imp_success=false&imp_uid='+rsp.imp_uid+'&merchant_uid='+rsp.merchant_uid+'&error_msg='+rsp.error_msg;
+                }
+            }`;
+            const iamport_script = `IMP.request_pay(${JSON.stringify(param)}, ${inlineCallback})`;
+            this.browserRef.executeScript({
+                code : iamport_script
+            });
+        }
+    });
+    this.browserRef.on("exit").subscribe(
+        (e) => {
+            if(!this.done){
+                let alert = this.alertController.create({
+                    title: '사용자가 결제를 취소하였습니다.',
+                    buttons: ['OK']
+                });
+                alert.present();
+            }
+        }
+    );
+  }
+
 }

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController,Platform, NavParams ,AlertController } from 'ionic-angular';
 import {SignupPaymentPage} from '../signup-payment/signup-payment';
+import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
+import {StorageProvider} from '../../providers/storage/storage';
 
 /**
  * Generated class for the SignupPage page.
@@ -34,7 +36,21 @@ export class SignupPage {
 
   currentShown;  //undefined
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  authVerified:boolean=false;
+  name:string;  // It comes from mobile auth.
+  phone:string; // It comes from mobile auth.
+  sex:string;
+  birthYear:string;
+  browserRef;
+
+  country:string="82"; // So far, only Korea is available.
+
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              private iab: InAppBrowser,
+              private platform:Platform,
+              private alertCtrl:AlertController,
+              public storageProvider:StorageProvider) {
   }
 
   checked(){
@@ -136,5 +152,87 @@ export class SignupPage {
 
   back(){
     this.navCtrl.pop();
+  }
+
+phoneAuth(){
+  this.mobileAuth().then((res:any)=>{
+      console.log("[phoneAuth]res:"+JSON.stringify(res));
+      this.authVerified=true;
+      this.phone=res.userPhone;
+      this.sex=res.userSex;
+      this.birthYear=res.userAge;
+      this.name=res.userName;
+      console.log("sex:"+this.sex+"birthYear:"+this.birthYear+"name:"+this.name+" phone:"+this.phone);
+  },(err)=>{
+      console.log("[phoneAuth] err:"+JSON.stringify(err));
+  });  
+}
+
+  mobileAuth(){
+      console.log("mobileAuth");
+    return new Promise((resolve,reject)=>{
+      // move into CertPage and then 
+      if(this.platform.is("android")){
+            this.browserRef=this.iab.create(this.storageProvider.certUrl,"_blank" ,'toolbar=no');
+      }else{ // ios
+            console.log("ios");
+            this.browserRef=this.iab.create(this.storageProvider.certUrl,"_blank" ,'location=no,closebuttoncaption=종료');
+      }
+              this.browserRef.on("exit").subscribe((event)=>{
+                  console.log("InAppBrowserEvent(exit):"+JSON.stringify(event)); 
+                  this.browserRef.close();
+              });
+              this.browserRef.on("loadstart").subscribe((event:InAppBrowserEvent)=>{
+                  console.log("InAppBrowserEvent(loadstart):"+String(event.url));
+                  if(event.url.startsWith("https://takit.biz/oauthSuccess")){ // Just testing. Please add success and failure into server 
+                        console.log("cert success");
+                        var strs=event.url.split("userPhone=");    
+                        if(strs.length>=2){
+                            var nameStrs=strs[1].split("userName=");
+                            if(nameStrs.length>=2){
+                                var userPhone=nameStrs[0];
+                                var userSexStrs=nameStrs[1].split("userSex=");
+                                var userName=userSexStrs[0];
+                                var userAgeStrs=userSexStrs[1].split("userAge=");
+                                var userSex=userAgeStrs[0];
+                                var userAge=userAgeStrs[1];
+                                console.log("userPhone:"+userPhone+" userName:"+userName+" userSex:"+userSex+" userAge:"+userAge);
+                                let body = JSON.stringify({userPhone:userPhone,userName:userName,userSex:userSex,userAge:userAge});
+                                resolve(body);
+                                /*
+                                this.serverProvider.post(this.storageProvider.serverAddress+"/getUserInfo",body).then((res:any)=>{
+                                    console.log("/getUserInfo res:"+JSON.stringify(res));
+                                    if(res.result=="success"){
+                                        // forward into cash id page
+                                        resolve(res);
+                                    }else{
+                                        // change user info
+                                        //    
+                                        reject("invalidUserInfo");
+                                    }
+                                },(err)=>{
+                                    if(err=="NetworkFailure"){
+                                            let alert = this.alertCtrl.create({
+                                                subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                                                buttons: ['OK']
+                                            });
+                                            alert.present();
+                                    }
+                                    reject(err);
+                                });
+                                */
+                            } 
+                            ///////////////////////////////
+                        }
+                        this.browserRef.close();
+                        return;
+                  }else if(event.url.startsWith("https://takit.biz/oauthFailure")){
+                        console.log("cert failure");
+                        this.browserRef.close();
+                         reject();
+                        return;
+                  }
+              });
+    });
   }
 }
