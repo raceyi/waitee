@@ -126,4 +126,21 @@ page-my-favorite {
                 color: #4a4a4a;
             }
     }
+
+    .header{
+        height:calc((50/667)*100vh);
+        font-size:4.8vw;
+        background-color: white;
+        color: $default-color;
+        padding-top: calc((15/667)*100vh);
+    }
+
+    .empty-img{
+        padding-top:calc((64/667)*100vh);
+        padding-bottom:calc((32/667)*100vh);
+    }
+
+    .empty-text{
+        font-size:5vw;
+    }
 }
