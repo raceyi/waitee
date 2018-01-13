@@ -33,7 +33,7 @@
                                 -->
                                 <p class="name-sub">{{shop.name_sub}}</p>
                                 <p class="name-main"><b>{{shop.name_main}}</b></p>
-                                <p class="classification">{{shop.classification}}</p>
+                                <p class="classification">{{shop.classification}}&nbsp;<span class="noti-box">캐쉬</span>&nbsp;<span class="noti-box">카드</span></p>
                                 <div class="star_rating">
                                   <ion-icon name="md-star"></ion-icon>
                                   <ion-icon name="md-star"></ion-icon>
@@ -74,4 +74,12 @@
             </ion-row>
         </ion-scroll>
 </div>
+
+<ion-fab bottom color="primary" bottom right>
+    <button class="fab-btn" (click)="exitTourMode()"ion-fab color="white">
+        <ion-icon name="ios-exit-outline">
+        </ion-icon>
+    </button>
+</ion-fab>
+
 </ion-content>

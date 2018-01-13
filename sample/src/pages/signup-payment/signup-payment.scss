@@ -73,6 +73,22 @@ page-signup-payment {
       }
   }
 
+  .cashid-explain{
+       .input-wrapper{
+            height:calc((30/667)*100vh);
+       }
+       ion-label{
+           height:calc((30/667)*100vh);
+       }
+        margin-left:calc((40/376)*100vw);
+        color:gray;
+        font-size: 3.5vw;
+        p{
+            font-size:3.5vw;
+        }
+           height:calc((30/667)*100vh);
+  }
+
   .keypad-receiptId{
     margin-right: calc((40/376)*100vw);
   }
