@@ -94,4 +94,8 @@ export class HomePage {
   buttonPressed(){
     console.log("buttonPressed");  
   }
+
+  exitTourMode(){
+    console.log("exit Tour Mode");
+  }
 }

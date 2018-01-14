@@ -1,0 +1,41 @@
+page-error {
+
+    .action-button{
+        
+    }
+
+    .icon-img{
+        padding-top: calc((203/667)*100vh);
+        img{
+            width:calc((84/376)*100vw);
+            height:calc((84/376)*100vw);
+        }
+    }
+
+    .logo-img{
+        img{
+            width:calc((78/376)*100vw);
+            height:calc((18/376)*100vw);
+        }
+    }
+
+    .action-button{
+         height:calc((50/667)*100vh);
+         width:calc((302/376)*100vw);
+         border-radius: 8px;
+	     border: solid 1px #6441a5;
+         color:$default-color;
+         background-color:white;
+    }
+
+    .detail{
+        margin-top: 0px;
+    }
+
+    ion-footer{
+        img{
+            width:calc((266/376)*100vw);
+            margin-bottom:calc((40/667)*100vh);
+        } 
+    }
+}

@@ -61,34 +61,6 @@ export class LoginProvider {
        });
   }
 
-  signup(type,params){
-    if(type=="facebook"){
-      return new Promise((resolve,reject)=>{
-        this.fblogin(this.serverSignup,this,params).then((res:any)=>{
-                resolve(res);
-            }, (err)=>{
-                reject(err);
-            });
-        });
-    }else if(type=="kakao"){
-      return new Promise((resolve,reject)=>{
-        this.kakaologin(this.serverSignup,this,params).then((res:any)=>{
-                resolve(res);
-            }, (err)=>{
-                reject(err);
-            });
-          });
-    }else{ // email
-      return new Promise((resolve,reject)=>{
-        this.serverSignup(type,params.email,this,params).then((res:any)=>{
-          resolve(res);
-        }, (err)=>{
-            reject(err);
-        });
-      });
-    }
-  }
-
   fblogin(handler,fbProvider:LoginProvider,params){    
     return new Promise((resolve,reject)=>{
       if(this.platform.is('cordova')) {
@@ -243,10 +215,6 @@ export class LoginProvider {
 
             console.log("serverLogin body:"+JSON.stringify(body));
 
-            let headers = new HttpHeaders();
-            headers.append('Content-Type', 'application/json');
-
-            console.log("facebookServerLogin headers:"+headers)
             console.log("server:"+ loginProvider.storageProvider.serverAddress);
 
             let request;
@@ -260,7 +228,7 @@ export class LoginProvider {
                 body = {referenceId:"kakao_"+id,version:loginProvider.storageProvider.version};
             }
 
-            loginProvider.httpClient.post(request,body,{headers: headers}).subscribe((res)=>{              
+            loginProvider.httpClient.post(request,body).subscribe((res)=>{              
                console.log("social login res:"+JSON.stringify(res));
                resolve(res); // 'success'(move into home page) or 'invalidId'(move into signup page)
               },(err)=>{
@@ -271,42 +239,64 @@ export class LoginProvider {
        
   }
 
-  serverSignup(type,id,loginProvider:LoginProvider,params){    
+  serverSignup(refid,name,email,country,phone,sex,birthYear,receiptIssue,receiptId,receiptType){    
     return new Promise((resolve, reject)=>{
-            console.log("serverSignup !!!"+loginProvider.storageProvider.serverAddress);
-            let body;
-            if(type=="facebook" ||type=="kakao"){
-              body = {   type:type,
-                                          id:type+"_"+id,
-                                          name:params.name,
-                                          email:params.email,
-                                          phone:params.phone,
-                                          sex:params.sex, 
-                                          birthYear:params.birthYear,
-                                          version:loginProvider.storageProvider.version};
-            }else{ //email
-              body = {   type:type,
-                                        password:params.password,
-                                        name:params.name,
-                                        email:params.email,
-                                        phone:params.phone,
-                                        sex:params.sex, 
-                                        birthYear:params.birthYear,
-                                        version:loginProvider.storageProvider.version};
-            }
-            let headers = new HttpHeaders();
-            headers.append('Content-Type', 'application/json');
-            console.log("server: "+ loginProvider.storageProvider.serverAddress+ " body:"+JSON.stringify(body));
+              console.log("serverSignup !!!");
+              let receiptIssueVal;
+              if(receiptIssue){
+                    receiptIssueVal=1;
+              }else{
+                    receiptIssueVal=0;
+              }
+              let body = JSON.stringify({referenceId:refid,
+                                            name:name,
+                                            email:email,
+                                            country:country,
+                                            phone:phone,
+                                            sex:sex, 
+                                            birthYear:birthYear,
+                                            receiptIssue:receiptIssueVal,
+                                            receiptId:receiptId,
+                                            receiptType:receiptType,
+                                            version:this.storageProvider.version});
+              let headers = new Headers();
+              headers.append('Content-Type', 'application/json');
+              console.log("server: "+ this.storageProvider.serverAddress+ " body:"+body);
 
-            loginProvider.httpClient.post(loginProvider.storageProvider.serverAddress+"/signup",body,{headers: headers}).subscribe((res)=>{
-               resolve(res); // 'success'(move into home page) or 'invalidId'(move into signup page)
-           },(err)=>{
-               console.log("signup no response "+JSON.stringify(err));
-               reject("signup no response");
-           });
-       });
+             this.httpClient.post(this.storageProvider.serverAddress+"/signup",body).subscribe((res)=>{
+                 resolve(res); // 'success'(move into home page) or 'invalidId'(move into signup page)
+             },(err)=>{
+                 console.log("signup no response "+JSON.stringify(err));
+                 reject("signup no response");
+             });
+         });
   }
 
+
+  emailServerSignup(password,name,email,country,phone,sex,birthYear,receiptIssue,receiptId,receiptType){
+      return new Promise((resolve, reject)=>{
+              console.log("emailServerSignup "+phone);
+              let receiptIssueVal;
+              if(receiptIssue){
+                    receiptIssueVal=1;
+              }else{
+                    receiptIssueVal=0;
+              }
+              let body = JSON.stringify({referenceId:"email_"+email,password:password,name:name,
+                                            email:email,country:country,phone:phone,
+                                            receiptIssue:receiptIssueVal,receiptId:receiptId,receiptType:receiptType,
+                                            sex:sex, birthYear:birthYear,
+                                            version:this.storageProvider.version});
+              console.log("server:"+ this.storageProvider.serverAddress+" body:"+body);
+             this.httpClient.post(this.storageProvider.serverAddress+"/signup",body).subscribe((res)=>{
+                 //var result:string=res.result;
+                    resolve(res); // 'success'(move into home page) or 'invalidId'(move into signup page)
+             },(err)=>{
+                 console.log("signup no response");
+                 reject("signup no response");
+             });
+         });
+  }
 
 
   logout(type){

@@ -4,6 +4,9 @@ import { LoginEmailPage } from '../login-email/login-email';
 import { NativeStorage } from '@ionic-native/native-storage';
 import {StorageProvider} from '../../providers/storage/storage';
 import {LoginProvider} from '../../providers/login/login';
+import { SignupPage } from '../signup/signup';
+import {TabsPage} from '../tabs/tabs';
+import {SignupPaymentPage} from '../signup-payment/signup-payment';
 
 /**
  * Generated class for the LoginMainPage page.
@@ -19,11 +22,25 @@ import {LoginProvider} from '../../providers/login/login';
 })
 export class LoginMainPage {
 
+    isTestServer=false;
+    tourModeSignInProgress=false;
+    loginInProgress:boolean=false;
+
   constructor(public navCtrl: NavController, public navParams: NavParams
       ,private loginProvider:LoginProvider
       ,private alertCtrl: AlertController
       ,private storageProvider:StorageProvider
+      ,private nativeStorage: NativeStorage
       ,private app:App) {
+
+        if(this.storageProvider.serverAddress.endsWith('8000')){
+            this.isTestServer=true;
+        }            
+  }
+
+ ionViewDidEnter(){
+    console.log("ionviewDidEnter-loginPage");
+    this.loginInProgress=false;
   }
 
   ionViewDidLoad() {
@@ -37,10 +54,14 @@ export class LoginMainPage {
 
 
   facebook(){
+        if(this.loginInProgress) return;
+        this.loginInProgress=true;
         this.socialLogin('facebook');
   }
 
   kakao(){
+        if(this.loginInProgress) return;
+        this.loginInProgress=true;
         this.socialLogin('kakao');
   }
 
@@ -56,28 +77,41 @@ export class LoginMainPage {
             alert.present();
       }
       console.log("res.result:"+JSON.stringify(res.result));
-/*
+      this.loginInProgress=false;
+
       if(res.result=="success"){
-          //save login info into Native Storage
-          
           var encrypted:string=this.storageProvider.encryptValue('id',type);
-          console.log("encrypted "+encrypted);
           this.nativeStorage.setItem('id',encodeURI(encrypted));
-          this.storageProvider.setUserInfo(res.userInfo);
-          this.storageProvider.setUserConfiguration(res.userInfo);
-          
-      }else{  // res.result="failure"  move into signup page
-        if(!this.pushDid){
-          this.pushDid=true;
-          // set timer
-          setTimeout(() => {
-              this.pushDid=false;
-          }, this.storageProvider.waitTime); //  seconds   
-            this.navCtrl.push(SignupPage, { login:type});
-        }
+
+          if(res.userInfo.hasOwnProperty("shopList")){
+              this.storageProvider.shoplistSet(JSON.parse(res.userInfo.shopList));
+          }
+          this.storageProvider.emailLogin=false;
+          this.storageProvider.userInfoSetFromServer(res.userInfo);
+          if(!res.userInfo.hasOwnProperty("cashId") || res.userInfo.cashId==null || res.userInfo.cashId==undefined){
+              console.log("move into signupPaymentPage");
+              this.navCtrl.setRoot(SignupPaymentPage);
+          }else{
+              console.log("move into TabsPage");
+              this.navCtrl.setRoot(TabsPage);
+          }
+      }else if(res.result=='failure' && res.error=='invalidId'){
+          if(res.hasOwnProperty("email"))
+              this.navCtrl.push(SignupPage,{login:type,id:res.id,email:res.email});          
+          else 
+              this.navCtrl.push(SignupPage,{login:type,id:res.id});
+      }else{
+          console.log("invalid result comes from server-"+JSON.stringify(res));
+          let alert = this.alertCtrl.create({
+              title: '카카오 로그인 에러가 발생했습니다',
+              buttons: ['OK']
+          });
+          alert.present();
+          //this.storageProvider.errorReasonSet('카카오 로그인 에러가 발생했습니다');
+          //this.navController.setRoot(ErrorPage);
       }
- */     
     },login_err =>{
+          this.loginInProgress=false;
           console.log(JSON.stringify(login_err));
           let alert = this.alertCtrl.create({
               title: '로그인 에러가 발생했습니다',

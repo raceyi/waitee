@@ -51,7 +51,10 @@ import {OrderDetailPageModule} from '../pages/order-detail/order-detail.module';
 import {CashChargePageModule} from '../pages/cash-charge/cash-charge.module';
 import {CashManualConfirmPageModule} from '../pages/cash-manual-confirm/cash-manual-confirm.module';
 import{PaymentPageModule} from '../pages/payment/payment.module';
+import {ErrorPageModule} from '../pages/error/error.module';
 import { ServerProvider } from '../providers/server/server';
+import { Network } from '@ionic-native/network';
+
 
 @NgModule({
   declarations: [
@@ -89,6 +92,7 @@ import { ServerProvider } from '../providers/server/server';
     CustomIconsModule,
     HttpClientModule,
     BrowserModule,
+    ErrorPageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],
@@ -98,6 +102,7 @@ import { ServerProvider } from '../providers/server/server';
     TabsPage    
   ],
   providers: [
+    Network, 
     LoginProvider,
     ConfigProvider,
     StorageProvider,

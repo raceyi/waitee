@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component,NgZone } from '@angular/core';
 import { IonicPage, NavController,Platform, NavParams ,AlertController } from 'ionic-angular';
 import {SignupPaymentPage} from '../signup-payment/signup-payment';
+import {LoginMainPage} from '../login-main/login-main';
 import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
 import {StorageProvider} from '../../providers/storage/storage';
+import {ServerProvider} from '../../providers/server/server';
+import { NativeStorage } from '@ionic-native/native-storage';
+import {LoginProvider} from '../../providers/login/login';
 
+declare var plugins:any;
 /**
  * Generated class for the SignupPage page.
  *
@@ -44,13 +49,48 @@ export class SignupPage {
   browserRef;
 
   country:string="82"; // So far, only Korea is available.
+  
+  emailLogin:boolean=false;
+  refId:string;
+  loginMethod:string;
+
+  signupInProgress:boolean=false;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private iab: InAppBrowser,
               private platform:Platform,
               private alertCtrl:AlertController,
-              public storageProvider:StorageProvider) {
+              public storageProvider:StorageProvider,
+              public serverProvider:ServerProvider,
+              private loginProvider:LoginProvider,
+              private nativeStorage: NativeStorage,
+              private ngZone:NgZone) {
+
+    if(navParams.get("login")=="email"){
+      this.emailLogin=true;
+    }else if(!navParams.get("email") && this.platform.is("android")){ // no email info given
+            plugins.DeviceAccounts.getEmail((info)=>{
+                console.log("info:"+JSON.stringify(info));
+                this.ngZone.run(()=>{
+                    this.email=info;
+                });
+            });
+    }
+
+    if(navParams.get("login")=="facebook"){
+        this.refId=navParams.get("id");
+        if(navParams.get("email")){
+          this.email=navParams.get("email");
+        }
+    }else if(navParams.get("login")=="kakao"){
+        this.refId=navParams.get("id");
+    }
+
+    this.loginMethod=navParams.get('login');
+
+//    this.paswordGuide="영문대문자,영문소문자,특수문자,숫자 중 3개 이상선택, 8자리 이상으로 구성하세요.";
+//    this.paswordMismatch="비밀번호가 일치하지 않습니다.";
   }
 
   checked(){
@@ -198,8 +238,6 @@ phoneAuth(){
                                 var userAge=userAgeStrs[1];
                                 console.log("userPhone:"+userPhone+" userName:"+userName+" userSex:"+userSex+" userAge:"+userAge);
                                 let body = JSON.stringify({userPhone:userPhone,userName:userName,userSex:userSex,userAge:userAge});
-                                resolve(body);
-                                /*
                                 this.serverProvider.post(this.storageProvider.serverAddress+"/getUserInfo",body).then((res:any)=>{
                                     console.log("/getUserInfo res:"+JSON.stringify(res));
                                     if(res.result=="success"){
@@ -220,7 +258,6 @@ phoneAuth(){
                                     }
                                     reject(err);
                                 });
-                                */
                             } 
                             ///////////////////////////////
                         }
@@ -235,4 +272,209 @@ phoneAuth(){
               });
     });
   }
+
+  validateEmail(email){   //http://www.w3resource.com/javascript/form/email-validation.php
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+        return (true);
+      }
+      return (false);
+  }
+
+  passwordValidity(password){
+    var number = /\d+/.test(password);
+    var smEng = /[a-z]+/.test(password);
+    var bigEng= /[A-Z]+/.test(password);
+    var special = /[^\s\w]+/.test(password);
+    var digits = /.{8,}/.test(password);
+
+    if(number && smEng && bigEng && digits){
+      return true;
+    }
+    else if(number && smEng && special && digits){
+      return true;
+    }
+    else if(smEng && bigEng && special && digits){
+      return true;
+    }
+    else if(number && bigEng && special && digits){
+      return true;
+    }
+    else{
+      //this.paswordGuide = "영문대문자,영문소문자,특수문자,숫자 중 3개 이상 선택, 8자리 이상으로 구성하세요";
+      return false;
+    }
+  }
+
+  signup(){
+      if(this.signupInProgress)
+          return;
+          
+      //check email
+      if(!this.validateEmail(this.email)){
+          let alert = this.alertCtrl.create({
+                    title: '정상 이메일을 입력해주시기 바랍니다.',
+                    buttons: ['OK']
+                });
+                alert.present();
+          return;
+      }
+     //check password if necessary
+     if(this.emailLogin){
+        if(!this.passwordValidity(this.password)){
+              //this.paswordGuideHide=false;
+              let alert = this.alertCtrl.create({
+                        title: '영문대문자,영문소문자,특수문자,숫자 중 3개 이상 선택, 8자리 이상으로 구성하세요',
+                        buttons: ['OK']
+                    });
+                    alert.present();
+              return;
+        }
+        if(this.password!==this.passwordConfirm){
+              let alert = this.alertCtrl.create({
+                        title: '비밀번호가 일치하지 않습니다.',
+                        buttons: ['OK']
+                    });
+                    alert.present();
+              return;
+        }
+     } 
+
+     if(!this.authVerified){
+              let alert = this.alertCtrl.create({
+                        title: '휴대폰 본인 인증을 수행해주시기 바랍니다.',
+                        buttons: ['OK']
+                    });
+                    alert.present();
+     }
+
+     if(this.loginMethod=="facebook"){
+                this.signupInProgress=true;
+                this.loginProvider.serverSignup(this.refId,this.name,this.email,this.country,this.phone,this.sex,this.birthYear,false,"","IncomeDeduction").then(
+                (result:any)=>{
+                    // move into home page.  
+                    console.log("result..:"+JSON.stringify(result));
+                    var serverCode:string=result.result;
+                    if(parseFloat(result.version)>parseFloat(this.storageProvider.version)){
+                            let alert = this.alertCtrl.create({
+                                            title: '앱버전을 업데이트해주시기 바랍니다.',
+                                            subTitle: '현재버전에서는 일부 기능이 정상동작하지 않을수 있습니다.',
+                                            buttons: ['OK']
+                                        });
+                                alert.present();
+                    }
+                    if(serverCode=="success"){
+                        var encrypted:string=this.storageProvider.encryptValue('id','facebook');// save facebook id 
+                        this.nativeStorage.setItem('id',encodeURI(encrypted));
+                        this.storageProvider.shoplist=[];
+                        this.storageProvider.userInfoSet(this.email,this.name,this.phone,false,"","IncomeDeduction");
+                        this.navCtrl.setRoot(SignupPaymentPage,{email:this.email,name:this.name,phone:this.phone});
+                    }else  if(serverCode=="duplication"){ // result.result=="exist"
+                        let alert = this.alertCtrl.create({
+                            title: '이미존재하는 아이디입니다.',
+                            buttons: ['OK']
+                        });
+                        alert.present();
+                        this.navCtrl.setRoot(LoginMainPage);
+                    }else{
+                        this.signupInProgress=false;
+                        console.log("unknown result:"+serverCode);
+                    }
+                },(error)=>{ 
+                        this.signupInProgress=false;
+                        let alert = this.alertCtrl.create({
+                            title: '서버로부터의 응답이 없습니다. 네트웍상태를 확인해주시기 바랍니다.',
+                            buttons: ['OK']
+                        });
+                        alert.present();
+                });
+     }else if(this.loginMethod=="kakao"){
+              this.signupInProgress=true;
+              this.loginProvider.serverSignup(this.refId,this.country,this.phone,this.sex,this.birthYear,this.email,this.name,false,"","IncomeDeduction").then(
+                (result:any)=>{
+                    var serverCode:string=result.result;
+                    if(parseFloat(result.version)>parseFloat(this.storageProvider.version)){
+                            let alert = this.alertCtrl.create({
+                                            title: '앱버전을 업데이트해주시기 바랍니다.',
+                                            subTitle: '현재버전에서는 일부 기능이 정상동작하지 않을수 있습니다.',
+                                            buttons: ['OK']
+                                        });
+                                alert.present();
+                    }
+                    if(serverCode=="success"){
+                        var encrypted:string=this.storageProvider.encryptValue('id','kakao');// save kakao id 
+                        this.nativeStorage.setItem('id',encodeURI(encrypted));
+                        this.storageProvider.shoplist=[];
+                        this.storageProvider.userInfoSet(this.email,this.name,this.phone,false,"","IncomeDeduction");
+                        this.navCtrl.setRoot(SignupPaymentPage,{email:this.email,name:this.name,phone:this.phone});
+                    }else if(serverCode=="duplication"){ // result.result=="exist"
+                        let alert = this.alertCtrl.create({
+                            title: '이미존재하는 아이디입니다.',
+                            buttons: ['OK']
+                        });
+                        alert.present();
+                        this.navCtrl.setRoot(LoginMainPage);
+                    }else{ 
+                        console.log("kakao server signup-unknown result:"+serverCode);
+                        this.signupInProgress=false;
+                    }
+                },(error)=>{
+                        this.signupInProgress=false;
+                        let alert = this.alertCtrl.create({
+                            title: '서버로부터의 응답이 없습니다. 네트웍상태를 확인해주시기 바랍니다.',
+                            buttons: ['OK']
+                        });
+                        alert.present();
+                });
+
+     }else if(this.loginMethod=="email"){
+            this.signupInProgress=true;
+            this.loginProvider.emailServerSignup(this.password,this.name,this.email,this.country,this.phone,this.sex,this.birthYear,false,"","IncomeDeduction").then( 
+            (result:any)=>{
+                    if(parseFloat(result.version)>parseFloat(this.storageProvider.version)){
+                            let alert = this.alertCtrl.create({
+                                            title: '앱버전을 업데이트해주시기 바랍니다.',
+                                            subTitle: '현재버전에서는 일부 기능이 정상동작하지 않을수 있습니다.',
+                                            buttons: ['OK']
+                                        });
+                                alert.present();
+                    }
+                    // move into home page.  
+                    var output:string=result.result;
+                    if(output=="success"){
+                        var encrypted:string=this.storageProvider.encryptValue('id',this.email);// save kakao id 
+                        this.nativeStorage.setItem('id',encodeURI(encrypted));
+                        encrypted=this.storageProvider.encryptValue('password',this.password);// save email id 
+                        this.nativeStorage.setItem('password',encodeURI(encrypted));
+                        this.storageProvider.shoplist=[];
+                        this.storageProvider.emailLogin=true;
+                        this.storageProvider.userInfoSet(this.email,this.name,this.phone,false,"","IncomeDeduction");
+                        this.navCtrl.setRoot(SignupPaymentPage,{email:this.email,name:this.name,phone:this.phone,password:this.password});
+                    }else if(output == "duplication"){ // result.result=="exist"
+                        let alert = this.alertCtrl.create({
+                            title: '이미존재하는 아이디입니다.',
+                            buttons: ['OK']
+                        });
+                        alert.present();
+                        this.navCtrl.setRoot(LoginMainPage);
+                    }else{ //result.result=="exist"
+                        console.log("unknown result:"+output);
+                        this.signupInProgress=false;
+                        let alert = this.alertCtrl.create({
+                            title: '가입에 실패했습니다.',
+                            subTitle: output,
+                            buttons: ['OK']
+                        });
+                        alert.present();
+                    }
+                  },(error)=>{
+                    this.signupInProgress=false;
+                    let alert = this.alertCtrl.create({
+                            title: '서버로부터의 응답이 없습니다. 네트웍상태를 확인해주시기 바랍니다.',
+                            buttons: ['OK']
+                        });
+                        alert.present();
+                });
+     } 
+  }
+   
 }

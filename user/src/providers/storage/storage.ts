@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import {ConfigProvider} from '../config/config';
+import * as CryptoJS from 'crypto-js';
+import { NativeStorage } from '@ionic-native/native-storage';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
 /*
   Generated class for the StorageProvider provider.
@@ -29,7 +32,35 @@ export class StorageProvider {
 
     public certUrl=this.configProvider.getCertUrl();
 
+    syncTimeout=500; //0.5 second
 
+    public id:string;
+    public email:string="";
+    public name:string="";
+    public phone:string="";
+    public couponList=[];
+    public emailLogin:boolean;
+
+    /////////////////////////////////////
+    // cash receipt issue
+    public receiptIssue=false;
+    public receiptId:string;
+    public receiptType:string="IncomeDeduction";  
+
+    //public taxIssueCompanyName:string;
+    //public taxIssueEmail:string;
+    /////////////////////////////////////
+
+    public db;
+
+    public tourMode=false;
+    public cashId="";
+    public cashAmount:number;
+
+    public shoplist=[];          // 최근 주문 샵목록
+    public frequentShopList=[];  // 최다 주문 샵목록
+    public frequentMenuList=[];  // 최다 주문 메뉴 
+                        // 직접 저장한 샵목록, 메뉴 목록 => 향후에 추가하기 
     shopResponse:any;
 
     banklist=[  {name:"국민",value:"004"},
@@ -95,7 +126,9 @@ export class StorageProvider {
                 {name:"케이뱅크", value:"089"},
                 {name:"카카오뱅크", value:"090"}];
 
-  constructor(private configProvider:ConfigProvider) {
+  constructor(private configProvider:ConfigProvider,
+              private sqlite: SQLite,
+              private nativeStorage: NativeStorage) {
 
     console.log('Hello StorageProvider Provider');
    
@@ -112,4 +145,238 @@ export class StorageProvider {
 
  }
 
+
+    decryptValue(identifier,value){
+        var key=value.substring(0, 16);
+        var encrypt=value.substring(16, value.length);
+        console.log("value:"+value+" key:"+key+" encrypt:"+encrypt);
+        var decrypted=CryptoJS.AES.decrypt(encrypt,key);
+        if(identifier=="id"){ // not good idea to save id here. Please make a function like getId
+            this.id=decrypted.toString(CryptoJS.enc.Utf8);
+        }
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    }
+
+    encryptValue(identifier,value){
+        var buffer="";
+        for (var i = 0; i < 16; i++) {
+            buffer+= Math.floor((Math.random() * 10));
+        }
+        console.log("buffer"+buffer);
+        var encrypted = CryptoJS.AES.encrypt(value, buffer);
+        console.log("value:"+buffer+encrypted);
+        
+        if(identifier=="id") // not good idea to save id here. Please make a function like saveId
+            this.id=value;
+        return (buffer+encrypted);    
+    }
+ 
+    userInfoSetFromServer(userInfo:any){
+        this.email=userInfo.email;
+        this.name=userInfo.name;
+        this.phone=userInfo.phone;
+        this.couponList=JSON.parse(userInfo.couponList); ///userInfo의 couponList
+        if(userInfo.receiptIssue=="1"){
+            this.receiptIssue=true;
+        }else{
+            this.receiptIssue=false;
+        }
+        this.receiptId=userInfo.receiptId;
+        this.receiptType=userInfo.receiptType;  
+        if(!this.receiptIssue|| this.receiptIssue==undefined){
+            this.receiptIssue=false;
+            this.receiptType="IncomeDeduction";//default value   
+        }
+        
+        if(!userInfo.hasOwnProperty("cashId") || userInfo.cashId==null || userInfo.cashId==undefined){
+            this.cashId="";
+        }else{
+            this.cashId=userInfo.cashId;
+        }
+        console.log("[userInfoSetFromServer]cashId:"+this.cashId);
+        this.tourMode=false;
+        /*
+        if(userInfo.hasOwnProperty("taxIssueEmail")){
+            this.taxIssueEmail=userInfo.taxIssueEmail;
+        }
+
+        //console.log("[userInfoSetFromServer]userInfo:"+JSON.stringify(userInfo));
+        if(userInfo.hasOwnProperty("taxIssueCompanyName")){
+            this.taxIssueCompanyName=userInfo.taxIssueCompanyName;
+        }
+        */
+    }
+
+    shoplistSet(shoplistValue){
+        if(shoplistValue==null)
+            this.shoplist=[];
+        else
+            this.shoplist=shoplistValue;
+        console.log("shoplistSet:"+JSON.stringify(shoplistValue));    
+    }
+
+    userInfoSet(email,name,phone,receiptIssue,receiptId,receiptType){
+        this.email=email;
+        this.name=name;
+        this.phone=phone;
+        this.tourMode=false;
+        if(receiptIssue=="1"){
+            this.receiptIssue=true;
+        }else{
+            this.receiptIssue=false;
+        }
+        this.receiptId=receiptId;
+        this.receiptType=receiptType;  
+        if(!this.receiptIssue|| this.receiptIssue==undefined){
+            this.receiptIssue=false;
+            this.receiptType="IncomeDeduction";//default value   
+        }
+    }
+
+    // cart = { takitId}
+    resetCartInfo(){ // insert and update
+      return new Promise((resolve,reject)=>{  
+          console.log("resetCartInfo");
+
+      });
+    }
+
+    open(){
+        return new Promise((resolve,reject)=>{
+            var options={
+                    name: "takitCart.db",
+                    location:'default'
+            };
+            
+            this.sqlite.create(options)
+            .then((db: SQLiteObject) => {
+                this.db=db;
+                this.db.executeSql("create table cart (id int AUTO_INCREMENT primary key, takitId VARCHAR(100),\
+                 address VARCHAR(255), menuNo VARCHAR(255), menuName VARCHAR(255), options VARCHAR(255), \
+                price int, quantity int, memo varchar(400));").then(()=>{
+                    console.log("success to create cart table");
+                    resolve();
+                }).catch(e => {
+                    resolve(); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
+                });
+            }).catch(e =>{
+                console.log("fail to open database"+JSON.stringify(e));
+                reject();
+            });
+        });
+    }
+
+/*
+ cart={ takitId: "test1@takit",
+        address:"서울",
+        menuNo:"test1@takit;1", 
+        menuName:"도시락",
+        options:"{}",
+        quantity:1 
+        price: 1000
+        memo:""}; 
+        
+
+INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo) VALUES("test1@takit","서울","test1@takit;1","도시락","{}", 1,1000,"memo");
+INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo) VALUES("test1@takit","서울","test1@takit;1","비빔밥","{}", 1,1000,"memo");
+INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo) VALUES("test2@takit","서울","test2@takit;1","도시락","{}", 1,1000,"memo");
+INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo) VALUES("test2@takit","서울","test2@takit;1","비빔밥","{}", 1,1000,"memo");
+
+ ORDER BY takitId 
+ 
+ setQuantityMenu(uniqueId,quantity)
+ deleteMenu(uniqueId)
+*/
+    addMenuIntoCart(shopInfo,menuInfo){ 
+      return new Promise((resolve,reject)=>{  
+            console.log("addMenuIntoCart");
+            let queryString:string;
+            queryString="INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo) VALUES(?,?,?,?,?,?,?,?)";
+            console.log("query:"+queryString);
+            this.db.executeSql(queryString,[shopInfo.takitId,shopInfo.address,menuInfo.menuNo,
+                              menuInfo.menuName,menuInfo.options, menuInfo.quantity,menuInfo.price,menuInfo.memo]).then((resp)=>{
+                console.log("[saveCartInfo]resp:"+JSON.stringify(resp));
+                let queryString="SELECT LAST_INSERT_ID()";
+                this.db.executeSql(queryString,[]).then((result)=>{
+                    console.log("result:"+JSON.stringify(result));
+                    resolve(result);
+                })
+            }).catch(e => {
+                console.log("addMenuIntoCart error:"+JSON.stringify(e));
+                reject("DB error");
+            });
+      });
+    }
+
+    deleteMenu(uniqueId){
+      return new Promise((resolve,reject)=>{  
+            console.log("deleteMenu");
+            let queryString:string;
+            queryString="DELETE FROM cart where id=";
+            console.log("query:"+queryString);
+            this.db.executeSql(queryString,[uniqueId]).then((resp)=>{
+                console.log("[deleteMenu]resp:"+JSON.stringify(resp));
+                resolve(resp);
+            }).catch(e => {
+                console.log("deleteMenu error:"+JSON.stringify(e));
+                reject("DB error");
+            });
+      });
+    }
+
+   deleteAll(){
+      return new Promise((resolve,reject)=>{  
+            console.log("deleteMenu");
+            let queryString:string;
+            queryString="TRUNCATE TABLE cart;";
+            console.log("query:"+queryString);
+            this.db.executeSql(queryString,[]).then((resp)=>{
+                console.log("[deleteAll]resp:"+JSON.stringify(resp));
+                resolve(resp);
+            }).catch(e => {
+                console.log("deleteAll error:"+JSON.stringify(e));
+                reject("DB error");
+            });
+      });     
+   }
+
+   setMenuQuantity(uniqueId,quantity){
+      return new Promise((resolve,reject)=>{  
+            console.log("setMenuQuantity");
+            let queryString="UPDATE carts SET quantity=? WHERE id=?";
+            console.log("query:"+queryString);
+            this.db.executeSql(queryString,[quantity,uniqueId]).then((resp)=>{
+                console.log("[setMenuQuantity]resp:"+JSON.stringify(resp));
+                resolve(resp);
+            }).catch(e => {
+                console.log("setMenuQuantity  error:"+JSON.stringify(e));
+                reject("DB error");
+            });
+      });     
+        
+   }
+
+    getCartInfo(){
+        console.log("getCartInfo-enter");
+        return new Promise((resolve,reject)=>{
+                var queryString='SELECT * FROM carts order by takitId';
+                console.log("call queryString:"+queryString);
+                this.db.executeSql(queryString,[]).then((resp)=>{ // What is the type of resp? 
+                    console.log("query result:"+JSON.stringify(resp));
+                    var output=[];
+                    if(resp.rows.length==1){
+                        console.log("item(0)"+JSON.stringify(resp.rows.item(0)));
+                        output.push(resp.rows.item(0)); 
+                    }else if(resp.rows.length==0){
+                        console.log(" no cart info");
+                    }else{
+                        console.log("DB error happens");
+                        reject("invalid DB status");
+                    }
+                    resolve(output);
+                }).catch(e => {
+                     reject("DB error");
+                });
+         });
+    }
 }

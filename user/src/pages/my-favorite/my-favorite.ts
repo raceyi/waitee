@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
+import {StorageProvider} from '../../providers/storage/storage';
 /**
  * Generated class for the MyFavoritePage page.
  *
@@ -18,7 +18,9 @@ export class MyFavoritePage {
   menus=[];
   awsS3:string="assets/imgs/";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, 
+              public storageProvider:StorageProvider,
+              public navParams: NavParams) {
     this.shops=[ {takitId:"더큰도시락@세종대학교",
                             name_sub:"세종대학교",
                             name_main:"더큰도시락",
