@@ -12,7 +12,7 @@
   <div text-center class="personal-info-section">
       <img class="user-img" src="assets/imgs/profile-pic.png">
       <p class="user-name">
-      {{user.name}}님
+      {{storageProvider.name}}님
       </p>
   </div>
  
@@ -24,10 +24,10 @@
     이메일
   </ion-col>
   <ion-col col-8>
-    {{user.email}}
+    {{storageProvider.email}}
   </ion-col>  
   </ion-row>  
-  <ion-row class="each-menu">
+  <ion-row *ngIf="storageProvider.emailLogin" class="each-menu">
   <ion-col col-4>
     비밀번호
   </ion-col>
@@ -43,7 +43,7 @@
     휴대폰 번호
   </ion-col>
   <ion-col col-5>
-    010-xxxx-xxxx
+    {{storageProvider.phone}}
   </ion-col>
   <ion-col col-3 style="padding-top:0px;">
       <button ion-button clear>변경하기</button>   
@@ -67,18 +67,24 @@
   <ion-col col-4>
     현금영수증
   </ion-col>
-  <ion-col col-5>
-    xxxxxxxxxxxx
+  <ion-col col-5 *ngIf="storageProvider.receiptId!=undefined && storageProvider.receiptId!=null && storageProvider.receiptId.length>0">
+    {{storageProvider.receiptId}}
   </ion-col>
-  <ion-col col-3 style="padding-top:0px;">
+  <ion-col col-5 *ngIf="storageProvider.receiptId==undefined || storageProvider.receiptId==null || storageProvider.receiptId.length==0">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </ion-col>  
+  <ion-col *ngIf="storageProvider.receiptId!=undefined && storageProvider.receiptId!=null && storageProvider.receiptId.length>0" col-3 style="padding-top:0px;">
       <button ion-button clear>변경하기</button>   
+  </ion-col>  
+  <ion-col *ngIf="storageProvider.receiptId==undefined || storageProvider.receiptId==null || storageProvider.receiptId.length==0" col-3 style="padding-top:0px;">
+      <button ion-button clear>설정하기</button>   
   </ion-col>  
   </ion-row>  
   <ion-row class="group-title" style="background-color: #f7f7f7">
   <p>웨이티 알아보기</p>
   </ion-row>
   <ion-row class="each-menu">
-  <ion-col col-8>
+  <ion-col col-8 (click)="goToCompanyInfo()">
     FAQ
   </ion-col>
   <ion-col col-4>
@@ -88,7 +94,7 @@
   </ion-col>  
   </ion-row>  
   <ion-row class="each-menu">
-  <ion-col col-8>
+  <ion-col (click)="goToCompanyInfo()" col-8>
     웨이티 정책
   </ion-col>
   <ion-col col-4>
@@ -98,7 +104,7 @@
   </ion-col>  
   </ion-row>  
   <ion-row class="each-menu">
-  <ion-col col-8>
+  <ion-col (click)="goToCompanyInfo()" col-8>
     회사정보
   </ion-col>
   <ion-col col-4>
@@ -107,8 +113,9 @@
     </button>
   </ion-col>  
   </ion-row>  
-  <ion-row class="last"  style="background-color: #f7f7f7">
-    &nbsp;&nbsp;
+  <ion-row class="last" style="background-color: #f7f7f7">
+    <ion-col text-right><button style="font-size:3.5vw;" (click)="logout()" clear ion-button>로그아웃</button></ion-col>
+    <ion-col text-left><button style="font-size:3.5vw;" (click)="unregister()" clear ion-button>회원탈퇴</button></ion-col>  
   </ion-row>
 <ion-fab bottom color="primary" bottom right>
     <button class="fab-btn" (click)="exitTourMode()"ion-fab color="white">

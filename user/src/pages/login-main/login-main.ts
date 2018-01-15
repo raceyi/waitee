@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams ,AlertController,App} from 'ionic-angular';
+import { IonicPage, NavController, NavParams ,AlertController,App,Platform,IonicApp,MenuController,ViewController} from 'ionic-angular';
 import { LoginEmailPage } from '../login-email/login-email';
 import { NativeStorage } from '@ionic-native/native-storage';
 import {StorageProvider} from '../../providers/storage/storage';
@@ -28,9 +28,13 @@ export class LoginMainPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams
       ,private loginProvider:LoginProvider
+      ,private platform: Platform
+      ,private ionicApp: IonicApp
+      ,public viewCtrl: ViewController
       ,private alertCtrl: AlertController
       ,private storageProvider:StorageProvider
       ,private nativeStorage: NativeStorage
+      ,private menuCtrl: MenuController
       ,private app:App) {
 
         if(this.storageProvider.serverAddress.endsWith('8000')){
@@ -41,7 +45,8 @@ export class LoginMainPage {
  ionViewDidEnter(){
     console.log("ionviewDidEnter-loginPage");
     this.loginInProgress=false;
-  }
+
+}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ....LoginMainPage');

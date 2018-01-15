@@ -24,11 +24,11 @@
     <ion-label floating> 이메일(필수)</ion-label>
     <ion-input  type="email" [(ngModel)]="email"></ion-input>
     </ion-item>
-    <ion-item class="keypad-input" >
+    <ion-item *ngIf="emailLogin" class="keypad-input" >
     <ion-label floating> 비밀번호(필수)</ion-label>
     <ion-input type="password" [(ngModel)]="password"></ion-input>
     </ion-item>
-    <ion-item class="keypad-input" >
+    <ion-item *ngIf="emailLogin" class="keypad-input" >
     <ion-label floating> 비밀번호 확인(필수)</ion-label>
     <ion-input type="password" [(ngModel)]="passwordConfirm"></ion-input>
     </ion-item>
@@ -42,8 +42,8 @@
     <div text-center>
         <button ion-button outline round class="one-button" (click)="phoneAuth()">휴대폰 본인 인증하기(필수)</button>
     </div>
-     <p text-center style="color: #6441a5;margin-top:0px">인증완료되었습니다.</p>
-
+     <p *ngIf="authVerified" text-center style="color: #6441a5;margin-top:0px">인증완료되었습니다.</p>
+     <p *ngIf="!authVerified" text-center style="color: #6441a5;margin-top:0px">&nbsp;&nbsp;</p>
     <div class="under-buttons">
     </div>
     <div text-center>

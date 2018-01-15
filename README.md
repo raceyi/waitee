@@ -23,6 +23,8 @@ $npm install --save @ionic-native/network
 
 $ionic cordova plugin add https://github.com/loicknuchel/cordova-device-accounts.git
 
+$ionic cordova plugin add cordova-plugin-android-permissions
+
 $ionic cordova plugin add cordova-plugin-nativestorage
 
 $npm install --save @ionic-native/native-storage
@@ -60,6 +62,8 @@ $npm install --save @ionic-native/sqlite
 * 그외
 
 $npm install moment --save
+
+$ionic cordova plugin add cordova-clipboard
 
 $git checkout user/resources/icon.png
 

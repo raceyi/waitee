@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams,App,Platform ,AlertController} from
 import {CashRefundMainPage} from '../cash-refund-main/cash-refund-main';
 import {CashChargePage} from '../cash-charge/cash-charge';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import {StorageProvider} from '../../providers/storage/storage';
 
 import * as moment from 'moment';
 /**
@@ -37,6 +38,7 @@ export class WalletPage {
               private app:App,
               private platform:Platform,
               private alertController:AlertController,
+              public storageProvider:StorageProvider,
               private iab: InAppBrowser) {
     var date=new Date();
     var month=date.getMonth()+1;

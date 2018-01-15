@@ -24,7 +24,7 @@ export class ServerProvider {
 
     postAnonymous(request,bodyIn){
        console.log("!!!!post:"+bodyIn);
-       let bodyObj=JSON.parse(bodyIn);
+       let bodyObj=bodyIn;
        bodyObj.version=this.storageProvider.version;
        let body=JSON.stringify(bodyObj);
        console.log("request:"+request);
@@ -42,14 +42,14 @@ export class ServerProvider {
 
   post(request,bodyIn){
        console.log("!!!!post:"+bodyIn);
-       let bodyObj=JSON.parse(bodyIn);
+       let bodyObj=bodyIn;
        bodyObj.version=this.storageProvider.version;
        console.log("request:"+request);
 
        return new Promise((resolve,reject)=>{
             this.http.post(request,bodyObj).subscribe((res:any)=>{               
                 console.log("post version:"+res.version+" version:"+this.storageProvider.version);
-                resolve(res.json());                    
+                resolve(res);                    
             },(err)=>{
                 console.log("post-err:"+JSON.stringify(err));
                 if(err.hasOwnProperty("status") && err.status==401){

@@ -16,7 +16,7 @@ import { LoginProvider } from '../providers/login/login';
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = LoginMainPage;
+  rootPage:any;
   disconnectSubscription;
 
   constructor(platform: Platform, statusBar: StatusBar,
@@ -44,7 +44,7 @@ export class MyApp {
                     });
                 }       
             });
-
+            console.log("platform.ready...");
             //Please login if login info exists or move into login page
             this.nativeStorage.getItem("id").then((value:string)=>{
                 console.log("value:"+value);
@@ -58,7 +58,7 @@ export class MyApp {
                     },(err)=>{ //expReadFlag doesn't exist because of the first launch of takitUser.
                             console.log("read error "+JSON.stringify(err));
                             this.rootPage=LoginMainPage;
-                    });
+                    });       
                }else{
                 console.log("decodeURI(value):"+decodeURI(value));
                 var id=this.storageProvider.decryptValue("id",decodeURI(value));
@@ -67,7 +67,7 @@ export class MyApp {
                                 console.log("MyApp:"+JSON.stringify(res));
                                 if(res.result=="success"){
                                     //save shoplist
-                                    console.log("res.email:"+res.email +"res.name:"+res.name);
+                                    console.log("res.email:"+res.userInfo.email +"res.name:"+res.userInfo.name);
                                     if(res.userInfo.hasOwnProperty("shopList")){
                                         this.storageProvider.shoplistSet(JSON.parse(res.userInfo.shopList));
                                     }

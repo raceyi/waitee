@@ -17,7 +17,7 @@ import {OrderDetailPage} from '../order-detail/order-detail';
 })
 export class CashPasswordPage {
   passwordInput=['',' ',' ',' ',' ',' '];
-  password=['1',' ',' ',' ',' ',' '];
+  password=[' ',' ',' ',' ',' ',' '];
   cursor:number=0;
 
   title:string;

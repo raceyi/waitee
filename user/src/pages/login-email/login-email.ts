@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,App,AlertController,LoadingController } from 'ionic-angular';
+import { Component ,NgZone} from '@angular/core';
+import { IonicPage, NavController, NavParams,App,Platform,AlertController,LoadingController } from 'ionic-angular';
 import { SignupPage } from '../signup/signup';
 import { PasswordResetPage} from '../password-reset/password-reset';
 import {LoginMainPage} from '../login-main/login-main';
@@ -15,6 +15,8 @@ import {SignupPaymentPage} from '../signup-payment/signup-payment';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
+declare var plugins:any;
+declare var cordova:any;
 
 @IonicPage()
 @Component({
@@ -31,7 +33,39 @@ export class LoginEmailPage {
               private storageProvider:StorageProvider,
               private nativeStorage: NativeStorage,              
               public navParams: NavParams,private app:App,
+              private ngZone:NgZone,private platform:Platform,
               public loadingCtrl: LoadingController) {
+      if(platform.is("android")){
+          var permissions = cordova.plugins.permissions;
+          permissions.hasPermission(permissions.GET_ACCOUNTS,(status)=> {
+            if (status.hasPermission ) {
+              console.log("Yes :D ");
+              plugins.DeviceAccounts.getEmail((info)=>{
+                this.ngZone.run(()=>{
+                  this.email=info;
+                });
+              });
+            }
+            else {
+              console.warn("No :( ");
+              permissions.requestPermission(permissions.GET_ACCOUNTS,(status)=>{
+                if( status.hasPermission ){
+                    console.log("call DeviceAccounts");
+                    plugins.DeviceAccounts.getEmail((info)=>{
+                      console.log("info:"+JSON.stringify(info));
+                      this.ngZone.run(()=>{
+                        this.email=info;
+                      });
+                  }); 
+                }
+              },(err)=>{
+
+              });
+            }
+          },(err)=>{
+
+          });
+      }
   }
 
   ionViewDidLoad() {

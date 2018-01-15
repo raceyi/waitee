@@ -9,6 +9,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import {LoginProvider} from '../../providers/login/login';
 
 declare var plugins:any;
+declare var cordova:any;
 /**
  * Generated class for the SignupPage page.
  *
@@ -66,16 +67,43 @@ export class SignupPage {
               private loginProvider:LoginProvider,
               private nativeStorage: NativeStorage,
               private ngZone:NgZone) {
-
+    
+    console.log("login:"+navParams.get("login"));
+    console.log(navParams.get("email"));
+    console.log(this.platform.is("android"));
+    
     if(navParams.get("login")=="email"){
       this.emailLogin=true;
     }else if(!navParams.get("email") && this.platform.is("android")){ // no email info given
-            plugins.DeviceAccounts.getEmail((info)=>{
-                console.log("info:"+JSON.stringify(info));
+          var permissions = cordova.plugins.permissions;
+          permissions.hasPermission(permissions.GET_ACCOUNTS,(status)=> {
+            if (status.hasPermission ) {
+              console.log("Yes :D ");
+              plugins.DeviceAccounts.getEmail((info)=>{
                 this.ngZone.run(()=>{
-                    this.email=info;
+                  this.email=info;
                 });
-            });
+              });
+            }
+            else {
+              console.warn("No :( ");
+              permissions.requestPermission(permissions.GET_ACCOUNTS,(status)=>{
+                if( status.hasPermission ){
+                    console.log("call DeviceAccounts");
+                    plugins.DeviceAccounts.getEmail((info)=>{
+                      console.log("info:"+JSON.stringify(info));
+                      this.ngZone.run(()=>{
+                        this.email=info;
+                      });
+                  }); 
+                }
+              },(err)=>{
+
+              });
+            }
+          },(err)=>{
+
+          });
     }
 
     if(navParams.get("login")=="facebook"){
@@ -101,7 +129,8 @@ export class SignupPage {
                           'background-color':'#6441a5'
                         };
     }else{
-        this.navCtrl.push(SignupPaymentPage);
+        this.signup();
+        //this.navCtrl.push(SignupPaymentPage);
     }
   }
 
@@ -237,7 +266,7 @@ phoneAuth(){
                                 var userSex=userAgeStrs[0];
                                 var userAge=userAgeStrs[1];
                                 console.log("userPhone:"+userPhone+" userName:"+userName+" userSex:"+userSex+" userAge:"+userAge);
-                                let body = JSON.stringify({userPhone:userPhone,userName:userName,userSex:userSex,userAge:userAge});
+                                let body = {userPhone:userPhone,userName:userName,userSex:userSex,userAge:userAge};
                                 this.serverProvider.post(this.storageProvider.serverAddress+"/getUserInfo",body).then((res:any)=>{
                                     console.log("/getUserInfo res:"+JSON.stringify(res));
                                     if(res.result=="success"){
@@ -346,8 +375,9 @@ phoneAuth(){
                     });
                     alert.present();
      }
-
-     if(this.loginMethod=="facebook"){
+     console.log("loginMethod:"+this.loginMethod);
+     if(this.loginMethod=="facebook" || this.loginMethod=="kakao"){
+                console.log("call serverSignup");
                 this.signupInProgress=true;
                 this.loginProvider.serverSignup(this.refId,this.name,this.email,this.country,this.phone,this.sex,this.birthYear,false,"","IncomeDeduction").then(
                 (result:any)=>{
@@ -363,7 +393,7 @@ phoneAuth(){
                                 alert.present();
                     }
                     if(serverCode=="success"){
-                        var encrypted:string=this.storageProvider.encryptValue('id','facebook');// save facebook id 
+                        var encrypted:string=this.storageProvider.encryptValue('id',this.loginMethod);// save facebook id 
                         this.nativeStorage.setItem('id',encodeURI(encrypted));
                         this.storageProvider.shoplist=[];
                         this.storageProvider.userInfoSet(this.email,this.name,this.phone,false,"","IncomeDeduction");
@@ -387,45 +417,6 @@ phoneAuth(){
                         });
                         alert.present();
                 });
-     }else if(this.loginMethod=="kakao"){
-              this.signupInProgress=true;
-              this.loginProvider.serverSignup(this.refId,this.country,this.phone,this.sex,this.birthYear,this.email,this.name,false,"","IncomeDeduction").then(
-                (result:any)=>{
-                    var serverCode:string=result.result;
-                    if(parseFloat(result.version)>parseFloat(this.storageProvider.version)){
-                            let alert = this.alertCtrl.create({
-                                            title: '앱버전을 업데이트해주시기 바랍니다.',
-                                            subTitle: '현재버전에서는 일부 기능이 정상동작하지 않을수 있습니다.',
-                                            buttons: ['OK']
-                                        });
-                                alert.present();
-                    }
-                    if(serverCode=="success"){
-                        var encrypted:string=this.storageProvider.encryptValue('id','kakao');// save kakao id 
-                        this.nativeStorage.setItem('id',encodeURI(encrypted));
-                        this.storageProvider.shoplist=[];
-                        this.storageProvider.userInfoSet(this.email,this.name,this.phone,false,"","IncomeDeduction");
-                        this.navCtrl.setRoot(SignupPaymentPage,{email:this.email,name:this.name,phone:this.phone});
-                    }else if(serverCode=="duplication"){ // result.result=="exist"
-                        let alert = this.alertCtrl.create({
-                            title: '이미존재하는 아이디입니다.',
-                            buttons: ['OK']
-                        });
-                        alert.present();
-                        this.navCtrl.setRoot(LoginMainPage);
-                    }else{ 
-                        console.log("kakao server signup-unknown result:"+serverCode);
-                        this.signupInProgress=false;
-                    }
-                },(error)=>{
-                        this.signupInProgress=false;
-                        let alert = this.alertCtrl.create({
-                            title: '서버로부터의 응답이 없습니다. 네트웍상태를 확인해주시기 바랍니다.',
-                            buttons: ['OK']
-                        });
-                        alert.present();
-                });
-
      }else if(this.loginMethod=="email"){
             this.signupInProgress=true;
             this.loginProvider.emailServerSignup(this.password,this.name,this.email,this.country,this.phone,this.sex,this.birthYear,false,"","IncomeDeduction").then( 

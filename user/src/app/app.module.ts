@@ -54,6 +54,7 @@ import{PaymentPageModule} from '../pages/payment/payment.module';
 import {ErrorPageModule} from '../pages/error/error.module';
 import { ServerProvider } from '../providers/server/server';
 import { Network } from '@ionic-native/network';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
 
 @NgModule({
@@ -103,13 +104,14 @@ import { Network } from '@ionic-native/network';
   ],
   providers: [
     Network, 
-    LoginProvider,
     ConfigProvider,
+    NativeStorage,
+    SQLite,
     StorageProvider,
+    LoginProvider,
     Facebook,
     StatusBar,
     SplashScreen,
-    NativeStorage,
     AppAvailability,
     InAppBrowser,
     BackgroundMode,

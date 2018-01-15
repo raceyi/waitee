@@ -54,9 +54,10 @@ export class LoginProvider {
             let body = {email:email,password:password,version:this.storageProvider.version};
 
             this.httpClient.post(this.storageProvider.serverAddress+"/emailLogin",body).subscribe((res:any)=>{               
-                resolve(JSON.parse(res));
+                resolve(res);
             },(err)=>{
                 console.log("post-err:"+JSON.stringify(err));
+                reject(err);
             });           
        });
   }
@@ -248,7 +249,7 @@ export class LoginProvider {
               }else{
                     receiptIssueVal=0;
               }
-              let body = JSON.stringify({referenceId:refid,
+              let body = {referenceId:refid,
                                             name:name,
                                             email:email,
                                             country:country,
@@ -258,7 +259,7 @@ export class LoginProvider {
                                             receiptIssue:receiptIssueVal,
                                             receiptId:receiptId,
                                             receiptType:receiptType,
-                                            version:this.storageProvider.version});
+                                            version:this.storageProvider.version};
               let headers = new Headers();
               headers.append('Content-Type', 'application/json');
               console.log("server: "+ this.storageProvider.serverAddress+ " body:"+body);
@@ -282,11 +283,11 @@ export class LoginProvider {
               }else{
                     receiptIssueVal=0;
               }
-              let body = JSON.stringify({referenceId:"email_"+email,password:password,name:name,
+              let body = {referenceId:"email_"+email,password:password,name:name,
                                             email:email,country:country,phone:phone,
                                             receiptIssue:receiptIssueVal,receiptId:receiptId,receiptType:receiptType,
                                             sex:sex, birthYear:birthYear,
-                                            version:this.storageProvider.version});
+                                            version:this.storageProvider.version};
               console.log("server:"+ this.storageProvider.serverAddress+" body:"+body);
              this.httpClient.post(this.storageProvider.serverAddress+"/signup",body).subscribe((res)=>{
                  //var result:string=res.result;
@@ -342,7 +343,7 @@ export class LoginProvider {
     return new Promise((resolve,reject)=>{
             console.log("server: "+ this.storageProvider.serverAddress);
 
-           this.httpClient.post(this.storageProvider.serverAddress+"/signoff",{version:this.storageProvider.version}).subscribe((res)=>{
+           this.httpClient.post(this.storageProvider.serverAddress+"/unregister",{version:this.storageProvider.version}).subscribe((res)=>{
                console.log("unregister "+JSON.stringify(res));
                if(type=='facebook'){
                     this.fb.logout().then((result)=>{

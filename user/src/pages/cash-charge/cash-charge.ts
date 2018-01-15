@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,AlertController } from 'ionic-angular';
 import {CashManualConfirmPage} from '../cash-manual-confirm/cash-manual-confirm';
+import {StorageProvider} from '../../providers/storage/storage';
+
+declare var cordova:any;
 
 /**
  * Generated class for the CashChargePage page.
@@ -16,7 +19,10 @@ import {CashManualConfirmPage} from '../cash-manual-confirm/cash-manual-confirm'
 })
 export class CashChargePage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController,
+              private alertCtrl:AlertController, 
+              public storageProvider:StorageProvider,
+              public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
@@ -35,4 +41,16 @@ export class CashChargePage {
   moveTutorial(){
     
   }
+
+  copyAccountInfo(){
+    console.log("copyAccountInfo");
+    var account = "3012424363621";
+    cordova.plugins.clipboard.copy(account);
+      let alert = this.alertCtrl.create({
+          title: "계좌가 복사되었습니다",
+          buttons: ['OK']
+      });
+      alert.present();
+  }
+
 }

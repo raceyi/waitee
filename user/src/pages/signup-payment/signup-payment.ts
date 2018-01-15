@@ -167,7 +167,21 @@ checkCashIdDuplicate(){
       });
   }
 
- myCallbackConfirmFunction = (_params) => {
+ myCallbackPasswordFunction = (_params) => {
+      return new Promise((resolve, reject) => {
+          console.log("password confirm params:"+_params);
+          this.cashIdPassword=_params;
+          this.ngZone.run(()=>{
+                this.passwordString="******";
+                this.passwordMask=true;
+                console.log("this.passwordConfirmString:"+this.passwordString);
+          });
+          resolve();
+      });
+  }
+
+
+  myCallbackPasswordConfirmFunction = (_params) => {
       return new Promise((resolve, reject) => {
           console.log("password confirm params:"+_params);
           this.cashIdPasswordConfirm=_params;
@@ -179,15 +193,16 @@ checkCashIdDuplicate(){
           resolve();
       });
   }
+
   passwordInput(){
       console.log("passwordInput");
-      this.navCtrl.push(CashPasswordPage,{callback: this.myCallbackFunction, order:false,
+      this.navCtrl.push(CashPasswordPage,{callback: this.myCallbackPasswordFunction, order:false,
                                           title:"캐쉬비밀번호",description:"사용하실 캐쉬 비밀번호를 입력해주세요."});
   }
 
   passwordConfirmInput(){
       console.log("passwordConfirmInput");
-      this.navCtrl.push(CashPasswordPage,{callback: this.myCallbackConfirmFunction, order:false,
+      this.navCtrl.push(CashPasswordPage,{callback: this.myCallbackPasswordConfirmFunction, order:false,
                                           title:"캐쉬비밀번호확인" ,description:"캐쉬 비밀번호를 한번 더 입력해주세요."});
   }
 

@@ -24,14 +24,14 @@
     <div class="account">농협 301-2323-3636-21</div>
 </div>
 <div class="account-copy" no-padding no-margin text-right>
-    <button no-padding no-margin ion-button clear>계좌복사</button>
+    <button no-padding no-margin ion-button clear (click)="copyAccountInfo()">계좌복사</button>
 </div>
 <ion-row class="cash-id">
   <ion-col no-padding no-margin text-left>
   받는 통장 표시 내용
   </ion-col>
   <ion-col no-padding no-margin text-right>
-    TAKIT
+    {{storageProvider.cashId}}
   </ion-col>
 </ion-row>
 <button class="manual-check" (click)="manualCheck()" no-padding no-margin ion-button full>

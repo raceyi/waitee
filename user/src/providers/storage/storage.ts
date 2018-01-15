@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {Platform,Tabs,NavController} from 'ionic-angular';
 import {ConfigProvider} from '../config/config';
 import * as CryptoJS from 'crypto-js';
 import { NativeStorage } from '@ionic-native/native-storage';
@@ -39,7 +40,7 @@ export class StorageProvider {
     public name:string="";
     public phone:string="";
     public couponList=[];
-    public emailLogin:boolean;
+    public emailLogin:boolean=false;
 
     /////////////////////////////////////
     // cash receipt issue
@@ -51,11 +52,13 @@ export class StorageProvider {
     //public taxIssueEmail:string;
     /////////////////////////////////////
 
+    //public login:boolean=false;
+
     public db;
 
     public tourMode=false;
     public cashId="";
-    public cashAmount:number;
+    public cashAmount:number=0;
 
     public shoplist=[];          // 최근 주문 샵목록
     public frequentShopList=[];  // 최다 주문 샵목록
@@ -379,4 +382,45 @@ INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo)
                 });
          });
     }
+
+   dropCartInfo(){
+       return new Promise((resolve,reject)=>{
+           this.db.executeSql("drop table if exists carts").timeout(1000/* 1 second */).then(
+               ()=>{
+                    console.log("success to drop cart table");
+                    resolve();
+           }).catch(e => {
+                    console.log("fail to drop cart table "+JSON.stringify(e));
+                    reject();
+                },);
+       });
+   }
+    
+    reset(){
+        console.log("storageProvider.reset");
+        if(this.db!=undefined) this.db.close();
+        this.db=undefined;
+        this.shoplist=[];
+       // this.takitId=undefined; 
+       // this.shopInfo=undefined;   
+       // this.shoplistCandidate=[];
+       // this.cart=undefined;
+        this.id=undefined;
+        this.email="";
+        this.name="";
+        this.phone="";
+        this.shopResponse=undefined;
+       // this.run_in_background=false;
+        this.tourMode=false;
+        this.cashId="";
+        this.cashAmount=undefined;
+
+       // this.refundBank="";
+       // this.refundAccount="";
+        /////////////////////////////////////
+        // 캐쉬정보 수동입력 
+       // this.depositBank=undefined;
+       // this.depositBranch=undefined;
+       // this.depositBranchInput=undefined;
+    }    
 }

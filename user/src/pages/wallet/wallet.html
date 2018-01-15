@@ -8,7 +8,7 @@
             <ion-row class="scroll-row-latest">
                 <ion-col text-center no-padding class="cash-card scroll-col-latest">
                   <p no-margin no-padding class="cash-label" style="font-size:4.5vw;"><b>웨이티 캐쉬</b></p>
-                  <p  class="cash-value" style="font-size:4vw;">잔액: 32500원</p>
+                  <p  class="cash-value" style="font-size:4vw;">잔액: {{storageProvider.cashAmount}}</p>
                   <ion-row>
                       <ion-col no-padding no-margin (click)="chargeCash()" class="left-button" ><button no-padding no-margin full clear ion-button>충전</button></ion-col>
                       <ion-col no-padding no-margin><button (click)="refundCash()" no-padding no-margin full clear ion-button>환급</button></ion-col>

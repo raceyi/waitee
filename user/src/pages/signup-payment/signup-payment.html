@@ -38,13 +38,15 @@
     <ion-label class="value-label" style="margin-top:0px;" >비밀번호(필수)</ion-label>
     </ion-item>
     <ion-item>
-    <button ion-button class="keypad-button" clear (click)="passwordInput()">6자리 숫자</button>
+    <button ion-button *ngIf="!passwordMask" class="keypad-button" clear (click)="passwordInput()">6자리 숫자</button>
+    <button ion-button *ngIf="passwordMask" class="keypad-button" clear (click)="passwordInput()">******</button>
     </ion-item>
     <ion-item>
     <ion-label class="value-label" >비밀번호 확인(필수)</ion-label>
     </ion-item>
     <ion-item>
-    <button ion-button class="keypad-button" clear (click)="passwordInput()" >6자리 숫자</button>
+    <button ion-button *ngIf="!passwordConfirmMask" class="keypad-button" clear (click)="passwordConfirmInput()" >6자리 숫자</button>
+    <button ion-button *ngIf="passwordConfirmMask" class="keypad-button" clear (click)="passwordConfirmInput()">******</button>    
     </ion-item>
     <ion-item>
     <ion-label class="value-label" >현금영수증 번호</ion-label>

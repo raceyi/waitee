@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,AlertController } from 'ionic-angular';
+import { Component ,NgZone} from '@angular/core';
+import { IonicPage, NavController, NavParams,AlertController,Platform } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
 
@@ -9,6 +9,8 @@ import {ServerProvider} from '../../providers/server/server';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
+declare var plugins:any;
+declare var cordova:any;
 
 @IonicPage()
 @Component({
@@ -23,8 +25,43 @@ export class PasswordResetPage {
               public navParams: NavParams,
               private alertCtrl: AlertController,
               private serverProvider:ServerProvider,
+              private ngZone:NgZone,private platform:Platform,              
               private storageProvider:StorageProvider) {
-  }
+
+      if(platform.is("android")){
+          var permissions = cordova.plugins.permissions;
+          permissions.hasPermission(permissions.GET_ACCOUNTS,(status)=> {
+            if (status.hasPermission ) {
+              console.log("Yes :D ");
+              plugins.DeviceAccounts.getEmail((info)=>{
+                this.ngZone.run(()=>{
+                  this.email=info;
+                });
+              });
+            }
+            else {
+              console.warn("No :( ");
+              permissions.requestPermission(permissions.GET_ACCOUNTS,(status)=>{
+                if( status.hasPermission ){
+                    console.log("call DeviceAccounts");
+                    plugins.DeviceAccounts.getEmail((info)=>{
+                      console.log("info:"+JSON.stringify(info));
+                      this.ngZone.run(()=>{
+                        this.email=info;
+                      });
+                  }); 
+                }
+              },(err)=>{
+
+              });
+            }
+          },(err)=>{
+
+          });
+      }
+ 
+ }
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad PasswordResetPage');
@@ -78,7 +115,7 @@ export class PasswordResetPage {
     callServerResetPassword(email,phone){
       return new Promise((resolve, reject)=>{
               console.log("callServerResetPassword");
-              let body = JSON.stringify({email:email,phone:phone});
+              let body = {email:email,phone:phone};
               let headers = new Headers();
               headers.append('Content-Type', 'application/json');
               console.log("server:"+ this.storageProvider.serverAddress);
