@@ -4,6 +4,8 @@ import {CashPasswordPage} from '../cash-password/cash-password';
 import {TabsPage} from '../tabs/tabs';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import {LoginMainPage} from '../login-main/login-main';
+
 /**
  * Generated class for the SignupPaymentPage page.
  *
@@ -66,7 +68,7 @@ export class SignupPaymentPage {
   }
 
   back(){
-    this.navCtrl.pop();
+    this.navCtrl.setRoot(LoginMainPage);
   }
 
   checkValidity(){
@@ -112,7 +114,7 @@ checkCashIdDuplicate(){
         alert.present();       
         return false;
     }
-    let body=JSON.stringify({cashId:this.cashId});
+    let body={cashId:this.cashId};
     this.serverProvider.post(this.storageProvider.serverAddress+"/validCashId",body).then((res:any)=>{
                 console.log("res.result:"+res.result);
                 var result:string=res.result;

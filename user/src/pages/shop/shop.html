@@ -9,8 +9,8 @@
   <ion-buttons start>
     <button style="background-color:white;color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
   </ion-buttons>
-  <ion-title>  더큰도시락 &nbsp;
-              <a [href]="shopPhoneHref"><ion-icon color="black" name="call"></ion-icon></a>
+  <ion-title>  {{shopName}} &nbsp;
+              <a *ngIf="storageProvider.shopResponse.shopInfo.contactPhone" [href]="shopPhoneHref"><ion-icon color="black" name="call"></ion-icon></a>
   </ion-title>
   <!--
   <ion-buttons end>
@@ -21,32 +21,33 @@
   
 </ion-header>
 
-<ion-content>
+<ion-content #shophomeContent>
+    <!--
 <div class="shop-text-info">
-<label class="label">주소</label>  <span class="value">{{shopInfo.address}}</span>
+<label class="label">주소</label>  <span class="value">{{shop.shopInfo.address}}</span>
 </div>
-<div class="shop-text-info" *ngIf="shopInfo.shopPhone!=null">
-<label class="label">전화번호</label>  <span class="value">{{shopInfo.shopPhone}} </span>
+<div class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.shopPhone!=null">
+<label class="label">전화번호</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.shopPhone}} </span>
 </div>
 
-<img class="shop-img" [src]="storageProvider.awsS3+shopInfo.imagePath">
+<img class="shop-img" [src]="storageProvider.awsS3+storageProvider.shopResponse.shopInfo.imagePath">
 
 <div class="shop-text-info">
-<label class="label">영업시간</label>  <span class="value">{{shopInfo.businessTimes[0]}}</span>
+<label class="label">영업시간</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.businessTimes[0]}}</span>
 </div>
-<div class="shop-text-info" *ngIf="shopInfo.breakTime!=null">
-<label class="label">브레이크</label>  <span class="value"> {{shopInfo.breakTime}} </span>
+<div class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.breakTime!=null">
+<label class="label">브레이크</label>  <span class="value"> {{storageProvider.shopResponse.shopInfo.breakTime}} </span>
 </div>
 <div class="shop-text-info">
-<label class="label">휴무요일</label>  <span class="value"> {{shopInfo.regularOff}} </span>
+<label class="label">휴무요일</label>  <span class="value"> {{storageProvider.shopResponse.shopInfo.regularOff}} </span>
 </div>
-
+-->
 <ion-row class="row-categories-menus">
              <ion-col col-3 class="col-categories" no-padding>
                 <ion-scroll scrollY="true" class="scroll-categories">
                     <ion-list>
                         <ion-item *ngFor="let category of categories;let i=index;">
-                          <button style="font-size:3.4vw" value="i" (click)="categoryClick(i)" color="white" ion-button full  no-padding no-margin>
+                          <button style="font-size:3.4vw" value="i" (click)="categoryClick(i+1)" color="white" ion-button full  no-padding no-margin>
                            <p style="font-size:3.4vw;" text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
                           </button>
                         </ion-item>

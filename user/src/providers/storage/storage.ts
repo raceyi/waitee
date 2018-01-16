@@ -42,6 +42,8 @@ export class StorageProvider {
     public couponList=[];
     public emailLogin:boolean=false;
 
+    public recommendations=[];
+
     /////////////////////////////////////
     // cash receipt issue
     public receiptIssue=false;
@@ -54,6 +56,9 @@ export class StorageProvider {
 
     //public login:boolean=false;
 
+    shopInfo;
+    shoplistCandidate;
+
     public db;
 
     public tourMode=false;
@@ -65,6 +70,7 @@ export class StorageProvider {
     public frequentMenuList=[];  // 최다 주문 메뉴 
                         // 직접 저장한 샵목록, 메뉴 목록 => 향후에 추가하기 
     shopResponse:any;
+    takitId:string;
 
     banklist=[  {name:"국민",value:"004"},
                 {name:"기업",value:"003"},
@@ -134,11 +140,11 @@ export class StorageProvider {
               private nativeStorage: NativeStorage) {
 
     console.log('Hello StorageProvider Provider');
-   
+   /*
     this.shopResponse={"result":"success","version":"0.04","shopInfo":{"takitId":"서울창업허브@그릿스테이크","address":" 서울시 마포구 백범로31길 21 3층 키친인큐베이터","imagePath":"서울창업허브@그릿스테이크_home.jpeg","shopName":"그릿 스테이크","businessType":null,"shopPhone":null,"contactPhone":null,"notice":null,"introduce":null,"discountRate":"0.5%","timezone":"Asia/Seoul","orderNumberCounter":"0","orderNumberCounterTime":null,"business":"off","businessTime":"[\"00:00~00:00\",\"11:30~20:00\",\"11:30~20:00\",\"11:30~20:00\",\"11:30~20:00\",\"11:30~20:00\",\"00:00~00:00\"]","breakTime":"[\"14:00~17:00\"]","availOrderTime":"[\"11:00~13:30\",\"17:00~19:30\"]","sales":"0","balance":"0","withdrawalCount":"0","bankName":null,"bankCode":null,"depositer":null,"businessNumber":"348-87-00219","owner":"김지수","shopNameEn":null,"freeDelivery":null,"deliveryArea":null,"deliveryMSG":null,"bestMenus":null,"reviewList":"[]","ownerImagePath":null,"snsAddress":null,"keyword":"서울창업허브","takeout":"0"},
                        "menus":[{"menuNO":"서울창업허브@그릿스테이크;1","menuName":"채끝 등심 스테이크","explanation":"수비드(저온진공조리법)를 활용한 채끝 등심 스테이크에 감자튀김을 곁들인 메뉴","ingredient":null,"price":"9000","options":"[]","takeout":"0","imagePath":"서울창업허브@그릿스테이크;1_채끝 등심 스테이크.jpeg","requiredTime":null,"menuNameEn":null,"explanationEn":null,"ingredientEn":null,"optionsEn":null}],
                        "categories":[{"takitId":"서울창업허브@그릿스테이크","categoryNO":"1","sequence":"1","categoryName":"메인 메뉴","categoryNameEn":"main menu"}]};
- 
+ */
 /*
    this.shopResponse={"result":"success","version":"0.04","shopInfo":{"takitId":"세종대@더큰도시락","address":"서울시 광진구 군자로 121 지하 1층","imagePath":"세종대@더큰도시락_main","shopName":"더큰도시락","businessType":null,"shopPhone":"024994888","contactPhone":"024994888","notice":"만원이상 주문시에만 배달 선택 가능합니다. 주문접수가 지연되면 매장정보에 전화번호를 클릭하여 전화부탁드립니다.","introduce":null,"discountRate":"3%","timezone":"Asia/Seoul","orderNumberCounter":"1","orderNumberCounterTime":"2017-11-30 00:01:19","business":"on","businessTime":"[\"10:00~18:40\",\"08:00~19:40\",\"08:00~19:40\",\"08:00~19:40\",\"08:00~19:40\",\"08:00~19:40\",\"10:00~18:40\"]","breakTime":null,"availOrderTime":null,"sales":"498511","balance":"19497","withdrawalCount":"3","bankName":"신한","bankCode":"088","depositer":"민현주","businessNumber":"7721300255","owner":"민현주","shopNameEn":"The bigger","freeDelivery":"10000","deliveryArea":"세종대학교내","deliveryMSG":null,"bestMenus":null,"reviewList":"[]","ownerImagePath":null,"snsAddress":null,"keyword":"세종대","takeout":"2"},
                       "menus":[{"menuNO":"세종대@더큰도시락;1","menuName":"데리치킨도시락","explanation":"","ingredient":null,"price":"3600","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_데리치킨도시락","requiredTime":null,"menuNameEn":"Teriyaki chicken ","explanationEn":"chicken","ingredientEn":null,"optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"},{\"name\":\"Katsu 1pcs\",\"price\":\"1000\"},{\"name\":\"Spam 1pcs\",\"price\":\"1000\"}]"},{"menuNO":"세종대@더큰도시락;1","menuName":"돈까스도시락","explanation":"","ingredient":null,"price":"3400","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_돈까스도시락","requiredTime":null,"menuNameEn":"Katsu ","explanationEn":"pork","ingredientEn":null,"optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"},{\"name\":\"Katsu 1pcs\",\"price\":\"1000\"},{\"name\":\"Spam 1pcs\",\"price\":\"1000\"}]"},
@@ -198,6 +204,17 @@ export class StorageProvider {
         }
         console.log("[userInfoSetFromServer]cashId:"+this.cashId);
         this.tourMode=false;
+        if(userInfo.hasOwnProperty("recommendShops")){
+            this.recommendations=userInfo.recommendShops;
+            this.recommendations.forEach(element => {
+                let strs=element.takitId.split("@");
+                element.name_sub = strs[0];
+                element.name_main= strs[1];
+                element.paymethod=JSON.parse(element.paymethod);
+                console.log("cash:"+element.paymethod.cash);
+                console.log("card:"+element.paymethod.card);
+            });
+        }
         /*
         if(userInfo.hasOwnProperty("taxIssueEmail")){
             this.taxIssueEmail=userInfo.taxIssueEmail;
@@ -218,7 +235,7 @@ export class StorageProvider {
         console.log("shoplistSet:"+JSON.stringify(shoplistValue));    
     }
 
-    userInfoSet(email,name,phone,receiptIssue,receiptId,receiptType){
+    userInfoSet(email,name,phone,receiptIssue,receiptId,receiptType,recommends){
         this.email=email;
         this.name=name;
         this.phone=phone;
@@ -233,6 +250,15 @@ export class StorageProvider {
         if(!this.receiptIssue|| this.receiptIssue==undefined){
             this.receiptIssue=false;
             this.receiptType="IncomeDeduction";//default value   
+        }
+        if(recommends){
+            this.recommendations=recommends;
+            this.recommendations.forEach(element => {
+                let strs=element.takitId.split("@");
+                element.name_sub = strs[0];
+                element.name_main= strs[1];
+                element.paymethod=JSON.parse(element.paymethod);
+            });
         }
     }
 
@@ -422,5 +448,26 @@ INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo)
        // this.depositBank=undefined;
        // this.depositBranch=undefined;
        // this.depositBranchInput=undefined;
-    }    
+    }   
+
+     shopInfoSet(shopInfo:any){
+        console.log("shopInfoSet:"+JSON.stringify(shopInfo));
+        this.shopInfo=shopInfo;
+        console.log("discountRate:"+this.shopInfo.discountRate);
+    } 
+ 
+     shoplistCandidateUpdate(shop){
+        var update=[];
+        if(this.shoplistCandidate)
+        for(var i=0;i<this.shoplistCandidate.length;i++){
+            if(this.shoplistCandidate[i].takitId!=shop.takitId){
+                update.push(this.shoplistCandidate[i]);
+            }
+        }
+        console.log("shoplistCandidate:"+JSON.stringify(update));
+        update.unshift(shop);
+        this.shoplistCandidate=update;
+        console.log("after shoplist update:"+JSON.stringify(this.shoplistCandidate));        
+    }
+
 }

@@ -2,44 +2,26 @@ import { Component } from '@angular/core';
 import { NavController,App } from 'ionic-angular';
 import { ShopPage} from '../shop/shop';
 import {SearchPage} from '../search/search';
+import { StorageProvider } from '../../providers/storage/storage';
+import {ServerProvider} from '../../providers/server/server';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  recommendations=[];
   recently_visited_shop=[];
   awsS3:string="assets/imgs/";
-  shops=[];
-  overlayHidden:boolean=true;
-  searchShop:string=" ";
-  shouldShowCancel:boolean=true;
+  //shops=[];
+  //overlayHidden:boolean=true;
+  //searchShop:string=" ";
+  //shouldShowCancel:boolean=true;
+  shopSelected:boolean=false;
 
-  constructor(public navCtrl: NavController,private app: App) {
-    this.shops=[ "세종대 더큰도시락","세종대 헨델과그레텔","세종대 카페드림","서울창업허브 그릿스테이크"];
-    // shop에 추가되어야할 필드: name_sub, name_main, classification, star_rating 
-    this.recommendations=[ {takitId:"세종대학교@더큰도시락",
-                            name_sub:"세종대학교",
-                            name_main:"더큰도시락",
-                            classification:"한식",
-                            star_rating:4.8},
-                            {takitId:"서울창업허브@그릿스테이크",
-                            name_sub:"서울창업허브",
-                            name_main:"그릿 스테이크",
-                            classification:"양식",
-                            star_rating:4.8},
-                            {takitId:"세종대학교@더큰도시락@",
-                            name_sub:"세종대학교",
-                            name_main:"더큰도시락",
-                            classification:"한식",
-                            star_rating:4.8},
-                            {takitId:"서울창업허브@그릿스테이크",
-                            name_sub:"서울창업허브",
-                            name_main:"그릿 스테이크",
-                            classification:"양식",
-                            star_rating:4.8} ];
-
+  constructor(public navCtrl: NavController,private app: App
+              ,public storageProvider:StorageProvider
+              ,public serverProvider:ServerProvider) {
+  
     this.recently_visited_shop=[{takitId:"더큰도시락@세종대학교",
                             name_sub:"세종대학교",
                             name_main:"더큰도시락",
@@ -63,13 +45,10 @@ export class HomePage {
     //Just for testing                                               
     this.recently_visited_shop.forEach(shop => {
       shop.imagePath=this.awsS3+"shop.png";
-    });               
-    this.recommendations.forEach(shop => {
-      shop.imagePath=this.awsS3+"shop.png";
-    });               
-                 
+    });                                
   }
 
+/*
   getShops(ev:any){
     let val = ev.target.value;
     if (val && val.trim() != '') {
@@ -78,17 +57,31 @@ export class HomePage {
       })
     }
   }
+*/
 
   showSearchBar(){
-    this.app.getRootNavs()[0].push(SearchPage);
-  }
-
-  onCancel(ev:any){
-      this.overlayHidden=true;
+      this.navCtrl.push(SearchPage);
   }
 
   enterShop(takitId){
-    this.app.getRootNavs()[0].push(ShopPage);
+         if(!this.shopSelected){
+            this.shopSelected=true;
+            console.log("this.shopSelected true");
+            setTimeout(() => {
+                console.log("reset shopSelected:"+this.shopSelected);
+                this.shopSelected=false;
+            }, 1000); //  seconds     
+            this.serverProvider.getShopInfo(takitId).then((res:any)=>{
+                this.storageProvider.shopResponse=res;
+                console.log("this.storageProvider.shopResponse: "+JSON.stringify(this.storageProvider.shopResponse));
+                this.app.getRootNavs()[0].push(ShopPage,{takitId:takitId});
+            },(err)=>{
+                console.log("error:"+JSON.stringify(err));
+                 this.shopSelected=false;
+            });
+        }else{
+            console.log("this.shopSelected works!");
+        }
   }  
 
   buttonPressed(){

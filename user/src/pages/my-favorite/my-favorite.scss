@@ -138,6 +138,9 @@ page-my-favorite {
     .empty-img{
         padding-top:calc((64/667)*100vh);
         padding-bottom:calc((32/667)*100vh);
+        img{
+            width:calc((198/376)*100vw);
+        }
     }
 
     .empty-text{

@@ -75,8 +75,16 @@ page-home {
                 left: 0px;
                 top: calc((142/667)*100vh);
                 font-size:3.8vw;  
-                color: #4a4a4a;
+                color: #bdbdbd;//#4a4a4a;
             }
+
+            .noti-box{
+                color: #4a4a4a;//#bdbdbd;
+                font-size:3vw;
+                border-radius: 8px;
+	            border: solid 1px #4a4a4a;//#bdbdbd;
+            }
+
             .star_rating{
                 margin:0px;
                 position: absolute;
@@ -157,4 +165,10 @@ page-home {
         margin-left: 10px;
         margin-bottom:0px;
     }
+
+    .profile-smile{
+        width:calc((150/376)*100vw);
+    }
+
+
 }

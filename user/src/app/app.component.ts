@@ -12,6 +12,8 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { ErrorPage } from '../pages/error/error';
 import { LoginProvider } from '../providers/login/login';
 
+declare var cordova:any;
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -26,6 +28,9 @@ export class MyApp {
              public loginProvider:LoginProvider,
              private network: Network) {
     platform.ready().then(() => {
+
+            const args = ['GET', 'http://takit.biz'];
+            cordova.exec(null, null, 'WKWebViewSyncCookies', 'sync', args);
 
             this.disconnectSubscription = this.network.onDisconnect().subscribe(() => { 
                 console.log('network was disconnected :-( ');

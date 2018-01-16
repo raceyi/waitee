@@ -36,6 +36,7 @@ export class MenuPage {
   }
 
   back(){
+    console.log("back comes");
     this.navCtrl.pop();  
   }
 
@@ -101,4 +102,5 @@ export class MenuPage {
   order(){
     this.navCtrl.push(PaymentPage);
   }
+
 }
