@@ -13,11 +13,15 @@
                                 <img  [src]="storageProvider.awsS3+shop.imagePath">
                                 <p class="name-sub">{{shop.name_sub}}</p>
                                 <p class="name-main"><b>{{shop.name_main}}</b></p>
+                                <!--
                                 <p class="classification">{{shop.classification}}&nbsp;
-                                  <span class="noti-box" *ngIf="shop.paymethod.cash!=undefined">캐쉬
+                                -->
+                                <p class="classification">
+                                  <span class="noti-box" *ngIf="shop.paymethod.cash!=undefined">캐시
                                   <b *ngIf="shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>&nbsp;
                                   <span class="noti-box" *ngIf="shop.paymethod.card!=undefined">카드
                                   <b *ngIf="shop.paymethod.card!=undefined && shop.paymethod.card!='0%'">{{shop.paymethod.card}}</b></span>
+                                  <span class="noti-box" *ngIf="shop.deliveryArea!=undefined && shop.deliveryArea!=null">배달</span>                                  
                                 </p>
                                 <div class="star_rating" *ngIf="shop.rate!=undefined && shop.rate>0">
                                   <ion-icon *ngIf="shop.rate>0.7" name="md-star"></ion-icon>
@@ -78,11 +82,16 @@
         </ion-scroll>
 </div>
 
-<ion-fab bottom color="primary" bottom right>
-    <button class="fab-btn" (click)="exitTourMode()"ion-fab color="white">
-        <ion-icon name="ios-exit-outline">
-        </ion-icon>
+<ion-fab bottom right>
+    <button class="fab-btn" (click)="openCart()" ion-fab color="white">
+      <custom-icon set="tabs" name="cart"></custom-icon>
     </button>
 </ion-fab>
+<ion-fab bottom left>
+    <button class="fab-btn" (click)="exitTourMode()" ion-fab color="white">
+      <custom-icon set="tabs" name="exit"></custom-icon>
+    </button>
+</ion-fab>
+
 
 </ion-content>

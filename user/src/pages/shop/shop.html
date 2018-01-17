@@ -22,26 +22,43 @@
 </ion-header>
 
 <ion-content #shophomeContent>
-    <!--
+<div class="shop-img" [ngStyle]="ngStyle">
+<ion-row text-right *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash!=undefined">
+    <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash=='0%'">&nbsp;캐시결제</span>
+                        <span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash!='0%'">&nbsp;캐시결제{{storageProvider.shopResponse.shopInfo.paymethod.cash}}할인&nbsp;</span>
+    </ion-col>
+</ion-row>
+<ion-row text-right *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card!=undefined">
+    <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card=='0%'">&nbsp;카드결제</span>
+                        <span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card!='0%'"> &nbsp;카드결제{{storageProvider.shopResponse.shopInfo.paymethod.card}}할인&nbsp;</span>
+    </ion-col>
+</ion-row>
+</div>
+
+<ion-row>
+<ion-col no-padding class="shop-text-info">
+<label class="label">영업시간</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.businessTimes[0]}}</span>
+</ion-col>
+<ion-col no-padding  class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.breakTime!=null">
+<label class="label">브레이크</label>  <span class="value"> {{storageProvider.shopResponse.shopInfo.breakTime}} </span>
+</ion-col>
+</ion-row>
+
+<ion-row>
+<ion-col no-padding div class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.shopPhone!=null && storageProvider.shopResponse.shopInfo.shopPhone!=undefined">
+<label class="label">전화번호</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.shopPhone}} </span>
+</ion-col>
+<ion-col no-padding  class="shop-text-info" *ngIf="regularOff!=undefined && regularOff.length>0">
+<label class="label">휴무요일</label>  <span class="value"> {{regularOff}} </span>
+</ion-col>
+</ion-row>
 <div class="shop-text-info">
 <label class="label">주소</label>  <span class="value">{{shop.shopInfo.address}}</span>
 </div>
-<div class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.shopPhone!=null">
-<label class="label">전화번호</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.shopPhone}} </span>
+<div class="shop-text-info" *ngIf="shop.shopInfo.deliveryArea!=null">
+<label class="label">배달</label>  <span class="value">{{shop.shopInfo.freeDelivery}}원이상 무료 배송</span>
 </div>
 
-<img class="shop-img" [src]="storageProvider.awsS3+storageProvider.shopResponse.shopInfo.imagePath">
-
-<div class="shop-text-info">
-<label class="label">영업시간</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.businessTimes[0]}}</span>
-</div>
-<div class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.breakTime!=null">
-<label class="label">브레이크</label>  <span class="value"> {{storageProvider.shopResponse.shopInfo.breakTime}} </span>
-</div>
-<div class="shop-text-info">
-<label class="label">휴무요일</label>  <span class="value"> {{storageProvider.shopResponse.shopInfo.regularOff}} </span>
-</div>
--->
 <ion-row class="row-categories-menus">
              <ion-col col-3 class="col-categories" no-padding>
                 <ion-scroll scrollY="true" class="scroll-categories">
@@ -62,7 +79,8 @@
                         <ion-item class="left" no-padding>
                              <img class="img-shop" [src]="storageProvider.awsS3+menu[0].imagePath">
                             <h2>{{menu[0].menuName}}</h2>
-                            <p>{{menu[0].price}}</p>
+                            <p>{{menu[0].price}} <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 
+                                                 <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea!=null" >포장/배달</span></p>
                         </ion-item>
                     </button>
                     </ion-col>
@@ -71,7 +89,8 @@
                         <ion-item no-padding>
                              <img class="img-shop" [src]="storageProvider.awsS3+menu[1].imagePath">
                             <h2>{{menu[1].menuName}}</h2>
-                            <p>{{menu[1].price}}</p>
+                            <p>{{menu[1].price}}원 <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 
+                                                   <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea!=null" >포장/배달</span></p> 
                         </ion-item>
                     </button>
                     <button *ngIf="!menu[1]" color="white" ion-button full no-padding no-margin>
@@ -83,4 +102,11 @@
                 </ion-scroll>
             </ion-col>
 </ion-row>
+
+<ion-fab bottom right>
+    <button class="fab-btn" (click)="openCart()" ion-fab color="white">
+      <custom-icon set="tabs" name="cart"></custom-icon>
+    </button>
+</ion-fab>
+
 </ion-content>

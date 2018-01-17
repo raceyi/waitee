@@ -117,10 +117,11 @@
     <ion-col text-right><button style="font-size:3.5vw;" (click)="logout()" clear ion-button>로그아웃</button></ion-col>
     <ion-col text-left><button style="font-size:3.5vw;" (click)="unregister()" clear ion-button>회원탈퇴</button></ion-col>  
   </ion-row>
-<ion-fab bottom color="primary" bottom right>
-    <button class="fab-btn" (click)="exitTourMode()"ion-fab color="white">
-        <ion-icon name="ios-exit-outline">
-        </ion-icon>
+
+<ion-fab bottom left>
+    <button class="fab-btn" (click)="exitTourMode()" ion-fab color="white">
+      <custom-icon set="tabs" name="exit"></custom-icon>
     </button>
-</ion-fab>  
+</ion-fab>
+
 </ion-content>

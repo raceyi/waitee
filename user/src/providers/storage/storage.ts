@@ -211,8 +211,8 @@ export class StorageProvider {
                 element.name_sub = strs[0];
                 element.name_main= strs[1];
                 element.paymethod=JSON.parse(element.paymethod);
-                console.log("cash:"+element.paymethod.cash);
-                console.log("card:"+element.paymethod.card);
+                //console.log("cash:"+element.paymethod.cash);
+                //console.log("card:"+element.paymethod.card);
             });
         }
         /*
@@ -453,7 +453,7 @@ INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo)
      shopInfoSet(shopInfo:any){
         console.log("shopInfoSet:"+JSON.stringify(shopInfo));
         this.shopInfo=shopInfo;
-        console.log("discountRate:"+this.shopInfo.discountRate);
+        //console.log("discountRate:"+this.shopInfo.discountRate);
     } 
  
      shoplistCandidateUpdate(shop){

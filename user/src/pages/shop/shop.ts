@@ -30,14 +30,50 @@ export class ShopPage {
   categories;
   menus=[];
   shopInfo:any;
+  regularOff;
+  ngStyle;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
               public serverProvider:ServerProvider,
               private alertCtrl:AlertController,public storageProvider:StorageProvider) {
+
       console.log("ShopPage");
       this.storageProvider.takitId=navParams.get("takitId");
       this.takitId==navParams.get("takitId");
       this.shop=this.storageProvider.shopResponse;
+      console.log("businessTime: "+ this.shop.shopInfo.businessTime);
+      this.shop.shopInfo.businessTimes=JSON.parse(this.shop.shopInfo.businessTime);
+      var date=new Date();
+      this.shop.shopInfo.businessTime=this.shop.shopInfo.businessTimes[date.getDay()];
+      console.log(this.shop.shopInfo.businessTime);
+      for(var index=0;index<this.shop.shopInfo.businessTimes.length;index++){
+          let strs:string=this.shop.shopInfo.businessTimes[index].split("~");
+          if(strs[0]==strs[1]){
+              this.regularOff+=" "+this.getDayString(index);
+          }
+      }
+      storageProvider.shopResponse.shopInfo.paymethod=JSON.parse(storageProvider.shopResponse.shopInfo.paymethod);
+      console.log("paymethod:"+ storageProvider.shopResponse.shopInfo.paymethod.card);
+      console.log("paymethod:"+ storageProvider.shopResponse.shopInfo.paymethod.cash);
+      this.ngStyle={'background-image': 'url('+ storageProvider.awsS3+storageProvider.shopResponse.shopInfo.imagePath + ')'};
+  }
+
+  getDayString(i){
+    if(i==0){
+      return "일요일";
+    }else if(i==1){
+      return "월요일";
+    }else if(i==2){
+      return "화요일";
+    }else if(i==3){
+      return "수요일";
+    }else if(i==4){
+      return "목요일";
+    }else if(i==5){
+      return "금요일";
+    }else if(i==6){
+      return "토요일";
+    }
   }
 
   ionViewWillEnter(){ 

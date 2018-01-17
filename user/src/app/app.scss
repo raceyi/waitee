@@ -74,3 +74,19 @@ $default-color:#6441a5;
     background:white;
    // height: calc((82/667)*100vh); it results in problem under iPhoneX
 }
+
+
+.fab-btn{
+        color: white;
+        background-color: #50e3c2;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+}
+
+.fab ion-icon, .fab custom-icon {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    font-size: 18vw !important;
+}
