@@ -23,23 +23,37 @@ export class HomePage {
                             name_sub:"세종대학교",
                             name_main:"더큰도시락",
                             classification:"한식",
-                            star_rating:4.8},
+                            rate:1.8,
+                            freeDelivery:10000,
+                            deliveryArea:"세종대학교인근"
+                            },
                             {takitId:"그릿스테이크@서울창업허브",
                             name_sub:"서울창업허브",
                             name_main:"그릿 스테이크",
                             classification:"양식",
-                            star_rating:4.8},
+                            rate:2.8},
                             {takitId:"더큰도시락@세종대학교",
                             name_sub:"세종대학교",
                             name_main:"더큰도시락",
                             classification:"한식",
-                            star_rating:4.8},
+                            rate:3.8},
                             {takitId:"그릿스테이크@서울창업허브",
                             name_sub:"서울창업허브",
                             name_main:"그릿 스테이크",
                             classification:"양식",
-                            star_rating:4.8} ];
+                            rate:4.8} ];
 
+    for(var i=0;i<this.recommendations.length;i++){
+      this.recommendations[i].payment={'card':'2%','cash':'5%'};  
+    }
+    this.recommendations[1].payment={'card':'2%'};
+/*
+    this.recommendations[0].payment={'card':'2%','cash':'5%'};
+    this.recommendations[1].payment={'card':'2%'};
+    this.recommendations[2].payment={'cash':'5%'};
+    this.recommendations[3].payment={'card':'0%','cash':'5%'};
+    this.recommendations[4].payment={'card':'2%','cash':'0%'};
+*/
     this.recently_visited_shop=[{takitId:"더큰도시락@세종대학교",
                             name_sub:"세종대학교",
                             name_main:"더큰도시락",

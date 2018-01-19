@@ -6,6 +6,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import {StorageProvider} from '../../providers/storage/storage';
 
 import * as moment from 'moment';
+
+var gWalletPage;
 /**
  * Generated class for the WalletPage page.
  *
@@ -66,6 +68,8 @@ export class WalletPage {
             element.service=strs[1];
        }
    });
+
+   gWalletPage=this;
   }
 
 
@@ -120,19 +124,22 @@ export class WalletPage {
     this.app.getRootNavs()[0].push(CashChargePage);
   }
 
-    registerCard(){
+   registerCard(){
+    return new Promise((resolve,reject)=>{
+    let customer_uid=this.storageProvider.email+'_'+new Date().getTime();
+    console.log("customer_uid:"+customer_uid);
     let param={
             pay_method : 'card', // 'card'만 지원됩니다.
             merchant_uid : 'merchant_' + new Date().getTime(), // 결제건별로 고유한 값을 지정합니다.
             name : '최초인증결제',
             amount : 0, // 빌링키 발급
-            customer_uid : 'your-customer-unique-id', //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다. 한번 등록된 값을 가지고 결제를 수행함으로 고객의 등록카드별로 다른값을 사용하시기 바랍니다.
+            customer_uid : customer_uid, //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다. 한번 등록된 값을 가지고 결제를 수행함으로 고객의 등록카드별로 다른값을 사용하시기 바랍니다.
             buyer_email : 'iamport@siot.do',
             buyer_name : '아임포트',
             buyer_tel : '02-1234-1234'
         }
 
-    const redirectUrl = "http://xxx.xxx.xxx.xxx/iamportResult";//It brings about load error. Please change it with your server address
+    const redirectUrl = "http://takit.biz:8000/oauth";//It brings about load error. Please change it with your server address
     let localfile;
     if(this.platform.is('android')){
         console.log("android");
@@ -144,18 +151,39 @@ export class WalletPage {
     this.browserRef=this.iab.create(localfile,"_blank");
     this.browserRef.on("loadstart").subscribe(function (e) {
         if (e.url.startsWith(redirectUrl)) {
+            if(gWalletPage.browserRef!=undefined){
+                console.log("call gBrowserRef.close");
+                gWalletPage.browserRef.close(); 
+            }else
+                console.log("this.browserRef is undefined");
+            gWalletPage.done=true;
             console.log("result:"+e.url);
-            this.done=true;
-            this.browserRef.close(); 
+            if(e.url.includes("imp_success=true")){
+                console.log("cert success");
+                resolve();
+            }else
+                console.log("cert failure");            
+                reject();
         }
     });
     this.browserRef.on("loaderror").subscribe((event)=>{
         console.log("loaderror:"+event.url);
-        this.done=true; // Please change redirectUrl with your server address to prevent loaderror;
-        this.browserRef.close();
+        gWalletPage.done=true; // Please change redirectUrl with your server address to prevent loaderror;
+        if(gWalletPage.browserRef!=undefined){
+                console.log("call this.browserRef.close");
+                gWalletPage.browserRef.close();
+        }
     });
     this.browserRef.on("loadstop").subscribe((event)=>{
         console.log("loadstop event comes "+event.url);
+        if(gWalletPage.done){ 
+            if(gWalletPage.browserRef!=undefined){
+                console.log("close browser");
+                gWalletPage.browserRef.close();
+            }else
+                console.log("browserRef undefined");            
+            return;
+        }
         let url:string=event.url;
         if(url.endsWith('iamport.html')){ 
             const inlineCallback = `(rsp) => {
@@ -173,15 +201,19 @@ export class WalletPage {
     });
     this.browserRef.on("exit").subscribe(
         (e) => {
-            if(!this.done){
+            console.log("gWalletPage.done:"+gWalletPage.done)
+            if(!gWalletPage.done){
                 let alert = this.alertController.create({
                     title: '사용자가 결제를 취소하였습니다.',
                     buttons: ['OK']
                 });
                 alert.present();
+            }else{
+                console.log("browser close");
             }
         }
     );
+    });
   }
 
 }

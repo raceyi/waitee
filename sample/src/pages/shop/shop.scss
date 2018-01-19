@@ -31,6 +31,31 @@ page-shop {
     .shop-img{
         width: 100vw;
         height: calc((136/667)*100vh);
+        background-size: 100vw calc((136/667)*100vh); 
+        span{
+            font-size:3.4vw;
+        	border-radius: 13px;
+	        background-color: #ffffff;
+	        border: solid 1px #6441a5;
+            color:$default-color;
+        }
+    }
+
+    .info-overlay{
+        position: fixed;
+        width: 100vw;
+        height: calc((136/667)*100vh);
+        background: rgba(0,0,0,0);
+        z-index: 20;
+        top: calc((50/667)*100vh);;
+        left: 0;
+        span{
+            font-size:3.4vw;
+        	border-radius: 13px;
+	        background-color: #ffffff;
+	        border: solid 1px #6441a5;
+            color:$default-color;
+        }
     }
 
     .scroll-categories{
@@ -129,5 +154,11 @@ page-shop {
         border-color: #f2f2f2;
         border-width: 2vw;
         height: 90vh;
+    }
+
+    .text-border{
+        border-radius: 8px;
+	    border: solid 1px #6441a5;
+        font-size: 2.6vw;
     }
 }

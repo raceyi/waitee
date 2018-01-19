@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {OrderDetailPage} from '../order-detail/order-detail';
+import {CashChargePage} from '../cash-charge/cash-charge';
+import {StorageProvider} from '../../providers/storage/storage';
 
 /**
  * Generated class for the PaymentPage page.
@@ -19,7 +21,17 @@ export class PaymentPage {
   takeoutColor="#bdbdbd";
   deliveryColor="#bdbdbd";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  receiptIdMask:string;
+
+  paymethods=[{name:"비자카드",type:"card"},
+              {name:"마스터카드",type:"card"},
+              {name:"휴대폰결제",tyep:"phone"}
+  ];
+
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              public storageProvider:StorageProvider) {
+      this.receiptIdMask=this.storageProvider.receiptId;
   }
 
   ionViewDidLoad() {
@@ -51,5 +63,9 @@ export class PaymentPage {
   back(){
     console.log("[PaymentPage]back comes");
     this.navCtrl.pop();
+  }
+
+  moveChargePage(){
+    this.navCtrl.push(CashChargePage);
   }
 }

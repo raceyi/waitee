@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,AlertController } from 'ionic-angular';
 import {CashManualConfirmPage} from '../cash-manual-confirm/cash-manual-confirm';
 import {StorageProvider} from '../../providers/storage/storage';
+import {CashTutorialPage} from '../cash-tutorial/cash-tutorial';
 
 declare var cordova:any;
 
@@ -39,7 +40,7 @@ export class CashChargePage {
   }
 
   moveTutorial(){
-    
+    this.navCtrl.push(CashTutorialPage);
   }
 
   copyAccountInfo(){

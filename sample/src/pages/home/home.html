@@ -33,22 +33,51 @@
                                 -->
                                 <p class="name-sub">{{shop.name_sub}}</p>
                                 <p class="name-main"><b>{{shop.name_main}}</b></p>
-                                <p class="classification">{{shop.classification}}&nbsp;<span class="noti-box">캐쉬</span>&nbsp;<span class="noti-box">카드</span></p>
+                                <!--
+                                <p class="classification">{{shop.classification}}&nbsp;
+                                  -->
+                                <p class="classification">
+                                  <span class="noti-box" *ngIf="shop.payment.cash!=undefined">캐쉬
+                                  <b *ngIf="shop.payment.cash!=undefined && shop.payment.cash!='0%'">{{shop.payment.cash}}</b></span>&nbsp;
+                                  <span class="noti-box" *ngIf="shop.payment.card!=undefined">카드
+                                  <b *ngIf="shop.payment.card!=undefined && shop.payment.card!='0%'">{{shop.payment.card}}</b></span>
+                                  <span class="noti-box" *ngIf="shop.deliveryArea!=undefined && shop.deliveryArea!=null">배달</span>
+                                </p>
+
                                 <div class="star_rating">
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <p>{{shop.star_rating}}</p>
+                                  <ion-icon *ngIf="shop.rate>0.7" name="md-star"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate <0.3" name="ios-star-outline"></ion-icon>
+                                  <ion-icon *ngIf="0.3 <=shop.rate && shop.rate<= 0.7" name="ios-star-half"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate>1.7" name="md-star"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate <1.3" name="ios-star-outline"></ion-icon>
+                                  <ion-icon *ngIf="1.3 <=shop.rate && shop.rate<= 1.7" name="ios-star-half"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate>2.7" name="md-star"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate <2.3" name="ios-star-outline"></ion-icon>
+                                  <ion-icon *ngIf="2.3 <=shop.rate && shop.rate<= 2.7" name="ios-star-half"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate>3.7" name="md-star"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate <3.3" name="ios-star-outline"></ion-icon>
+                                  <ion-icon *ngIf="3.3 <=shop.rate && shop.rate<= 3.7" name="ios-star-half"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate>4.7" name="md-star"></ion-icon>
+                                  <ion-icon *ngIf="shop.rate <4.3" name="ios-star-outline"></ion-icon>
+                                  <ion-icon *ngIf="4.3 <=shop.rate && shop.rate<= 4.7" name="ios-star-half"></ion-icon>
+                                  <p>{{shop.rate}}</p>
                                 </div>
+
                             </button>
                 </ion-col>
             </ion-row>
         </ion-scroll>
 </div>
 
-<p class="section-title"><b>최근 방문</b></p>
+<p class="section-title"><b>최근 주문 음식점</b></p>
+<div>
+<p class="section-title">웨이티에 오신 것을 환영합니다!</p>
+<p class="section-title">첫주문을 해주시겠어요?</p>
+<div text-right>
+<img class="profile-smile" src="assets/imgs/profile-smile.png">
+</div>
+</div>
+
 <div class="scroll-div">
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
@@ -75,10 +104,14 @@
         </ion-scroll>
 </div>
 
-<ion-fab bottom color="primary" bottom right>
-    <button class="fab-btn" (click)="exitTourMode()"ion-fab color="white">
-        <ion-icon name="ios-exit-outline">
-        </ion-icon>
+<ion-fab bottom right>
+    <button class="fab-btn" (click)="openCart()" ion-fab color="white">
+      <custom-icon set="tabs" name="cart"></custom-icon>
+    </button>
+</ion-fab>
+<ion-fab bottom left>
+    <button class="fab-btn" (click)="exitTourMode()" ion-fab color="white">
+      <custom-icon set="tabs" name="exit"></custom-icon>
     </button>
 </ion-fab>
 

@@ -22,6 +22,9 @@ export class ShopPage {
   shopInfo:any;
   shopPhoneHref;
   categorySelected=0;
+  public imgPath;
+  shopImage;
+  ngStyle;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,public storageProvider:StorageProvider) {
 
@@ -97,12 +100,16 @@ export class ShopPage {
                          "ownerImagePath":null,
                          "snsAddress":null,
                          "keyword":"세종대",
-                         "takeout":"2"};       
+                         "takeout":"2",
+                         "paymethod":{'card':'2%','cash':'5%'}};       
           this.shopInfo.businessTimes=JSON.parse(this.shopInfo.businessTime);  
           this.shopInfo.regularOff="토,일"; 
           if(this.shopInfo.shopPhone!='null' && this.shopInfo){
               this.shopPhoneHref="tel:"+this.shopInfo.shopPhone;
           }    
+
+          this.imgPath="https://s3.ap-northeast-2.amazonaws.com/seerid.cafe.image/세종대@더큰도시락_main";
+          this.ngStyle={'background-image': 'url('+ this.imgPath + ')'};
   }
 
  this.categories=[{"takitId":"세종대@더큰도시락","categoryNO":"1","categoryName":"정식도시락","categoryNameEn":"Basic",sequence:1 ,menus:[]},
@@ -173,7 +180,10 @@ export class ShopPage {
   }
 
   selectMenu(menu){
-       this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu)});
+       let shopInfo={takitId:this.shopInfo.takitId, 
+                    address:this.shopInfo.address, 
+                    shopName:this.shopInfo.shopName}
+       this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu),shopInfo:JSON.stringify(shopInfo)});
   }
 
   back(){

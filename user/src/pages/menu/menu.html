@@ -18,7 +18,16 @@
 <div class="menu-img" text-center>
   <img [src]="storageProvider.awsS3+menu.imagePath">
 </div>
-
+  <p *ngIf="menu.explanation!=undefined && menu.explanation!=null" text-wrap text-center style="color:#6441a5;font-size:4vw;">
+{{menu.explanation}}
+  </p>
+<div *ngIf="menu.ingrediant!=undefined && menu.ingrediant!=null">  
+<button [hidden]="ingredientShown" class="expand-button" (click)="expand()" full no-padding no-margin ion-button><span text-left style="width:80vw;">상세보기</span> <span text-right><ion-icon name="ios-arrow-down"></ion-icon></span> </button>
+<button [hidden]="!ingredientShown" class="expand-button inside-ingredients" (click)="collapse()" full no-padding no-margin ion-button><span text-left style="width:80vw;">&nbsp;</span> <span text-right><ion-icon name="ios-arrow-up"></ion-icon></span> </button>
+<pre [hidden]="!ingredientShown" class="ingredients" style="font-size:3.4vw;">구성 : 밥, 3찬(데리치킨, 김치, 멸치볶음) 
+{{menu.ingrediant}}}
+</pre>
+</div>
 <ion-row>
   <ion-col class="menu-text-info" text-left>
    가격
@@ -95,7 +104,7 @@
 <div class="price">
 <ion-row>
   <ion-col class="left-col" text-left>결제금액</ion-col>
-  <ion-col class="right-col" text-right>{{3600}}원</ion-col>
+  <ion-col class="right-col" text-right>{{amount}}원</ion-col>
 </ion-row>
 </div>
 <div class="request">

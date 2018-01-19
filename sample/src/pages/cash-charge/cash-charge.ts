@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {CashManualConfirmPage} from '../cash-manual-confirm/cash-manual-confirm';
+import {CashTutorialPage} from '../cash-tutorial/cash-tutorial';
 
 /**
  * Generated class for the CashChargePage page.
@@ -33,6 +34,6 @@ export class CashChargePage {
   }
 
   moveTutorial(){
-    
+    this.navCtrl.push(CashTutorialPage);
   }
 }
