@@ -76,6 +76,46 @@
     결제방식
   </ion-row>
 <div class="scroll-div">
+        <ion-scroll scrollX="true" class="scroll-latest">
+            <ion-row class="scroll-row-latest">
+                <ion-col [ngClass]="currentCashClasses" text-center no-padding >
+
+                  <ion-row class="cash-label" style="border:0px;" >
+                  <button no-margin no-padding  ion-button full (click)="cashSelect()" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐쉬</b></button>
+                  </ion-row>
+                  <ion-row class="cash-value" style="border:0px;"> 
+                  <button no-margin no-padding  ion-button  full  (click)="cashSelect()" style="font-size:4vw;"> 잔액: 32500원</button>
+                  </ion-row>
+                  <ion-row>
+                    <button class="cash-charge" style="color:white;" (click)="moveChargePage()" no-padding no-margin full clear ion-button>충전</button>
+                  </ion-row>
+                </ion-col>
+                 <ion-col [ngClass]="currentCardClassesArray[i]" [style.background-color]="payment.background" *ngFor="let payment of storageProvider.payInfo;let i=index;"  no-padding>
+                            <ion-row class="card-remove"><ion-col col-10 no-padding no-margin >&nbsp;</ion-col> 
+                                    <ion-col col-2 no-padding no-margin><button (click)="removeCard(i)" no-padding no-margin ion-button clear style="color:white;"><ion-icon name="md-close"></ion-icon></button></ion-col>
+                            </ion-row>
+                            <button class="card-button"  (click)="cardSelect(i)" full clear no-padding no-margin ion-button>
+                              {{payment.info.name}} 
+                            </button>                     
+                            <button style="font-size:4vw;" (click)="cardSelect(i)" class="card-button" full clear no-padding no-margin ion-button>
+                              {{payment.info.mask_no}} 
+                            </button>
+                </ion-col>
+                 <ion-col text-center class="card-add card-button scroll-col-latest"  no-padding>
+                              <ion-row text-center class="card-add-label"><b style="font-size:4.5vw;">카드 등록</b></ion-row>
+                              <ion-row text-center class="card-add-label"><span style="font-size:3.4vw;">10원이 결제되고 등록 후 취소됩니다</span></ion-row>
+                              <ion-row text-center>
+                                <button style="background-color:#e8e8e8;;color:#6441a5;" no-padding no-margin full ion-button>
+                                    <b style="font-size:4.8vw;"><ion-icon name="ios-add-circle-outline"></ion-icon></b>
+                                </button>
+                              </ion-row>
+                </ion-col>
+            </ion-row>
+        </ion-scroll>
+</div>
+  
+<!--  
+<div class="scroll-div">
         <ion-scroll scrollX="true" #scroll class="scroll-latest">          
             <ion-row class="scroll-row-latest">
                 <ion-col text-center no-padding no-margin class="cash-card scroll-col-latest">
@@ -111,6 +151,7 @@
             </ion-row>
         </ion-scroll>
 </div>
+-->
 </div>
 
 <div class="notice-section">

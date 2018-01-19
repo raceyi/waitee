@@ -10,8 +10,15 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class StorageProvider {
 
+    receiptIssue = true;
+    receiptIdMask ="010XXXX8226";
+    //receiptType='IncomeDeduction';
+    receiptType='ExpenseProof';
+
   shopResponse:any;
   awsS3="https://s3.ap-northeast-2.amazonaws.com/seerid.cafe.image/";
+
+  public frequentShopList=[];
 
     banklist=[  {name:"국민",value:"004"},
                 {name:"기업",value:"003"},
@@ -76,6 +83,38 @@ export class StorageProvider {
                 {name:"케이뱅크", value:"089"},
                 {name:"카카오뱅크", value:"090"}];
 
+cardColorlist=[
+              {name:"bc",color:"#ec4855"},
+              {name:"shinhan",color:"#134596"},
+              {name:"samsung",color:"#0d62a8"},
+              {name:"kb",color:"#756d62"}, //국민 
+              {name:"hyundai",color:"#000000"},
+              {name:"woori",color:"#1a9fda"},
+              {name:"lotte",color:"#e02431"},
+              {name:"hana",color:"#108375"},
+              {name:"kakao", color:"#EBE315"},
+              {name:"master", color:"#fc601f"},
+              {name:"union",color:"#fb0f1c"},
+              {name:"visa", color:"#1a215d"},
+              {name:"비씨",color:"#ec4855"},
+              {name:"신한",color:"#134596"},
+              {name:"삼성",color:"#0d62a8"},
+              {name:"국민",color:"#756d62"},
+              {name:"현대",color:"#000000"},
+              {name:"우리",color:"#1a9fda"},
+              {name:"롯데",color:"#e02431"},
+              {name:"하나",color:"#108375"},
+              {name:"카카오", color:"#EBE315"},
+              {name:"마스터", color:"#fc601f"},
+              {name:"유니온페이",color:"#fb0f1c"},
+              {name:"비자", color:"#1a215d"}];
+
+payInfo=[{customer_uid:"kalen.lee_xxxxx",info:{ mask_no:'xxxx-xxxx-xxxx-xxxxx',name:'bc카드'}},
+         {customer_uid:"kalen.lee_xxxxx",info:{ mask_no:'xxxx-xxxx-xxxx-xxxxx',name:'visa카드'}}
+];
+
+defaultCardColor ="#33B9C6";                     
+
   constructor(public http: HttpClient) {
 
     console.log('Hello StorageProvider Provider');
@@ -90,7 +129,20 @@ export class StorageProvider {
                                {"menuNO":"세종대@더큰도시락;1","menuName":"버섯불고기도시락","explanation":"","ingredient":null,"price":"3800","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_버섯불고기도시락","requiredTime":null,"menuNameEn":"Mushroom bulgogi ","explanationEn":"beef","ingredientEn":null,"optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"},{\"name\":\"Katsu 1pcs\",\"price\":\"1000\"},{\"name\":\"Spam 1pcs\",\"price\":\"1000\"}]"},{"menuNO":"세종대@더큰도시락;1","menuName":"삼식도시락","explanation":"돈까스, 치킨, 숯불바베큐(돈까스소스)","ingredient":null,"price":"3700","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_삼식도시락","requiredTime":null,"menuNameEn":"Samsik ","explanationEn":"pork, chicken","ingredientEn":null,"optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"},{\"name\":\"Katsu 1pcs\",\"price\":\"1000\"},{\"name\":\"Spam 1pcs\",\"price\":\"1000\"}]"},
                                {"menuNO":"세종대@더큰도시락;1","menuName":"삼치도시락","explanation":"","ingredient":null,"price":"3800","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_삼치도시락","requiredTime":null,"menuNa
 */
-
+    this.determinCardColor(); 
  }
+
+  determinCardColor(){
+    this.payInfo.forEach((payment:any)=>{
+        payment.background=this.defaultCardColor;
+        for(var i=0;i<this.cardColorlist.length;i++){
+              let name:string=payment.info.name;
+              if(name.toLocaleLowerCase().startsWith(this.cardColorlist[i].name)){
+                    payment.background=this.cardColorlist[i].color;
+              }
+        }
+    })
+    console.log("payments:"+JSON.stringify(this.payInfo));
+  }
 
 }

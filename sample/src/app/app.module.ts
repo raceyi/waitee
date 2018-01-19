@@ -41,6 +41,9 @@ import {CashManualConfirmPageModule} from '../pages/cash-manual-confirm/cash-man
 import{PaymentPageModule} from '../pages/payment/payment.module';
 import {CashCancelChargePageModule} from '../pages/cash-cancel-charge/cash-cancel-charge.module';
 import {OrderCancelPageModule} from '../pages/order-cancel/order-cancel.module';
+import {ErrorPageModule} from '../pages/error/error.module';
+import {CartPageModule} from '../pages/cart/cart.module';
+import {CashTutorialPageModule} from '../pages/cash-tutorial/cash-tutorial.module';
 
 import {MyErrorHandler} from '../classes/my-error-handler';
 
@@ -81,6 +84,9 @@ import {MyErrorHandler} from '../classes/my-error-handler';
     PaymentPageModule,
     CashCancelChargePageModule,
     OrderCancelPageModule,
+    CartPageModule,
+    ErrorPageModule,
+    CashTutorialPageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],

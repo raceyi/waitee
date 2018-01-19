@@ -27,6 +27,32 @@ export class PaymentPage {
               {name:"휴대폰결제",tyep:"phone"}
   ];
   paymentSelection="cash";
+  cardIndex=-1;
+  currentCashClasses={
+    'cash-card':true,  
+    'card-unselect-border':false,
+    'scroll-col-latest':false,
+    'cash-select-border':true,
+    'select-scroll-col-latest':true
+  };
+
+/*
+  currentCardClasses={
+    'card-card':true,
+    'scroll-col-latest':true,
+    'card-unselect-border':true,
+    'select-scroll-col-latest':false,
+    'card-select-border':false
+  };
+  currentCardSelectClasses={
+    'card-card':true,
+    'scroll-col-latest':false,
+    'card-unselect-border':false,
+    'select-scroll-col-latest':true,
+    'card-select-border':true
+  };
+*/
+  currentCardClassesArray=[];
 
   //param;
   carts;
@@ -52,6 +78,16 @@ export class PaymentPage {
     this.carts.forEach(cart => { 
       this.totalAmount+=cart.amount; 
       shops.push(cart.takitId)
+    });
+
+    this.storageProvider.payInfo.forEach(payment=>{
+        this.currentCardClassesArray.push({
+            'card-card':true,
+            'scroll-col-latest':true,
+            'card-unselect-border':true,
+            'select-scroll-col-latest':false,
+            'card-select-border':false
+        });
     });
       /*
       let body = {takitIds:JSON.stringify(shops)};
@@ -168,11 +204,58 @@ export class PaymentPage {
   cashSelect(){
       this.paymentSelection="cash";
       this.computePayAmount();
+      this.currentCashClasses={
+      'cash-card':true,  
+      'card-unselect-border':false,
+      'scroll-col-latest':false,
+      'cash-select-border':true,
+      'select-scroll-col-latest':true
+    };
+    console.log("cashSelect:"+this.cardIndex);
+
+    if(this.cardIndex>=0){
+            this.currentCardClassesArray[this.cardIndex]={
+                'card-card':true,
+                'scroll-col-latest':true,
+                'card-unselect-border':true,
+                'select-scroll-col-latest':false,
+                'card-select-border':false
+            }; 
+    }
+    this.cardIndex=-1;
   }
 
-  cardSelect(card){
+  cardSelect(i){
       this.paymentSelection="card";
-      this.computePayAmount();      
+      this.computePayAmount(); 
+      console.log("unselect card :"+this.cardIndex);
+      if(this.cardIndex>=0){
+            this.currentCardClassesArray[this.cardIndex]={
+                'card-card':true,
+                'scroll-col-latest':true,
+                'card-unselect-border':true,
+                'select-scroll-col-latest':false,
+                'card-select-border':false
+            }; 
+      }
+
+      this.currentCashClasses={
+            'cash-card':true,  
+            'card-unselect-border':true,
+            'scroll-col-latest':true,
+            'cash-select-border':false,
+            'select-scroll-col-latest':false
+        };
+
+      this.currentCardClassesArray[i]={
+        'card-card':true,
+        'scroll-col-latest':false,
+        'card-unselect-border':false,
+        'select-scroll-col-latest':true,
+        'card-select-border':true
+      }; 
+      this.cardIndex=i;
+         
   }
-  
+
 }

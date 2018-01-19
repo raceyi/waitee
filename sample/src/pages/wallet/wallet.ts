@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
 import {CashRefundMainPage} from '../cash-refund-main/cash-refund-main';
 import {CashChargePage} from '../cash-charge/cash-charge';
 import * as moment from 'moment';
+import {StorageProvider} from '../../providers/storage/storage';
 /**
  * Generated class for the WalletPage page.
  *
@@ -19,13 +20,35 @@ export class WalletPage {
   search_mode="full";
   startDate="";
   endDate="";
-  paymethods=[{name:"비자카드",type:"card"},
-              {name:"마스터카드",type:"card"},
-              {name:"휴대폰결제",tyep:"phone"}
-  ];
   cashList;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,private app:App) {
+/*
+  currentCashClasses={
+    'cash-card':true,  
+    'card-unselect-border':false,
+    'scroll-col-latest':false,
+    'cash-select-border':true,
+    'select-scroll-col-latest':true
+  };
+*/
+  currentCashClasses={
+    'cash-card':true,  
+    'card-unselect-border':true,
+    'scroll-col-latest':true,
+    'cash-select-border':false,
+    'select-scroll-col-latest':false
+  };
+
+  currentCardClasses={
+    'card-card':true,
+    'scroll-col-latest':true,
+    'card-unselect-border':true,
+    'select-scroll-col-latest':false,
+    'card-select-border':false
+  };
+
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+              public storageProvider:StorageProvider,private app:App) {
     var date=new Date();
     var month=date.getMonth()+1;
 
@@ -105,4 +128,39 @@ export class WalletPage {
   chargeCash(){
     this.app.getRootNavs()[0].push(CashChargePage);
   }
+
+  removeCard(){
+    console.log("removeCard");
+  }
+
+  selectCard(){
+    console.log("selectCard");
+    this.currentCardClasses={
+        'card-card':true,
+        'scroll-col-latest':false,
+        'card-unselect-border':false,
+        'select-scroll-col-latest':true,
+        'card-select-border':true
+      };    
+      this.currentCashClasses={
+        'cash-card':true,  
+        'card-unselect-border':true,
+        'scroll-col-latest':true,
+        'cash-select-border':false,
+        'select-scroll-col-latest':false
+      };      
+  }
+
+  selectCash(){
+    console.log("selectCash");
+    this.currentCashClasses={
+      'cash-card':true,  
+      'card-unselect-border':false,
+      'scroll-col-latest':false,
+      'cash-select-border':true,
+      'select-scroll-col-latest':true
+    };
+
+  }
+
 }

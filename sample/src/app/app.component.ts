@@ -20,6 +20,10 @@ import {PaymentPage} from '../pages/payment/payment';
 import {CashCancelChargePage} from '../pages/cash-cancel-charge/cash-cancel-charge';
 import {OrderCancelPage} from '../pages/order-cancel/order-cancel';
 
+import {CartPage} from '../pages/cart/cart';
+import {ErrorPage} from '../pages/error/error';
+import {CashTutorialPage} from '../pages/cash-tutorial/cash-tutorial';
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -28,7 +32,8 @@ export class MyApp {
   //rootPage:any = CashRefundAccountPage;
   //rootPage:any = CashRefundMainPage;
   //rootPage:any =PaymentPage;
-  //rootPage:any = TabsPage;
+  //rootPage:any =CashTutorialPage;
+  rootPage:any = TabsPage;
   //rootPage:any = LoginMainPage;
   //rootPage:any = SignupPaymentPage;
   //rootPage:any=CashPasswordPage;
@@ -36,8 +41,9 @@ export class MyApp {
   //rootPage:any=SearchPage;
   //rootPage:any=CashChargePage;
   //rootPage:any= CashCancelChargePage;
-   rootPage:any=OrderCancelPage;
-   
+  // rootPage:any=OrderCancelPage;
+  //rootPage:any = CartPage;
+  //rootPage:any = ErrorPage;
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
