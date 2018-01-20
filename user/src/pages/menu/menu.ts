@@ -17,50 +17,49 @@ import {PaymentPage} from '../payment/payment';
 })
 export class MenuPage {
   menu;
-  amount:number; // price*quantity+option
-  quantityInputType;
-  options;
-  optionAmount:number=0;   
-  choice;
+  shopInfo;
 
-  constructor(public navCtrl: NavController, 
-              public navParams: NavParams,
+  options:any;
+  choice;   
+  amount:number;
+
+  quantityInputType;  
+  ingredientShown=false;
+
+  optionAmount:number=0;  // 
+
+  memo;
+  constructor(public navCtrl: NavController, public navParams: NavParams,
               public alertController:AlertController,
               public storageProvider:StorageProvider) {
     this.menu=JSON.parse(navParams.get('menu'));
+    this.shopInfo=JSON.parse(navParams.get('shopInfo'));
 
-
-     if(this.menu.options){
+    if(this.menu.options){
           if(typeof this.menu.options ==="string"){
             this.options=JSON.parse(this.menu.options);
           }else{
             this.options=this.menu.options;
           }
-          
+
+          this.options.forEach(option => {
+              option.number=0;
+          });          
           this.options.forEach((option)=>{
               option.flag=false;
               if(option.hasOwnProperty("choice") && Array.isArray(option.choice)){
                   if(option.hasOwnProperty("default")){
-                      console.log("default:"+option.default);
-                        for(let i=0;i<option.choice.length;i++){
-                            if(option.choice[i]==option.default){
-                                    option.flag=true;
-                            }
-                        }
-                  }
+                        console.log("default:"+option.default);
+                        option.number=1;
+                        option.select=option.default;      
+                  }else
+                        option.select=undefined;
               }
           });
-      }
-
-
-
-    this.menu.options=JSON.parse(this.menu.options);
-    this.menu.options.forEach(option => {
-        if(!option.hasOwnProperty("number"))
-              option.number=0;
-    });
+    }
     console.log("menu:"+JSON.stringify(this.menu));
     this.menu.quantity = 1;
+    this.computeAmount();
     this.quantityInputType="select";
   }
 
@@ -69,10 +68,34 @@ export class MenuPage {
   }
 
   back(){
-    console.log("back comes");
     this.navCtrl.pop();  
   }
 
+ computeAmount(){
+    this.amount = this.menu.price*this.menu.quantity;
+    this.optionAmount=0;
+    this.options.forEach(option => {
+        if(option.number>0){
+            console.log(option.name+":"+option.price*option.number*this.menu.quantity);
+            this.optionAmount+=(option.price*option.number)*this.menu.quantity;
+        }
+    });
+    this.amount+=this.optionAmount;
+    console.log("total amount:"+this.amount);
+ }
+
+ increase(option){
+     option.number++;
+     this.computeAmount();
+ }
+
+ decrease(option){
+     if(option.number==0)
+         return;
+     option.number--;
+     this.computeAmount();
+ }
+ 
   quantityInput(flag){
    console.log("flag:"+flag+" quantityInputType:"+this.quantityInputType);
     if(flag){ // number selection
@@ -96,40 +119,130 @@ export class MenuPage {
               return;
       if(quantity==6){ // show text input box 
           this.quantityInputType="input";
-          this.menu.quantity=1; //keypad doesn't work for password if quantity is undefined.
+          //this.quantity=undefined;
+          this.menu.quantity=1; //keypad doesn't work if quantity is undefined.
       }else{
           this.quantityInputType="select";
-          this.menu.amount=this.menu.price*quantity;
+          this.computeAmount();
       }
   }
 
   onBlur(event){
       console.log("onBlur this.quantity:"+this.menu.quantity);
     if(this.menu.quantity==undefined || this.menu.quantity==0 || this.menu.quantity.toString().length==0){
-           let alert = this.alertController.create({
+          let alert = this.alertController.create({
                       title: '수량을 입력해주시기바랍니다.',
                       buttons: ['OK']
                     });
                     alert.present();
     }else{
-        var unitPrice=this.menu.price;
-        this.options.forEach(option=>{
-            if(option.flag){
-                unitPrice+=option.price;
-            }
-        });
-        console.log("unitPrice:"+unitPrice);
-          this.menu.amount=unitPrice*this.menu.quantity;
+          this.computeAmount();
     }      
   }
 
-  order(){
-
-
-
-
-    
-    this.navCtrl.push(PaymentPage);
+  checkOptionValidity(){
+     return new Promise((resolve, reject)=>{
+            var i;
+            console.log("options:"+JSON.stringify(this.options));
+            if(this.options!=undefined && this.options!=null && Array.isArray(this.options)){
+                for(i=0;i<this.options.length;i++){
+                        var option=this.options[i];
+                        if(option.number>0 && option.hasOwnProperty("choice")){
+                            console.log("option.selectedChoice:"+option.default);
+                            if(option.select === undefined || option.select === null){
+                                reject(option.name);
+                            }
+                        }
+                }
+            }
+            resolve();
+     });
   }
 
+
+  order(){
+
+    if(this.menu.quantity==undefined || this.menu.quantity==0 || this.menu.quantity.toString().length==0){
+          let alert = this.alertController.create({
+                      title: '수량을 입력해주시기바랍니다.',
+                      buttons: ['OK']
+                    });
+                    alert.present();
+    }else{
+          this.computeAmount();
+    }
+
+    this.checkOptionValidity().then(()=>{
+
+        var cart:any={menus:[],takitId:this.shopInfo.takitId,amount:0};
+        var options=[];
+        if(this.options!=undefined){
+            this.options.forEach((option)=>{
+                if (option.number>0){
+                    if(option.select!=undefined)
+                        options.push({name:option.name,price:option.price,number:option.number,select:option.select});
+                    else
+                        options.push({name:option.name,price:option.price,number:option.number});
+                }    
+            });
+        }
+        this.computeAmount();
+        let orderName=this.menu.menuName+"("+this.menu.quantity+")";
+
+        let order:any={ orderName:orderName,
+                        takeout: this.menu.takeout,
+                        menuNO:this.menu.menuNO,
+                        menuName:this.menu.menuName,
+                        quantity:this.menu.quantity,
+                        options: options,
+                        price: this.amount}
+        if(this.memo!=undefined)
+            order.memo=this.memo;
+        cart.menus.push(order); //menu's original price
+
+        cart.deliveryArea=this.shopInfo.deliveryArea;
+        cart.freeDelivery=this.shopInfo.freeDelivery;
+        cart.deliveryFee=this.shopInfo.deliveryFee;
+        cart.address=this.shopInfo.address;
+        cart.paymethod=this.shopInfo.paymethod;
+        cart.takitId=this.shopInfo.takitId;
+        cart.shopName=this.shopInfo.shopName;
+        cart.price=this.amount;
+
+        let carts=[];
+        carts.push(cart);
+
+        let param={carts:carts,orderName: orderName, trigger:'order' }
+        this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) });
+    },(name)=>{
+          let alert = this.alertController.create({
+                      title: name+'을 선택해주시기 바랍니다.',
+                      buttons: ['OK']
+                    });
+                    alert.present();
+    });
+  }
+
+  cart(){
+    this.checkOptionValidity().then(()=>{
+        let param={ menu:this.menu }
+        //takitId, address, menuNo, menuName,options,quantity,price,memo)
+        this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) });
+        this.navCtrl.pop();
+    },(name)=>{
+          let alert = this.alertController.create({
+                      title: name+'을 선택해주시기 바랍니다.',
+                      buttons: ['OK']
+                    });
+                    alert.present();
+    });
+  }
+
+  collapse(){
+    this.ingredientShown=false;
+  }
+
+  expand(){
+    this.ingredientShown=true;
+  }
 }

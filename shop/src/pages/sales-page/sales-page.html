@@ -1,0 +1,184 @@
+<!--
+  Generated template for the SalesPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title> <span *ngIf="storageProvider.isTestServer">검증-</span>{{storageProvider.myshop.takitId}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+<ion-content>
+    <div class="segmentButton">
+    <ion-segment [(ngModel)]="Option" (ionChange)="changeValue(Option)">
+      <ion-segment-button  value="today">
+      오늘
+      </ion-segment-button>
+      <ion-segment-button  value="week">
+      일주일
+      </ion-segment-button>
+      <ion-segment-button  value="month">
+      한달
+      </ion-segment-button>
+      <ion-segment-button  value="period">
+       기간설정
+      </ion-segment-button>
+    </ion-segment>
+    </div>
+<div [hidden]="Option!='period'"> 
+  <ion-row >
+  <ion-item ion-col width-50>
+  <ion-label>시작일</ion-label>
+  <ion-datetime displayFormat="YYYY M DD" min="2016" (ionChange)="startPicker(startDate)" [(ngModel)]="startDate"></ion-datetime>
+  </ion-item>
+  <ion-item ion-col width-50> 
+  <ion-label>종료일</ion-label>
+  <ion-datetime displayFormat="YYYY M DD" min="2016" (ionChange)="endPicker(endDate)" [(ngModel)]="endDate"></ion-datetime>
+  </ion-item>
+  </ion-row>
+    <button ion-button full (click)="searchPeriod()">검색</button>
+ </div> 
+
+
+  <div padding>
+    <label>총매출: {{sales}}</label>
+  </div>  
+  <ion-list  *ngFor="let menu of statistics" >
+  <ion-item>
+    <ion-row>
+      <ion-col width-50>
+        {{menu.menuName}}
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        {{menu.count}}
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        {{menu.menuSales}}
+      </ion-col>
+    </ion-row>
+  </ion-item>
+  </ion-list>
+  
+<!--
+  <div padding>
+    <label>총매출: 397985</label>
+  </div>  
+  <ion-list>
+
+  <ion-item>
+    <ion-row>
+      <ion-col width-50>
+        레몬차 
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        1
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        2786
+      </ion-col>
+    </ion-row>
+  </ion-item>
+
+  <ion-item>
+    <ion-row>
+      <ion-col width-50>
+        민트소다
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        2
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        6965
+      </ion-col>
+    </ion-row>
+  </ion-item>
+
+  <ion-item>
+    <ion-row>
+      <ion-col width-50>
+        바닐라라떼
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        50
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        139300
+      </ion-col>
+    </ion-row>
+  </ion-item>
+
+  <ion-item>
+    <ion-row>
+      <ion-col width-50>
+        씨리얼&우유
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        1
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        2487
+      </ion-col>
+    </ion-row>
+  </ion-item>
+
+  <ion-item>
+    <ion-row>
+      <ion-col width-50>
+        아메리카노
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        83
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        148653
+      </ion-col>
+    </ion-row>
+  </ion-item>
+
+<ion-item>
+    <ion-row>
+      <ion-col width-50>
+        아이스레몬티
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        2
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        5572
+      </ion-col>
+    </ion-row>
+  </ion-item>
+
+<ion-item>
+    <ion-row>
+      <ion-col width-50>
+        아이스바닐라라떼
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        1
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        2786
+      </ion-col>
+    </ion-row>
+  </ion-item>
+
+<ion-item>
+    <ion-row>
+      <ion-col width-50>
+        아이스녹차
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        1
+      </ion-col>
+      <ion-col width-25 style="text-align: -webkit-right;">
+        2786
+      </ion-col>
+    </ion-row>
+  </ion-item>
+  </ion-list>
+-->
+</ion-content>

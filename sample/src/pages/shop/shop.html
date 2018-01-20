@@ -110,8 +110,13 @@
                         <ion-item class="left" no-padding>
                              <img class="img-shop" [src]="storageProvider.awsS3+menu[0].imagePath">
                             <h2>{{menu[0].menuName}}</h2>
-                            <p>{{menu[0].price}} <span class="text-border" *ngIf="menu[0].takeout>0 && shopInfo.deliveryArea==null" >포장</span> 
-                                                 <span class="text-border" *ngIf="menu[0].takeout>0 && shopInfo.deliveryArea!=null" >포장/배달</span></p>
+                            <p>{{menu[0].price}}
+                            <!-- 
+                            <span class="text-border" *ngIf="menu[0].takeout>0 && shopInfo.deliveryArea==null" >포장</span> 
+                            <span class="text-border" *ngIf="menu[0].takeout>0 && shopInfo.deliveryArea!=null" >포장/배달</span></p>
+                            -->
+                            <span class="text-border">판매종료</span></p>
+                                                 
                         </ion-item>
                     </button>
                     </ion-col>

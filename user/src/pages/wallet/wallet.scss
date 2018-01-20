@@ -26,30 +26,56 @@ page-wallet {
             ion-row{
                 width : calc((227/376)*100vw);   
             }
+
+            .cash-select-border{
+                //height: calc((171/667)*100vh) !important; // increase height, width
+                border-style:solid !important;
+                border-color: #33b9c6 !important;
+                border-radius: 8px;
+                border-left: calc((6/376)*100vw);
+                border-right:calc((6/376)*100vw);
+                border-top:calc((6/667)*100vh);
+                border-bottom:calc((6/667)*100vh);
+            }
+
+            .card-select-border{
+                border-style:solid !important;
+                border-color: #33b9c6 !important;
+                border-radius: 8px;
+                border-left: calc((6/376)*100vw);
+                border-right:calc((6/376)*100vw);
+                border-top:calc((6/667)*100vh);
+                border-bottom:calc((6/667)*100vh);
+            }
+ 
+            .card-unselect-border{
+                border-radius: 8px;
+ 	            box-shadow: 0 0 7px 0 rgba(70, 70, 70, 0.5);
+            }
+
             .card-button{
                 width : calc((227/376)*100vw);
-                height: calc((121/667)*100vh);
+                height: calc((60/667)*100vh);
+                color:white;
             }
 
             .cash-card{
                 background-color:$default-color;
                 color:white;
-                border-radius: 8px;
- 	            box-shadow: 0 0 7px 0 rgba(70, 70, 70, 0.5);
                 padding-top: calc((24/667)*100vh);
-                 .cash-label{
-
-                 }
                  .cash-value{
                     margin-top:calc((7/667)*100vh);
                     margin-bottom:calc((17/667)*100vh);
                  }
                  ion-row{
+                     button{
+                        height:calc((23/667)*100vh);
+                     }
                      border-top: solid 0.5px #ffffff;
                      ion-col{
                         button{
                                 color:white;
-                                padding-bottom:calc((7/667)*100vh);
+                                padding-bottom:calc((7/667)*100vh); // Please check it on the phone
                                 span{
                                     font-size:4vw;
                                 }
@@ -63,13 +89,23 @@ page-wallet {
             }
 
             .card-add{
-                background-color:$default-color;
-                color:white;
+                background-color: #e8e8e8;
+                color:#4a4a4a;;
                 border-radius: 8px;
  	            box-shadow: 0 0 7px 0 rgba(70, 70, 70, 0.5);
                 .card-add-label{
                     justify-content: center;
-                    padding-top: calc((25/667)*100vh);
+                    padding-top: calc((15/667)*100vh);
+                }
+            }
+
+            .card-card{
+                color:white;
+                .card-remove{
+                    height:calc((25/667)*100vh);
+                }
+                button{
+                    height:calc((30/667)*100vh);
                 }
             }
 
@@ -80,7 +116,14 @@ page-wallet {
                 margin-top:calc((25/667)*100vh);
                 margin-bottom:calc((25/667)*100vh);
                 height:calc((121/667)*100vh);
+            }      
+
+            .select-scroll-col-latest {
+                overflow: inherit; 
+                margin-top:calc((19/667)*100vh);
+                height:calc((133/667)*100vh);
             }            
+                  
         }    
     } 
 

@@ -60,7 +60,7 @@ export class MyInfoPage {
     console.log("logout");
     let confirm = this.alertCtrl.create({
       title: '로그아웃하시겠습니까?',
-      message: '타킷 사용을 위해 로그인이 필요합니다. 장바구니 정보는 삭제되며 주문,캐쉬 입금 알림도 중지됩니다.',
+      message: '타킷 사용을 위해 로그인이 필요합니다. 장바구니 정보는 삭제되며 주문,캐시 입금 알림도 중지됩니다.',
       buttons: [
         {
           text: '아니오',

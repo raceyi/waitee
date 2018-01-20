@@ -33,8 +33,8 @@ export class MyApp {
   //rootPage:any = CashRefundMainPage;
   //rootPage:any =PaymentPage;
   //rootPage:any =CashTutorialPage;
-  rootPage:any = TabsPage;
-  //rootPage:any = LoginMainPage;
+  //rootPage:any = TabsPage;
+  rootPage:any = LoginMainPage;
   //rootPage:any = SignupPaymentPage;
   //rootPage:any=CashPasswordPage;
   //rootPage:any = ShopPage

@@ -104,10 +104,6 @@ export class ShopPage {
           return '#bdbdbd';    
   }
 
-  selectMenu(menu){
-       this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu)});
-  }
-
   back(){
     if(this.navCtrl.canGoBack())
         this.navCtrl.pop();
@@ -276,27 +272,24 @@ export class ShopPage {
     console.log("categorySelected:"+this.categorySelected);
   }
 
-  menuSelected(menuName){
+  selectMenu(menu){
     if(this.orderPageEntered)
         return;
 
-    console.log("categorySelected:"+this.categorySelected+" menu:"+menuName); 
-    var menu;
-    for(var i=0;i<this.categories[this.categorySelected-1].menus.length;i++){
-         //console.log("menu:"+this.categories[category_no-1].menus[i].menuName);
-         if(this.categories[this.categorySelected-1].menus[i].menuName==menuName){
-             menu=this.categories[this.categorySelected-1].menus[i];
-             //console.log(this.categories[category_no-1].menus[i].options);
-            break;
-        }
-    }
-    console.log("menu info:"+JSON.stringify(menu));
-    this.navCtrl.push(MenuPage,{menu:menu, shopName:this.shopName});
     this.orderPageEntered=true;
         setTimeout(() => {
         console.log("reset orderPageEntered:"+this.orderPageEntered);
         this.orderPageEntered=false;
     }, 1000); //  seconds  
+    let shopInfo={takitId:this.takitId, 
+                address:this.shop.shopInfo.address, 
+                shopName:this.shop.shopInfo.shopName,
+                deliveryArea:this.shop.shopInfo.deliveryArea,
+                freeDelivery:this.shop.shopInfo.freeDelivery,
+                paymethod:this.shop.shopInfo.paymethod,
+                deliveryFee:this.shop.shopInfo.deliveryFee};
+
+    this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu),shopInfo:JSON.stringify(shopInfo)});
   }
 
 }

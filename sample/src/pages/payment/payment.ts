@@ -17,15 +17,10 @@ import {CashChargePage} from '../cash-charge/cash-charge';
   templateUrl: 'payment.html',
 })
 export class PaymentPage {
-  @ViewChild("scroll") scrollElement: Scroll;
-
   inStoreColor="#6441a5";
   takeoutColor="#bdbdbd";
   deliveryColor="#bdbdbd";
-  paymethods=[{name:"비자카드",type:"card"},
-              {name:"마스터카드",type:"card"},
-              {name:"휴대폰결제",tyep:"phone"}
-  ];
+
   paymentSelection="cash";
   cardIndex=-1;
   currentCashClasses={
@@ -36,25 +31,8 @@ export class PaymentPage {
     'select-scroll-col-latest':true
   };
 
-/*
-  currentCardClasses={
-    'card-card':true,
-    'scroll-col-latest':true,
-    'card-unselect-border':true,
-    'select-scroll-col-latest':false,
-    'card-select-border':false
-  };
-  currentCardSelectClasses={
-    'card-card':true,
-    'scroll-col-latest':false,
-    'card-unselect-border':false,
-    'select-scroll-col-latest':true,
-    'card-select-border':true
-  };
-*/
   currentCardClassesArray=[];
 
-  //param;
   carts;
   orderName;
 
@@ -63,6 +41,9 @@ export class PaymentPage {
 
   totalAmount=0;
   payAmount=0;
+
+  takeout=0; //takeout:1 , takeout:2(delivery)
+  deliveryAddress;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -73,12 +54,7 @@ export class PaymentPage {
     console.log("param:"+JSON.stringify(param));
     this.carts=param.carts;
     this.orderName=JSON.stringify(param.orderName);
-    //request the recent discount rate for each cart
-    let shops=[];
-    this.carts.forEach(cart => { 
-      this.totalAmount+=cart.amount; 
-      shops.push(cart.takitId)
-    });
+
 
     this.storageProvider.payInfo.forEach(payment=>{
         this.currentCardClassesArray.push({
@@ -89,6 +65,14 @@ export class PaymentPage {
             'card-select-border':false
         });
     });
+
+    //request the recent discount rate for each cart
+    let shops=[];
+    this.carts.forEach(cart => { 
+      this.totalAmount+=cart.amount; 
+      shops.push(cart.takitId)
+    });
+
       /*
       let body = {takitIds:JSON.stringify(shops)};
         this.serverProvider.post(this.storageProvider.serverAddress+"/getPayMethod",body).then((res:any)=>{
@@ -156,18 +140,21 @@ export class PaymentPage {
       this.inStoreColor="#6441a5";
       this.takeoutColor="#bdbdbd";
       this.deliveryColor="#bdbdbd";
+      this.takeout=0; //takeout:1 , takeout:2(delivery)
   }
 
   selectTakeOut(){
       this.inStoreColor="#bdbdbd";
       this.takeoutColor="#6441a5";
       this.deliveryColor="#bdbdbd";
+      this.takeout=1; //takeout:1 , takeout:2(delivery)
   }
 
   selectDelivery(){
       this.inStoreColor="#bdbdbd";
       this.takeoutColor="#bdbdbd";
       this.deliveryColor="#6441a5";
+      this.takeout=2; //takeout:1 , takeout:2(delivery)
   }
 
   moveChargePage(){
@@ -177,7 +164,7 @@ export class PaymentPage {
   pay(){
       /*
             let body = {    paymethod:"cash",
-                            takitId:this.takitId,
+                            //takitId:this.takitId,
                             orderList:JSON.stringify(cart), 
                             orderName:orderName,
                             amount:this.totalAmount,
@@ -190,11 +177,10 @@ export class PaymentPage {
                             receiptId:this.storageProvider.receiptId,
                             receiptType:this.storageProvider.receiptType,
                             //couponNO:this.selectedCoupon.couponName,
-                            shopName:this.shopName,
-                            userMSG:this.userMSG
+                            //shopName:this.shopName,
+                            //userMSG:this.userMSG
                         };
-      */
-    //this.navController.push(CashPassword, {body:body,trigger:this.trigger});
+    this.navController.push(CashPassword, {body:body,trigger:this.trigger});
    /*
     this.navCtrl.setRoot(OrderDetailPage,
         {order:JSON.stringify({"orderId":"1490","takitId":"TEST2@TAKIT","shopName":"가로수그늘아래","orderName":"바닐라라떼(1)","payMethod":"cash","amount":"0","takeout":"0","arrivalTime":null,"orderNO":"1","userId":"60","userName":"이경주","userPhone":"01027228226","orderStatus":"paid","orderList":"{\"menus\":[{\"menuNO\":\"TEST2@TAKIT;1\",\"menuName\":\"바닐라라떼\",\"quantity\":1,\"options\":[],\"price\":\"0\",\"amount\":0}],\"total\":0,\"prevAmount\":0,\"takitDiscount\":0,\"couponDiscount\":0}","deliveryAddress":"","userMSG":null,"orderedTime":"2018-01-02 07:53:13","checkedTime":null,"completedTime":null,"cancelledTime":null,"localCancelledTime":null,"cancelReason":null,"localOrderedTime":"2018-01-02 16:53:13","localOrderedDay":"2","localOrderedHour":"16","localOrderedDate":"2018-01-02","receiptIssue":"1","receiptId":"01027228226","receiptType":"IncomeDeduction"})});

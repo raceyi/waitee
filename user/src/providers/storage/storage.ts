@@ -71,6 +71,7 @@ export class StorageProvider {
                         // 직접 저장한 샵목록, 메뉴 목록 => 향후에 추가하기 
     shopResponse:any;
     takitId:string;
+    payInfo=[];
 
     banklist=[  {name:"국민",value:"004"},
                 {name:"기업",value:"003"},
@@ -135,6 +136,34 @@ export class StorageProvider {
                 {name:"케이뱅크", value:"089"},
                 {name:"카카오뱅크", value:"090"}];
 
+cardColorlist=[
+              {name:"bc",color:"#ec4855"},
+              {name:"shinhan",color:"#134596"},
+              {name:"samsung",color:"#0d62a8"},
+              {name:"kb",color:"#756d62"},
+              {name:"hyundai",color:"#000000"},
+              {name:"woori",color:"#1a9fda"},
+              {name:"lotte",color:"#e02431"},
+              {name:"hana",color:"#108375"},
+              {name:"kakao", color:"#EBE315"},
+              {name:"master", color:"#fc601f"},
+              {name:"union",color:"#fb0f1c"},
+              {name:"visa", color:"#1a215d"},
+              {name:"비씨",color:"#ec4855"},
+              {name:"신한",color:"#134596"},
+              {name:"삼성",color:"#0d62a8"},
+              {name:"국민",color:"#756d62"},
+              {name:"현대",color:"#000000"},
+              {name:"우리",color:"#1a9fda"},
+              {name:"롯데",color:"#e02431"},
+              {name:"하나",color:"#108375"},
+              {name:"카카오", color:"#EBE315"},
+              {name:"마스터", color:"#fc601f"},
+              {name:"유니온페이",color:"#fb0f1c"},
+              {name:"비자", color:"#1a215d"}];
+
+defaultCardColor ="#33B9C6";            
+
   constructor(private configProvider:ConfigProvider,
               private sqlite: SQLite,
               private nativeStorage: NativeStorage) {
@@ -180,6 +209,11 @@ export class StorageProvider {
         return (buffer+encrypted);    
     }
  
+    updatePayInfo(payInfo:string){
+            this.payInfo=JSON.parse(payInfo);
+            this.determinCardColor(); 
+    }
+
     userInfoSetFromServer(userInfo:any){
         this.email=userInfo.email;
         this.name=userInfo.name;
@@ -202,6 +236,17 @@ export class StorageProvider {
         }else{
             this.cashId=userInfo.cashId;
         }
+
+        console.log("userInfoSetFromServer:"+JSON.stringify(userInfo.payInfo));
+        if(userInfo.payInfo==null || userInfo.payInfo==undefined){
+            this.payInfo=[];
+        }else{
+            console.log("userInfoSetFromServer:"+JSON.stringify(userInfo.payInfo));
+            this.payInfo=JSON.parse(userInfo.payInfo);
+            this.determinCardColor(); 
+        }
+        console.log("userInfo.payInfo:"+JSON.stringify(this.payInfo));
+
         console.log("[userInfoSetFromServer]cashId:"+this.cashId);
         this.tourMode=false;
         if(userInfo.hasOwnProperty("recommendShops")){
@@ -440,7 +485,7 @@ INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo)
         this.tourMode=false;
         this.cashId="";
         this.cashAmount=undefined;
-
+        this.payInfo=[];
        // this.refundBank="";
        // this.refundAccount="";
         /////////////////////////////////////
@@ -470,4 +515,17 @@ INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo)
         console.log("after shoplist update:"+JSON.stringify(this.shoplistCandidate));        
     }
 
+    determinCardColor(){
+        console.log("determinCardColor");
+        this.payInfo.forEach((payment:any)=>{
+            payment.background=this.defaultCardColor;
+            for(var i=0;i<this.cardColorlist.length;i++){
+                let name:string=payment.info.name;
+                if(name.toLocaleLowerCase().startsWith(this.cardColorlist[i].name)){
+                        payment.background=this.cardColorlist[i].color;
+                }
+            }
+        })
+        console.log("payments:"+JSON.stringify(this.payInfo));
+    }
 }

@@ -10,38 +10,59 @@
 <ion-content>
 <div class="pickup-area">
 <ion-row  class="pickup-method">
-  <ion-col text-center  > 
+  <ion-col text-center> 
     <button class="circle" [style.background-color]="inStoreColor" (click)="selectInStore()" ion-button> &nbsp;</button>
   </ion-col>
-  <ion-col text-center>
+  <ion-col text-center *ngIf="takeoutAvailable">
     <button class="circle" [style.background-color]="takeoutColor" (click)="selectTakeOut()" ion-button> &nbsp;</button>
   </ion-col>
-  <ion-col text-center>
+  <ion-col text-center *ngIf="deliveryAvailable">
     <button class="circle" [style.background-color]="deliveryColor" (click)="selectDelivery()" ion-button> &nbsp;</button>
   </ion-col>
 </ion-row>
 <ion-row  class="pickup-method">
-  <ion-col [style.color]="inStoreColor"  no-padding no-margin text-center> 
+  <ion-col [style.color]="inStoreColor" no-padding no-margin text-center> 
     매장
   </ion-col>
-  <ion-col [style.color]="takeoutColor" no-padding no-margin text-center>
+  <ion-col text-center *ngIf="takeoutAvailable" [style.color]="takeoutColor" no-padding no-margin text-center>
     포장
   </ion-col>
-  <ion-col [style.color]="deliveryColor" no-padding no-margin text-center>
+  <ion-col text-center *ngIf="deliveryAvailable" [style.color]="deliveryColor" no-padding no-margin text-center>
     배달
   </ion-col>
 </ion-row>
+<div text-center *ngIf="takeout==2" class="delivery-text-area">
+    <ion-textarea [(ngModel)]="deliveryAddress" placeholder="배송지를 입력해주세요."></ion-textarea>
+</div>
 </div>
 <div class="pay-amount">
   <ion-row  class="pay-amount-label" no-padding no-margin>
-    결제내역
+    <ion-col no-padding no-margin text-left> 결제내역</ion-col>
+    <ion-col no-padding no-margin text-right>{{totalAmount}}</ion-col>
   </ion-row>
-<ion-row class="coupon-button" no-padding no-margin>
+<ion-row class="delivery-fee" *ngIf="deliveryFee!=undefined && takeout==2">
+<ion-col class="coupon-label" no-padding no-margin>
+배달비
+</ion-col>
+<ion-col no-padding no-margin text-right>
+  {{deliveryFee}} 
+</ion-col>
+</ion-row>
+  
+<ion-row *ngIf="this.paymentSelection=='cash'" class="coupon-button" no-padding no-margin>
 <ion-col class="coupon-label" no-padding no-margin>
 캐시결제 할인금액
 </ion-col>
 <ion-col no-padding no-margin text-right>
-  -170원 
+  {{cashDiscount}} 
+</ion-col>
+</ion-row>
+<ion-row *ngIf="this.paymentSelection=='card'" class="coupon-button" no-padding no-margin>
+<ion-col class="coupon-label" no-padding no-margin>
+카드결제 할인금액
+</ion-col>
+<ion-col no-padding no-margin text-right>
+  {{cardDiscount}} 
 </ion-col>
 </ion-row>
   
@@ -50,7 +71,7 @@
     <b>결제 금액</b>
     </ion-col>
     <ion-col text-right no-padding no-margin>
-      <b>3,400원</b>
+      <b>{{payAmount}}원</b>
     </ion-col>
   </ion-row>
 </div>
@@ -58,25 +79,37 @@
   <ion-row  class="pay-amount-label" no-padding no-margin>
     결제방식
   </ion-row>
-<div class="scroll-div">
+
+<div class="scroll-div" *ngIf="cardAvailable">
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
-                <ion-col text-center no-padding no-margin class="cash-card scroll-col-latest">
-                  <div>
-                  <p no-margin no-padding class="cash-label" style="font-size:4.5vw;"><b><custom-icon set="tabs" name="coin">&nbsp;</custom-icon>웨이티 캐시</b></p>
-                  <p  class="cash-value" style="font-size:4vw;">잔액: 53000원</p>
-                    <button style="color:white;" (click)="moveChargePage()" no-padding no-margin full clear ion-button>충전</button>
-                  </div>
+                <ion-col [ngClass]="currentCashClasses" text-center no-padding >
+                  <ion-row class="cash-label" style="border:0px;" >
+                  <button no-margin no-padding  ion-button full (click)="cashSelect()" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐시</b></button>
+                  </ion-row>
+                  <ion-row class="cash-value" style="border:0px;"> 
+                  <button no-margin no-padding  ion-button  full  (click)="cashSelect()" style="font-size:4vw;"> 잔액: {{storageProvider.cashAmount}}원</button>
+                  </ion-row>
+                  <ion-row>
+                    <button class="cash-charge" style="color:white;" (click)="moveChargePage()" no-padding no-margin full clear ion-button>충전</button>
+                  </ion-row>
                 </ion-col>
-                 <ion-col *ngFor="let payment of paymethods" class="scroll-col-latest"  no-padding>
-                            <button class="card-button" full  no-padding no-margin ion-button>
-                              {{payment.name}}
+                 <ion-col [ngClass]="currentCardClassesArray[i]" [style.background-color]="payment.background" *ngFor="let payment of storageProvider.payInfo;let i=index;"  no-padding>
+                            <ion-row class="card-remove"><ion-col col-10 no-padding no-margin >&nbsp;</ion-col> 
+                                    <ion-col col-2 no-padding no-margin><button (click)="removeCard(i)" no-padding no-margin ion-button clear style="color:white;"><ion-icon name="md-close"></ion-icon></button></ion-col>
+                            </ion-row>
+                            <button class="card-button"  (click)="cardSelect(i)" full clear no-padding no-margin ion-button>
+                              {{payment.info.name}} 
+                            </button>                     
+                            <button style="font-size:4vw;" (click)="cardSelect(i)" class="card-button" full clear no-padding no-margin ion-button>
+                              {{payment.info.mask_no}} 
                             </button>
                 </ion-col>
                  <ion-col text-center class="card-add card-button scroll-col-latest"  no-padding>
                               <ion-row text-center class="card-add-label"><b style="font-size:4.5vw;">카드 등록</b></ion-row>
+                              <ion-row text-center class="card-add-label"><span style="font-size:3.4vw;">10원이 결제되고 등록 후 취소됩니다</span></ion-row>
                               <ion-row text-center>
-                                <button  no-padding no-margin full ion-button>
+                                <button style="background-color:#e8e8e8;;color:#6441a5;" (click)="addCard()" no-padding no-margin full ion-button>
                                     <b style="font-size:4.8vw;"><ion-icon name="ios-add-circle-outline"></ion-icon></b>
                                 </button>
                               </ion-row>
@@ -84,15 +117,32 @@
             </ion-row>
         </ion-scroll>
 </div>
+<div class="scroll-div" *ngIf="!cardAvailable">
+        <ion-scroll scrollX="true" class="scroll-latest">
+            <ion-row class="scroll-row-latest">
+                <ion-col class="cash-card card-unselect-border scroll-col-latest" text-center no-padding >
+                  <ion-row class="cash-label" style="border:0px;" >
+                  <button no-margin no-padding  ion-button full (click)="cashSelect()" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐시</b></button>
+                  </ion-row>
+                  <ion-row class="cash-value" style="border:0px;"> 
+                  <button no-margin no-padding  ion-button  full  (click)="cashSelect()" style="font-size:4vw;"> 잔액: {{storageProvider.cashAmount}}원</button>
+                  </ion-row>
+                  <ion-row>
+                    <button class="cash-charge" style="color:white;" (click)="moveChargePage()" no-padding no-margin full clear ion-button>충전</button>
+                  </ion-row>
+                </ion-col>
+            </ion-row>
+        </ion-scroll>
+</div>
 </div>
 
 <div class="notice-section">
-<ion-row>
+<ion-row *ngIf="paymentSelection=='cash'">
   현금영수증 발행을 원하시면 나의 정보에서 설정해주시기 바랍니다
 </ion-row>  
 <ion-row [hidden]="!storageProvider.receiptIssue">
   <ion-col style="padding-left:0px">현금영수증 발행 </ion-col>
-  <ion-col>{{receiptIdMask}}</ion-col>
+  <ion-col>{{storageProvider.receiptId}}</ion-col>
   <ion-col *ngIf="storageProvider.receiptType=='IncomeDeduction'">소득공제</ion-col>
   <ion-col *ngIf="storageProvider.receiptType=='ExpenseProof'">지출증빙</ion-col>
 </ion-row>

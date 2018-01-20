@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController,App } from 'ionic-angular';
+import { NavController,App,AlertController } from 'ionic-angular';
 import { ShopPage} from '../shop/shop';
 import {SearchPage} from '../search/search';
 import { StorageProvider } from '../../providers/storage/storage';
@@ -20,6 +20,7 @@ export class HomePage {
 
   constructor(public navCtrl: NavController,private app: App
               ,public storageProvider:StorageProvider
+              ,private alertController:AlertController              
               ,public serverProvider:ServerProvider) {
   
     this.recently_visited_shop=[{takitId:"더큰도시락@세종대학교",
@@ -78,6 +79,11 @@ export class HomePage {
             },(err)=>{
                 console.log("error:"+JSON.stringify(err));
                  this.shopSelected=false;
+                  let alert = this.alertController.create({
+                      title: "서버와 통신에 문제가 있습니다.",
+                      buttons: ['OK']
+                  });
+                  alert.present();
             });
         }else{
             console.log("this.shopSelected works!");

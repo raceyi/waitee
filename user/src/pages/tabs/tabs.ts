@@ -32,7 +32,7 @@ export class TabsPage {
                 this.storageProvider.cashAmount=res.balance;
             }else{
                 let alert = this.alertCtrl.create({
-                    title: "캐쉬정보를 가져오지 못했습니다.",
+                    title: "캐시정보를 가져오지 못했습니다.",
                     buttons: ['OK']
                 });
                 alert.present();

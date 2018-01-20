@@ -38,6 +38,9 @@
     배달
   </ion-col>
 </ion-row>
+<div text-center *ngIf="takeout==2" class="delivery-text-area">
+    <ion-textarea [(ngModel)]="deliveryAddress" placeholder="배송지를 입력해주세요."></ion-textarea>
+</div>
 </div>
 
 <div class="pay-amount">
@@ -45,7 +48,16 @@
     <ion-col no-padding no-margin text-left> 결제내역</ion-col>
     <ion-col no-padding no-margin text-right>{{totalAmount}}</ion-col>
   </ion-row>
-<ion-row *ngIf="this.paymentSelection=='cash'" class="coupon-button" no-padding no-margin>
+<ion-row class="delivery-fee">
+<ion-col class="coupon-label" no-padding no-margin>
+배달비
+</ion-col>
+<ion-col no-padding no-margin text-right>
+  {{cashDiscount}} 
+</ion-col>
+</ion-row>
+
+<ion-row *ngIf="paymentSelection=='cash'" class="coupon-button" no-padding no-margin>
 <ion-col class="coupon-label" no-padding no-margin>
 캐시결제 할인금액
 </ion-col>
@@ -53,7 +65,7 @@
   {{cashDiscount}} 
 </ion-col>
 </ion-row>
-<ion-row *ngIf="this.paymentSelection=='card'" class="coupon-button" no-padding no-margin>
+<ion-row *ngIf="paymentSelection=='card'" class="coupon-button" no-padding no-margin>
 <ion-col class="coupon-label" no-padding no-margin>
 카드결제 할인금액
 </ion-col>
@@ -113,7 +125,23 @@
             </ion-row>
         </ion-scroll>
 </div>
-  
+<div class="scroll-div">
+        <ion-scroll scrollX="true" class="scroll-latest">
+            <ion-row class="scroll-row-latest">
+                <ion-col class="cash-card card-unselect-border scroll-col-latest" text-center no-padding >
+                  <ion-row class="cash-label" style="border:0px;" >
+                  <button no-margin no-padding  ion-button full (click)="cashSelect()" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐시</b></button>
+                  </ion-row>
+                  <ion-row class="cash-value" style="border:0px;"> 
+                  <button no-margin no-padding  ion-button  full  (click)="cashSelect()" style="font-size:4vw;"> 잔액: {{storageProvider.cashAmount}}원</button>
+                  </ion-row>
+                  <ion-row>
+                    <button class="cash-charge" style="color:white;" (click)="moveChargePage()" no-padding no-margin full clear ion-button>충전</button>
+                  </ion-row>
+                </ion-col>
+            </ion-row>
+        </ion-scroll>
+</div>  
 <!--  
 <div class="scroll-div">
         <ion-scroll scrollX="true" #scroll class="scroll-latest">          

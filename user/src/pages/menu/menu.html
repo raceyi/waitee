@@ -19,13 +19,12 @@
   <img [src]="storageProvider.awsS3+menu.imagePath">
 </div>
   <p *ngIf="menu.explanation!=undefined && menu.explanation!=null" text-wrap text-center style="color:#6441a5;font-size:4vw;">
-{{menu.explanation}}
+  {{menu.explanation}}
   </p>
 <div *ngIf="menu.ingrediant!=undefined && menu.ingrediant!=null">  
 <button [hidden]="ingredientShown" class="expand-button" (click)="expand()" full no-padding no-margin ion-button><span text-left style="width:80vw;">상세보기</span> <span text-right><ion-icon name="ios-arrow-down"></ion-icon></span> </button>
 <button [hidden]="!ingredientShown" class="expand-button inside-ingredients" (click)="collapse()" full no-padding no-margin ion-button><span text-left style="width:80vw;">&nbsp;</span> <span text-right><ion-icon name="ios-arrow-up"></ion-icon></span> </button>
-<pre [hidden]="!ingredientShown" class="ingredients" style="font-size:3.4vw;">구성 : 밥, 3찬(데리치킨, 김치, 멸치볶음) 
-{{menu.ingrediant}}}
+<pre [hidden]="!ingredientShown" class="ingredients" style="font-size:3.4vw;">{{menu.ingrediant}}
 </pre>
 </div>
 <ion-row>
@@ -44,7 +43,7 @@
     </ion-col>
   </ion-row>
 
-  <div class="options" no-padding no-margin *ngFor="let option of menu.options;let i=index;">
+  <div class="options" no-padding no-margin *ngFor="let option of options;let i=index;">
   <ion-row no-padding no-margin>
     <ion-col no-padding no-margin col-3 class="option-name" text-left>
         {{option.name}}
@@ -52,22 +51,25 @@
     <ion-col class="option-price" no-padding no-margin col-5 text-right>
         +{{option.price}}원
     </ion-col>
-    <ion-col class="col-border" no-padding no-margin col-1>
-        <button no-padding ion-button clear><ion-icon name="ios-remove"></ion-icon></button>
+    <ion-col class="col-border" *ngIf="option.default==undefined" no-padding no-margin col-1>
+        <button no-padding ion-button clear (click)="decrease(option)"><ion-icon name="ios-remove"></ion-icon></button>
     </ion-col>
-    <ion-col class="number" text-center no-padding no-margin col-1>
+    <ion-col class="number"  *ngIf="option.default==undefined" text-center no-padding no-margin col-1>
       {{option.number}}
     </ion-col>
-    <ion-col class="col-border" no-padding no-margin col-1>
-        <button no-padding ion-button clear><ion-icon name="ios-add"></ion-icon></button>
+    <ion-col class="col-border"   *ngIf="option.default==undefined" no-padding no-margin col-1>
+        <button no-padding ion-button clear (click)="increase(option)"><ion-icon name="ios-add"></ion-icon></button>
     </ion-col>
-    <ion-col no-padding no-margin col-1>
+    <ion-col  *ngIf="option.default==undefined" no-padding no-margin col-1>
+      &nbsp; 
+    </ion-col>
+    <ion-col  *ngIf="option.default!=undefined" no-padding no-margin col-4>
       &nbsp; 
     </ion-col>
   </ion-row>
-  <ion-row radio-group class="choice" [(ngModel)]="option.default" *ngIf="option.choice!==undefined">
+  <ion-row radio-group class="choice" [(ngModel)]="option.select" *ngIf="option.choice!==undefined">
                       <ion-col  *ngFor="let choice of option.choice">
-                          <ion-item class="bg-sub1" no-lines >
+                          <ion-item class="bg-sub1" no-lines>
                               <ion-label style="font-size:4vw;color:#4a4a4a;">{{choice}}</ion-label>
                               <ion-radio style="border-style:solid;border-width:1px;border-color:#bdbdbd;" color="subColor2" [value]="choice"></ion-radio>
                           </ion-item>
@@ -109,12 +111,12 @@
 </div>
 <div class="request">
   요청사항 
-<ion-textarea></ion-textarea>
+<ion-textarea [(ngModel)]="memo" ></ion-textarea>
 </div>
 </ion-content>
 <ion-footer>
 <ion-row>
-<ion-col no-padding no-margin><button no-margin ion-button full class="cart" color="white">장바구니</button></ion-col>
+<ion-col no-padding no-margin><button no-margin ion-button full class="cart" (click)="cart()" color="white">장바구니</button></ion-col>
 <ion-col no-padding no-margin><button no-margin ion-button full color="primary" (click)="order()">바로주문</button></ion-col>
 </ion-row>
 </ion-footer>

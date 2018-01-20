@@ -55,6 +55,8 @@ import {ErrorPageModule} from '../pages/error/error.module';
 import { ServerProvider } from '../providers/server/server';
 import { Network } from '@ionic-native/network';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import {CashTutorialPageModule} from '../pages/cash-tutorial/cash-tutorial.module';
+import { CardProvider } from '../providers/card/card';
 
 
 @NgModule({
@@ -94,6 +96,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
     HttpClientModule,
     BrowserModule,
     ErrorPageModule,
+    CashTutorialPageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],
@@ -116,7 +119,8 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
     InAppBrowser,
     BackgroundMode,
     {provide: ErrorHandler, useClass: MyErrorHandler},
-    ServerProvider
+    ServerProvider,
+    CardProvider
   ]
 })
 export class AppModule {}
