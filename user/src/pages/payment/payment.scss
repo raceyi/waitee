@@ -179,11 +179,18 @@ page-payment {
             .cash-card{
                 background-color:$default-color;
                 color:white;
-                padding-top: calc((24/667)*100vh);
+                padding-top:calc((10/667)*100vh);
+                .cash-label{
+                    padding-top: calc((24/667)*100vh);
+                    height:calc((47/667)*100vh);                    
+                }                
                  .cash-value{
-                    margin-top:calc((7/667)*100vh);
-                    margin-bottom:calc((17/667)*100vh);
+                    padding-top:calc((7/667)*100vh);
+                    padding-bottom:calc((17/667)*100vh);
                  }
+                .cash-value-row{
+                    padding-bottom:calc((7/667)*100vh); ///////////////////////                     
+                }                      
                  ion-row{
                      button{
                         height:calc((23/667)*100vh);

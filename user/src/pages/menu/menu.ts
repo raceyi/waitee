@@ -35,7 +35,7 @@ export class MenuPage {
     this.menu=JSON.parse(navParams.get('menu'));
     this.shopInfo=JSON.parse(navParams.get('shopInfo'));
 
-    if(this.menu.options){
+    if(this.menu.options && this.menu.options!='null'){
           if(typeof this.menu.options ==="string"){
             this.options=JSON.parse(this.menu.options);
           }else{
@@ -56,6 +56,8 @@ export class MenuPage {
                         option.select=undefined;
               }
           });
+    }else{
+      this.options=[];
     }
     console.log("menu:"+JSON.stringify(this.menu));
     this.menu.quantity = 1;
@@ -174,7 +176,7 @@ export class MenuPage {
 
     this.checkOptionValidity().then(()=>{
 
-        var cart:any={menus:[],takitId:this.shopInfo.takitId,amount:0};
+        var cart:any={orderList:[],takitId:this.shopInfo.takitId,amount:0};
         var options=[];
         if(this.options!=undefined){
             this.options.forEach((option)=>{
@@ -189,16 +191,20 @@ export class MenuPage {
         this.computeAmount();
         let orderName=this.menu.menuName+"("+this.menu.quantity+")";
 
-        let order:any={ orderName:orderName,
-                        takeout: this.menu.takeout,
-                        menuNO:this.menu.menuNO,
-                        menuName:this.menu.menuName,
-                        quantity:this.menu.quantity,
-                        options: options,
-                        price: this.amount}
-        if(this.memo!=undefined)
-            order.memo=this.memo;
-        cart.menus.push(order); //menu's original price
+        let menus=[];
+        let menu:any={menuNO:this.menu.menuNO,
+                  menuName:this.menu.menuName,
+                  quantity:this.menu.quantity,
+                  options: options, 
+                  price: this.amount}
+       if(this.memo!=undefined)
+            menu.memo=this.memo;
+
+        menus.push(menu);
+ 
+        let order:any={ takeout: this.menu.takeout, menus:menus} 
+
+        cart.orderList.push(order); //menu's original price
 
         cart.deliveryArea=this.shopInfo.deliveryArea;
         cart.freeDelivery=this.shopInfo.freeDelivery;
@@ -225,7 +231,15 @@ export class MenuPage {
 
   cart(){
     this.checkOptionValidity().then(()=>{
-        let param={ menu:this.menu }
+        let param={ orderList:[]}
+        /*
+        this.menu
+         param.orderList.orderName;
+         param.orderList.takeout;
+         param.orderList.freeDelivery;
+         param.orderList.deliveryFee;
+         param.orderList.address;
+         */                
         //takitId, address, menuNo, menuName,options,quantity,price,memo)
         this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) });
         this.navCtrl.pop();

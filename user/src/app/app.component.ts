@@ -29,9 +29,6 @@ export class MyApp {
              private network: Network) {
     platform.ready().then(() => {
 
-            const args = ['GET', 'http://takit.biz'];
-            cordova.exec(null, null, 'WKWebViewSyncCookies', 'sync', args);
-
             this.disconnectSubscription = this.network.onDisconnect().subscribe(() => { 
                 console.log('network was disconnected :-( ');
                 console.log("rootPage:"+JSON.stringify(this.rootPage));

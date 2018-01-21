@@ -148,6 +148,29 @@ loginAgain(){
       });
   }
 
+saveOrderCart(body){
+      return new Promise((resolve,reject)=>{
+            let headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+            console.log("saveOrder:"+JSON.stringify(body));
+            this.post(encodeURI(this.storageProvider.serverAddress+"/saveOrderCart"),body).then((res:any)=>{
+                  console.log("res:"+JSON.stringify(res));
+                  console.log("saveOrder-res.result:"+res.result);
+                  if(res.result=="success"){
+                    //resolve(res.orders);
+                    resolve(res);
+                  }else{
+                    reject(res.error);
+                  }
+            },(err)=>{
+                reject(err);  
+            });
+      });
+  }
+
+
+
+
     getShopInfo(takitId){
         return new Promise((resolve,reject)=>{
             console.log("takitId:"+takitId);

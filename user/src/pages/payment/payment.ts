@@ -148,13 +148,27 @@ export class PaymentPage {
     for(var i=0;i<this.carts.length;i++){ 
                 let cardRate:string=this.carts[i].paymethod.card;
                 let cashRate:string=this.carts[i].paymethod.cash;
+                let cardDiscount:number;
+               let cashDiscount:number;
+
+                if(cardRate!=undefined)
+                    cardDiscount=parseFloat(cardRate.substr(0,cardRate.length-1));
+                if(cashRate!=undefined)    
+                    cashDiscount=parseFloat(cashRate.substr(0,cashRate.length-1));
                 if(cardRate!=undefined){
-                    let cardDiscount:number=parseFloat(cardRate.substr(0,cardRate.length-1));
                     this.cardDiscount+= (this.carts[i].price*cardDiscount)/100;
+                    this.carts[i].amount=this.carts[i].price-((this.carts[i].price*cardDiscount)/100);
                 }
                 if(cashRate!=undefined){
-                    let cashDiscount:number=parseFloat(cashRate.substr(0,cashRate.length-1));
                     this.cashDiscount+= (this.carts[i].price*cashDiscount)/100;
+                    this.carts[i].amount=this.carts[i].price-((this.carts[i].price*cashDiscount)/100);
+                }
+                // compute discount of each menu
+                for(var j=0;j<this.carts[i].orderList[0].menus.length;j++){
+                    if(this.paymentSelection=="cash")
+                        this.carts[i].orderList[0].menus[j].amout=this.carts[i].orderList[0].menus[j].price-((this.carts[i].orderList[0].menus[j].price*cashDiscount)/100);
+                    else // card
+                        this.carts[i].orderList[0].menus[j].amout=this.carts[i].orderList[0].menus[j].price-((this.carts[i].orderList[0].menus[j].price*cardDiscount)/100);                    
                 }
                 console.log("this.cardDiscount: "+this.cardDiscount+ "this.cashDiscount:"+this.cashDiscount)
     }
@@ -171,8 +185,8 @@ export class PaymentPage {
 
   checkTakeoutAvailable(){
     for(var i=0;i<this.carts.length;i++){
-      for(var j=0;j<this.carts[i].menus.length;j++){
-        if(this.carts[i].menus[j].takeout<1){
+      for(var j=0;j<this.carts[i].orderList[0].menus.length;j++){
+        if(this.carts[i].orderList[0].menus[j].takeout<1){
             this.takeoutAvailable=false;
             return;
         }
@@ -187,8 +201,8 @@ export class PaymentPage {
         this.deliveryAvailable=false;
         return;
     }
-    for(var j=0;j<this.carts[0].menus.length;j++)
-    if(this.carts[0].menus[j].takeout<2){
+    for(var j=0;j<this.carts[0].orderList[0].menus.length;j++)
+    if(this.carts[0].orderList[0].menus[j].takeout<2){
         this.deliveryAvailable=false;
         return;
     }
@@ -285,7 +299,13 @@ export class PaymentPage {
         alert.present();
         return;
       }
-      body = {      paymethod:this.paymentSelection,
+      let carts=this.carts;
+      this.carts.forEach((order)=>{
+        delete order.freeDelivery;
+        delete order.deliveryFee;
+        delete order.address; 
+      });
+      body = {      payment:this.paymentSelection,
                     orderList:JSON.stringify(this.carts), 
                     orderName:this.orderName,
                     amount:this.payAmount,
@@ -297,7 +317,7 @@ export class PaymentPage {
                     receiptType:this.storageProvider.receiptType,
                 };
     }else{ // card
-      body = {      paymethod:this.paymentSelection,
+      body = {      payment:this.paymentSelection,
                     orderList:JSON.stringify(this.carts), 
                     orderName:this.orderName,
                     amount:this.payAmount,

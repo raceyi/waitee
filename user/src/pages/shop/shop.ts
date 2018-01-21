@@ -46,6 +46,7 @@ export class ShopPage {
       var date=new Date();
       this.shop.shopInfo.businessTime=this.shop.shopInfo.businessTimes[date.getDay()];
       console.log(this.shop.shopInfo.businessTime);
+      this.regularOff="";
       for(var index=0;index<this.shop.shopInfo.businessTimes.length;index++){
           let strs:string=this.shop.shopInfo.businessTimes[index].split("~");
           if(strs[0]==strs[1]){
@@ -277,7 +278,7 @@ export class ShopPage {
         return;
 
     this.orderPageEntered=true;
-        setTimeout(() => {
+    setTimeout(() => {
         console.log("reset orderPageEntered:"+this.orderPageEntered);
         this.orderPageEntered=false;
     }, 1000); //  seconds  

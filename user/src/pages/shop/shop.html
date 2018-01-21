@@ -65,7 +65,7 @@
                     <ion-list>
                         <ion-item *ngFor="let category of categories;let i=index;">
                           <button style="font-size:3.4vw" value="i" (click)="categoryClick(i+1)" color="white" ion-button full  no-padding no-margin>
-                           <p style="font-size:3.4vw;" text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
+                           <p style="font-size:4vw;" text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
                           </button>
                         </ion-item>
                     </ion-list>

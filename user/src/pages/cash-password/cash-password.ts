@@ -128,8 +128,11 @@ export class CashPasswordPage {
             }
 
             this.body.password=cashPassword;
+            this.body.orderedTime=new Date().toISOString();
+            this.body.cashId= this.storageProvider.cashId;
+
             console.log("body:"+JSON.stringify(this.body));
-            this.serverProvider.saveOrder(this.body).then((res:any)=>{    
+            this.serverProvider.saveOrderCart(this.body).then((res:any)=>{    
                         console.log(JSON.stringify(res)); 
                         let result:string=res.result;
                         if(result=="success"){

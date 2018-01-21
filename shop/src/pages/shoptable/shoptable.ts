@@ -8,7 +8,7 @@ import {Http,Headers} from '@angular/http';
 import {ErrorPage} from '../../pages/error/error';
 import {PrinterProvider} from '../../providers/printerProvider';
 import {ServerProvider} from '../../providers/serverProvider';
-//import { Push, PushObject, PushOptions } from '@ionic-native/push';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import {CancelConfirmPage} from '../cancel-confirm/cancel-confirm';
 import {IosPrinterProvider} from '../../providers/ios-printer';
 
@@ -25,7 +25,7 @@ export class ShopTablePage {
   endDate;
  // currTime;
   orders=[];
-  //pushNotification:PushObject;
+  pushNotification:PushObject;
   infiniteScroll:any=undefined;
   smsInboxPlugin;
   //isAndroid;
@@ -45,7 +45,7 @@ export class ShopTablePage {
   constructor(public navController: NavController,private app:App,private storageProvider:StorageProvider,
       private http:Http,private alertController:AlertController,private ngZone:NgZone,private ionicApp: IonicApp,
       private printerProvider:PrinterProvider,private platform:Platform,private menuCtrl: MenuController,
-      public viewCtrl: ViewController,private serverProvider:ServerProvider,//private push: Push,
+      public viewCtrl: ViewController,private serverProvider:ServerProvider,private push: Push,
       private mediaProvider:MediaProvider,private events:Events,private iosPrinterProvider:IosPrinterProvider) {
     console.log("ShopTablePage constructor");
     //this.isAndroid=this.platform.is("android");
@@ -698,15 +698,13 @@ export class ShopTablePage {
       }
 
       registerPushService(){ // Please move this code into tabs.ts
-          /*
             this.pushNotification=this.push.init({
                 android: {
                     //forceShow: true, // Is it necessary?vibration
                     senderID: this.storageProvider.userSenderID                },
                 ios: {
-                    senderID: this.storageProvider.userSenderID,
                     //"gcmSandbox": "true", //development mode
-                    "gcmSandbox": "false",//production mode
+                    "fcmSandbox": "false",//production mode
                     "alert": "true",
                     "badge": "true",
                     "sound": "true"
@@ -841,7 +839,6 @@ export class ShopTablePage {
              this.pushNotification.on('error').subscribe((e:any)=>{
                 console.log(e.message);
             });
-            */
     }
 
     updateOrder(order){

@@ -123,6 +123,12 @@ $npm install crypto-js
 
 $npm install @types/crypto-js --save
 
+$ionic cordova plugin add 
+
+$ionic cordova plugin add phonegap-plugin-push 
+
+$npm install --save @ionic-native/push
+
 $ionic cordova build ios
 
 $ionic cordova build android

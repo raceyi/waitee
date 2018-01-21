@@ -26,7 +26,7 @@ import {SalesPage} from '../pages/sales-page/sales-page';
 import { EditMenuPage } from '../pages/edit-menu-page/edit-menu-page';
 import { MenuModalPage} from '../pages/menu-modal-page/menu-modal-page';
 
-//import { Push, PushObject, PushOptions } from '@ionic-native/push';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Network } from '@ionic-native/network';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -39,6 +39,7 @@ import { HttpModule } from '@angular/http';
 
 import { MyErrorHandler } from '../classes/my-error-handler';
 import {CancelConfirmPageModule} from '../pages/cancel-confirm/cancel-confirm.module';
+import { SoldOutPageModule } from '../pages/sold-out/sold-out.module';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import {CancelConfirmPageModule} from '../pages/cancel-confirm/cancel-confirm.mo
     IonicModule.forRoot(MyApp,{mode:'ios'}),
     IonicStorageModule.forRoot(),
     CancelConfirmPageModule,
-    ErrorPageModule
+    ErrorPageModule,
+    SoldOutPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -78,10 +80,9 @@ import {CancelConfirmPageModule} from '../pages/cancel-confirm/cancel-confirm.mo
     EditMenuPage,
     MenuModalPage
   ],
-  //providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},
   providers: [{provide: ErrorHandler, useClass: MyErrorHandler},
     Network, 
-    //Push,
+    Push,
     SplashScreen,
     StatusBar, 
     Media,

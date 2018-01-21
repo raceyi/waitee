@@ -23,6 +23,7 @@ import {OrderCancelPage} from '../pages/order-cancel/order-cancel';
 import {CartPage} from '../pages/cart/cart';
 import {ErrorPage} from '../pages/error/error';
 import {CashTutorialPage} from '../pages/cash-tutorial/cash-tutorial';
+import {SoldOutPage} from '../pages/sold-out/sold-out';
 
 @Component({
   templateUrl: 'app.html'
@@ -34,7 +35,7 @@ export class MyApp {
   //rootPage:any =PaymentPage;
   //rootPage:any =CashTutorialPage;
   //rootPage:any = TabsPage;
-  rootPage:any = LoginMainPage;
+  //rootPage:any = LoginMainPage;
   //rootPage:any = SignupPaymentPage;
   //rootPage:any=CashPasswordPage;
   //rootPage:any = ShopPage
@@ -44,6 +45,8 @@ export class MyApp {
   // rootPage:any=OrderCancelPage;
   //rootPage:any = CartPage;
   //rootPage:any = ErrorPage;
+  rootPage:any =SoldOutPage;
+
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

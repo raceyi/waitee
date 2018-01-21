@@ -8,11 +8,11 @@
             <ion-row class="scroll-row-latest">
                 <ion-col class="cash-card card-unselect-border scroll-col-latest" text-center no-padding >
 
-                  <ion-row class="cash-label" style="border:0px;" >
-                  <button no-margin no-padding  ion-button full  style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐시</b></button>
+                  <ion-row  style="border:0px;" >
+                  <button no-margin no-padding  ion-button full  class="cash-label" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐시</b></button>
                   </ion-row>
-                  <ion-row class="cash-value" style="border:0px;"> 
-                  <button no-margin no-padding  ion-button  full  style="font-size:4vw;"> 잔액: {{storageProvider.cashAmount}}원</button>
+                  <ion-row class="cash-value-row" style="border:0px;"> 
+                  <button no-margin no-padding  ion-button  full full class="cash-value" style="font-size:4vw;"> 잔액: {{storageProvider.cashAmount}}원</button>
                   </ion-row>
                   <ion-row>
                       <ion-col no-padding no-margin (click)="chargeCash()" class="left-button" ><button no-padding no-margin full clear ion-button>충전</button></ion-col>

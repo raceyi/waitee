@@ -14,7 +14,7 @@ import {CashPage} from '../pages/cash/cash';
 import {UserInfoPage} from '../pages/userinfo/userinfo';
 import {SalesPage} from '../pages/sales-page/sales-page';
 import { EditMenuPage } from '../pages/edit-menu-page/edit-menu-page';
-
+import { SoldOutPage } from '../pages/sold-out/sold-out';
 
 import { StatusBar } from '@ionic-native/status-bar';
 //import { Storage } from '@ionic/storage';
@@ -165,6 +165,11 @@ export class MyApp {
     openEditMenu(){
         this.app.getRootNav().push(EditMenuPage)
     }
+
+    openSoldOut(){
+        this.app.getRootNav().push(SoldOutPage)
+    }
+
    openLogout(){
       if(this.storageProvider.tourMode){
             let alert = this.alertCtrl.create({
