@@ -176,7 +176,7 @@ export class MenuPage {
 
     this.checkOptionValidity().then(()=>{
 
-        var cart:any={orderList:[],takitId:this.shopInfo.takitId,amount:0};
+        var cart:any={takitId:this.shopInfo.takitId,amount:0};
         var options=[];
         if(this.options!=undefined){
             this.options.forEach((option)=>{
@@ -196,15 +196,16 @@ export class MenuPage {
                   menuName:this.menu.menuName,
                   quantity:this.menu.quantity,
                   options: options, 
-                  price: this.amount}
+                  price: this.amount,
+                  takeout:this.menu.takeout}
        if(this.memo!=undefined)
             menu.memo=this.memo;
 
         menus.push(menu);
  
-        let order:any={ takeout: this.menu.takeout, menus:menus} 
+        let order:any={ takitId:this.shopInfo.takitId , menus:menus} 
 
-        cart.orderList.push(order); //menu's original price
+        cart.orderList=order; //menu's original price
 
         cart.deliveryArea=this.shopInfo.deliveryArea;
         cart.freeDelivery=this.shopInfo.freeDelivery;
@@ -214,11 +215,11 @@ export class MenuPage {
         cart.takitId=this.shopInfo.takitId;
         cart.shopName=this.shopInfo.shopName;
         cart.price=this.amount;
-
+        cart.orderName=orderName;
         let carts=[];
         carts.push(cart);
 
-        let param={carts:carts,orderName: orderName, trigger:'order' }
+        let param={carts:carts, trigger:'order' }
         this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) });
     },(name)=>{
           let alert = this.alertController.create({

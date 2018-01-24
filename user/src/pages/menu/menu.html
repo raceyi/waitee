@@ -99,7 +99,7 @@
       </ion-row>
        <ion-row [hidden]="quantityInput(false)">
          <ion-col col-8 class="input-label">총 수량</ion-col>
-         <ion-col col-3><ion-input #quantityNum (blur)="onBlur($event)" type="number"  min="1" [(ngModel)]= "menu.quantity"></ion-input></ion-col>
+         <ion-col col-3><ion-input #quantityNum (ionBlur)="onBlur($event)" type="number"  min="1" [(ngModel)]= "menu.quantity"></ion-input></ion-col>
          <ion-col class="unit" col-1>개</ion-col>
        </ion-row>
 </div>

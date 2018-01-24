@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,AlertController,Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,AlertController,Events,App } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
 import {OrderDetailPage} from '../order-detail/order-detail';
+import { TabsPage } from '../tabs/tabs';
+
 /**
  * Generated class for the CashPasswordPage page.
  *
@@ -33,6 +35,7 @@ export class CashPasswordPage {
               private alertController:AlertController,
               public serverProvider:ServerProvider,
               private events:Events,
+              private app:App,
               private storageProvider:StorageProvider) {
     this.body=navParams.get("body");
     this.trigger=navParams.get("trigger");
@@ -133,11 +136,10 @@ export class CashPasswordPage {
 
             console.log("body:"+JSON.stringify(this.body));
             this.serverProvider.saveOrderCart(this.body).then((res:any)=>{    
-                        console.log(JSON.stringify(res)); 
+                        //console.log(JSON.stringify(res)); 
                         let result:string=res.result;
                         if(result=="success"){
                             if(this.trigger=="cart"){
-                                    let cart={menus:[],total:0};
                                     this.storageProvider.resetCartInfo().then(()=>{
                                         
                                     },()=>{
@@ -151,7 +153,23 @@ export class CashPasswordPage {
                             }
                             this.events.publish("orderUpdate",{order:res.order});
                             this.events.publish("cashUpdate");
-                            this.navCtrl.push(OrderDetailPage,{order:res.order,trigger:"order"});
+                            if(res.order.length==1){
+                                if(this.trigger=="cart"){
+                                    //hum...
+                                }else{
+                                    let order=res.order[0].order;
+                                    this.navCtrl.setRoot(OrderDetailPage,{order:order,trigger:"order"});
+                                }
+                            }else{
+                                let alert = this.alertController.create({
+                                        title: '주문 목록에서 주문상세 정보를 확인하실수 있습니다.',
+                                        buttons: ['OK']
+                                    });
+                                    alert.present();
+                                
+                                this.app.getRootNav().setRoot(TabsPage);
+                                this.storageProvider.tabs.select(2);
+                            }
                             this.confirmInProgress=false;
                         }else{
                             let alert = this.alertController.create({
@@ -171,6 +189,12 @@ export class CashPasswordPage {
                             let alert = this.alertController.create({
                                     title: '서버와 통신에 문제가 있습니다',
                                     subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                                    buttons: ['OK']
+                                });
+                                alert.present();
+                        }else if(error=="soldout"){
+                            let alert = this.alertController.create({
+                                    title: '판매 종료 메뉴가 포함되어 있습니다.',
                                     buttons: ['OK']
                                 });
                                 alert.present();
@@ -195,6 +219,12 @@ export class CashPasswordPage {
                         }else if(error=="invalid cash password"){
                             let alert = this.alertController.create({
                                     title: '비밀번호가 일치하지 않습니다.',
+                                    buttons: ['OK']
+                                });
+                                alert.present();
+                        }else if(error=='card failure'){
+                            let alert = this.alertController.create({
+                                    title: '카드결제에 실패하였습니다.',
                                     buttons: ['OK']
                                 });
                                 alert.present();

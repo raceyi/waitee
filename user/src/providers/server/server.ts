@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable ,NgZone} from '@angular/core';
 import {StorageProvider} from '../storage/storage';
-import {AlertController} from 'ionic-angular';
+import {AlertController,Events} from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
 import {LoginProvider} from '../../providers/login/login';
+import {TimeUtil} from '../../classes/TimeUtil';
 
 /*
   Generated class for the ServerProvider provider.
@@ -13,12 +14,15 @@ import {LoginProvider} from '../../providers/login/login';
 */
 @Injectable()
 export class ServerProvider {
+  timeUtil= new TimeUtil(); 
 
     constructor(public http: HttpClient
                 ,private storageProvider:StorageProvider
                 ,private nativeStorage: NativeStorage
                 ,public alertCtrl:AlertController
-                ,public loginProvider:LoginProvider) {
+                ,public loginProvider:LoginProvider
+                ,private events:Events
+                ,private ngZone:NgZone) {
       console.log('Hello ServerProvider Provider');
     }
 
@@ -168,8 +172,79 @@ saveOrderCart(body){
       });
   }
 
-
-
+  cancelOrder(order){
+    return new Promise((resolve,reject)=>{
+    let confirm = this.alertCtrl.create({
+                title: '주문을 취소하시겠습니까?',
+                buttons: [{
+                            text: '아니오',
+                            handler: () => {
+                              console.log('Disagree clicked');
+                            }
+                          },
+                          {
+                            text: '네',
+                            handler: () => {
+                                    console.log("server:"+ this.storageProvider.serverAddress);
+                                    let body  = { orderId:order.orderId,
+                                                                cancelReason:"고객주문취소",
+                                                                cashId:this.storageProvider.cashId};
+                                    
+                                    this.post(this.storageProvider.serverAddress+"/cancelOrderCart",body).then((res:any)=>{
+                                        console.log("cancelOrder-res:"+JSON.stringify(res));
+                                        var result:string=res.result;
+                                        if(result==="success"){
+                                            let alert = this.alertCtrl.create({
+                                                title: '주문 취소가 정상 처리 되었습니다.',
+                                                buttons: ['확인']
+                                            });
+                                            alert.present();
+                                        //update order status
+                                            this.ngZone.run(()=>{
+                                                        order.orderStatus="cancelled";  
+                                                        order.cancelReason="고객주문취소";
+                                                        if(res.order.hasOwnProperty("cancelledTime")){   
+                                                            console.log("cancelledTime:"+res.order.cancelledTime);                   
+                                                            order.localCancelledTimeString=this.timeUtil.getlocalTimeString(res.order.cancelledTime);
+                                                        }
+                                            });
+                                            this.events.publish("orderUpdate",{order:res.order});
+                                            this.events.publish("cashUpdate");
+                                            resolve(res.order);
+                                        }else{
+                                            //Please give user a notification
+                                            let alert;
+                                            let reason:string=res.reason;
+                                            if(reason=="card-cancel failure"){
+                                                    alert = this.alertCtrl.create({
+                                                        title: '주문 상태는 변경되었으나 카드 결제 취소에 실패했습니다.',
+                                                        subTitle: '고객센터(0505-170-3636,help@takit.biz)에 연락바랍니다.',
+                                                        buttons: ['OK']
+                                                    });
+                                            }else{
+                                                    alert = this.alertCtrl.create({
+                                                        title: '주문취소에 실패했습니다.',
+                                                        subTitle: '주문 상태를 확인해 주시기바랍니다',
+                                                        buttons: ['OK']
+                                                    });
+                                            }
+                                            alert.present();
+                                            reject();
+                                        }
+                                    },(err)=>{
+                                    let alert = this.alertCtrl.create({
+                                            title: '서버와 통신에 문제가 있습니다',
+                                            subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                                            buttons: ['OK']
+                                        });
+                                        alert.present();
+                                        reject();
+                                    });
+                            }
+                      }]});
+        confirm.present();  
+    });  
+  }        
 
     getShopInfo(takitId){
         return new Promise((resolve,reject)=>{

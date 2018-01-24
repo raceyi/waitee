@@ -22,43 +22,7 @@ export class HomePage {
               ,public storageProvider:StorageProvider
               ,private alertController:AlertController              
               ,public serverProvider:ServerProvider) {
-  
-    this.recently_visited_shop=[{takitId:"더큰도시락@세종대학교",
-                            name_sub:"세종대학교",
-                            name_main:"더큰도시락",
-                            classification:"한식",
-                            star_rating:4.8},
-                            {takitId:"그릿스테이크@서울창업허브",
-                            name_sub:"서울창업허브",
-                            name_main:"그릿 스테이크",
-                            classification:"양식",
-                            star_rating:4.8},
-                            {takitId:"더큰도시락@세종대학교",
-                            name_sub:"세종대학교",
-                            name_main:"더큰도시락",
-                            classification:"한식",
-                            star_rating:4.8},
-                            {takitId:"그릿스테이크@서울창업허브",
-                            name_sub:"서울창업허브",
-                            name_main:"그릿 스테이크",
-                            classification:"양식",
-                            star_rating:4.8} ];     
-    //Just for testing                                               
-    this.recently_visited_shop.forEach(shop => {
-      shop.imagePath=this.awsS3+"shop.png";
-    });                                
   }
-
-/*
-  getShops(ev:any){
-    let val = ev.target.value;
-    if (val && val.trim() != '') {
-        this.shops = this.shops.filter((item) => {
-        return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
-    }
-  }
-*/
 
   showSearchBar(){
       this.navCtrl.push(SearchPage);

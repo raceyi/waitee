@@ -29,7 +29,7 @@ export class PaymentPage {
   deliveryAvailable:boolean=false;  ///////동일 매장에서만 배송이 가능합니다.
   takeoutAvailable:boolean=false;   ////// 일부 메뉴 포장시 따로 주문결제를 수행해 주시기 바랍니다. 
 
-  deliveryFee;
+  deliveryFee:number;
 
   paymentSelection="cash";
 
@@ -64,11 +64,12 @@ export class PaymentPage {
               private alertController:AlertController,              
               public storageProvider:StorageProvider,
               public serverProvider:ServerProvider) {
+    console.log("!!!!!payments constructor!!!!!");
 
     let param=JSON.parse(navParams.get('order'));
     console.log("param:"+JSON.stringify(param));
     this.carts=param.carts;
-    this.orderName=JSON.stringify(param.orderName);
+    //this.orderName=JSON.stringify(param.orderName);
     this.trigger=param.trigger;
 
     this.checkTakeoutAvailable();
@@ -98,14 +99,6 @@ export class PaymentPage {
         }
     }
     this.computePayAmount();
-
-    if(this.carts[0].freeDelivery!=undefined &&
-       this.carts[0].freeDelivery!=null &&
-       this.payAmount<this.carts[0].freeDelivery){
-          // 배달료 추가됨.
-          this.deliveryFee=this.carts[0].deliveryFee;
-    }
-
     let body = {shops:JSON.stringify(shops)};
         this.serverProvider.post(this.storageProvider.serverAddress+"/getPayMethod",body).then((res:any)=>{
             console.log("getPayMethod-res:"+JSON.stringify(res));
@@ -155,20 +148,20 @@ export class PaymentPage {
                     cardDiscount=parseFloat(cardRate.substr(0,cardRate.length-1));
                 if(cashRate!=undefined)    
                     cashDiscount=parseFloat(cashRate.substr(0,cashRate.length-1));
-                if(cardRate!=undefined){
+                if(cardRate!=undefined && this.paymentSelection=="card"){
                     this.cardDiscount+= (this.carts[i].price*cardDiscount)/100;
                     this.carts[i].amount=this.carts[i].price-((this.carts[i].price*cardDiscount)/100);
                 }
-                if(cashRate!=undefined){
+                if(cashRate!=undefined && this.paymentSelection=="cash"){
                     this.cashDiscount+= (this.carts[i].price*cashDiscount)/100;
                     this.carts[i].amount=this.carts[i].price-((this.carts[i].price*cashDiscount)/100);
                 }
                 // compute discount of each menu
-                for(var j=0;j<this.carts[i].orderList[0].menus.length;j++){
+                for(var j=0;j<this.carts[i].orderList.menus.length;j++){
                     if(this.paymentSelection=="cash")
-                        this.carts[i].orderList[0].menus[j].amout=this.carts[i].orderList[0].menus[j].price-((this.carts[i].orderList[0].menus[j].price*cashDiscount)/100);
+                        this.carts[i].orderList.menus[j].amout=this.carts[i].orderList.menus[j].price-((this.carts[i].orderList.menus[j].price*cashDiscount)/100);
                     else // card
-                        this.carts[i].orderList[0].menus[j].amout=this.carts[i].orderList[0].menus[j].price-((this.carts[i].orderList[0].menus[j].price*cardDiscount)/100);                    
+                        this.carts[i].orderList.menus[j].amout=this.carts[i].orderList.menus[j].price-((this.carts[i].orderList.menus[j].price*cardDiscount)/100);                    
                 }
                 console.log("this.cardDiscount: "+this.cardDiscount+ "this.cashDiscount:"+this.cashDiscount)
     }
@@ -179,14 +172,25 @@ export class PaymentPage {
         this.payAmount=this.totalAmount-this.cardDiscount;
 
     if(this.takeout==2 && this.payAmount<this.carts[0].freeDelivery){
-        this.payAmount+=parseInt(this.deliveryFee);
-    }    
+        this.deliveryFee=parseInt(this.carts[0].deliveryFee);
+    }else
+        this.deliveryFee=undefined;
+
+    console.log("payAmount:"+this.payAmount);
+  }
+
+  pickupChange(takeout){
+    this.takeout=takeout;
+    this.computePayAmount();
   }
 
   checkTakeoutAvailable(){
     for(var i=0;i<this.carts.length;i++){
-      for(var j=0;j<this.carts[i].orderList[0].menus.length;j++){
-        if(this.carts[i].orderList[0].menus[j].takeout<1){
+      this.takeoutAvailable=true;      
+      for(var j=0;j<this.carts[i].orderList.menus.length;j++){
+        if(this.carts[i].orderList.menus[j].takeout==undefined
+            || this.carts[i].orderList.menus[j].takeout==null 
+            || this.carts[i].orderList.menus[j].takeout<1){
             this.takeoutAvailable=false;
             return;
         }
@@ -201,8 +205,12 @@ export class PaymentPage {
         this.deliveryAvailable=false;
         return;
     }
-    for(var j=0;j<this.carts[0].orderList[0].menus.length;j++)
-    if(this.carts[0].orderList[0].menus[j].takeout<2){
+    if(this.carts[0].deliveryArea==undefined || this.carts[0].deliveryArea==null){
+        this.deliveryAvailable=false;
+        return;
+    }
+    for(var j=0;j<this.carts[0].orderList.menus.length;j++)
+    if(this.carts[0].orderList.menus[j].takeout<2){
         this.deliveryAvailable=false;
         return;
     }
@@ -281,11 +289,6 @@ export class PaymentPage {
         return;
     }
 
-    if(this.takeout==2 && this.payAmount<this.carts[0].freeDelivery){
-          // 배달료 추가됨.
-          this.deliveryFee=this.carts[0].deliveryFee;
-    }
-
     this.carts.total=this.payAmount;
     this.carts.price=this.totalAmount;
 
@@ -307,7 +310,7 @@ export class PaymentPage {
       });
       body = {      payment:this.paymentSelection,
                     orderList:JSON.stringify(this.carts), 
-                    orderName:this.orderName,
+                    //orderName:this.orderName, each cart has own orderName.
                     amount:this.payAmount,
                     takeout: this.takeout, // takeout:0(inStore) , 1(takeout), 2(delivery) 
                     orderedTime:new Date().toISOString(),
@@ -319,7 +322,7 @@ export class PaymentPage {
     }else{ // card
       body = {      payment:this.paymentSelection,
                     orderList:JSON.stringify(this.carts), 
-                    orderName:this.orderName,
+                    //orderName:this.orderName, each cart has own orderName
                     amount:this.payAmount,
                     takeout: this.takeout, // takeout:0(inStore) , 1(takeout), 2(delivery) 
                     orderedTime:new Date().toISOString(),

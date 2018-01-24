@@ -40,14 +40,14 @@
   </ion-col>
 </ion-row>
 </div>
-<div class="history" *ngFor="let order of historyOrders">
+<div class="history" *ngFor="let order of orders">
   <ion-row class="order-first-line">
    <ion-col> {{order.orderName}}</ion-col>
    <ion-col text-right>  {{order.amount}}원</ion-col>
   </ion-row>
   <ion-row class="order-second-line">
     <ion-col>
-    {{order.shopName}} 
+    {{order.name_main}} {{order.name_sub}}
     </ion-col>
     <ion-col style="color: #bdbdbd;" text-right> {{order.orderedTimeString}}
     </ion-col>
@@ -62,10 +62,7 @@
       <button (click)="orderDetail(order)" full no-padding no-margin ion-button>주문상세</button>
     </ion-col>  
     <ion-col style="padding-top:0px;" no-margin col-3 text-right>
-      <button full no-padding no-margin *ngIf="order.orderStatus=='paid'" ion-button>주문취소</button>
-      <!--
-      <button (click)="inputReview(order)" full no-padding no-margin *ngIf="order.orderStatus=='completed' || order.orderStatus=='pickup'"ion-button>후기작성</button>
-      -->
+      <button full no-padding no-margin *ngIf="order.orderStatus=='paid'" (click)="cancelOrder(order)" ion-button>주문취소</button>
       <button (click)="inputReview(order)" full no-padding no-margin *ngIf="order.orderStatus=='pickup'"ion-button>후기작성</button>
     </ion-col>  
   </ion-row>

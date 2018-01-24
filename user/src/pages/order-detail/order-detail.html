@@ -82,11 +82,11 @@
 
 <div text-center class="pickup-area" *ngIf="order.orderStatus=='cancelled'" style="background-color:white;">
 <ion-row  style="color: #6441a5;justify-content:center;font-size:4vw;">
-       <b>취소된 주문입니다. ( 사유 : 구매의사 취소 )</b>
+       <b>취소된 주문입니다. ( 사유 : {{order.cancelReason}} )</b>
 </ion-row>
-<ion-row style="color: #bdbdbd;" *ngIf="order.localCanceledTimeString" >
+<ion-row style="color: #bdbdbd;" *ngIf="order.localCancelledTimeString" >
     <ion-col no-padding col-4 text-left>취소완료</ion-col>
-    <ion-col no-padding col-8 text-right>{{order.localCanceledTimeString}}</ion-col>    
+    <ion-col no-padding col-8 text-right>{{order.localCancelledTimeString}}</ion-col>    
 </ion-row>
 </div>
 
@@ -107,37 +107,55 @@
     <ion-col no-padding col-4 text-left>준비완료</ion-col>
     <ion-col no-padding col-8 text-right>{{order.localCompleteTimeString}}</ion-col>    
     </ion-row>
-    <ion-row *ngIf="order.localCanceledTimeString" >
+    <ion-row *ngIf="order.localCancelledTimeString" >
     <ion-col no-padding col-4 text-left>주문취소</ion-col>
-    <ion-col no-padding col-8 text-right>{{order.localCanceledTimeString}}</ion-col>    
+    <ion-col no-padding col-8 text-right>{{order.localCancelledTimeString}}</ion-col>    
     </ion-row>
   </div>
 <ion-row class="show-border" style="justify-content:center;font-size:4vw;" text-center>
 주문 사항
 </ion-row>
 <div class="show-border" *ngFor="let menu of order.orderListObj.menus">
-<ion-row>
-          <ion-col text-left><span class="status">{{menu.menuName}}({{menu.quantity}})</span></ion-col>
-          <ion-col text-right><span class="status">{{menu.price}}원</span></ion-col>
-</ion-row>          
-<ion-row *ngFor="let option of menu.options" class="menu-detail">
-    <ion-col text-left></ion-col>
-    <ion-col text-right><span class="status">{{option.name}}:{{option.price}}</span>
-            <span class="status" *ngIf="option.select!=undefined">{{option.select}}</span> 
-    </ion-col>        
-</ion-row>      
+  <ion-row>
+            <ion-col col-8 text-left><span class="status">{{menu.menuName}}({{menu.quantity}})</span></ion-col>
+            <ion-col col-4 text-right><span class="status">{{menu.price}}원</span></ion-col>
+  </ion-row>          
+  <ion-row *ngFor="let option of menu.options" class="menu-detail">
+      <ion-col col-8 text-left>{{option.name}}({{option.number}})<span class="status" *ngIf="option.select!=undefined">:{{option.select}}</span> </ion-col>
+      <ion-col col-4 text-right><span class="status">+{{option.price}}</span>
+      </ion-col>        
+  </ion-row> 
+  <ion-row *ngIf="menu.memo" class="menu-detail">
+      요청사항 &nbsp;:&nbsp; {{menu.memo}}
+  </ion-row>   
 </div>             
-<div class="payment">
+<div class="show-border" *ngIf="order.takeout==2 && order.deliveryAddress!=null">
+  <ion-row>
+          <ion-col text-left><span class="status">배송지</span></ion-col>
+  </ion-row>     
+  <ion-row text-left class="menu-detail">
+          <ion-col text-left>
+              {{order.deliveryAddress}}
+          </ion-col>
+  </ion-row>   
+</div>         
+
+<div [ngClass]="payClasses">
 <ion-row>
-<ion-col text-left>결제 방식</ion-col> 
-<ion-col text-right> 캐시</ion-col>
+<ion-col col-3 text-left>결제 방식</ion-col> 
+<ion-col col-9 text-right> {{order.paymentString}}</ion-col>
 </ion-row>
+<ion-row *ngIf="this.order.payMethod=='card'">
+<ion-col col-3 text-left>승인 번호</ion-col> 
+<ion-col col-9 text-right> {{order.approval}}</ion-col>
+</ion-row>
+
 <ion-row>
   <ion-col text-left>
     주문 금액  
   </ion-col>
   <ion-col text-right>
-    {{order.orderListObj.prevAmount}}원
+    {{order.price}}원
   </ion-col>
 </ion-row>
 
@@ -146,7 +164,16 @@
     할인 금액  
   </ion-col>
   <ion-col text-right>
-    -{{order.orderListObj.takitDiscount}}원
+    -{{order.discount}}원
+  </ion-col>
+</ion-row>
+
+<ion-row *ngIf="order.deliveryFee!=null" >
+  <ion-col text-left>
+    배달비   
+  </ion-col>
+  <ion-col text-right>
+    {{order.deliveryFee}}원
   </ion-col>
 </ion-row>
 
@@ -155,7 +182,25 @@
     <b>결제 금액</b>  
   </ion-col>
   <ion-col text-right>
-    <b>{{order.orderListObj.total}}원</b>
+    <b *ngIf="order.deliveryFee!=null && order.deliveryFee!=undefined">{{order.amount+order.deliveryFee}}원</b>
+    <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined">{{order.amount}}원</b>
+  </ion-col>
+</ion-row>
+</div>
+
+<div *ngIf="order.orderStatus=='cancelled'" [ngClass]="refundClasses">
+<ion-row>
+<ion-col text-left>환불 방식</ion-col> 
+<ion-col *ngIf="this.order.payMethod=='cash'" text-right> 캐쉬환불</ion-col>
+<ion-col *ngIf="this.order.payMethod=='card'" text-right> 카드승인취소</ion-col>
+</ion-row>
+<ion-row class="receipt-amount"> 
+  <ion-col text-left>
+    <b>환불 금액</b>  
+  </ion-col>
+  <ion-col text-right>
+    <b *ngIf="order.deliveryFee!=null && order.deliveryFee!=undefined">-{{order.amount+order.deliveryFee}}원</b>
+    <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined">-{{order.amount}}원</b>
   </ion-col>
 </ion-row>
 </div>

@@ -85,21 +85,25 @@ $ionic cordova platform add android
 
 $ionic cordova platform add ios
 
+$ionic cordova plugin add phonegap-plugin-push
+
+$npm install --save @ionic-native/push
+
+$ionic cordova plugin add cordova-plugin-media            ===>enforce cordova-plugin-file@6.0.1
+
+$npm install --save @ionic-native/media
+
 $ionic cordova plugin add cordova-plugin-network-information
 
 $npm install --save @ionic-native/network
 
-$ionic cordova plugin add cordova-plugin-file-transfer
+$ionic cordova plugin add --force cordova-plugin-file-transfer   ===>enforce cordova-plugin-file@5.0.0
 
 $npm install --save @ionic-native/transfer
 
 $ionic cordova plugin add cordova-plugin-camera
 
 $npm install --save @ionic-native/camera
-
-$ionic cordova plugin add cordova-plugin-file
-
-$npm install --save @ionic-native/file
 
 $ionic cordova plugin add cordova-plugin-filepath
 
@@ -111,10 +115,6 @@ $ionic cordova plugin add https://github.com/katzer/cordova-plugin-background-mo
 
 $npm install --save @ionic-native/background-mode
 
-$ionic cordova plugin add cordova-plugin-media
-
-$npm install --save @ionic-native/media
-
 $ionic cordova plugin add cordova-plugin-nativestorage
 
 $npm install --save @ionic-native/native-storage
@@ -123,14 +123,8 @@ $npm install crypto-js
 
 $npm install @types/crypto-js --save
 
-$ionic cordova plugin add 
-
-$ionic cordova plugin add phonegap-plugin-push 
-
-$npm install --save @ionic-native/push
-
 $ionic cordova build ios
 
 $ionic cordova build android
 
-
+* Android build failure=> 안드리드 스튜디오에서 빌드함. build.gradle수정함.

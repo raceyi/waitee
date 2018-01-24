@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
+import { Component ,NgZone} from '@angular/core';
+import { IonicPage, NavController, NavParams,App,AlertController } from 'ionic-angular';
 import {ReviewInputPage} from '../review-input/review-input';
 import {OrderDetailPage} from '../order-detail/order-detail';
+import {StorageProvider} from '../../providers/storage/storage';
+import {ServerProvider} from '../../providers/server/server';
 
 /**
  * Generated class for the OrderListPage page.
@@ -16,14 +18,23 @@ import {OrderDetailPage} from '../order-detail/order-detail';
   templateUrl: 'order-list.html',
 })
 export class OrderListPage {
+   orders=[];
+   lastOrderId=-1;
+   infiniteScroll;
+
+
   index=0; // 0: 1개월, 1:2개월, 2:3개월, 3:6개월 
   searchText;
   searchDone=false;
   colStyle=[];
   buttonStyle=[];
-  historyOrders=[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,private app:App) {
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              public storageProvider:StorageProvider,
+              public serverProvider:ServerProvider,
+              public alertController:AlertController,
+              private app:App) {
     this.colStyle=[
           {"border-right-style": "solid",
            "border-width": "1px",
@@ -46,21 +57,6 @@ export class OrderListPage {
           {'color':'#bdbdbd' },
           {'color':'#bdbdbd' }
     ];
-
-   this.historyOrders=[{"orderId":"1490","takitId":"TEST2@TAKIT","shopName":"가로수그늘아래","orderName":"바닐라라떼(1)","payMethod":"cash","amount":"0","takeout":"0","arrivalTime":null,"orderNO":"1","userId":"60","userName":"이경주","userPhone":"01027228226","orderStatus":"paid","orderList":"{\"menus\":[{\"menuNO\":\"TEST2@TAKIT;1\",\"menuName\":\"바닐라라떼\",\"quantity\":1,\"options\":[],\"price\":\"0\",\"amount\":0}],\"total\":0,\"prevAmount\":0,\"takitDiscount\":0,\"couponDiscount\":0}","deliveryAddress":"","userMSG":null,"orderedTime":"2018-01-02 07:53:13","checkedTime":null,"completedTime":null,"cancelledTime":null,"localCancelledTime":null,"cancelReason":null,"localOrderedTime":"2018-01-02 16:53:13","localOrderedDay":"2","localOrderedHour":"16","localOrderedDate":"2018-01-02","receiptIssue":"1","receiptId":"01027228226","receiptType":"IncomeDeduction"},
-                       {"orderId":"1485","takitId":"TEST2@TAKIT","shopName":"가로수그늘아래","orderName":"아메리카노(1)","payMethod":"cash","amount":"0","takeout":"0","arrivalTime":null,"orderNO":"1","userId":"60","userName":"이경주","userPhone":"01027228226","orderStatus":"completed","orderList":"{\"menus\":[{\"menuNO\":\"TEST2@TAKIT;1\",\"menuName\":\"아메리카노\",\"quantity\":1,\"options\":[],\"price\":\"0\",\"amount\":0}],\"total\":0,\"prevAmount\":0,\"takitDiscount\":0,\"couponDiscount\":0}","deliveryAddress":"","userMSG":null,"orderedTime":"2017-12-26 00:20:42","checkedTime":"2017-12-26 00:21:17","completedTime":"2017-12-26 00:21:33","cancelledTime":null,"localCancelledTime":null,"cancelReason":null,"localOrderedTime":"2017-12-26 09:20:42","localOrderedDay":"2","localOrderedHour":"9","localOrderedDate":"2017-12-26","receiptIssue":"1","receiptId":"01027228226","receiptType":"IncomeDeduction"},
-                       {"orderId":"1485","takitId":"TEST2@TAKIT","shopName":"가로수그늘아래","orderName":"아메리카노(1)","payMethod":"cash","amount":"0","takeout":"0","arrivalTime":null,"orderNO":"1","userId":"60","userName":"이경주","userPhone":"01027228226","orderStatus":"pickup","orderList":"{\"menus\":[{\"menuNO\":\"TEST2@TAKIT;1\",\"menuName\":\"아메리카노\",\"quantity\":1,\"options\":[],\"price\":\"0\",\"amount\":0}],\"total\":0,\"prevAmount\":0,\"takitDiscount\":0,\"couponDiscount\":0}","deliveryAddress":"","userMSG":null,"orderedTime":"2017-12-26 00:20:42","checkedTime":"2017-12-26 00:21:17","completedTime":"2017-12-26 00:21:33","cancelledTime":null,"localCancelledTime":null,"cancelReason":null,"localOrderedTime":"2017-12-26 09:20:42", "localPickupTime":"2017-12-26 09:20:42","localOrderedDay":"2","localOrderedHour":"9","localOrderedDate":"2017-12-26","receiptIssue":"1","receiptId":"01027228226","receiptType":"IncomeDeduction"},
-                       {"orderId":"1485","takitId":"TEST2@TAKIT","shopName":"가로수그늘아래","orderName":"아메리카노(1)","payMethod":"cash","amount":"0","takeout":"0","arrivalTime":null,"orderNO":"1","userId":"60","userName":"이경주","userPhone":"01027228226","orderStatus":"cancelled","orderList":"{\"menus\":[{\"menuNO\":\"TEST2@TAKIT;1\",\"menuName\":\"아메리카노\",\"quantity\":1,\"options\":[],\"price\":\"0\",\"amount\":0}],\"total\":0,\"prevAmount\":0,\"takitDiscount\":0,\"couponDiscount\":0}","deliveryAddress":"","userMSG":null,"orderedTime":"2017-12-26 00:20:42","checkedTime":"2017-12-26 00:21:17","completedTime":"2017-12-26 00:21:33","cancelledTime":null,"localCancelledTime":null,"cancelReason":null,"localOrderedTime":"2017-12-26 09:20:42","localOrderedDay":"2","localOrderedHour":"9","localOrderedDate":"2017-12-26","receiptIssue":"1","receiptId":"01027228226","receiptType":"IncomeDeduction"},                       
-                       {"orderId":"1484","takitId":"TEST2@TAKIT","shopName":"가로수그늘아래","orderName":"바닐라라떼(1)","payMethod":"cash","amount":"0","takeout":"0","arrivalTime":null,"orderNO":"1","userId":"60","userName":"이경주","userPhone":"01027228226","orderStatus":"checked","orderList":"{\"menus\":[{\"menuNO\":\"TEST2@TAKIT;1\",\"menuName\":\"바닐라라떼\",\"quantity\":1,\"options\":[],\"price\":\"0\",\"amount\":0}],\"total\":0,\"prevAmount\":0,\"takitDiscount\":0,\"couponDiscount\":0}","deliveryAddress":"","userMSG":null,"orderedTime":"2017-12-20 05:00:32","checkedTime":null,"completedTime":null,"cancelledTime":"2017-12-20 05:04:36","localCancelledTime":"0000-00-00 00:00:00","cancelReason":"고객접수취소","localOrderedTime":"2017-12-20 14:00:32","localOrderedDay":"3","localOrderedHour":"14","localOrderedDate":"2017-12-20","receiptIssue":"1","receiptId":"01027228226","receiptType":"IncomeDeduction"}];
-  
-   this.historyOrders.forEach(order => {
-     order.orderedTimeString=order.localOrderedTime[2]+order.localOrderedTime[3]+"/"+
-                              order.localOrderedTime[5]+order.localOrderedTime[6]+"/"+
-                              order.localOrderedTime[8]+order.localOrderedTime[9]+" "+
-                              order.localOrderedTime[11]+order.localOrderedTime[12]+":"+
-                              order.localOrderedTime[14]+order.localOrderedTime[15];
-     order.orderStatusString=this.getOrderStatusString(order);
-   });
 }
 
   getOrderStatusString(order){
@@ -91,8 +87,15 @@ export class OrderListPage {
     console.log('ionViewDidLoad OrderListPage');
   }
   
-  onInput(event){
-
+  ionViewWillEnter() {
+    console.log('ionViewWillEnter OrderListPage');
+    if(this.infiniteScroll!=undefined)
+        this.infiniteScroll.enable(true); //stop infinite scroll
+    this.orders=[]; // refresh orders when it enters this page.
+    this.lastOrderId=-1;
+    this.getOrders().then((value)=>{
+        console.log("getOrders done continue"+value);
+    });
   }
 
   resetStyle(){
@@ -154,17 +157,85 @@ export class OrderListPage {
   }
 
   inputReview(order){
-     this.app.getRootNavs()[0].push(ReviewInputPage,{order:JSON.stringify(order)});
+     this.app.getRootNavs()[0].push(ReviewInputPage,{order:order});
   }
 
   orderDetail(order){  
-      this.app.getRootNavs()[0].push(OrderDetailPage,{order:JSON.stringify(order)});
+      this.app.getRootNavs()[0].push(OrderDetailPage,{order:order});
   }
 
-  doInfinite(infiniteScroll){
-      console.log("doInfinite");
-     // this.historyOrders.push({"orderId":"1490","takitId":"TEST2@TAKIT","shopName":"가로수그늘아래","orderName":"바닐라라떼(1)","payMethod":"cash","amount":"0","takeout":"0","arrivalTime":null,"orderNO":"1","userId":"60","userName":"이경주","userPhone":"01027228226","orderStatus":"paid","orderList":"{\"menus\":[{\"menuNO\":\"TEST2@TAKIT;1\",\"menuName\":\"바닐라라떼\",\"quantity\":1,\"options\":[],\"price\":\"0\",\"amount\":0}],\"total\":0,\"prevAmount\":0,\"takitDiscount\":0,\"couponDiscount\":0}","deliveryAddress":"","userMSG":null,"orderedTime":"2018-01-02 07:53:13","checkedTime":null,"completedTime":null,"cancelledTime":null,"localCancelledTime":null,"cancelReason":null,"localOrderedTime":"2018-01-02 16:53:13","localOrderedDay":"2","localOrderedHour":"16","localOrderedDate":"2018-01-02","receiptIssue":"1","receiptId":"01027228226","receiptType":"IncomeDeduction"});
-     // infiniteScroll.complete();
-      infiniteScroll.enable(false);
+  cancelOrder(order){
+    this.serverProvider.cancelOrder(order).then((resOrder)=>{
+        this.navCtrl.push( OrderDetailPage,{order:resOrder});
+    });
   }
+
+  doInfinite(infiniteScroll) {
+    console.log('Begin async operation');
+    this.getOrders().then((more)=>{
+      if(more){
+          console.log("more is true");
+          infiniteScroll.complete();
+      }else{
+          console.log("more is false");
+          infiniteScroll.enable(false); //stop infinite scroll
+      }
+    },err=>{
+          // hum...
+    });
+  }
+
+  convertOrder(order){
+     order.orderStatusString =this.getOrderStatusString(order);
+     order.orderedTimeString=order.localOrderedTime[2]+order.localOrderedTime[3]+"/"+
+                              order.localOrderedTime[5]+order.localOrderedTime[6]+"/"+
+                              order.localOrderedTime[8]+order.localOrderedTime[9]+" "+
+                              order.localOrderedTime[11]+order.localOrderedTime[12]+":"+
+                              order.localOrderedTime[14]+order.localOrderedTime[15];
+      let strs=order.takitId.split("@");
+      order.name_sub = strs[0];
+      order.name_main= strs[1];
+  }
+  
+  getOrders(){
+        return new Promise((resolve,reject)=>{
+            let headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+            console.log("server:"+ this.storageProvider.serverAddress);
+            let body={ lastOrderId: this.lastOrderId,
+                       limit:this.storageProvider.OrdersInPage
+                     };
+            console.log("getOrders:"+body);
+            this.serverProvider.post(this.storageProvider.serverAddress+"/getOrdersDefault",body).then((res:any)=>{
+              console.log("orders:"+JSON.stringify(res.orders));
+            if(res.result=="success" && Array.isArray(res.orders)){
+                  res.orders.forEach((order)=>{
+                        this.convertOrder(order);              
+                        this.orders.push(order);
+                  })
+                  console.log("orders:"+JSON.stringify(this.orders));
+                  this.lastOrderId=res.orders[res.orders.length-1].orderId;
+                  if(res.orders.length<this.storageProvider.OrdersInPage){
+                        resolve(false); // no more orders
+                  }else{
+                        resolve(true); // more orders can be shown.
+                  }
+            }else if(res.orders=="0"){ //Please check if it works or not
+                console.log("no more orders");
+                resolve(false);
+            }else{
+                console.log("What happen? !!!sw bug!!!");
+            }
+         },(err)=>{
+            let alert = this.alertController.create({
+                title: '서버와 통신에 문제가 있습니다',
+                subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                buttons: ['OK']
+            });
+            alert.present();
+            reject(err);
+         });
+       });
+  }
+
 }

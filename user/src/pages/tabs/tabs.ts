@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { AlertController } from 'ionic-angular';
+import { Component ,ViewChild} from '@angular/core';
+import { AlertController ,Tabs} from 'ionic-angular';
 import { HomePage } from '../home/home';
 import {MyFavoritePage} from '../my-favorite/my-favorite';
 import {MyInfoPage} from '../my-info/my-info';
@@ -12,6 +12,7 @@ import {ServerProvider} from '../../providers/server/server';
   templateUrl: 'tabs.html'
 })
 export class TabsPage {
+  @ViewChild('tabs') tabs:Tabs;
 
   tab1Root = HomePage;
   tab2Root = MyFavoritePage;
@@ -22,7 +23,7 @@ export class TabsPage {
   constructor(public serverProvider:ServerProvider,
               private alertCtrl:AlertController,
               public storageProvider:StorageProvider){
-                
+  
     if(this.storageProvider.cashId!=undefined && this.storageProvider.cashId.length>=5){
         let body = {cashId:this.storageProvider.cashId};
         console.log("getBalanceCash "+body);
@@ -51,6 +52,8 @@ export class TabsPage {
     }
   }
   
-
+  ionViewDidLoad() {
+      this.storageProvider.tabs=this.tabs;
+  }
 
 }

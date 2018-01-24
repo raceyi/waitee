@@ -41,19 +41,22 @@ export class ShopPage {
       this.storageProvider.takitId=navParams.get("takitId");
       this.takitId==navParams.get("takitId");
       this.shop=this.storageProvider.shopResponse;
-      console.log("businessTime: "+ this.shop.shopInfo.businessTime);
-      this.shop.shopInfo.businessTimes=JSON.parse(this.shop.shopInfo.businessTime);
+      console.log("businessTime: ."+ this.shop.shopInfo.businessTime);
+
+      this.shop.shopInfo.businessTimesObj=JSON.parse(this.shop.shopInfo.businessTime);
+
       var date=new Date();
-      this.shop.shopInfo.businessTime=this.shop.shopInfo.businessTimes[date.getDay()];
-      console.log(this.shop.shopInfo.businessTime);
+      this.shop.shopInfo.TodayBusinessTime=this.shop.shopInfo.businessTimesObj[date.getDay()];
+      console.log("TodayBusinessTime:.."+this.shop.shopInfo.TodayBusinessTime);
       this.regularOff="";
-      for(var index=0;index<this.shop.shopInfo.businessTimes.length;index++){
-          let strs:string=this.shop.shopInfo.businessTimes[index].split("~");
+      for(var index=0;index<this.shop.shopInfo.businessTimesObj.length;index++){
+          let strs:string=this.shop.shopInfo.businessTimesObj[index].split("~");
           if(strs[0]==strs[1]){
               this.regularOff+=" "+this.getDayString(index);
           }
       }
-      storageProvider.shopResponse.shopInfo.paymethod=JSON.parse(storageProvider.shopResponse.shopInfo.paymethod);
+      if(typeof storageProvider.shopResponse.shopInfo.paymethod ==="string")
+        storageProvider.shopResponse.shopInfo.paymethod=JSON.parse(storageProvider.shopResponse.shopInfo.paymethod);
       console.log("paymethod:"+ storageProvider.shopResponse.shopInfo.paymethod.card);
       console.log("paymethod:"+ storageProvider.shopResponse.shopInfo.paymethod.cash);
       this.ngStyle={'background-image': 'url('+ storageProvider.awsS3+storageProvider.shopResponse.shopInfo.imagePath + ')'};
@@ -127,6 +130,7 @@ export class ShopPage {
                 //console.log("menu.filename:"+menu.filename);
                 let menu_name=menu.menuName.toString();
                 //console.log("menu.name:"+menu_name);
+                /*  out of date
                 if(navigator.language.startsWith("ko") && menu_name.indexOf("(")>0){
                     //console.log("name has (");
                     menu.menuName = menu_name.substr(0,menu_name.indexOf('('));
@@ -136,6 +140,7 @@ export class ShopPage {
                 }else{
                     menu.descriptionHide=true;
                 }
+                */
                 console.log("menu:"+JSON.stringify(menu));
                 menus.push(menu);
             }

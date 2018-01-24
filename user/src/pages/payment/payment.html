@@ -21,13 +21,13 @@
   </ion-col>
 </ion-row>
 <ion-row  class="pickup-method">
-  <ion-col [style.color]="inStoreColor" no-padding no-margin text-center> 
+  <ion-col [style.color]="inStoreColor" (click)="pickupChange(0)" no-padding no-margin text-center> 
     매장
   </ion-col>
-  <ion-col text-center *ngIf="takeoutAvailable" [style.color]="takeoutColor" no-padding no-margin text-center>
+  <ion-col text-center *ngIf="takeoutAvailable" (click)="pickupChange(1)" [style.color]="takeoutColor" no-padding no-margin text-center>
     포장
   </ion-col>
-  <ion-col text-center *ngIf="deliveryAvailable" [style.color]="deliveryColor" no-padding no-margin text-center>
+  <ion-col text-center *ngIf="deliveryAvailable" (click)="pickupChange(2)" [style.color]="deliveryColor" no-padding no-margin text-center>
     배달
   </ion-col>
 </ion-row>
@@ -54,7 +54,7 @@
 캐시결제 할인금액
 </ion-col>
 <ion-col no-padding no-margin text-right>
-  {{cashDiscount}} 
+  -{{cashDiscount}} 
 </ion-col>
 </ion-row>
 <ion-row *ngIf="this.paymentSelection=='card'" class="coupon-button" no-padding no-margin>
@@ -62,7 +62,7 @@
 카드결제 할인금액
 </ion-col>
 <ion-col no-padding no-margin text-right>
-  {{cardDiscount}} 
+  -{{cardDiscount}} 
 </ion-col>
 </ion-row>
   
@@ -71,7 +71,8 @@
     <b>결제 금액</b>
     </ion-col>
     <ion-col text-right no-padding no-margin>
-      <b>{{payAmount}}원</b>
+      <b *ngIf="deliveryFee!=undefined">{{payAmount+deliveryFee}}원</b>
+      <b *ngIf="deliveryFee==undefined">{{payAmount}}원</b>      
     </ion-col>
   </ion-row>
 </div>

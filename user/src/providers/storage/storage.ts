@@ -32,7 +32,7 @@ export class StorageProvider {
     public accountMaskExceptEnd=this.configProvider.getAccountMaskExceptEnd();
 
     public certUrl=this.configProvider.getCertUrl();
-
+    
     syncTimeout=500; //0.5 second
 
     public id:string;
@@ -43,7 +43,8 @@ export class StorageProvider {
     public emailLogin:boolean=false;
 
     public recommendations=[];
-
+    
+    public tabs;
     /////////////////////////////////////
     // cash receipt issue
     public receiptIssue=false;
