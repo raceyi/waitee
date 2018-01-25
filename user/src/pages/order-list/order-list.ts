@@ -4,6 +4,7 @@ import {ReviewInputPage} from '../review-input/review-input';
 import {OrderDetailPage} from '../order-detail/order-detail';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import {TimeUtil} from '../../classes/TimeUtil';
 
 /**
  * Generated class for the OrderListPage page.
@@ -21,7 +22,7 @@ export class OrderListPage {
    orders=[];
    lastOrderId=-1;
    infiniteScroll;
-
+   timeUtil= new TimeUtil(); 
 
   index=0; // 0: 1개월, 1:2개월, 2:3개월, 3:6개월 
   searchText;
@@ -70,8 +71,7 @@ export class OrderListPage {
     if(order.orderStatus=="completed")
       return "준비완료";      
     if(order.orderStatus=="pickup"){
-       //console.log(this.getDisplayTime(order.localPickupTime));
-      return "픽업완료("+ this.getDisplayTime(order.localPickupTime)+')';
+      return "픽업완료("+ this.timeUtil.getlocalTimeStringWithoutDay(order.pickupTime)+')';
     }  
   }
 
@@ -208,6 +208,8 @@ export class OrderListPage {
             console.log("getOrders:"+body);
             this.serverProvider.post(this.storageProvider.serverAddress+"/getOrdersDefault",body).then((res:any)=>{
               console.log("orders:"+JSON.stringify(res.orders));
+              console.log("orders.length:"+res.orders.length);
+              console.log("orders[0]:"+JSON.stringify(res.orders[0]));
             if(res.result=="success" && Array.isArray(res.orders)){
                   res.orders.forEach((order)=>{
                         this.convertOrder(order);              

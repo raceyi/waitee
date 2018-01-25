@@ -74,6 +74,9 @@ export class StorageProvider {
     takitId:string;
     payInfo=[];
 
+    public cashInProgress=[];
+    public orderInProgress=[];
+
     banklist=[  {name:"국민",value:"004"},
                 {name:"기업",value:"003"},
                 {name:"농협",value:"011"},
@@ -529,4 +532,86 @@ INSERT INTO cart(takitId, address, menuNo, menuName,options,quantity,price,memo)
         })
         console.log("payments:"+JSON.stringify(this.payInfo));
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    orderExistInProgress(orderId){
+        console.log("orderInProgress.length:"+this.orderInProgress.length);    
+        for(let i=0;i<this.orderInProgress.length ;i++){
+            console.log("orderInProgress["+i+"]:"+this.orderInProgress[i].order.orderId);
+            console.log("orderId:"+orderId);
+
+            if(this.orderInProgress[i]!=undefined && this.orderInProgress[i].order.orderId==orderId){
+                return true;
+            }
+        }    
+        return false;
+
+    }
+
+    orderAddInProgress(order,viewController){
+        this.orderInProgress.push({order:order,viewController:viewController});
+        for(var i=0;i<this.orderInProgress.length;i++)
+            console.log("Add-orderInProgress["+i+"]:"+JSON.stringify(this.orderInProgress[i].order));
+    }
+
+    orderRemoveInProgress(orderId,viewController){
+        var idx=-1;
+        for(let i=0;i<this.orderInProgress.length;i++){
+            if(this.orderInProgress[i].order.orderId==orderId 
+                && this.orderInProgress[i].viewController==viewController){
+                    console.log("i:"+i);
+                    idx=i;
+                    break;
+                }
+        }
+        if(idx>=0){
+            console.log("call splice with "+idx);
+            this.orderInProgress.splice(idx,1);
+        }
+        /////////////////////////////////////////////    
+        for(let i=0;i<this.orderInProgress.length;i++)
+            console.log("Remove-orderInProgress["+i+"]:"+JSON.stringify(this.orderInProgress[i].order));
+    }
+
+    cashExistInProgress(cash){
+        var cashStr;
+        if(typeof cash !== 'string'){  
+            cashStr=JSON.stringify(cash);
+        }else
+            cashStr=cash;
+            console.log("cashAddInProgress.length:"+this.cashAddInProgress.length);    
+            for(var i=0;i<this.cashAddInProgress.length;i++){
+                console.log("cashAddInProgress["+i+"]:"+JSON.stringify(this.cashAddInProgress[i]));
+                if(this.cashAddInProgress[i]!=undefined && this.cashAddInProgress[i].cashStr==cashStr){
+                    return true;
+                }
+            }    
+        return false;
+    }
+
+    cashAddInProgress(cashStr,viewController){
+        this.cashInProgress.push({cashStr:cashStr,viewController:viewController});
+        /////////////////////////////////////////////
+        for(var i=0;i<this.cashInProgress.length;i++)
+            console.log("Add-cashInProgress["+i+"]:"+this.cashInProgress[i].cashStr);
+    }
+
+    cashRemoveInProgress(cash,viewController){
+        let idx=-1;
+        for(let i=0;i<this.cashInProgress.length;i++){
+            if(this.cashInProgress[i].cashStr==cash 
+                && this.cashInProgress[i].viewController==viewController){
+                    console.log("i:"+i);
+                    idx=i;
+                    break;
+                }
+        }
+        if(idx>=0){
+            console.log("call splice with "+idx);
+            this.cashInProgress.splice(idx,1);
+        }
+        /////////////////////////////////////////////    
+        for(let i=0;i<this.cashInProgress.length;i++)
+            console.log("Remove-cashInProgress["+i+"]:"+this.cashInProgress[i].cashStr);
+    }    
+
 }

@@ -1,5 +1,5 @@
 import { Component ,NgZone} from '@angular/core';
-import { IonicPage, NavController, NavParams ,AlertController,Events} from 'ionic-angular';
+import { IonicPage, NavController, NavParams ,ViewController,AlertController,Events} from 'ionic-angular';
 import { ShopPage} from '../shop/shop';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
@@ -21,18 +21,45 @@ export class OrderDetailPage {
   timeUtil= new TimeUtil(); 
   payClasses;
   refundClasses;
+  trigger;
 
   constructor(public navCtrl: NavController, 
               public alertController:AlertController,
               public storageProvider:StorageProvider,
               public serverProvider:ServerProvider,
               private events:Events,    
-              private ngZone:NgZone,          
+              private ngZone:NgZone,     
+              private viewCtrl:ViewController,     
               public navParams: NavParams) {
     console.log("orderDetailPage constructor");
     this.order=this.navParams.get("order");
-    console.log("order:"+JSON.stringify(this.order));    
+    this.trigger=this.navParams.get("trigger");
 
+    console.log("order:"+JSON.stringify(this.order));    
+    console.log("trigger:"+this.trigger);
+
+    this.storageProvider.orderAddInProgress(this.order,this.viewCtrl); // call this function at the begin of constructor
+
+    this.convertOrderInfo();
+    events.subscribe('orderUpdate', (param)=>{
+        // user and time are the same arguments passed in `events.publish(user, time)`
+        console.log("orderUpdate comes at order-details :"+JSON.stringify(param.order));
+        let updateOrder=param.order;
+        
+        //console.log("updateOrder:"+JSON.stringify(updateOrder));
+        //console.log(updateOrder);
+        //console.log("orderId:"+updateOrder.orderId+" this.order.orderId:"+this.order.orderId);
+        
+        if(updateOrder.orderId==this.order.orderId){
+            this.ngZone.run(()=>{
+                this.order=updateOrder;
+                this.convertOrderInfo();
+            });
+        }
+    });
+  }
+
+  convertOrderInfo(){
     if(this.order.payMethod=="cash")
         this.order.paymentString="캐시";
     else{
@@ -58,19 +85,19 @@ export class OrderDetailPage {
     this.order.localOrderedTimeString=this.dayInPrintOut(this.order.localOrderedTime,this.order.localOrderedDay);
 
     console.log(this.order.localOrderedTimeString);
-    if(this.order.hasOwnProperty("localCheckedTime") && this.order.localCheckedTime!=null){
-        this.order.localCheckedTimeString=this.dayInPrintOut(this.order.localCheckedTime,this.order.localCheckedDay);
-    }
-    if(this.order.hasOwnProperty("localCompleteTime") && this.order.localCompleteTime!=null){
-        this.order.localCompleteTimeString=this.dayInPrintOut(this.order.localCompleteTime,this.order.localCompleteDay);
-    }
    // Please use below line once server is fixed. 
+   // if(this.order.hasOwnProperty("localCheckedTime") && this.order.localCheckedTime!=null){
+   //     this.order.localCheckedTimeString=this.dayInPrintOut(this.order.localCheckedTime,this.order.localCheckedDay);
+   // }
+   // if(this.order.hasOwnProperty("localCompleteTime") && this.order.localCompleteTime!=null){
+   //     this.order.localCompleteTimeString=this.dayInPrintOut(this.order.localCompleteTime,this.order.localCompleteDay);
+   // }
    // if(this.order.hasOwnProperty("localCancelledTime") && this.order.localCancelledTime!=null){
    //     this.order.localCancelledTimeString=this.dayInPrintOut(this.order.localCancelledTime,this.order.localCancelledDay);
    // }
-    if(this.order.hasOwnProperty("localPickupTime")  && this.order.localPickupTime!=null){
-        this.order.localPickupTimeTimeString=this.dayInPrintOut(this.order.localPickupTime,this.order.localPickupDay);
-    }
+   // if(this.order.hasOwnProperty("localPickupTime")  && this.order.localPickupTime!=null){
+   //     this.order.localPickupTimeTimeString=this.dayInPrintOut(this.order.localPickupTime,this.order.localPickupDay);
+   // }
     //console.log("menus:"+JSON.stringify(this.order.orderListObj.menus));
      console.log("cancelledTime:"+this.order.cancelledTime); // Why wrong localCancelledTimeString?
     if(this.order.orderStatus=="cancelled"){
@@ -81,6 +108,20 @@ export class OrderDetailPage {
     }else{
             this.order.localCancelledTimeString=undefined;
     }
+
+    if(this.order.hasOwnProperty('completedTime') && this.order.completedTime!=null){
+        console.log("completedTime:"+this.order.completedTime);
+        this.order.localCompleteTimeString=this.timeUtil.getlocalTimeString(this.order.completedTime);
+    }
+    if(this.order.hasOwnProperty('checkedTime') && this.order.completedTime!=null){
+        console.log("checkedTime:"+this.order.checkedTime);
+        this.order.localCheckedTimeString=this.timeUtil.getlocalTimeString(this.order.checkedTime);        
+    }
+    if(this.order.hasOwnProperty('pickupTime') && this.order.pickupTime!=null){
+        console.log("pickupTime:"+this.order.pickupTime);
+        this.order.localPickupTimeString=this.timeUtil.getlocalTimeString(this.order.pickupTime);        
+    }
+
     if(this.order.orderStatus=="cancelled"){
         this.payClasses={
             paymentLast:false,
@@ -96,7 +137,9 @@ export class OrderDetailPage {
             payment:false
         };
     }
+
   }
+
 
   dayInPrintOut(time,day){
         let string=time.substr(0,4)+"/"+
@@ -126,11 +169,34 @@ export class OrderDetailPage {
 
   back(){
     console.log("back");
+    this.removeDuplicate();
+    if(this.trigger=="gcm"){
+        this.viewCtrl.dismiss();
+        return;
+    }
     if( this.navCtrl.canGoBack() ){
         this.navCtrl.pop();
     }else{
         this.navCtrl.setRoot(ShopPage,{takitId:this.order.takitId});
     }
+  }
+
+  removeDuplicate(){
+       this.storageProvider.orderRemoveInProgress(this.order.orderId,this.viewCtrl);
+       //hum... just remove one? yes. Workaround code
+       for(var i=0;i<this.storageProvider.orderInProgress.length;i++){
+            console.log("removeDuplicate "+i);
+            if(this.storageProvider.orderInProgress[i].order.orderId == this.order.orderId){
+                //console.log("0.removeView-hum..."+this.app.getRootNav().getViews().length);
+                //console.log("1.removeView-hum..."+this.navController.getViews().length);
+                //console.log("removeView "+this.customStr);
+                if(this.navCtrl) //humm... please check it if it works or not.
+                    this.navCtrl.removeView(this.storageProvider.orderInProgress[i].viewController);
+                this.storageProvider.orderInProgress.splice(i,1);
+                 console.log("call splice with "+i);
+                break;
+           }
+       }
   }
 
   cancel(){

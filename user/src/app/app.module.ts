@@ -57,6 +57,7 @@ import { Network } from '@ionic-native/network';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import {CashTutorialPageModule} from '../pages/cash-tutorial/cash-tutorial.module';
 import { CardProvider } from '../providers/card/card';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 
 @NgModule({
@@ -118,6 +119,7 @@ import { CardProvider } from '../providers/card/card';
     AppAvailability,
     InAppBrowser,
     BackgroundMode,
+    Push,
     {provide: ErrorHandler, useClass: MyErrorHandler},
     ServerProvider,
     CardProvider
