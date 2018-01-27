@@ -63,7 +63,7 @@
     </ion-col>  
     <ion-col style="padding-top:0px;" no-margin col-3 text-right>
       <button full no-padding no-margin *ngIf="order.orderStatus=='paid'" (click)="cancelOrder(order)" ion-button>주문취소</button>
-      <button (click)="inputReview(order)" full no-padding no-margin *ngIf="order.orderStatus=='pickup'"ion-button>후기작성</button>
+      <button (click)="inputReview(order)" full no-padding no-margin *ngIf="order.orderStatus=='pickup' && order.review==null" ion-button>후기작성</button>
     </ion-col>  
   </ion-row>
 </div>

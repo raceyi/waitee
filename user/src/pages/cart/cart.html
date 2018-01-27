@@ -94,7 +94,7 @@
     </ion-row>
 </div>
 </div>
-<ion-row class="total-price"  *ngIf="carts.length>0" >
+<ion-row class="total-price"  [hidden]="totalAmount==0" >
     <ion-col text-left>
         <b>총 주문 금액</b> 
     </ion-col>
@@ -104,5 +104,5 @@
 </ion-row>
 </ion-content>
 <ion-footer style="background-color:#f2f2f2;font-size:4vw;">
-  <button class="review-button" no-margin full ion-button (click)="doOrder()"> 주문하기 </button>
+  <button class="review-button" *ngIf="carts.length>0" no-margin full ion-button (click)="doOrder()"> 주문하기 </button>
 </ion-footer>

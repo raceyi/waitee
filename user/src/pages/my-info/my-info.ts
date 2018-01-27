@@ -8,6 +8,7 @@ import { LoginProvider } from '../../providers/login/login';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import {LoginMainPage} from '../login-main/login-main';
+import {CartProvider} from '../../providers/cart/cart';
 
 /**
  * Generated class for the MyInfoPage page.
@@ -27,6 +28,7 @@ export class MyInfoPage {
                 private loginProvider:LoginProvider,
                 private nativeStorage:NativeStorage,
                 private backgroundMode:BackgroundMode,
+                private cartProvider:CartProvider,
                 private app: App,public storageProvider:StorageProvider) {
 
   }
@@ -155,7 +157,7 @@ export class MyInfoPage {
         this.nativeStorage.remove("refundBank");
         this.nativeStorage.remove("refundAccount");
         this.storageProvider.reset();
-        this.storageProvider.dropCartInfo().then(()=>{
+        this.cartProvider.dropCartInfo().then(()=>{
             console.log("move into LoginPage"); //Please exit App and then restart it.
             this.app.getRootNav().setRoot(LoginMainPage);
         },(error)=>{

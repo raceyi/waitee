@@ -45,6 +45,7 @@ import {ErrorPageModule} from '../pages/error/error.module';
 import {CartPageModule} from '../pages/cart/cart.module';
 import {CashTutorialPageModule} from '../pages/cash-tutorial/cash-tutorial.module';
 import {SoldOutPageModule} from '../pages/sold-out/sold-out.module';
+import {ShoptablePageModule} from '../pages/shoptable/shoptable.module';
 import {MyErrorHandler} from '../classes/my-error-handler';
 
 @NgModule({
@@ -88,6 +89,7 @@ import {MyErrorHandler} from '../classes/my-error-handler';
     ErrorPageModule,
     CashTutorialPageModule,
     SoldOutPageModule,
+    ShoptablePageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],

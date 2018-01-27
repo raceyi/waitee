@@ -34,9 +34,9 @@
 </ion-col>
 </ion-row>
   <div text-center class="review-text-area">
-    <ion-textarea placeholder="솔직하지만 매너있는 평가 부탁드립니다!"></ion-textarea>
+    <ion-textarea [(ngModel)]="review" max=300 placeholder="솔직하지만 매너있는 평가 부탁드립니다!"></ion-textarea>
   </div>
 </ion-content>
 <ion-footer style="background-color:#f2f2f2;">
-  <button class="review-button" no-margin full ion-button> 후기 작성하기 </button>
+  <button class="review-button" (click)="inputDone()" no-margin full ion-button> 후기 작성하기 </button>
 </ion-footer>

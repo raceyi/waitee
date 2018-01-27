@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,AlertController,Events,App } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,AlertController,Events,App,ViewController } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
 import {OrderDetailPage} from '../order-detail/order-detail';
 import { TabsPage } from '../tabs/tabs';
+import {CartProvider} from '../../providers/cart/cart';
 
 /**
  * Generated class for the CashPasswordPage page.
@@ -34,6 +35,7 @@ export class CashPasswordPage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
               private alertController:AlertController,
               public serverProvider:ServerProvider,
+              private cartProvider:CartProvider,
               private events:Events,
               private app:App,
               private storageProvider:StorageProvider) {
@@ -139,8 +141,10 @@ export class CashPasswordPage {
                         //console.log(JSON.stringify(res)); 
                         let result:string=res.result;
                         if(result=="success"){
+                            console.log("this.trigger:"+this.trigger);
                             if(this.trigger=="cart"){
-                                    this.storageProvider.resetCartInfo().then(()=>{
+                                    console.log("trigger is cart. call deleteAll");
+                                    this.cartProvider.deleteAll().then(()=>{
                                         
                                     },()=>{
                                             //move into shophome
@@ -151,24 +155,25 @@ export class CashPasswordPage {
                                                 alert.present();
                                     });
                             }
-                            this.events.publish("orderUpdate",{order:res.order});
+                            console.log("send orderUpdate");
+                            this.events.publish('orderUpdate',{order:res.order}); // Why this doesn't work?
+                            //this.storageProvider.messageEmitter.emit("orderUpdate");
                             this.events.publish("cashUpdate");
                             if(res.order.length==1){
-                                if(this.trigger=="cart"){
-                                    //hum...
-                                }else{
                                     let order=res.order[0].order;
-                                    this.navCtrl.setRoot(OrderDetailPage,{order:order,trigger:"order"});
-                                }
+                                    this.navCtrl.push(OrderDetailPage,{order:order,trigger:"order",class:"OrderDetailPage"});
                             }else{
+                                this.storageProvider.tabs.select(2); // It doesn't work. Why?
+                                let  views:ViewController[]; 
+                                    views=this.navCtrl.getViews();
+                                    this.navCtrl.remove(1,views.length-2);
+                                    this.navCtrl.pop();
+                                    
                                 let alert = this.alertController.create({
                                         title: '주문 목록에서 주문상세 정보를 확인하실수 있습니다.',
                                         buttons: ['OK']
                                     });
-                                    alert.present();
-                                
-                                this.app.getRootNav().setRoot(TabsPage);
-                                this.storageProvider.tabs.select(2);
+                                    alert.present();                                
                             }
                             this.confirmInProgress=false;
                         }else{

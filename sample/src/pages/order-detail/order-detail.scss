@@ -127,15 +127,31 @@ page-order-detail {
             padding-bottom:calc((10/667)*100vh);
             padding-top:calc((10/667)*100vh);
 
+            border-left: solid 1px #bdbdbd;
+            border-right: solid 1px #bdbdbd;
+            margin-left:calc((20/376)*100vw);
+            margin-right:calc((20/376)*100vw);
+        }
+
+        .paymentLast{
+            color: #4a4a4a;
+            border-top:solid 1px #bdbdbd;
+            font-size:3.4vw;
+            .receipt-amount{
+                color:$default-color;
+            }
+            padding-left:calc((24/376)*100vw);
+            padding-right:calc((24/376)*100vw);
+            padding-bottom:calc((10/667)*100vh);
+            padding-top:calc((10/667)*100vh);
+
             border: solid 1px #bdbdbd;
             margin-left:calc((20/376)*100vw);
             margin-right:calc((20/376)*100vw);
             margin-bottom:calc((20/667)*100vh);
         }
         padding-bottom: calc((15/667)*100vh);
-        //border: solid 1px #bdbdbd;
-        //margin-left:calc((20/376)*100vw);
-        //margin-right:calc((20/376)*100vw);
-        //margin-bottom:calc((20/667)*100vh);
     }
+
+
 }

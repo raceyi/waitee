@@ -4,6 +4,7 @@ import { ShopPage} from '../shop/shop';
 import {SearchPage} from '../search/search';
 import { StorageProvider } from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import {CartPage} from '../cart/cart';
 
 @Component({
   selector: 'page-home',
@@ -22,7 +23,13 @@ export class HomePage {
               ,public storageProvider:StorageProvider
               ,private alertController:AlertController              
               ,public serverProvider:ServerProvider) {
-  }
+/*
+    this.storageProvider.messageEmitter.subscribe((param)=>{ 
+        console.log("messageEmitter comes");
+        this.navCtrl.parent.select(2);        
+    });
+*/    
+ }
 
   showSearchBar(){
       this.navCtrl.push(SearchPage);
@@ -60,5 +67,9 @@ export class HomePage {
 
   exitTourMode(){
     console.log("exit Tour Mode");
+  }
+
+  openCart(){
+      this.app.getRootNav().push( CartPage,{class:"CartPage"});
   }
 }

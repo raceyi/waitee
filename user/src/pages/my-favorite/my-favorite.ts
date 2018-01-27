@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams ,App} from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
+import {CartPage} from '../cart/cart';
+
 /**
  * Generated class for the MyFavoritePage page.
  *
@@ -20,7 +22,8 @@ export class MyFavoritePage {
 
   constructor(public navCtrl: NavController, 
               public storageProvider:StorageProvider,
-              public navParams: NavParams) {
+              public navParams: NavParams,
+              public app:App) {
     this.shops=[ {takitId:"더큰도시락@세종대학교",
                             name_sub:"세종대학교",
                             name_main:"더큰도시락",
@@ -81,6 +84,10 @@ export class MyFavoritePage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MyFavoritePage');
+  }
+
+  openCart(){
+      this.app.getRootNav().push( CartPage,{class:"CartPage"});
   }
 
 }

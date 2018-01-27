@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {MenuPage} from '../menu/menu';
 import {TabsPage} from '../tabs/tabs';
@@ -26,7 +26,7 @@ export class ShopPage {
   shopImage;
   ngStyle;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,public storageProvider:StorageProvider) {
+  constructor(public navCtrl: NavController, public app:App,public navParams: NavParams,public storageProvider:StorageProvider) {
 
   if(this.storageProvider.shopResponse.hasOwnProperty('shopInfo')){
         this.shopInfo={"takitId":"서울창업허브@그릿스테이크",
@@ -166,6 +166,8 @@ export class ShopPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ShopPage');
+    let rootNavCtrl:NavController=this.app.getRootNav();
+     console.log("views length:"+rootNavCtrl.getViews().length);   
   }
 
   configureButtonColor(i){
@@ -180,10 +182,17 @@ export class ShopPage {
   }
 
   selectMenu(menu){
-       let shopInfo={takitId:this.shopInfo.takitId, 
-                    address:this.shopInfo.address, 
-                    shopName:this.shopInfo.shopName}
-       this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu),shopInfo:JSON.stringify(shopInfo)});
+    let shopInfo={takitId:this.shopInfo.takitId, 
+                address:this.shopInfo.address, 
+                shopName:this.shopInfo.shopName,
+                deliveryArea:this.shopInfo.deliveryArea,
+                freeDelivery:this.shopInfo.freeDelivery,
+                paymethod:this.shopInfo.paymethod,
+                deliveryFee:this.shopInfo.deliveryFee};
+
+       this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu),
+                                    shopInfo:JSON.stringify(shopInfo),
+                                    class:"MenuPage"});
   }
 
   back(){

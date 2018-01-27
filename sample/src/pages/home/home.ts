@@ -54,6 +54,10 @@ export class HomePage {
     this.recommendations[3].payment={'card':'0%','cash':'5%'};
     this.recommendations[4].payment={'card':'2%','cash':'0%'};
 */
+
+    let num=3.333333;
+    console.log("..."+num.toFixed(1));
+
     this.recently_visited_shop=[{takitId:"더큰도시락@세종대학교",
                             name_sub:"세종대학교",
                             name_main:"더큰도시락",
@@ -81,7 +85,9 @@ export class HomePage {
     this.recommendations.forEach(shop => {
       shop.imagePath=this.awsS3+"shop.png";
     });               
-                 
+           
+    let rootNavCtrl:NavController=this.app.getRootNav();
+     console.log("views length:"+rootNavCtrl.getViews().length);   
   }
 
   getShops(ev:any){

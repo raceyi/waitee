@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams ,AlertController} from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {PaymentPage} from '../payment/payment';
+import {CartPage} from '../cart/cart';
 
 /**
  * Generated class for the MenuPage page.
@@ -22,6 +23,7 @@ export class MenuPage {
   options:any;
   choice;   
   amount:number;
+  unitPrice:number;
 
   quantityInputType;  
   ingredientShown=false;
@@ -72,16 +74,54 @@ export class MenuPage {
   }
 
  computeAmount(){
-    this.amount = this.menu.price*this.menu.quantity;
+    let menu_price:number
+    if( typeof this.menu.price==='string')
+        menu_price=parseInt(this.menu.price);
+    else
+        menu_price=this.menu.price;
+        
+    let menu_quantity:number;
+    if(typeof this.menu.quantity ==='string')
+        menu_quantity=parseInt(this.menu.quantity);
+    else
+        menu_quantity=this.menu.quantity;
+        
+    this.amount = menu_price*menu_quantity;
+
+    this.unitPrice=menu_price;
+
+    console.log("total amount:"+this.amount);
     this.optionAmount=0;
     this.options.forEach(option => {
         if(option.number>0){
             console.log(option.name+":"+option.price*option.number*this.menu.quantity);
-            this.optionAmount+=(option.price*option.number)*this.menu.quantity;
-        }
+            let price:number;
+            if( typeof option.price ==='string')
+                 price=parseInt(option.price);
+            else  
+                 price=option.price;     
+            let option_number:number;
+            if( typeof option.number ==='string')
+                option_number=parseInt(option.number);
+            else
+                option_number=option.number;
+            let quantity:number;
+            if( typeof this.menu.quantity ==='string')
+                quantity=parseInt(this.menu.quantity);
+            else
+                quantity=this.menu.quantity;
+
+           this.optionAmount+=(price*option_number)*quantity;
+            this.unitPrice=this.unitPrice+(price*option_number);
+
+            console.log(price);
+            console.log(option_number);
+            console.log(price*option_number);
+            console.log("..unitPrice:"+this.unitPrice);            
+  
+       }
     });
     this.amount+=this.optionAmount;
-    console.log("total amount:"+this.amount);
  }
 
  increase(option){
@@ -159,7 +199,7 @@ export class MenuPage {
      });
   }
 
-
+/*
   order(){
     this.checkOptionValidity().then(()=>{
 
@@ -192,7 +232,7 @@ export class MenuPage {
 
         let orderName=this.menu.menuName+"("+this.menu.quantity+")";
         let param={carts:carts,orderName: orderName }
-        this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) });
+        this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) ,class:"PaymentPage"});
     },(name)=>{
           let alert = this.alertController.create({
                       title: name+'을 선택해주시기 바랍니다.',
@@ -201,13 +241,74 @@ export class MenuPage {
                     alert.present();
     });
   }
+*/
 
-  cart(){
+  command(command){
+
+    if(this.menu.quantity==undefined || this.menu.quantity==0 || this.menu.quantity.toString().length==0){
+          let alert = this.alertController.create({
+                      title: '수량을 입력해주시기바랍니다.',
+                      buttons: ['OK']
+                    });
+                    alert.present();
+    }else{
+          this.computeAmount();
+    }
+
     this.checkOptionValidity().then(()=>{
-        let param={ menu:this.menu }
-        //takitId, address, menuNo, menuName,options,quantity,price,memo)
-        this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) });
-        this.navCtrl.pop();
+
+        var cart:any={takitId:this.shopInfo.takitId,amount:0};
+        var options=[];
+        if(this.options!=undefined){
+            this.options.forEach((option)=>{
+                if (option.number>0){
+                    if(option.select!=undefined)
+                        options.push({name:option.name,price:option.price,number:option.number,select:option.select});
+                    else
+                        options.push({name:option.name,price:option.price,number:option.number});
+                }    
+            });
+        }
+        this.computeAmount();
+        let orderName=this.menu.menuName+"("+this.menu.quantity+")";
+
+        let menus=[];
+        let menu:any={menuNO:this.menu.menuNO,
+                  menuName:this.menu.menuName,
+                  quantity:this.menu.quantity,
+                  options: options, 
+                  price: this.amount,
+                  unitPrice:this.unitPrice,
+                  takeout:this.menu.takeout}
+
+       console.log("hum..... unitPrice");           
+       if(this.memo!=undefined)
+            menu.memo=this.memo;
+        menus.push(menu);
+ 
+        let order:any={ takitId:this.shopInfo.takitId , menus:menus} 
+
+        cart.orderList=order; //menu's original price
+
+        cart.deliveryArea=this.shopInfo.deliveryArea;
+        cart.freeDelivery=this.shopInfo.freeDelivery;
+        cart.deliveryFee=this.shopInfo.deliveryFee;
+        cart.address=this.shopInfo.address;
+        cart.paymethod=this.shopInfo.paymethod;
+        cart.takitId=this.shopInfo.takitId;
+        cart.shopName=this.shopInfo.shopName;
+        cart.price=this.amount;
+        cart.orderName=orderName;
+        let carts=[];
+        carts.push(cart);
+     
+        let param;
+        if(command==='order'){
+            param={carts:carts, trigger:'order' }
+            this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) ,class:"PaymentPage" });
+        }else{
+            this.navCtrl.push(CartPage,{cart:JSON.stringify(cart) ,class:"CartPage"});
+        }
     },(name)=>{
           let alert = this.alertController.create({
                       title: name+'을 선택해주시기 바랍니다.',

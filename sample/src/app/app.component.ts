@@ -24,6 +24,7 @@ import {CartPage} from '../pages/cart/cart';
 import {ErrorPage} from '../pages/error/error';
 import {CashTutorialPage} from '../pages/cash-tutorial/cash-tutorial';
 import {SoldOutPage} from '../pages/sold-out/sold-out';
+import {ShoptablePage} from '../pages/shoptable/shoptable';
 
 @Component({
   templateUrl: 'app.html'
@@ -34,7 +35,8 @@ export class MyApp {
   //rootPage:any = CashRefundMainPage;
   //rootPage:any =PaymentPage;
   //rootPage:any =CashTutorialPage;
-  //rootPage:any = TabsPage;
+  rootPage:any = TabsPage;
+  //rootPage:any=ShoptablePage;
   //rootPage:any = LoginMainPage;
   //rootPage:any = SignupPaymentPage;
   //rootPage:any=CashPasswordPage;
@@ -45,7 +47,7 @@ export class MyApp {
   // rootPage:any=OrderCancelPage;
   //rootPage:any = CartPage;
   //rootPage:any = ErrorPage;
-  rootPage:any =SoldOutPage;
+  //rootPage:any =SoldOutPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {

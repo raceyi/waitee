@@ -1,5 +1,5 @@
 import { Component ,NgZone} from '@angular/core';
-import { IonicPage, NavController, NavParams,App,AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,App,AlertController,Events } from 'ionic-angular';
 import {ReviewInputPage} from '../review-input/review-input';
 import {OrderDetailPage} from '../order-detail/order-detail';
 import {StorageProvider} from '../../providers/storage/storage';
@@ -35,6 +35,7 @@ export class OrderListPage {
               public storageProvider:StorageProvider,
               public serverProvider:ServerProvider,
               public alertController:AlertController,
+              private events:Events,  
               private app:App) {
     this.colStyle=[
           {"border-right-style": "solid",
@@ -58,6 +59,11 @@ export class OrderListPage {
           {'color':'#bdbdbd' },
           {'color':'#bdbdbd' }
     ];
+
+    events.subscribe('orderUpdate', (param) =>{
+      console.log("orderUpdate comes at order-list");
+      this.refreshOrderList();
+    });
 }
 
   getOrderStatusString(order){
@@ -89,6 +95,10 @@ export class OrderListPage {
   
   ionViewWillEnter() {
     console.log('ionViewWillEnter OrderListPage');
+    this.refreshOrderList();
+  }
+
+  refreshOrderList(){
     if(this.infiniteScroll!=undefined)
         this.infiniteScroll.enable(true); //stop infinite scroll
     this.orders=[]; // refresh orders when it enters this page.
@@ -166,7 +176,7 @@ export class OrderListPage {
 
   cancelOrder(order){
     this.serverProvider.cancelOrder(order).then((resOrder)=>{
-        this.navCtrl.push( OrderDetailPage,{order:resOrder});
+        this.app.getRootNav().push( OrderDetailPage,{order:resOrder});
     });
   }
 

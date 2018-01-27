@@ -1,5 +1,5 @@
 import { Component ,NgZone} from '@angular/core';
-import { IonicPage, NavController, NavParams ,ViewController,AlertController,Events} from 'ionic-angular';
+import { IonicPage, NavController, NavParams,App ,ViewController,AlertController,Events} from 'ionic-angular';
 import { ShopPage} from '../shop/shop';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
@@ -28,7 +28,8 @@ export class OrderDetailPage {
               public storageProvider:StorageProvider,
               public serverProvider:ServerProvider,
               private events:Events,    
-              private ngZone:NgZone,     
+              private ngZone:NgZone,  
+              private app:App,   
               private viewCtrl:ViewController,     
               public navParams: NavParams) {
     console.log("orderDetailPage constructor");
@@ -38,12 +39,33 @@ export class OrderDetailPage {
     console.log("order:"+JSON.stringify(this.order));    
     console.log("trigger:"+this.trigger);
 
+
+    if(this.trigger!=undefined && this.trigger=='order'){
+            // it comes from order. remove cash-password,menus,payment. 
+            // view.name doesn't work.
+            let  views:ViewController[]; 
+            views=this.navCtrl.getViews();
+            views.forEach(view=>{
+                if(view.getNavParams().get("class")!=undefined){
+                    console.log("class:"+view.getNavParams().get("class"));
+                    if(view.getNavParams().get("class")=="CashPasswordPage" ||
+                      view.getNavParams().get("class")=="MenuPage"||
+                      view.getNavParams().get("class")=="CartPage"||
+                      view.getNavParams().get("class")=="PaymentPage")  {
+                            console.log("remove "+view.getNavParams().get("class"));
+                            this.navCtrl.removeView(view);
+                      }             
+                }
+            })
+            
+    }
+
     this.storageProvider.orderAddInProgress(this.order,this.viewCtrl); // call this function at the begin of constructor
 
     this.convertOrderInfo();
     events.subscribe('orderUpdate', (param)=>{
         // user and time are the same arguments passed in `events.publish(user, time)`
-        console.log("orderUpdate comes at order-details :"+JSON.stringify(param.order));
+        console.log("orderUpdate comes at order-details"+JSON.stringify(param.order));
         let updateOrder=param.order;
         
         //console.log("updateOrder:"+JSON.stringify(updateOrder));
@@ -57,6 +79,11 @@ export class OrderDetailPage {
             });
         }
     });
+/*
+    this.storageProvider.messageEmitter.subscribe((param)=>{
+        console.log("messageEmitter comes");
+    });
+ */   
   }
 
   convertOrderInfo(){
@@ -174,11 +201,12 @@ export class OrderDetailPage {
         this.viewCtrl.dismiss();
         return;
     }
+    
     if( this.navCtrl.canGoBack() ){
         this.navCtrl.pop();
-    }else{
-        this.navCtrl.setRoot(ShopPage,{takitId:this.order.takitId});
-    }
+    }//else{
+     //   this.navCtrl.setRoot(ShopPage,{takitId:this.order.takitId});
+    //}
   }
 
   removeDuplicate(){
@@ -190,8 +218,8 @@ export class OrderDetailPage {
                 //console.log("0.removeView-hum..."+this.app.getRootNav().getViews().length);
                 //console.log("1.removeView-hum..."+this.navController.getViews().length);
                 //console.log("removeView "+this.customStr);
-                if(this.navCtrl) //humm... please check it if it works or not.
-                    this.navCtrl.removeView(this.storageProvider.orderInProgress[i].viewController);
+                //if(this.navCtrl.hasOwnProperty("removeView")) //humm... please check it if it works or not.
+                //    this.navCtrl.removeView(this.storageProvider.orderInProgress[i].viewController);
                 this.storageProvider.orderInProgress.splice(i,1);
                  console.log("call splice with "+i);
                 break;

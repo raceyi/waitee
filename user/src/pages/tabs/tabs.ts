@@ -7,6 +7,7 @@ import {OrderListPage} from '../order-list/order-list';
 import {WalletPage} from '../wallet/wallet';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import {CartProvider} from '../../providers/cart/cart';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { ErrorPage } from '../error/error';
@@ -38,6 +39,7 @@ export class TabsPage {
               public viewCtrl: ViewController,
               private backgroundMode:BackgroundMode,
               public modalCtrl: ModalController,
+              private cartProvider:CartProvider,
               public storageProvider:StorageProvider){
   
     if(this.storageProvider.cashId!=undefined && this.storageProvider.cashId.length>=5){
@@ -66,25 +68,26 @@ export class TabsPage {
                     } 
         });
     }
+
     platform.ready().then(() => {
-                if(this.storageProvider.tourMode==false){
-                    console.log("call registerPushService");
-                    this.registerPushService(); 
-                }
+        if(this.storageProvider.tourMode==false){
+            console.log("call registerPushService");
+            this.registerPushService(); 
+        }
+        if(this.storageProvider.tourMode==false){    
+            this.cartProvider.open().then(()=>{
 
-               if(this.storageProvider.tourMode==false){    
-                    this.storageProvider.open().then(()=>{
+            },()=>{
+                let alert = this.alertCtrl.create({
+                                title: "디바이스 문제로 인해 장바구니가 정상동작하지 않습니다.",
+                                buttons: ['OK']
+                            });
+                alert.present();
 
-                    },()=>{
-                        let alert = this.alertCtrl.create({
-                                        title: "디바이스 문제로 인해 장바구니가 정상동작하지 않습니다.",
-                                        buttons: ['OK']
-                                    });
-                        alert.present();
-
-                    })
-               }
+            })
+        }     
     });
+    
   }
   
   ionViewDidLoad() {
@@ -102,24 +105,35 @@ export class TabsPage {
                 this.ionicApp._overlayPortal.getActive();
 
                 if (activePortal) {
-                ready = false;
-                activePortal.dismiss();
-                activePortal.onDidDismiss(() => { ready = true; });
+                    ready = false;
+                    activePortal.dismiss();
+                    activePortal.onDidDismiss(() => { ready = true; });
 
-                console.log("handled with portal");
-                return;
+                    console.log("handled with portal");
+                    return;
                 }
 
                 if (this.menuCtrl.isOpen()) {
-                this.menuCtrl.close();
+                    this.menuCtrl.close();
 
-                console.log("closing menu");
-                return;
+                    console.log("closing menu");
+                    return;
                 }
 
-                let view = this.navController.getActive();
-                //let page = view ? this.navController.getActive().instance : null;
-                if (this.app.getRootNav().getActive()==this.viewCtrl){
+                let view = this.navController.getActive(); // As none of the above have occurred, its either a page pushed from menu or tab
+                let activeVC = this.navController.getActive(); //get the active view
+            
+                let page = activeVC.instance; //page is the current view's instance i.e the current component I suppose
+                if(this.app.getRootNav().getActive()!=this.viewCtrl){                
+                        if (this.navController.canGoBack() || view && view.isOverlay) {
+                            this.navController.pop(); //pop if page can go back or if its an overlay over a menu page
+                        }             
+                        else {
+                                console.log("No view in app. How can it happen?");
+                                this.platform.exitApp();
+                        }
+                        return;
+                }else{
                     console.log("Handling back button on  tabs page");
                             this.alertCtrl.create({
                                 title: '앱을 종료하시겠습니까?',
@@ -133,28 +147,18 @@ export class TabsPage {
                                     {
                                         text: '네',
                                         handler: () => {
-                                                this.storageProvider.db.close(()=>{
+                                            
+                                                this.cartProvider.db.close().then(()=>{
                                                     this.platform.exitApp();
                                                 },(err)=>{
                                                     console.log("!!!fail to close db!!!");
                                                     this.platform.exitApp();
                                                 });
+                                                
                                         }
                                     }
                                 ]
                             }).present();
-                }else if (this.navController.canGoBack() || view && view.isOverlay) {
-                    console.log("popping back");
-                    this.navController.pop();
-                }else{
-                    console.log("What can I do here? which page is shown now? Error or LoginPage");
-                    this.storageProvider.db.close(()=>{
-                        this.platform.exitApp();
-                    },(err)=>{
-                        console.log("!!!fail to close db!!!");
-                        this.platform.exitApp();
-                    });
-                    //this.platform.exitApp();
                 }
             }, 100/* high priority rather than login page */);
        }
@@ -164,21 +168,22 @@ export class TabsPage {
     console.log("!!!ionViewWillUnload-tabs-tourMode:"+this.storageProvider.tourMode);
     if(this.storageProvider.tourMode==true){
         //drop table
-        console.log("tourMode drop table this.storageProvider.db:"+this.storageProvider.db);
-        this.storageProvider.dropCartInfo().then(()=>{
-            this.storageProvider.db.close();    
+        console.log("tourMode drop table this.storageProvider.db");
+        this.cartProvider.dropCartInfo().then(()=>{
+            this.cartProvider.db.close();    
         },()=>{
-            this.storageProvider.db.close();
+            this.cartProvider.db.close();
         });
     }else{
-        if(this.storageProvider.db!=undefined){
-            this.storageProvider.db.close(()=>{
+        if(this.cartProvider.db!=undefined){
+            this.cartProvider.db.close().then(()=>{
 
             },(err)=>{
                 console.log("!!!fail to close db!!!");
             });
         }
     }
+    
   }
 
     registerPushService(){ // Please move this code into tabs.ts

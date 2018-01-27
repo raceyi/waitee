@@ -1,9 +1,10 @@
 import { Component ,ViewChild} from '@angular/core';
-import { IonicPage, NavController, Content,NavParams,AlertController } from 'ionic-angular';
+import { IonicPage, NavController, Content,NavParams,AlertController ,App} from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {MenuPage} from '../menu/menu';
 import {TabsPage} from '../tabs/tabs';
 import {ServerProvider} from '../../providers/server/server';
+import {CartPage} from '../cart/cart';
 
 /**
  * Generated class for the ShopPage page.
@@ -34,7 +35,7 @@ export class ShopPage {
   ngStyle;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-              public serverProvider:ServerProvider,
+              public serverProvider:ServerProvider,private app:App,
               private alertCtrl:AlertController,public storageProvider:StorageProvider) {
 
       console.log("ShopPage");
@@ -295,7 +296,11 @@ export class ShopPage {
                 paymethod:this.shop.shopInfo.paymethod,
                 deliveryFee:this.shop.shopInfo.deliveryFee};
 
-    this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu),shopInfo:JSON.stringify(shopInfo)});
+    this.navCtrl.push(MenuPage, {menu:JSON.stringify(menu),
+                                shopInfo:JSON.stringify(shopInfo),
+                                class:"MenuPage"});
   }
-
+  openCart(){
+      this.app.getRootNav().push( CartPage,{class:"CartPage"});
+  }
 }

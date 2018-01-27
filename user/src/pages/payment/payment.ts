@@ -159,9 +159,9 @@ export class PaymentPage {
                 // compute discount of each menu
                 for(var j=0;j<this.carts[i].orderList.menus.length;j++){
                     if(this.paymentSelection=="cash")
-                        this.carts[i].orderList.menus[j].amout=this.carts[i].orderList.menus[j].price-((this.carts[i].orderList.menus[j].price*cashDiscount)/100);
+                        this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price-((this.carts[i].orderList.menus[j].price*cashDiscount)/100);
                     else // card
-                        this.carts[i].orderList.menus[j].amout=this.carts[i].orderList.menus[j].price-((this.carts[i].orderList.menus[j].price*cardDiscount)/100);                    
+                        this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price-((this.carts[i].orderList.menus[j].price*cardDiscount)/100);                    
                 }
                 console.log("this.cardDiscount: "+this.cardDiscount+ "this.cashDiscount:"+this.cashDiscount)
     }
@@ -337,7 +337,8 @@ export class PaymentPage {
         }
     }
       this.navCtrl.push(CashPasswordPage,{body:body,trigger:this.trigger,
-                                         title:"결제비밀번호" ,description:"결제 비밀번호를 입력해주세요."});
+                                         title:"결제비밀번호" ,description:"결제 비밀번호를 입력해주세요.",
+                                         class:"CashPasswordPage"});
   }
 
   cashSelect(){

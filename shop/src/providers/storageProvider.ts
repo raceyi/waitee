@@ -45,7 +45,7 @@ export class StorageProvider{
     public awsS3:string=this.configProvider.getAwsS3();
     public homeJpegQuality=this.configProvider.getHomeJpegQuality();
     public menusInRow=this.configProvider.getMenusInRow();
-    public timeout=this.configProvider.getTimeout(); //3 seconds
+    public timeout=this.configProvider.getTimeout(); //20 seconds for card cancellation
     public OrdersInPage:number=this.configProvider.getOrdersInPage(); // The number of orders shown in a page
 
     public userSenderID=this.configProvider.getUserSenderID(); //fcm senderID

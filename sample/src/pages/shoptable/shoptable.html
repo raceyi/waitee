@@ -4,9 +4,6 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-row>
-       <ion-col class="title">
-        <span *ngIf="storageProvider.shopInfo!=undefined" > {{storageProvider.shopInfo.shopName}}</span>
-       </ion-col>
       <!--
        <ion-col [hidden]="storageProvider.isTestServer"  class="title">
         <span *ngIf="storageProvider.shopInfo!=undefined" > {{storageProvider.shopInfo.shopName}}</span>
@@ -133,6 +130,7 @@
                     <ion-col col-2></ion-col>
                     <ion-col col-10 style="background-color:lightgray;">{{order.review}}</ion-col>
                 </ion-row>
+                
                 <ion-row *ngIf="order.statusString!='종료' && order.statusString!='취소'">
                    <ion-col col-1></ion-col>
                    <ion-col col-4>

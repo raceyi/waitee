@@ -42,6 +42,7 @@ export class MediaProvider {
       this.playing=true;
       // play the file
       this.file.play();
+      console.log("play ordersound.mp3");
       //file.release(); hum... where should I call this function?
   }
 

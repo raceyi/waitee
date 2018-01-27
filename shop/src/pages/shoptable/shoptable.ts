@@ -11,6 +11,7 @@ import {ServerProvider} from '../../providers/serverProvider';
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import {CancelConfirmPage} from '../cancel-confirm/cancel-confirm';
 import {IosPrinterProvider} from '../../providers/ios-printer';
+import { BackgroundMode } from '@ionic-native/background-mode';
 
 declare var cordova:any;
 
@@ -289,7 +290,16 @@ export class ShopTablePage {
             order.hidden=true;
           else  
             order.hidden=false;
+
+          if(order.hasOwnProperty("review")){
+                order.hidden=false;
+          }  
           order.orderListObj=JSON.parse(order.orderList);
+
+          console.log("menus:"+ order.orderListObj.menus);
+          if( typeof order.orderListObj.menus ==="string")
+                order.orderListObj.menus=JSON.parse(order.orderListObj.menus);
+
           order.userPhoneHref="tel:"+order.userPhone; 
           //console.log("order.orderListObj:"+JSON.stringify(order.orderListObj));
           console.log("cancelReason:"+order.cancelReason);
@@ -361,16 +371,18 @@ export class ShopTablePage {
      }
 
 
-    getStatusString(orderStatus){
+    getStatusString(orderStatus){  // next status for label
       console.log("orderStatus:"+orderStatus);
       if(orderStatus=="paid"){
             return "접수";
       }else if(orderStatus=="cancelled"){
             return "취소";
       }else if(orderStatus=="checked"){
-            return "완료";
+            return "준비";
       }else if(orderStatus=="completed"){
-            return "종료";
+            return "전달";
+      }else if(orderStatus=="pickup"){
+            return "종료"
       }else{
         console.log("invalid orderStatus:"+orderStatus);
         return "미정";
@@ -598,7 +610,7 @@ export class ShopTablePage {
           message+="판매금액  "+amount +"원";
           message+="부가가치세  "+tax +"원";
           message+="합계     "+totalAmount+"원";
-      }else if(order.orderStatus=="cancelled" && order.cancelReason!='고객접수취소'){ //print refund receipt
+      }else if(order.orderStatus=="cancelled" && order.cancelReason!='고객주문취소'){ //print refund receipt
           if(this.platform.is("android")){
               title="        영수증\n";
           }else if(this.platform.is("ios")){
@@ -701,8 +713,9 @@ export class ShopTablePage {
             this.pushNotification=this.push.init({
                 android: {
                     //forceShow: true, // Is it necessary?vibration
-                    senderID: this.storageProvider.userSenderID                },
-                ios: {
+                    senderID: this.storageProvider.userSenderID,
+                    "sound":true                
+                },ios: {
                     //"gcmSandbox": "true", //development mode
                     "fcmSandbox": "false",//production mode
                     "alert": "true",
@@ -723,8 +736,6 @@ export class ShopTablePage {
                   platform="unknown";
               }
               let body = JSON.stringify({registrationId:response.registrationId,takitId:this.storageProvider.myshop.takitId,platform:platform});
-              let headers = new Headers();
-              headers.append('Content-Type', 'application/json');
               console.log("server:"+ this.storageProvider.serverAddress+" body:"+JSON.stringify(body));
               this.serverProvider.post("/shop/registrationId",body).then((res:any)=>{    
                   console.log("registrationId sent successfully");
@@ -758,6 +769,17 @@ export class ShopTablePage {
                             incommingOrder=JSON.parse(data.additionalData.custom);
                         else
                             incommingOrder=data.additionalData.custom;
+                        //Please check takitId 
+                        if(incommingOrder.takitId!=this.storageProvider.shopInfo.takitId){ // ignore it. hum...or give an alert about it. 
+                            let alert = this.alertController.create({
+                                title: incommingOrder.takitId+"의 주문이 전달되었습니다.",
+                                subTitle: "해당 샵으로 전환하여 주문을 확인해 주시기 바랍니다.",
+                                buttons: ['OK']
+                            });
+
+                            return;
+                        }
+
                         console.log("incommingOrder:"+ incommingOrder);
                         console.log("incomingOrder.orderStatus:"+ incommingOrder.orderStatus);
                         var i=0;
@@ -822,15 +844,15 @@ export class ShopTablePage {
                 });
 
                 console.log("[shoptable.ts]pushNotification.on-data:"+JSON.stringify(data));
-                console.log("first view name:"+this.navController.first().name);
-                console.log("active view name:"+this.navController.getActive().name);
-                console.log("active view name:"+this.navController.last().name);
+                //console.log("first view name:"+this.navController.first().name);
+                //console.log("active view name:"+this.navController.getActive().name);
+                //console.log("active view name:"+this.navController.last().name);
                
                 console.log(data.message);
                 console.log(data.title);
-                console.log(data.count);
+                //console.log(data.count);
                 console.log(data.sound);
-                console.log(data.image);
+                //console.log(data.image);
                 console.log(data.additionalData);
                 
                 }
@@ -855,7 +877,7 @@ export class ShopTablePage {
         if(order.orderStatus=="paid"){
                this.updateStatus(order,"checkOrder").then(()=>{
                  order.orderStatus="checked";
-                 order.statusString="완료"; 
+                 order.statusString="준비"; 
                  order.checkedTime=new Date().toISOString();
                },()=>{
                  console.log("주문 접수에 실패했습니다.");
@@ -880,6 +902,34 @@ export class ShopTablePage {
                             handler: () => {
                                 this.updateStatus(order,"completeOrder").then(()=>{
                                   order.orderStatus="completed";
+                                  order.statusString="전달"; 
+                                  order.completedTime=new Date().toISOString();
+                                  //order.hidden=true;
+                                },()=>{
+                                  console.log("주문 완료에 실패했습니다.");
+                                  let alert = this.alertController.create({
+                                                  title: '주문 완료에 실패했습니다.',
+                                                  buttons: ['OK']
+                                              });
+                                    alert.present();
+                                });;
+                            }
+                      }]});
+              confirm.present();        
+        }else if(order.orderStatus=="completed"){
+            let confirm = this.alertController.create({
+                title: '고객님께 음식료가 전달되었나요?',
+                buttons: [{
+                            text: '아니오',
+                            handler: () => {
+                              console.log('Disagree clicked');
+                            }
+                          },
+                          {
+                            text: '네',
+                            handler: () => {
+                                this.updateStatus(order,"pickupOrder").then(()=>{
+                                  order.orderStatus="pickup";
                                   order.statusString="종료"; 
                                   order.completedTime=new Date().toISOString();
                                   order.hidden=true;
@@ -905,7 +955,7 @@ export class ShopTablePage {
         let body= JSON.stringify({ orderId: order.orderId,cancelReason:cancelReason});
 
         console.log("body:"+JSON.stringify(body));
-        this.serverProvider.post("/shop/cancelOrder",body).then((res:any)=>{ 
+        this.serverProvider.post("/shop/cancelOrderWithEmail",body).then((res:any)=>{ 
             console.log("res:"+JSON.stringify(res));
             if(res.result=="success"){
                  order.orderStatus="cancelled";
@@ -966,7 +1016,7 @@ export class ShopTablePage {
         let body= JSON.stringify({ orderId: order.orderId });
 
         console.log("body:"+JSON.stringify(body));
-        this.serverProvider.post("/shop/"+request,body).then((res:any)=>{   
+        this.serverProvider.post("/shop/"+request+"WithEmail",body).then((res:any)=>{   
             console.log(request+"-res:"+JSON.stringify(res));
             if(res.result=="success"){
                 resolve("주문상태변경에 성공했습니다");
@@ -1423,6 +1473,29 @@ export class ShopTablePage {
 
     notifyOrder(order){
         console.log("notifyOrder comes");
-    }
+        return new Promise((resolve,reject)=>{
+        let body= JSON.stringify({ orderId: order.orderId });
 
+        console.log("body:"+JSON.stringify(body));
+        this.serverProvider.post("/shop/notifyOrder",body).then((res:any)=>{   
+            console.log("...res:"+JSON.stringify(res));
+         },(err)=>{
+           if(err=="NetworkFailure"){
+              console.log("서버와 통신에 문제가 있습니다");
+              let alert = this.alertController.create({
+                                    title: '서버와 통신에 문제가 있습니다',
+                                    subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                                    buttons: ['OK']
+                                });
+                alert.present();
+           }else if(err=="HttpFailure"){
+              let alert = this.alertController.create({
+                                    title: '서버로 부터 정상응답을 받지 못하였습니다.',
+                                    buttons: ['OK']
+                                });
+                alert.present();           
+            }
+         });
+      });
+     }
 }

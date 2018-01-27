@@ -127,7 +127,7 @@
     </ion-col>        
 </ion-row>      
 </div>             
-<div class="payment">
+<div [ngClass]="payClasses">
 <ion-row>
 <ion-col text-left>결제 방식</ion-col> 
 <ion-col text-right> 캐쉬</ion-col>
@@ -149,10 +149,15 @@
     -{{order.orderListObj.takitDiscount}}원
   </ion-col>
 </ion-row>
-
-<ion-row class="receipt-amount">
+</div>
+<div *ngIf="order.orderStatus=='cancelled'" [ngClass]="refundClasses">
+<ion-row>
+<ion-col text-left>환불 방식</ion-col> 
+<ion-col text-right> 캐쉬</ion-col>
+</ion-row>
+<ion-row class="receipt-amount"> 
   <ion-col text-left>
-    <b>결제 금액</b>  
+    <b>환불 금액</b>  
   </ion-col>
   <ion-col text-right>
     <b>{{order.orderListObj.total}}원</b>

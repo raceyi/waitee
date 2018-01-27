@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams ,AlertController} from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {PaymentPage} from '../payment/payment';
+import {CartPage} from '../cart/cart';
+import {CartProvider} from '../../providers/cart/cart';
 
 /**
  * Generated class for the MenuPage page.
@@ -22,6 +24,7 @@ export class MenuPage {
   options:any;
   choice;   
   amount:number;
+  unitPrice:number;
 
   quantityInputType;  
   ingredientShown=false;
@@ -31,6 +34,7 @@ export class MenuPage {
   memo;
   constructor(public navCtrl: NavController, public navParams: NavParams,
               public alertController:AlertController,
+              public cartProvider:CartProvider,
               public storageProvider:StorageProvider) {
     this.menu=JSON.parse(navParams.get('menu'));
     this.shopInfo=JSON.parse(navParams.get('shopInfo'));
@@ -74,16 +78,54 @@ export class MenuPage {
   }
 
  computeAmount(){
-    this.amount = this.menu.price*this.menu.quantity;
+    let menu_price:number
+    if( typeof this.menu.price==='string')
+        menu_price=parseInt(this.menu.price);
+    else
+        menu_price=this.menu.price;
+        
+    let menu_quantity:number;
+    if(typeof this.menu.quantity ==='string')
+        menu_quantity=parseInt(this.menu.quantity);
+    else
+        menu_quantity=this.menu.quantity;
+        
+    this.amount = menu_price*menu_quantity;
+
+    this.unitPrice=menu_price;
+
+    console.log("total amount:"+this.amount);
     this.optionAmount=0;
     this.options.forEach(option => {
         if(option.number>0){
             console.log(option.name+":"+option.price*option.number*this.menu.quantity);
-            this.optionAmount+=(option.price*option.number)*this.menu.quantity;
-        }
+            let price:number;
+            if( typeof option.price ==='string')
+                 price=parseInt(option.price);
+            else  
+                 price=option.price;     
+            let option_number:number;
+            if( typeof option.number ==='string')
+                option_number=parseInt(option.number);
+            else
+                option_number=option.number;
+            let quantity:number;
+            if( typeof this.menu.quantity ==='string')
+                quantity=parseInt(this.menu.quantity);
+            else
+                quantity=this.menu.quantity;
+
+           this.optionAmount+=(price*option_number)*quantity;
+            this.unitPrice=this.unitPrice+(price*option_number);
+
+            console.log(price);
+            console.log(option_number);
+            console.log(price*option_number);
+            console.log("..unitPrice:"+this.unitPrice);            
+  
+       }
     });
     this.amount+=this.optionAmount;
-    console.log("total amount:"+this.amount);
  }
 
  increase(option){
@@ -99,7 +141,7 @@ export class MenuPage {
  }
  
   quantityInput(flag){
-   console.log("flag:"+flag+" quantityInputType:"+this.quantityInputType);
+  // console.log("flag:"+flag+" quantityInputType:"+this.quantityInputType);
     if(flag){ // number selection
       if(this.quantityInputType=="select"){
         return false;
@@ -162,8 +204,7 @@ export class MenuPage {
   }
 
 
-  order(){
-
+  command(command){
     if(this.menu.quantity==undefined || this.menu.quantity==0 || this.menu.quantity.toString().length==0){
           let alert = this.alertController.create({
                       title: '수량을 입력해주시기바랍니다.',
@@ -173,7 +214,6 @@ export class MenuPage {
     }else{
           this.computeAmount();
     }
-
     this.checkOptionValidity().then(()=>{
 
         var cart:any={takitId:this.shopInfo.takitId,amount:0};
@@ -197,10 +237,12 @@ export class MenuPage {
                   quantity:this.menu.quantity,
                   options: options, 
                   price: this.amount,
+                  unitPrice:this.unitPrice,
                   takeout:this.menu.takeout}
+
+       console.log("hum..... unitPrice");           
        if(this.memo!=undefined)
             menu.memo=this.memo;
-
         menus.push(menu);
  
         let order:any={ takitId:this.shopInfo.takitId , menus:menus} 
@@ -219,31 +261,39 @@ export class MenuPage {
         let carts=[];
         carts.push(cart);
 
-        let param={carts:carts, trigger:'order' }
-        this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) });
-    },(name)=>{
-          let alert = this.alertController.create({
-                      title: name+'을 선택해주시기 바랍니다.',
-                      buttons: ['OK']
+        let param;
+        if(command==='order'){
+            param={carts:carts, trigger:'order' }
+            this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) ,class:"PaymentPage" });
+        }else{
+            this.cartProvider.addMenuIntoCart(cart).then((res)=>{
+                    let confirm = this.alertController.create({
+                    title: '장바구니로 이동하시겠습니까?',
+                    buttons: [
+                        {
+                            text: '아니오',
+                            handler: () => {
+                                console.log('Disagree clicked');
+                            }
+                        },
+                        {
+                            text: '네',
+                            handler: () => {
+                                console.log('Agree clicked');
+                                this.navCtrl.push(CartPage,{class:"CartPage"});
+                            }
+                        }
+                    ]
                     });
-                    alert.present();
-    });
-  }
-
-  cart(){
-    this.checkOptionValidity().then(()=>{
-        let param={ orderList:[]}
-        /*
-        this.menu
-         param.orderList.orderName;
-         param.orderList.takeout;
-         param.orderList.freeDelivery;
-         param.orderList.deliveryFee;
-         param.orderList.address;
-         */                
-        //takitId, address, menuNo, menuName,options,quantity,price,memo)
-        this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) });
-        this.navCtrl.pop();
+                    confirm.present();
+            },(err)=>{
+                        let alert = this.alertController.create({
+                            title: "장바구니 정보 업데이트에 실패했습니다.",
+                            buttons: ['OK']
+                        });
+                        alert.present();
+            })
+        }
     },(name)=>{
           let alert = this.alertController.create({
                       title: name+'을 선택해주시기 바랍니다.',

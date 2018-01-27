@@ -19,7 +19,7 @@ export class ReviewInputPage {
 
   fontColor=["#f2f2f2","#f2f2f2","#f2f2f2","#f2f2f2","#f2f2f2"];
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.order=JSON.parse(this.navParams.get("order"));
+    this.order=this.navParams.get("order");
     console.log("order:"+JSON.stringify(this.order));
   }
 
@@ -46,4 +46,11 @@ export class ReviewInputPage {
     }
     return;
   }  
+
+
+  inputDone(){
+    console.log("count:"+this.count);
+    console.log("orderId:"+this.order.orderId);
+    console.log("takitId:"+this.order.takitId);
+  }
 }

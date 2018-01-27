@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import {App} from 'ionic-angular';
 import { HomePage } from '../home/home';
 import {MyFavoritePage} from '../my-favorite/my-favorite';
 import {MyInfoPage} from '../my-info/my-info';
@@ -18,7 +18,7 @@ export class TabsPage {
   tab4Root = WalletPage;
   tab5Root = MyInfoPage;
 
-  constructor() {
+  constructor( private app:App) {
 
   }
   

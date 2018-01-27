@@ -40,6 +40,7 @@ import {SearchPageModule} from '../pages/search/search.module';
 import {PolicyPageModule} from '../pages/policy/policy.module';
 import {FaqPageModule} from '../pages/faq/faq.module';
 
+import {CartPageModule} from '../pages/cart/cart.module';
 import {CompanyInfoPageModule} from '../pages/company-info/company-info.module';
 import {PolicyDetailPageModule} from '../pages/policy-detail/policy-detail.module';
 import {PasswordResetPageModule} from '../pages/password-reset/password-reset.module';
@@ -58,6 +59,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import {CashTutorialPageModule} from '../pages/cash-tutorial/cash-tutorial.module';
 import { CardProvider } from '../providers/card/card';
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
+import { CartProvider } from '../providers/cart/cart';
 
 
 @NgModule({
@@ -93,6 +95,7 @@ import { Push, PushObject, PushOptions } from '@ionic-native/push';
     CashManualConfirmPageModule,
     PaymentPageModule,    
     LoginMainPageModule,
+    CartPageModule,
     CustomIconsModule,
     HttpClientModule,
     BrowserModule,
@@ -122,7 +125,8 @@ import { Push, PushObject, PushOptions } from '@ionic-native/push';
     Push,
     {provide: ErrorHandler, useClass: MyErrorHandler},
     ServerProvider,
-    CardProvider
+    CardProvider,
+    CartProvider
   ]
 })
 export class AppModule {}

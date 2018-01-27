@@ -129,7 +129,7 @@ defaultCardColor ="#33B9C6";
                                {"menuNO":"세종대@더큰도시락;1","menuName":"버섯불고기도시락","explanation":"","ingredient":null,"price":"3800","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_버섯불고기도시락","requiredTime":null,"menuNameEn":"Mushroom bulgogi ","explanationEn":"beef","ingredientEn":null,"optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"},{\"name\":\"Katsu 1pcs\",\"price\":\"1000\"},{\"name\":\"Spam 1pcs\",\"price\":\"1000\"}]"},{"menuNO":"세종대@더큰도시락;1","menuName":"삼식도시락","explanation":"돈까스, 치킨, 숯불바베큐(돈까스소스)","ingredient":null,"price":"3700","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_삼식도시락","requiredTime":null,"menuNameEn":"Samsik ","explanationEn":"pork, chicken","ingredientEn":null,"optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"},{\"name\":\"Katsu 1pcs\",\"price\":\"1000\"},{\"name\":\"Spam 1pcs\",\"price\":\"1000\"}]"},
                                {"menuNO":"세종대@더큰도시락;1","menuName":"삼치도시락","explanation":"","ingredient":null,"price":"3800","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_삼치도시락","requiredTime":null,"menuNa
 */
-    this.determinCardColor(); 
+
  }
 
   determinCardColor(){
@@ -142,6 +142,7 @@ defaultCardColor ="#33B9C6";
               }
         }
     })
+
     console.log("payments:"+JSON.stringify(this.payInfo));
   }
 

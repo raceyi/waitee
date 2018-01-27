@@ -52,48 +52,22 @@
         </ion-scroll>
 </div>
 
-<div class="period-section" [hidden]="search_mode=='full'">
-    <ion-row>
-        <ion-col>
-        </ion-col>
-        <ion-col text-right>
-            <button (click)="closeSearchMode()" class="close-button" no-padding no-margin ion-button clear>
-                검색창 접기 &nbsp; <ion-icon name="ios-close"> </ion-icon>
-            </button>
-        </ion-col>
-    </ion-row>
+<div class="period-section">
   <ion-row>
-  <ion-col text-right col-5>
+  <ion-col text-right col-4>
   <ion-datetime text-center no-padding displayFormat="YYYY/MM/DD" min="2018" (ionChange)="startPicker(startDate)" [(ngModel)]="startDate"></ion-datetime>
   </ion-col>
   <ion-col text-center class="center" col-1>
       -
   </ion-col>
-  <ion-col text-left col-6> 
+  <ion-col text-left col-5> 
   <ion-datetime text-center no-padding displayFormat="YYYY/MM/DD" min="2018" (ionChange)="endPicker(endDate)" [(ngModel)]="endDate"></ion-datetime>
   </ion-col>
+  <ion-col col-2>
+      <button no-padding no-margin ion-button>조회</button>
+  </ion-col>
   </ion-row>
-  <ion-row>
-        <ion-col class="search-button" no-padding text-right>
-            <button (click)="search()" class="close-button" no-padding no-margin ion-button clear>
-                조회하기 &nbsp; <ion-icon name="ios-search"> </ion-icon>
-            </button>
-        </ion-col>
-    </ion-row>
 </div> 
-
-<div class="search-button"  [hidden]="search_mode!='full'">
-<button (click)="configureSearchMode()" no-padding no-margin ion-button full clear >
-  <ion-row style="width:100%">
-    <ion-col col-11 text-right>
-        기간 검색
-    </ion-col>    
-    <ion-col col-1>
-        <ion-icon name="ios-search"> </ion-icon>     
-    </ion-col>
-  </ion-row>
-</button>
-</div>
 
 <div *ngFor="let trans of cashList">
 <div *ngIf="trans.transactionType=='refund'" class="transaction">

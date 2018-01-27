@@ -16,7 +16,7 @@ export class ConfigProvider{
     public userSenderID="986862676163";
     public kakaoTakitShop="0a5f4d92e9429bb3e70f9db22833f70b"; //Rest API key
     public kakaoOauthUrl="https://takit.biz/oauth"; 
-    public timeout=10000; //10 seconds
+    public timeout=20000; //20 seconds
 
     public accountMaskExceptFront=3;
     public accountMaskExceptEnd=5;

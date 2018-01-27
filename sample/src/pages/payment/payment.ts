@@ -1,5 +1,5 @@
 import { Component,NgZone,ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams ,Scroll} from 'ionic-angular';
+import { IonicPage, NavController,ViewController, NavParams ,Scroll} from 'ionic-angular';
 import {OrderDetailPage} from '../order-detail/order-detail';
 import {StorageProvider} from '../../providers/storage/storage';
 import {CashChargePage} from '../cash-charge/cash-charge';
@@ -110,7 +110,23 @@ export class PaymentPage {
                 console.log("this.cardDiscount: "+this.cardDiscount+ "this.cashDiscount:"+this.cashDiscount)
             */
             this.computePayAmount();
-        });        
+        });   
+        
+                    let  views:ViewController[]; 
+            views=this.navCtrl.getViews();
+            views.forEach(view=>{
+                console.log("view.name:"+view.name);   
+                console.log("view.id "+view.id);
+                console.log("view.instance "+typeof view.instance );
+                if(view.getNavParams().get("class")!=undefined){
+                    console.log("class:"+view.getNavParams().get("class"));
+                    if(view.getNavParams().get("class")=="CashPasswordPage" ||
+                      view.getNavParams().get("class")=="MenuPage")  {
+                            this.navCtrl.removeView(view);
+                      }             
+                }
+            })
+     
   }
 
   computePayAmount(){
@@ -244,4 +260,7 @@ export class PaymentPage {
          
   }
 
+  back(){
+      this.navCtrl.pop();
+  }
 }
