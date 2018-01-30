@@ -230,6 +230,8 @@ export class OrderDetailPage {
   cancel(){
         console.log("cancel order:"+JSON.stringify(this.order));
         this.serverProvider.cancelOrder(this.order).then((resOrder)=>{
+            this.events.publish('orderUpdate',{order:resOrder});
+            this.events.publish("cashUpdate");
             // do nothing
             this.payClasses={
                 paymentLast:false,

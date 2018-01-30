@@ -10,7 +10,7 @@
 <b>주문목록</b>
 </div>  
 -->  
-<div text-center *ngIf="storageProvider.frequentShopList.length==0" >
+<div text-center *ngIf="storageProvider.shopList.length==0" >
     <div class="empty-img">
         <img src="assets/imgs/profile-empty.png">
     </div>
@@ -20,14 +20,15 @@
    </div> 
 </div>
 
-<p *ngIf="storageProvider.frequentShopList.length!=0" class="section-title section-shop-title"><b>즐겨찾는 음식점</b></p>
-<div *ngIf="storageProvider.frequentShopList.length!=0" >
+<p *ngIf="shops.length!=0" class="section-title section-shop-title"><b>즐겨찾는 음식점</b></p>
+<div *ngIf="shops.length!=0" >
             <ion-row>
-                <ion-col class="col-left">
-                            <button class="shop-button" no-padding no-margin ion-button>
+                <ion-col *ngIf="shops.length>0" class="col-left">
+                            <button class="shop-button" (click)="enterShop(shops[0].takitId)" no-padding no-margin ion-button>
                                 <img  [src]="shops[0].imagePath">
                                 <p class="name-sub">{{shops[0].name_sub}}</p>
-                                <p class="name-main"><b>{{shops[0].name_main}}</b></p>
+                                <p class="name-main"><b>{{shops[0].name_main}}&nbsp;({{shops[0].count}}회)</b></p>
+                                <!--
                                 <p class="classification">{{shops[0].classification}}</p>
                                 <div class="star_rating">
                                   <ion-icon name="md-star"></ion-icon>
@@ -37,13 +38,15 @@
                                   <ion-icon name="md-star"></ion-icon>
                                   <p>{{shops[0].star_rating}}</p>
                                 </div>
+                                -->
                             </button>
                 </ion-col>
-                <ion-col>
-                            <button class="shop-button" no-padding no-margin ion-button>
+                <ion-col *ngIf="shops.length>1">
+                            <button class="shop-button" (click)="enterShop(shops[1].takitId)" no-padding no-margin ion-button>
                                 <img  [src]="shops[1].imagePath">
                                 <p class="name-sub">{{shops[1].name_sub}}</p>
-                                <p class="name-main"><b>{{shops[1].name_main}}</b></p>
+                                <p class="name-main"><b>{{shops[1].name_main}}&nbsp;({{shops[1].count}}회)</b></p>
+                                <!--
                                 <p class="classification">{{shops[1].classification}}</p>
                                 <div class="star_rating">
                                   <ion-icon name="md-star"></ion-icon>
@@ -53,15 +56,17 @@
                                   <ion-icon name="md-star"></ion-icon>
                                   <p>{{shops[1].star_rating}}</p>
                                 </div>
+                                -->
                             </button>
                 </ion-col>
             </ion-row>
-            <ion-row>
-                <ion-col class="col-left">
-                            <button class="shop-button" no-padding no-margin ion-button>
+            <ion-row *ngIf="shops.length>2">
+                <ion-col *ngIf="shops.length>2" class="col-left">
+                            <button class="shop-button"  (click)="enterShop(shops[2].takitId)" no-padding no-margin ion-button>
                                 <img  [src]="shops[2].imagePath">
                                 <p class="name-sub">{{shops[2].name_sub}}</p>
-                                <p class="name-main"><b>{{shops[2].name_main}}</b></p>
+                                <p class="name-main"><b>{{shops[2].name_main}}&nbsp;({{shops[2].count}}회)</b></p>
+                                <!--
                                 <p class="classification">{{shops[2].classification}}</p>
                                 <div class="star_rating">
                                   <ion-icon name="md-star"></ion-icon>
@@ -71,13 +76,15 @@
                                   <ion-icon name="md-star"></ion-icon>
                                   <p>{{shops[2].star_rating}}</p>
                                 </div>
+                                -->
                             </button>
                 </ion-col>
-                <ion-col>
-                            <button class="shop-button" no-padding no-margin ion-button>
+                <ion-col *ngIf="shops.length>3">
+                            <button class="shop-button"(click)="enterShop(shops[3].takitId)"  no-padding no-margin ion-button>
                                 <img  [src]="shops[3].imagePath">
                                 <p class="name-sub">{{shops[3].name_sub}}</p>
-                                <p class="name-main"><b>{{shops[3].name_main}}</b></p>
+                                <p class="name-main"><b>{{shops[3].name_main}}&nbsp;({{shops[3].count}}회)</b></p>
+                                <!--
                                 <p class="classification">{{shops[3].classification}}</p>
                                 <div class="star_rating">
                                   <ion-icon name="md-star"></ion-icon>
@@ -87,49 +94,50 @@
                                   <ion-icon name="md-star"></ion-icon>
                                   <p>{{shops[3].star_rating}}</p>
                                 </div>
+                                -->
                             </button>
                 </ion-col>
             </ion-row>            
 </div>
 
-<p *ngIf="storageProvider.frequentShopList.length!=0" class="section-title"><b>즐겨찾는 메뉴</b></p>
-<div *ngIf="storageProvider.frequentShopList.length!=0">
+<p *ngIf="menus.length!=0" class="section-title"><b>즐겨찾는 메뉴</b></p>
+<div *ngIf="menus.length!=0">
             <ion-row>
-                <ion-col class="col-left">
-                            <button class="menu-button" no-padding no-margin ion-button>
+                <ion-col *ngIf="menus.length>0" class="col-left">
+                            <button class="menu-button" (click)="selectMenu(menus[0])" no-padding no-margin ion-button>
                                 <img  [src]="menus[0].fullImagePath">
                                 <p class="menu-shopname-sub">{{menus[0].name_sub}}</p>
                                 <p class="menu-shopname-main">{{menus[0].name_main}}</p>
-                                <p class="menu-name"><b>{{menus[0].menuName}}</b></p>
+                                <p class="menu-name"><b>{{menus[0].menuName}}&nbsp;({{menus[0].count}}회)</b></p>
                                 <p class="menu-price">{{menus[0].price}}</p>
                             </button>
                 </ion-col>
-                <ion-col>
-                            <button class="menu-button" no-padding no-margin ion-button>
+                <ion-col *ngIf="menus.length>1" >
+                            <button class="menu-button" (click)="selectMenu(menus[1])" no-padding no-margin ion-button>
                                 <img  [src]="menus[1].fullImagePath">
                                 <p class="menu-shopname-sub">{{menus[1].name_sub}}</p>
                                 <p class="menu-shopname-main">{{menus[1].name_main}}</p>
-                                <p class="menu-name"><b>{{menus[1].menuName}}</b></p>
+                                <p class="menu-name"><b>{{menus[1].menuName}}&nbsp;({{menus[1].count}}회)</b></p>
                                 <p class="menu-price">{{menus[1].price}}</p>
                             </button>
                 </ion-col>
             </ion-row>
-            <ion-row>
-                <ion-col class="col-left">
-                            <button class="menu-button" no-padding no-margin ion-button>
+            <ion-row *ngIf="menus.length>2" >
+                <ion-col  *ngIf="menus.length>2"   class="col-left">
+                            <button class="menu-button" (click)="selectMenu(menus[2])" no-padding no-margin ion-button>
                                 <img  [src]="menus[2].fullImagePath">
                                 <p class="menu-shopname-sub">{{menus[2].name_sub}}</p>
                                 <p class="menu-shopname-main">{{menus[2].name_main}}</p>
-                                <p class="menu-name"><b>{{menus[2].menuName}}</b></p>
+                                <p class="menu-name"><b>{{menus[2].menuName}}&nbsp;({{menus[2].count}}회)</b></p>
                                 <p class="menu-price">{{menus[2].price}}</p>
                             </button>
                 </ion-col>
-                <ion-col>
-                            <button class="menu-button" no-padding no-margin ion-button>
+                <ion-col *ngIf="menus.length>3" >
+                            <button class="menu-button" (click)="selectMenu(menus[3])" no-padding no-margin ion-button>
                                 <img  [src]="menus[3].fullImagePath">
                                 <p class="menu-shopname-sub">{{menus[3].name_sub}}</p>
                                 <p class="menu-shopname-main">{{menus[3].name_main}}</p>
-                                <p class="menu-name"><b>{{menus[3].menuName}}</b></p>
+                                <p class="menu-name"><b>{{menus[3].menuName}}&nbsp;({{menus[3].count}}회)</b></p>
                                 <p class="menu-price">{{menus[3].price}}</p>
                             </button>
                 </ion-col>
@@ -141,7 +149,7 @@
       <custom-icon set="tabs" name="cart"></custom-icon>
     </button>
 </ion-fab>
-<ion-fab bottom left>
+<ion-fab bottom left *ngIf="storageProvider.tourMode">
     <button class="fab-btn" (click)="exitTourMode()" ion-fab color="white">
       <custom-icon set="tabs" name="exit"></custom-icon>
     </button>

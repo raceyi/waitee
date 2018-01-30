@@ -81,7 +81,6 @@ export class SoldOutPage {
         }       
 
         for(var j=0;j<this.nowMenus.length;j++){
-              this.nowMenus[j].soldOut=false;
               this.nowMenus[j].ngStyle={'background-image': 'url('+ this.storageProvider.awsS3+this.nowMenus[j].imagePath + ')'};
         }           
 
@@ -115,7 +114,6 @@ export class SoldOutPage {
         //console.log("change menus");
         this.nowMenus=this.categories[sequence-1].menus;
         for(var j=0;j<this.nowMenus.length;j++){
-              this.nowMenus[j].soldOut=false;
               this.nowMenus[j].ngStyle={'background-image': 'url('+ this.storageProvider.awsS3+this.nowMenus[j].imagePath + ')'};
         }           
         
@@ -133,7 +131,7 @@ export class SoldOutPage {
 
   selectMenu(menu){
     console.log("selectMenu");
-      if(!menu.soldOut){
+      if(!menu.soldout){
           let confirm = this.alertController.create({
                 message: menu.menuName+'를 판매종료 하시겠습니까?',
                 buttons: [
@@ -146,7 +144,18 @@ export class SoldOutPage {
                   {
                     text: '네',
                     handler: () => {
-                        menu.soldOut=true;
+                        let body = JSON.stringify({menuNO:menu.menuNO,menuName:menu.menuName,soldout:true});
+                        this.serverProvider.post("/configureSoldOut",body).then((res:any)=>{
+                                menu.soldout=true;
+                        },(err)=>{
+                            let alert = this.alertController.create({
+                                                title: '판매종료 설정에 실패했습니다.',
+                                                subTitle: '네트웍 상태를 확인하시고 다시 시도해주시기 바랍니다.',
+                                                buttons: ['OK']
+                                            });
+                            alert.present();
+
+                        });
                     }}
                 ]});
                 confirm.present();
@@ -163,7 +172,17 @@ export class SoldOutPage {
                   {
                     text: '네',
                     handler: () => {
-                        menu.soldOut=false;        
+                        let body = JSON.stringify({menuNO:menu.menuNO,menuName:menu.menuName,soldout:false});
+                        this.serverProvider.post("/configureSoldOut",body).then((res:any)=>{
+                                menu.soldout=false;
+                        },(err)=>{
+                            let alert = this.alertController.create({
+                                                title: '판매 설정에 실패했습니다.',
+                                                subTitle: '네트웍 상태를 확인하시고 다시 시도해주시기 바랍니다.',
+                                                buttons: ['OK']
+                                            });
+                            alert.present();
+                        });
                     }}
                 ]});
                 confirm.present();
@@ -171,7 +190,7 @@ export class SoldOutPage {
   }
 
   configureMenuColor(menu){
-      if(!menu.soldOut){
+      if(!menu.soldout){
           return 'white';
       }else{
           return '#bdbdbd';

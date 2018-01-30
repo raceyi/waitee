@@ -395,7 +395,7 @@ phoneAuth(){
                     if(serverCode=="success"){
                         var encrypted:string=this.storageProvider.encryptValue('id',this.loginMethod);// save facebook id 
                         this.nativeStorage.setItem('id',encodeURI(encrypted));
-                        this.storageProvider.shoplist=[];
+                        this.storageProvider.shopList=[];
                         this.storageProvider.userInfoSet(this.email,this.name,this.phone,false,"","IncomeDeduction",result.recommends);
                         this.navCtrl.setRoot(SignupPaymentPage,{email:this.email,name:this.name,phone:this.phone});
                     }else  if(serverCode=="duplication"){ // result.result=="exist"
@@ -436,7 +436,7 @@ phoneAuth(){
                         this.nativeStorage.setItem('id',encodeURI(encrypted));
                         encrypted=this.storageProvider.encryptValue('password',this.password);// save email id 
                         this.nativeStorage.setItem('password',encodeURI(encrypted));
-                        this.storageProvider.shoplist=[];
+                        this.storageProvider.shopList=[];
                         this.storageProvider.emailLogin=true;
                         this.storageProvider.userInfoSet(this.email,this.name,this.phone,false,"","IncomeDeduction",result.recommends);
                         this.navCtrl.setRoot(SignupPaymentPage,{email:this.email,name:this.name,phone:this.phone,password:this.password});

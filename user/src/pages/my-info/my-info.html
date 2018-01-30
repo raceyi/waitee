@@ -118,7 +118,7 @@
     <ion-col text-left><button style="font-size:3.5vw;" (click)="unregister()" clear ion-button>회원탈퇴</button></ion-col>  
   </ion-row>
 
-<ion-fab bottom left>
+<ion-fab bottom left *ngIf="storageProvider.tourMode">
     <button class="fab-btn" (click)="exitTourMode()" ion-fab color="white">
       <custom-icon set="tabs" name="exit"></custom-icon>
     </button>

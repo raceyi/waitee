@@ -30,11 +30,11 @@
                     <button color="white" (click)="selectMenu(menu[0])"  ion-button full no-padding no-margin>
                         <ion-item class="left" no-padding [style.background-color]="configureMenuColor(menu[0])">
                              <div text-center class="img-shop" [ngStyle]="menu[0].ngStyle">
-                              <label *ngIf="menu[0].soldOut"> <b>판매종료</b></label>
-                              <label *ngIf="!menu[0].soldOut"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
+                              <label *ngIf="menu[0].soldout"> <b>판매종료</b></label>
+                              <label *ngIf="!menu[0].soldout"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>
                             <h2>{{menu[0].menuName}}</h2>
-                            <p>{{menu[0].price}}
+                            <p>{{menu[0].price}}</p>
                         </ion-item>
                     </button>
                     </ion-col>
@@ -42,11 +42,11 @@
                     <button *ngIf="menu[1]" (click)="selectMenu(menu[1])" ion-button full no-padding no-margin>
                         <ion-item class="left" no-padding [style.background-color]="configureMenuColor(menu[1])">
                              <div text-center class="img-shop" [ngStyle]="menu[1].ngStyle">
-                              <label *ngIf="menu[1].soldOut"> <b>판매종료</b></label>
-                              <label *ngIf="!menu[1].soldOut"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
+                              <label *ngIf="menu[1].soldout"> <b>판매종료</b></label>
+                              <label *ngIf="!menu[1].soldout"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>
                             <h2>{{menu[1].menuName}}</h2>
-                            <p>{{menu[1].price}}
+                            <p>{{menu[1].price}}</p>
                         </ion-item>
                     </button>
                     <button *ngIf="!menu[1]" style="background-color:white;" ion-button full no-padding no-margin>

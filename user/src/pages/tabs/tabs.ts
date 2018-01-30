@@ -87,7 +87,26 @@ export class TabsPage {
             })
         }     
     });
-    
+
+    events.subscribe('cashUpdate', (param) =>{
+        console.log("cashUpdate comes at TabsPage");
+        if(this.storageProvider.cashId!=undefined && this.storageProvider.cashId.length>=5){
+            let body = {cashId:this.storageProvider.cashId};
+
+            this.serverProvider.post(this.storageProvider.serverAddress+"/getBalanceCash",body).then((res:any)=>{
+                console.log("getBalanceCash res:"+JSON.stringify(res));
+                if(res.result=="success"){
+                    this.storageProvider.cashAmount=res.balance;
+                }else{
+                    let alert = this.alertCtrl.create({
+                        title: "캐시정보를 가져오지 못했습니다.",
+                        buttons: ['OK']
+                    });
+                    alert.present();
+                }
+            });
+        }
+    });            
   }
   
   ionViewDidLoad() {

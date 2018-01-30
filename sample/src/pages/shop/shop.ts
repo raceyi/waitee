@@ -150,6 +150,10 @@ export class ShopPage {
             {"menuNO":"세종대@더큰도시락;12","menuName":"매콤돈까스돈부리덮밥","explanation":"","price":"3500","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"}]","takeout":"1","imagePath":"세종대@더큰도시락;12_매콤돈까스돈부리덮밥","requiredTime":null,"menuNameEn":"Spicy Katsu","explanationEn":"pork","optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"}]"},
             {"menuNO":"세종대@더큰도시락;12","menuName":"청양돈까스돈부리덮밥","explanation":"","price":"3500","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"}]","takeout":"1","imagePath":"세종대@더큰도시락;12_청양돈까스돈부리덮밥","requiredTime":null,"menuNameEn":"Very spicy katsu","explanationEn":"pork","optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"}]"},
             {"menuNO":"세종대@더큰도시락;12","menuName":"청양돈까스돈부리덮밥","explanation":"","price":"3500","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"}]","takeout":"1","imagePath":"세종대@더큰도시락;12_청양돈까스돈부리덮밥","requiredTime":null,"menuNameEn":"Very spicy katsu","explanationEn":"pork","optionsEn":"[{\"name\":\"Extra rice\",\"price\":\"200\"}]"}];                  
+    //menus[0].soldout=true;
+    menus.forEach((menu:any)=>{
+       menu.ngStyle={'background-image': 'url('+ encodeURI(this.storageProvider.awsS3+menu.imagePath) + ')'};
+    });
 
      for(var i=0;i<menus.length/2;i++){
            let pair=[];

@@ -1,11 +1,12 @@
 import { Injectable ,EventEmitter} from '@angular/core';
+import { AlertController,Events} from 'ionic-angular';
 import {Platform,Tabs,NavController} from 'ionic-angular';
 import {ConfigProvider} from '../config/config';
 import * as CryptoJS from 'crypto-js';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import {CartProvider} from '../../providers/cart/cart';
-
+var storageProvider;
 /*
   Generated class for the StorageProvider provider.
 
@@ -61,16 +62,14 @@ export class StorageProvider {
     //public login:boolean=false;
 
     shopInfo;
-    shoplistCandidate;
-
 
     public tourMode=false;
     public cashId="";
     public cashAmount:number=0;
 
-    public shoplist=[];          // 최근 주문 샵목록
-    public frequentShopList=[];  // 최다 주문 샵목록
-    public frequentMenuList=[];  // 최다 주문 메뉴 
+    public shopList=[];          // 최근 주문 샵목록
+    //public frequentShopList=[];  // 최다 주문 샵목록
+    //public frequentMenuList=[];  // 최다 주문 메뉴 
                         // 직접 저장한 샵목록, 메뉴 목록 => 향후에 추가하기 
     shopResponse:any;
     takitId:string;
@@ -174,8 +173,11 @@ defaultCardColor ="#33B9C6";
               private sqlite: SQLite,
               private nativeStorage: NativeStorage,
               private cartProvider:CartProvider,
+              private alertCtrl:AlertController,
+              private events:Events,              
               platform: Platform) {
     console.log('Hello StorageProvider Provider');
+    storageProvider=this;
  }
 
     decryptValue(identifier,value){
@@ -270,11 +272,51 @@ defaultCardColor ="#33B9C6";
         */
     }
 
+   //////////////////////////////////////////////////////////////
+   // updateShopList -begin
+    compareShop;     // any other way not to use member varaible ?
+    isSameShop(element){
+         console.log("element:"+JSON.stringify(element));
+         console.log("shop:"+JSON.stringify(storageProvider.compareShop));         
+         if(element.takitId==storageProvider.compareShop.takitId)
+                return true;
+         return false;   
+    }
+
+    updateShopList(shops:any){
+        for(var i=0;i<shops.length;i++){
+            this.compareShop=shops[i];
+
+            let strs=shops[i].takitId.split("@");
+            shops[i].name_sub = strs[0];
+            shops[i].name_main= strs[1];
+
+            let index=this.shopList.findIndex(this.isSameShop);
+            console.log("index:"+index);
+            if(index>=0){
+                this.shopList.splice(index,1);
+            }
+        }
+        console.log("this.shoplist:"+JSON.stringify(this.shopList));
+        this.shopList=shops.concat(this.shopList);
+        if(this.shopList.length>5)
+            this.shopList.splice(5,this.shopList.length-5);
+        console.log("shoplist:"+JSON.stringify(this.shopList));
+
+    };
+   // updateShopList -end
+    /////////////////////////////////////////////////////////////////
+
     shoplistSet(shoplistValue){
         if(shoplistValue==null)
-            this.shoplist=[];
+            this.shopList=[];
         else
-            this.shoplist=shoplistValue;
+            this.shopList=shoplistValue;
+        this.shopList.forEach(element => {
+            let strs=element.takitId.split("@");
+            element.name_sub = strs[0];
+            element.name_main= strs[1];
+        });
         console.log("shoplistSet:"+JSON.stringify(shoplistValue));    
     }
 
@@ -313,7 +355,7 @@ defaultCardColor ="#33B9C6";
             this.cartProvider.db.close(); // humm... should I remove db here? how about logout? 
         } 
         this.cartProvider.db=undefined;
-        this.shoplist=[];
+        this.shopList=[];
        // this.takitId=undefined; 
        // this.shopInfo=undefined;   
        // this.shoplistCandidate=[];
@@ -343,20 +385,6 @@ defaultCardColor ="#33B9C6";
         //console.log("discountRate:"+this.shopInfo.discountRate);
     } 
  
-     shoplistCandidateUpdate(shop){
-        var update=[];
-        if(this.shoplistCandidate)
-        for(var i=0;i<this.shoplistCandidate.length;i++){
-            if(this.shoplistCandidate[i].takitId!=shop.takitId){
-                update.push(this.shoplistCandidate[i]);
-            }
-        }
-        console.log("shoplistCandidate:"+JSON.stringify(update));
-        update.unshift(shop);
-        this.shoplistCandidate=update;
-        console.log("after shoplist update:"+JSON.stringify(this.shoplistCandidate));        
-    }
-
     determinCardColor(){
         console.log("determinCardColor");
         this.payInfo.forEach((payment:any)=>{

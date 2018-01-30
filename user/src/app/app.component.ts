@@ -75,7 +75,7 @@ export class MyApp {
                                     }
                                     this.storageProvider.emailLogin=false;
                                     this.storageProvider.userInfoSetFromServer(res.userInfo);
-                                    console.log("shoplist...:"+JSON.stringify(this.storageProvider.shoplist));
+                                    console.log("shoplist...:"+JSON.stringify(this.storageProvider.shopList));
                                     if(!res.userInfo.hasOwnProperty("cashId") || res.userInfo.cashId==null || res.userInfo.cashId==undefined){
                                         console.log("move into signupPaymentPage");
                                         this.rootPage=SignupPaymentPage;

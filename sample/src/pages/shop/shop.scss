@@ -124,10 +124,25 @@ page-shop {
                 p{
                     color:$default-color;
                 }
-                img{
+                .img-shop{
                     margin-left:1.25vw;
                     width:  calc((120/376)*100vw);
                     height: calc((120/376)*100vw);
+                    background-size: calc((120/376)*100vw) calc((120/376)*100vw);                 
+                    label{
+                        padding-top:calc((40/376)*100vw);
+                        font-size:6vw;
+                        color:red;
+                    }
+                    padding-top: calc((40/376)*100vw);
+                    .sold-out{
+                        font-size:6vw;
+                        color: #33b9c6;
+                        padding:calc((10/376)*100vw); 
+                        border: solid 2px #33b9c6;
+                        border-radius: 23.5px;
+                        background-color:white;
+                    }
                 }
                 ion-label{
                     margin: 1.25vw 1.25vw 1.25vw 1.25vw;

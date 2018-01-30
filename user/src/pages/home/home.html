@@ -56,26 +56,25 @@
 </div>
 </div>
 
-<div *ngIf="storageProvider.shopList!=null && storageProvider.shopList!=undefined && storageProvider.shopListlength>0" class="scroll-div">
+<div *ngIf="storageProvider.shopList!=null && storageProvider.shopList!=undefined && storageProvider.shopList.length>0" class="scroll-div">
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
-                 <ion-col *ngFor="let shop of recently_visited_shop" class="scroll-col-latest"  no-padding>
+                 <ion-col *ngFor="let shop of storageProvider.shopList" class="scroll-col-latest"  no-padding>
                             <button color="white" class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
-                              <!--
-                                <img  [src]="awsS3+shop.takitId">
-                                -->
-                                <img  [src]="shop.imagePath">
+                                <img  [src]="storageProvider.awsS3+shop.imagePath">
                                 <p class="name-sub">{{shop.name_sub}}</p>
                                 <p class="name-main"><b>{{shop.name_main}}</b></p>
-                                <p class="classification">{{shop.classification}}</p>
-                                <div class="star_rating">
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <ion-icon name="md-star"></ion-icon>
-                                  <p>{{shop.star_rating}}</p>
-                                </div>
+                                <!--
+                                <p class="classification">{{shop.classification}}&nbsp;
+                                -->
+                                
+                                <p class="classification">
+                                  <span class="noti-box" *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined">캐시
+                                  <b *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>&nbsp;
+                                  <span class="noti-box" *ngIf="shop.paymethod!=undefined && shop.paymethod.card!=undefined">카드
+                                  <b *ngIf="shop.paymethod!=undefined && shop.paymethod.card!=undefined && shop.paymethod.card!='0%'">{{shop.paymethod.card}}</b></span>
+                                  <span class="noti-box" *ngIf="shop.deliveryArea!=undefined && shop.deliveryArea!=null">배달</span>                                  
+                                </p>
                             </button>
                 </ion-col>
             </ion-row>
@@ -87,7 +86,7 @@
       <custom-icon set="tabs" name="cart"></custom-icon>
     </button>
 </ion-fab>
-<ion-fab bottom left>
+<ion-fab bottom left *ngIf="storageProvider.tourMode">
     <button class="fab-btn" (click)="exitTourMode()" ion-fab color="white">
       <custom-icon set="tabs" name="exit"></custom-icon>
     </button>

@@ -74,7 +74,7 @@ export class ErrorPage {
                                     }
                                     this.storageProvider.emailLogin=false;
                                     this.storageProvider.userInfoSetFromServer(res.userInfo);
-                                    console.log("shoplist...:"+JSON.stringify(this.storageProvider.shoplist));
+                                    console.log("shoplist...:"+JSON.stringify(this.storageProvider.shopList));
                                     this.app.getRootNav().setRoot(TabsPage);
                                 }else if(res.result=='failure' && res.result=='invalidId'){
                                     console.log("사용자 정보에 문제가 발생했습니다. 로그인 페이지로 이동합니다.");

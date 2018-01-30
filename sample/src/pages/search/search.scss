@@ -57,4 +57,15 @@ page-search {
             border-radius:0px;
         }
     }
+
+    .search-shops{
+        font-size:4vw;
+        button{
+            margin-left:calc((38/376)*100vw);
+            width:calc((290/376)*100vw);
+            span{
+                justify-content: left;
+            }
+        }
+    }
 }

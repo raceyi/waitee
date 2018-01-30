@@ -32,7 +32,7 @@ export class HomePage {
  }
 
   showSearchBar(){
-      this.navCtrl.push(SearchPage);
+      this.app.getRootNavs()[0].push(SearchPage);
   }
 
   enterShop(takitId){

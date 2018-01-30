@@ -38,6 +38,11 @@ export class SearchPage {
     let val = ev.target.value;
 
     if (val && val.trim() !== '') {
+
+      console.log("value:"+val+'len:'+val.length);
+      if(val.length==1){
+          //ask server 
+      }
       this.shops = this.shops.filter(function(shop) {
         return shop.toLowerCase().includes(val.toLowerCase());
       });
@@ -46,7 +51,9 @@ export class SearchPage {
   }
 
   goToShop(shop){
-
+    let strs=shop.split(' ');
+    let takitId=strs[0]+'@'+strs[1];
+    console.log("takitId:"+takitId);
   }
 
   back(){

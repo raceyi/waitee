@@ -129,19 +129,8 @@ export class ShopPage {
                 menu.filename=encodeURI(this.storageProvider.awsS3+menu.imagePath);
                 menu.categoryNO=no;
                 //console.log("menu.filename:"+menu.filename);
+                menu.ngStyle={'background-image': 'url('+ menu.filename + ')'};
                 let menu_name=menu.menuName.toString();
-                //console.log("menu.name:"+menu_name);
-                /*  out of date
-                if(navigator.language.startsWith("ko") && menu_name.indexOf("(")>0){
-                    //console.log("name has (");
-                    menu.menuName = menu_name.substr(0,menu_name.indexOf('('));
-                    //console.log("menu.name:"+menu.name);
-                    menu.description = menu_name.substr(menu_name.indexOf('('));
-                    menu.descriptionHide=false;
-                }else{
-                    menu.descriptionHide=true;
-                }
-                */
                 console.log("menu:"+JSON.stringify(menu));
                 menus.push(menu);
             }
@@ -220,39 +209,7 @@ export class ShopPage {
             }else{
                 thisShop.filename=this.storageProvider.awsS3+this.shop.shopInfo.imagePath;
             }
-            /*
-            this.storageProvider.shoplistCandidate=this.storageProvider.shoplist;
-            this.storageProvider.shoplistCandidateUpdate(thisShop);
-            console.log("loadShopInfo-ShopHomePage.. "+JSON.stringify(this.storageProvider.shoplistCandidate));
-            this.storageProvider.shoplistSet(this.storageProvider.shoplistCandidate);
-            this.storageProvider.shoplist[0].visitedDiff=0;
 
-            let body = JSON.stringify({shopList:JSON.stringify(this.storageProvider.shoplistCandidate)});
-            console.log("!!shopEnter-body:",body);
-            let headers = new Headers();
-            headers.append('Content-Type', 'application/json');
-            if(this.storageProvider.tourMode==false){    
-                this.serverProvider.post(this.storageProvider.serverAddress+"/shopEnter",body).then((res:any)=>{
-                    console.log("res.result:"+res.result);
-                    var result:string=res.result;
-                    if(result=="success"){
-
-                    }else{
-                        
-                    }
-                },(err)=>{
-                    console.log("shopEnter-http post err "+err);
-                    //Please give user an alert!
-                    if(err=="NetworkFailure"){
-                    let alert = this.alertController.create({
-                            title: '서버와 통신에 문제가 있습니다',
-                            subTitle: '네트웍상태를 확인해 주시기바랍니다',
-                            buttons: ['OK']
-                        });
-                        alert.present();
-                    }
-                });
-            }*/
         }
   }
 

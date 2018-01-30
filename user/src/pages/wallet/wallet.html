@@ -182,7 +182,7 @@
 </div>
 </div>
 
-<ion-fab bottom left>
+<ion-fab bottom left *ngIf="storageProvider.tourMode">
     <button class="fab-btn" (click)="exitTourMode()" ion-fab color="white">
       <custom-icon set="tabs" name="exit"></custom-icon>
     </button>

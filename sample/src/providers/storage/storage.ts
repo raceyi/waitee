@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+var storageProvider;
+
 /*
   Generated class for the StorageProvider provider.
 
@@ -113,10 +115,13 @@ payInfo=[{customer_uid:"kalen.lee_xxxxx",info:{ mask_no:'xxxx-xxxx-xxxx-xxxxx',n
          {customer_uid:"kalen.lee_xxxxx",info:{ mask_no:'xxxx-xxxx-xxxx-xxxxx',name:'visa카드'}}
 ];
 
+frequentMenuList=[];
+//shopList;
 defaultCardColor ="#33B9C6";                     
+shopList=JSON.parse("[{\"takitId\":\"세종대@더큰도시락\",\"imagePath\":\"세종대@더큰도시락_main\",\"paymethod\":{\"cash\":\"5%\"}}]");
 
   constructor(public http: HttpClient) {
-
+    storageProvider=this;
     console.log('Hello StorageProvider Provider');
    
     this.shopResponse={"result":"success","version":"0.04","shopInfo":{"takitId":"서울창업허브@그릿스테이크","address":" 서울시 마포구 백범로31길 21 3층 키친인큐베이터","imagePath":"서울창업허브@그릿스테이크_home.jpeg","shopName":"그릿 스테이크","businessType":null,"shopPhone":null,"contactPhone":null,"notice":null,"introduce":null,"discountRate":"0.5%","timezone":"Asia/Seoul","orderNumberCounter":"0","orderNumberCounterTime":null,"business":"off","businessTime":"[\"00:00~00:00\",\"11:30~20:00\",\"11:30~20:00\",\"11:30~20:00\",\"11:30~20:00\",\"11:30~20:00\",\"00:00~00:00\"]","breakTime":"[\"14:00~17:00\"]","availOrderTime":"[\"11:00~13:30\",\"17:00~19:30\"]","sales":"0","balance":"0","withdrawalCount":"0","bankName":null,"bankCode":null,"depositer":null,"businessNumber":"348-87-00219","owner":"김지수","shopNameEn":null,"freeDelivery":null,"deliveryArea":null,"deliveryMSG":null,"bestMenus":null,"reviewList":"[]","ownerImagePath":null,"snsAddress":null,"keyword":"서울창업허브","takeout":"0"},
@@ -130,7 +135,38 @@ defaultCardColor ="#33B9C6";
                                {"menuNO":"세종대@더큰도시락;1","menuName":"삼치도시락","explanation":"","ingredient":null,"price":"3800","options":"[{\"name\":\"밥곱빼기\",\"price\":\"200\"},{\"name\":\"돈까스한장\",\"price\":\"1000\"},{\"name\":\"스팸한장\",\"price\":\"1000\"}]","takeout":"1","imagePath":"세종대@더큰도시락;1_삼치도시락","requiredTime":null,"menuNa
 */
 
+
+  //////////////////////////////////////////////////////////////
+  /*
+let order={"payment":"cash","orderList":"[{\"takitId\":\"세종대@더큰도시락\",\"amount\":3420,\"orderList\":{\"takitId\":\"세종대@더큰도시락\",\"menus\":[{\"menuNO\":\"세종대@더큰도시락;1\",\"menuName\":\"데리치킨도시락\",\"quantity\":1,\"options\":[{\"name\":\"계란후라이\",\"price\":\"0\",\"number\":1,\"select\":\"반숙\"}],\"price\":3600,\"unitPrice\":3600,\"takeout\":\"2\",\"amount\":3420}]},\"deliveryArea\":\"세종대학교내\",\"paymethod\":{\"cash\":\"5%\"},\"shopName\":\"더큰도시락\",\"price\":3600,\"orderName\":\"데리치킨도시락(1)\"}]","amount":3420,"takeout":0,"orderedTime":"2018-01-29T07:51:49.006Z","cashId":"QQQQQ22","receiptIssue":false,"receiptId":"","receiptType":"IncomeDeduction","password":"111111","version":"0.05"}
+
+let carts=JSON.parse(order.orderList);
+let shops=[];
+carts.forEach(cart=>{
+    console.log(cart.paymethod.cash);
+    shops.push({ takitId:cart.takitId ,imagePath:cart.takitId+"_main",paymethod:cart.paymethod})
+})
+console.log("shops:"+JSON.stringify(shops));
+
+   this.updateShopList([{takitId:"세종대@더큰도시락"},{takitId:"서울창업허브@키친파라디소"}]);
+*/   
+
+     this.shoplistSet(JSON.parse("[{\"takitId\":\"세종대@더큰도시락\",\"imagePath\":\"세종대@더큰도시락_main\",\"paymethod\":{\"cash\":\"5%\"}}]"));
+
  }
+
+    shoplistSet(shoplistValue){
+        if(shoplistValue==null)
+            this.shopList=[];
+        else
+            this.shopList=shoplistValue;
+        this.shopList.forEach(element => {
+            let strs=element.takitId.split("@");
+            element.name_sub = strs[0];
+            element.name_main= strs[1];
+        });
+        console.log("shoplistSet:"+JSON.stringify(shoplistValue));    
+    }
 
   determinCardColor(){
     this.payInfo.forEach((payment:any)=>{
@@ -146,4 +182,36 @@ defaultCardColor ="#33B9C6";
     console.log("payments:"+JSON.stringify(this.payInfo));
   }
 
+
+ 
+ 
+
+
+
+
+    //////////////////////////////////////////////////////////////
+    compareShop;     // any other way not to use member varaible ?
+    isSameShop(element){
+         console.log("element:"+JSON.stringify(element));
+         console.log("shop:"+JSON.stringify(storageProvider.compareShop));         
+         if(element.takitId==storageProvider.compareShop.takitId)
+                return true;
+         return false;   
+    }
+
+    updateShopList(shops:any){
+        for(var i=0;i<shops.length;i++){
+            this.compareShop=shops[i];
+            let index=this.shopList.findIndex(this.isSameShop);
+            console.log("index:"+index);
+            if(index>=0){
+                this.shopList.splice(index,1);
+            }
+        }
+        console.log("this.shoplist:"+JSON.stringify(this.shopList));
+        this.shopList=shops.concat(this.shopList);
+        if(this.shopList.length>5)
+            this.shopList.slice(5,this.shopList.length-5);
+        console.log("shoplist:"+JSON.stringify(this.shopList));
+    };
 }

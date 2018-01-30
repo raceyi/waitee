@@ -232,4 +232,8 @@ export class CartPage {
         this.navCtrl.push(PaymentPage,{order: JSON.stringify(param) ,class:"PaymentPage" });
     }
   }
+
+  back(){
+      this.navCtrl.pop();
+  }
 }

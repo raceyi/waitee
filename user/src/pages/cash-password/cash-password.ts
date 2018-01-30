@@ -156,9 +156,46 @@ export class CashPasswordPage {
                                     });
                             }
                             console.log("send orderUpdate");
-                            this.events.publish('orderUpdate',{order:res.order}); // Why this doesn't work?
-                            //this.storageProvider.messageEmitter.emit("orderUpdate");
+                            this.events.publish('orderUpdate',{order:res.order});
                             this.events.publish("cashUpdate");
+                            //////////////////////////////////////////////////////////////////////////   
+                            //임시로 shopEnter로 구현하였다. 서버에서 최근 주문 음식점을 관리하도록 한다.   
+                            console.log("body:"+JSON.stringify(this.body));                        
+                            let carts=JSON.parse(this.body.orderList);
+                            let shops=[];
+                            carts.forEach(cart=>{
+                                shops.push({ takitId:cart.takitId ,imagePath:cart.takitId+"_main", 
+                                             deliveryArea: cart.deliveryArea,paymethod:cart.paymethod})
+                            })
+                            console.log("shops:"+JSON.stringify(shops));
+                            this.storageProvider.updateShopList(shops);
+
+                            let body = {shopList:JSON.stringify(this.storageProvider.shopList)};
+                            console.log("!!shopEnter-body:",body);
+
+                            if(this.storageProvider.tourMode==false){    
+                                this.serverProvider.post(this.storageProvider.serverAddress+"/shopEnter",body).then((res:any)=>{
+                                    console.log("res.result:"+res.result);
+                                    var result:string=res.result;
+                                    if(result=="success"){
+
+                                    }else{
+                                        
+                                    }
+                                },(err)=>{
+                                    console.log("shopEnter-http post err "+err);
+                                    //Please give user an alert!
+                                    if(err=="NetworkFailure"){
+                                    let alert = this.alertController.create({
+                                            title: '서버와 통신에 문제가 있습니다',
+                                            subTitle: '최근 주문 음식점이 서버에 반영되지 않았습니다.',
+                                            buttons: ['OK']
+                                        });
+                                        alert.present();
+                                    }
+                                });
+                            }
+                            /////////////////////////////////////////////////////////////////////////////
                             if(res.order.length==1){
                                     let order=res.order[0].order;
                                     this.navCtrl.push(OrderDetailPage,{order:order,trigger:"order",class:"OrderDetailPage"});

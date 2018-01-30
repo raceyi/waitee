@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController,App } from 'ionic-angular';
 import { ShopPage} from '../shop/shop';
 import {SearchPage} from '../search/search';
+import { StorageProvider } from '../../providers/storage/storage';
 
 @Component({
   selector: 'page-home',
@@ -16,7 +17,9 @@ export class HomePage {
   searchShop:string=" ";
   shouldShowCancel:boolean=true;
 
-  constructor(public navCtrl: NavController,private app: App) {
+  constructor(public navCtrl: NavController
+                ,public storageProvider:StorageProvider
+                ,private app: App) {
     this.shops=[ "세종대 더큰도시락","세종대 헨델과그레텔","세종대 카페드림","서울창업허브 그릿스테이크"];
     // shop에 추가되어야할 필드: name_sub, name_main, classification, star_rating 
     this.recommendations=[ {takitId:"더큰도시락@세종대학교",
@@ -87,7 +90,10 @@ export class HomePage {
     });               
            
     let rootNavCtrl:NavController=this.app.getRootNav();
-     console.log("views length:"+rootNavCtrl.getViews().length);   
+     console.log("views length:"+rootNavCtrl.getViews().length);  
+
+
+    // console.log(" storageProvider.shopList:"+JSON.stringify(storageProvider.shopList)); 
   }
 
   getShops(ev:any){

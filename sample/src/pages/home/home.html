@@ -70,22 +70,19 @@
 </div>
 
 <p class="section-title"><b>최근 주문 음식점</b></p>
-<div>
+<div  *ngIf="storageProvider.shopList==null || storageProvider.shopList==undefined ||storageProvider.shopList.length==0" >
 <p class="section-title">웨이티에 오신 것을 환영합니다!</p>
 <p class="section-title">첫주문을 해주시겠어요?</p>
 <div text-right>
 <img class="profile-smile" src="assets/imgs/profile-smile.png">
 </div>
 </div>
-
+<!--
 <div class="scroll-div">
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
                  <ion-col *ngFor="let shop of recently_visited_shop" class="scroll-col-latest"  no-padding>
                             <button class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
-                              <!--
-                                <img  [src]="awsS3+shop.takitId">
-                                -->
                                 <img  [src]="shop.imagePath">
                                 <p class="name-sub">{{shop.name_sub}}</p>
                                 <p class="name-main"><b>{{shop.name_main}}</b></p>
@@ -98,6 +95,33 @@
                                   <ion-icon name="md-star"></ion-icon>
                                   <p>{{shop.star_rating}}</p>
                                 </div>
+                            </button>
+                </ion-col>
+            </ion-row>
+        </ion-scroll>
+</div>
+-->
+
+<div *ngIf="storageProvider.shopList!=null && storageProvider.shopList!=undefined && storageProvider.shopList.length>0" class="scroll-div">
+        <ion-scroll scrollX="true" class="scroll-latest">
+            <ion-row class="scroll-row-latest">
+                 <ion-col *ngFor="let shop of storageProvider.shopList" class="scroll-col-latest"  no-padding>
+                            <button color="white" class="shop-button" (click)="enterShop(shop.takitId)" no-padding no-margin ion-button>
+                                <img  [src]="storageProvider.awsS3+shop.imagePath">
+                                <p class="name-sub">{{shop.name_sub}}</p>
+                                <p class="name-main"><b>{{shop.name_main}}</b></p>
+                                <!--
+                                <p class="classification">{{shop.classification}}&nbsp;
+                                -->
+                                
+                                <p class="classification">
+                                  <span class="noti-box" *ngIf="shop.paymethod.cash!=undefined">캐시
+                                  <b *ngIf="shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>&nbsp;
+                                  <span class="noti-box" *ngIf="shop.paymethod.card!=undefined">카드
+                                  <b *ngIf="shop.paymethod.card!=undefined && shop.paymethod.card!='0%'">{{shop.paymethod.card}}</b></span>
+                                  <span class="noti-box" *ngIf="shop.deliveryArea!=undefined && shop.deliveryArea!=null">배달</span>                                  
+                                </p>
+                                
                             </button>
                 </ion-col>
             </ion-row>

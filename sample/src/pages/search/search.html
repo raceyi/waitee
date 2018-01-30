@@ -9,12 +9,15 @@
               [(ngModel)]="myInput"  
               (ionInput)="onInput($event)">
 </ion-searchbar>
-
-<div  class="recent-label">
-<p [hidden]="myInput!=undefined && myInput.length>0">최근 검색 상점</p> 
+<div [hidden]="myInput==undefined || myInput.length==0" class="search-shops" *ngFor="let shop of shops">
+<button ion-button (click)="goToShop(shop)">{{shop}}</button>    
 </div>
 
-<div class="shops" *ngFor="let shop of shops">
+<div  [hidden]="myInput!=undefined && myInput.length>0" class="recent-label">
+<p>최근 검색 상점</p> 
+</div>
+
+<div [hidden]="myInput!=undefined && myInput.length>0" class="shops" *ngFor="let shop of shops">
 <button ion-button (click)="goToShop(shop)">{{shop}}</button>    
 </div>
 

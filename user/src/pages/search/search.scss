@@ -20,7 +20,7 @@ page-search {
     }
 
     .searchbar-ios .searchbar-input {
-        color:white;
+        color:white !important;
         background-color:transparent;
     }
 
@@ -56,5 +56,28 @@ page-search {
             border-bottom-color:white;
             border-radius:0px;
         }
+    }
+
+    .search-shops{
+        font-size:4vw;
+        button{
+            margin-left:calc((38/376)*100vw);
+            width:calc((290/376)*100vw);
+            span{
+                justify-content: left;
+            }
+        }
+    }
+
+   //////////////////////////////////////////
+    ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        color: white !important;
+    }
+   ::-webkit-search-cancel-button { /* Chrome/Opera/Safari */
+        color: white !important;
+    }
+
+    .searchbar-clear-icon{
+        color:white !important;
     }
 }
