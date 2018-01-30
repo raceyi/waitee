@@ -314,18 +314,17 @@ phoneAuth(){
     var smEng = /[a-z]+/.test(password);
     var bigEng= /[A-Z]+/.test(password);
     var special = /[^\s\w]+/.test(password);
-    var digits = /.{8,}/.test(password);
 
-    if(number && smEng && bigEng && digits){
+    if(number && smEng && bigEng){
       return true;
     }
-    else if(number && smEng && special && digits){
+    else if(number && smEng && special){
       return true;
     }
-    else if(smEng && bigEng && special && digits){
+    else if(bigEng && special && special){
       return true;
     }
-    else if(number && bigEng && special && digits){
+    else if(bigEng && special && special){
       return true;
     }
     else{

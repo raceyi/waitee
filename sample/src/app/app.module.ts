@@ -47,6 +47,9 @@ import {CashTutorialPageModule} from '../pages/cash-tutorial/cash-tutorial.modul
 import {SoldOutPageModule} from '../pages/sold-out/sold-out.module';
 import {ShoptablePageModule} from '../pages/shoptable/shoptable.module';
 import {MyErrorHandler} from '../classes/my-error-handler';
+import{ConfigureReceiptPageModule} from '../pages/configure-receipt/configure-receipt.module';
+import {ConfigurePasswordPageModule} from '../pages/configure-password/configure-password.module';
+import {ConfigurePaymentPageModule} from '../pages/configure-payment/configure-payment.module';
 
 @NgModule({
   declarations: [
@@ -90,6 +93,9 @@ import {MyErrorHandler} from '../classes/my-error-handler';
     CashTutorialPageModule,
     SoldOutPageModule,
     ShoptablePageModule,
+    ConfigureReceiptPageModule,
+    ConfigurePasswordPageModule,
+    ConfigurePaymentPageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],

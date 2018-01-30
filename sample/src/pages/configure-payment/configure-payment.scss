@@ -1,0 +1,44 @@
+page-configure-payment {
+   .toolbar-background-ios {
+        background:$default-color;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    .toolbar-title-ios{
+        color:white;
+    }
+    ion-title{
+        font-size:4.8vw;
+        padding:0px;
+    }
+
+  .group{
+    height:calc((50/667)*100vh);
+    font-size: 4vw;
+    background-color: #f7f7f7;
+    color: #9b9b9b;
+  }
+  
+  .border-bottom{
+    border-bottom:solid 1px #dfdfdf;
+  }
+  .item-ios.item-block .item-inner {
+     border-bottom: 0px;
+  }
+
+    .one-button{
+        width:calc((310/376)*100vw);
+        height:calc((42/667)*100vh);
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+        border-color:$default-color;
+        color:$default-color;
+        font-family:$default-font-style;
+        font-size:4vw !important;
+        margin:0px;
+    }
+}
