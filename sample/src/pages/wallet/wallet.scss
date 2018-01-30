@@ -155,7 +155,7 @@ page-wallet {
             color: #bdbdbd;
             background-color: #ffffff;
 	        border: solid 1px #bdbdbd;
-            width: calc((156/376)*100vw);
+            width: calc((125/376)*100vw);
             .datetime-text{
                 padding-top:calc((5/667)*100vh);
                 padding-bottom:calc((5/667)*100vh);
@@ -177,11 +177,15 @@ page-wallet {
         }
 
         .search-button{
-            background-color:white;
+            background-color: #f2f2f2;
+            color: #bdbdbd;
             border: solid 1px #bdbdbd;
-            margin-left: calc((5/376)*100vw);
-            margin-right: calc((19/376)*100vw);
-            margin-bottom: calc((10/376)*100vw);
+            border-radius:0px;
+           // margin-left: calc((5/376)*100vw);
+           // margin-right: calc((19/376)*100vw);
+           // margin-bottom: calc((10/376)*100vw);
+           height: calc((29/667)*100vh);
+           width: calc((50/376)*100vw);
         }
     }
 

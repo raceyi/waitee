@@ -30,6 +30,8 @@ page-order-list {
     }
 
    .search-area{
+      color: #bdbdbd;
+
       margin-left:calc((20/376)*100vw);
       margin-right:calc((20/376)*100vw);
       padding:5px;
@@ -47,6 +49,14 @@ page-order-list {
             height:calc((20/667)*100vh);
             color: #bdbdbd;
         }
+      }
+
+      .no-border{
+          border:none;
+      }
+      .show-period-button{
+          height:calc((20/667)*100vh);
+          color: #bdbdbd;
       }
 
       .text-input-ios {
@@ -71,6 +81,50 @@ page-order-list {
         }
 
    }
+
+    .period-section{
+        font-size:4vw;
+        background-color: #f2f2f2;
+        ion-datetime{
+            color: #bdbdbd;
+            background-color: #ffffff;
+	        border: solid 1px #bdbdbd;
+            width: calc((100/376)*100vw);
+            .datetime-text{
+                padding-top:calc((5/667)*100vh);
+                padding-bottom:calc((5/667)*100vh);
+            }
+        }
+        ion-row{
+            padding-left:calc((21/376)*100vw);
+            .center{
+                padding-left:calc((21/376)*100vw);
+                padding-top:calc((10/667)*100vh);
+                color: #bdbdbd;
+            }
+        }
+        .close-button{
+            height: calc((23/667)*100vh);
+            padding-right: calc((10/376)*100vw);
+            color: #bdbdbd;
+            font-size:4vw;
+        }
+
+        .search-button{
+            background-color: #f2f2f2;
+            color: #bdbdbd;
+            border: solid 1px #bdbdbd;
+            border-radius:0px;
+            height: calc((29/667)*100vh);
+            width: calc((50/376)*100vw);
+        }
+
+        .up-button{
+            height: calc((29/667)*100vh); 
+            color: #bdbdbd;           
+        }
+    }
+
     .history{
         height:calc((83/667)*100vh);
         .order-first-line{

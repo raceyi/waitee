@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
 import {ReviewInputPage} from '../review-input/review-input';
 import {OrderDetailPage} from '../order-detail/order-detail';
 import {TimeUtil} from '../../classes/TimeUtil';
+import * as moment from 'moment';
 
 /**
  * Generated class for the OrderListPage page.
@@ -24,6 +25,9 @@ export class OrderListPage {
   buttonStyle=[];
   historyOrders=[];
   timeUtil= new TimeUtil(); 
+  periodShown:boolean=false;
+  startDate;
+  endDate;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,private app:App) {
     this.colStyle=[
@@ -72,7 +76,24 @@ this.historyOrders=[{"orderId":"940","takitId":"서울창업허브@완니","shop
      console.log(order.orderStatus +" "+ order.review );
    });
 
+    var date=new Date();
+    var month=date.getMonth()+1;
+
+    this.startDate=this.getTodayString();
+    this.endDate=this.getTodayString();
+
 }
+
+  getTodayString(){
+    let d = new Date();
+
+    let mm = d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1); // getMonth() is zero-based
+    let dd  = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
+    let hh = d.getHours() <10? "0"+d.getHours(): d.getHours();
+    let dString=d.getFullYear()+'-'+(mm)+'-'+dd+'T'+hh+":00"+moment().format("Z");
+
+    return dString;          
+  }
 
    getOrderStatusString(order){
     console.log("status:"+order.orderStatus);
@@ -176,5 +197,15 @@ this.historyOrders=[{"orderId":"940","takitId":"서울창업허브@완니","shop
      // this.historyOrders.push({"orderId":"1490","takitId":"TEST2@TAKIT","shopName":"가로수그늘아래","orderName":"바닐라라떼(1)","payMethod":"cash","amount":"0","takeout":"0","arrivalTime":null,"orderNO":"1","userId":"60","userName":"이경주","userPhone":"01027228226","orderStatus":"paid","orderList":"{\"menus\":[{\"menuNO\":\"TEST2@TAKIT;1\",\"menuName\":\"바닐라라떼\",\"quantity\":1,\"options\":[],\"price\":\"0\",\"amount\":0}],\"total\":0,\"prevAmount\":0,\"takitDiscount\":0,\"couponDiscount\":0}","deliveryAddress":"","userMSG":null,"orderedTime":"2018-01-02 07:53:13","checkedTime":null,"completedTime":null,"cancelledTime":null,"localCancelledTime":null,"cancelReason":null,"localOrderedTime":"2018-01-02 16:53:13","localOrderedDay":"2","localOrderedHour":"16","localOrderedDate":"2018-01-02","receiptIssue":"1","receiptId":"01027228226","receiptType":"IncomeDeduction"});
      // infiniteScroll.complete();
       infiniteScroll.enable(false);
+  }
+
+  periodOn(){
+    console.log("periodOn");
+    this.periodShown=true;
+  }
+
+  periodOff(){
+    console.log("periodOff");
+    this.periodShown=false;    
   }
 }
