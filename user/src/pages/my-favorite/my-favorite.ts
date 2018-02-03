@@ -156,6 +156,11 @@ export class MyFavoritePage {
       });
 
   }
+  
+  exitTourMode(){
+    console.log("exit Tour Mode");
+    this.app.getRootNav().pop();
+  }
 
   
 }

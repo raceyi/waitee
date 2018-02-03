@@ -47,13 +47,18 @@ page-cash-refund-main {
         }
    }
 
-   .warning-section{
-       	color: #bdbdbd;
+    ion-footer{
+        height:calc((279/667)*100vh);
         background-color: #f2f2f2;
-        height:calc((224/667)*100vh);
-        padding-top:calc((23/667)*100vh);
-        font-size:3.4vw;
-   }
+        .warning{
+            height:calc((224/667)*100vh);
+            .warning-section{
+                    color: #bdbdbd;
+                    padding-top:calc((23/667)*100vh);
+                    font-size:3.4vw;
+            }
+        }
+    }
 
    .modify{
         margin-right:calc((55/376)*100vw) !important;  

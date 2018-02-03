@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,App,AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,App,AlertController,Platform } from 'ionic-angular';
 import { PolicyPage} from  '../policy/policy';
 import {FaqPage} from '../faq/faq';
 import {CompanyInfoPage} from '../company-info/company-info';
@@ -9,6 +9,11 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import {LoginMainPage} from '../login-main/login-main';
 import {CartProvider} from '../../providers/cart/cart';
+import {ConfigureReceiptPage} from '../configure-receipt/configure-receipt';
+import {ConfigurePasswordPage} from '../configure-password/configure-password';
+import {ConfigurePaymentPage} from '../configure-payment/configure-payment';
+import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
+import {ServerProvider} from '../../providers/server/server';
 
 /**
  * Generated class for the MyInfoPage page.
@@ -23,12 +28,17 @@ import {CartProvider} from '../../providers/cart/cart';
   templateUrl: 'my-info.html',
 })
 export class MyInfoPage {  
+  browserRef;
+
   constructor(public navCtrl: NavController, public navParams: NavParams,
+               private platform:Platform, 
                 private alertCtrl:AlertController,
                 private loginProvider:LoginProvider,
                 private nativeStorage:NativeStorage,
                 private backgroundMode:BackgroundMode,
                 private cartProvider:CartProvider,
+                private serverProvider:ServerProvider,
+                private iab: InAppBrowser,
                 private app: App,public storageProvider:StorageProvider) {
 
   }
@@ -47,6 +57,92 @@ export class MyInfoPage {
 
   goToCompanyInfo(){
     this.app.getRootNavs()[0].push(CompanyInfoPage);
+  }
+
+  modifyEmailLogin(){
+     this.app.getRootNavs()[0].push(ConfigurePasswordPage);
+  }
+
+  modifyPaymentPassword(){
+     this.app.getRootNavs()[0].push(ConfigurePaymentPage);
+  }
+
+  modifyReceiptInfo(){
+     this.app.getRootNavs()[0].push(ConfigureReceiptPage);
+  }
+
+  modifyPhone(){
+    
+      if(this.storageProvider.tourMode){
+            let alert = this.alertCtrl.create({
+                title: '둘러보기모드입니다.',
+                buttons: ['OK']
+            });
+            alert.present();
+            return;
+      }
+
+  this.serverProvider.mobileAuth().then((res:any)=>{
+      console.log("[phoneAuth]res:"+JSON.stringify(res));
+      if(this.storageProvider.name!=res.userName){  //이름 변경시에는 고객센터에 요청바랍니다.
+                    let alert = this.alertCtrl.create({
+                        title: "고객님의 이름과 동일하지 않습니다. 이름 변경은 고객센터(0505-170-3636,help@takit.biz)에 연락바랍니다.",
+                        buttons: ['OK']
+                    });
+                    alert.present();
+      }
+      console.log("birthYear:"+res.userAge+" phone:"+res.userPhone);
+      let body= {email:this.storageProvider.email,
+                    phone:res.userPhone, 
+                    name:this.storageProvider.name,
+                    receiptIssue:this.storageProvider.receiptIssue?1:0,
+                    receiptId:this.storageProvider.receiptId,
+                    receiptType:this.storageProvider.receiptType
+        };              
+        this.serverProvider.post(this.storageProvider.serverAddress+"/modifyUserInfo",body).then((res:any)=>{
+            console.log("res:"+JSON.stringify(res));
+            if(res.result=="success"){
+                    let alert = this.alertCtrl.create({
+                        title: "휴대폰 번호가 변경되었습니다.",
+                        buttons: ['OK']
+                    });
+                    alert.present();
+            }
+        },(err)=>{
+                    let alert = this.alertCtrl.create({
+                        title: "휴대폰 번호 변경에 실패하였습니다.",
+                        buttons: ['OK']
+                    });
+                    alert.present();
+        });
+
+  },(err)=>{
+      console.log("[phoneAuth] err:"+JSON.stringify(err));
+  });  
+  }
+
+  passwordValidity(password){
+    var number = /\d+/.test(password);
+    var smEng = /[a-z]+/.test(password);
+    var bigEng= /[A-Z]+/.test(password);
+    var special = /[^\s\w]+/.test(password);
+
+    if(number && smEng && bigEng){
+      return true;
+    }
+    else if(number && smEng && special){
+      return true;
+    }
+    else if(bigEng && special && special){
+      return true;
+    }
+    else if(bigEng && special && special){
+      return true;
+    }
+    else{
+      //this.paswordGuide = "영문대문자,영문소문자,특수문자,숫자 중 3개 이상 선택, 8자리 이상으로 구성하세요";
+      return false;
+    }
   }
 
   logout(){
@@ -164,6 +260,11 @@ export class MyInfoPage {
             console.log("fail to dropCartInfo");
             this.app.getRootNav().setRoot(LoginMainPage);
         });  
+  }
+
+  exitTourMode(){
+    console.log("exit Tour Mode");
+    this.app.getRootNav().pop();
   }
 
 }

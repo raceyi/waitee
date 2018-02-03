@@ -1,14 +1,14 @@
 <ion-header>
   <ion-navbar hideBackButton>
   <ion-buttons start>
-    <button style="color:white;background-color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+    <button style="color:white;background-color:#6441a5;" (click)="dismiss()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
   </ion-buttons>
   <ion-title> 캐시 충전 확인
   </ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
-<div class="cashId" text-center> {{cashId}} </div>
+<div class="cashId" text-center> {{memo}} </div>
 <div class="amount" text-center> <b>{{amount}}원 충전</b> </div>
 <ion-grid class="info" style="font-size:4vw;">
   <ion-row>
@@ -40,7 +40,7 @@
 사기죄로 형사 고발될 수 있습니다.
 </div>
 <ion-row>
-<ion-col no-padding no-margin><button no-margin ion-button full class="deny" >아니오</button></ion-col>
-<ion-col no-padding no-margin><button no-margin ion-button full color="primary">네, 충전합니다</button></ion-col>
+<ion-col no-padding no-margin><button no-margin ion-button full (click)="deny()" class="deny" >아니오</button></ion-col>
+<ion-col no-padding no-margin><button no-margin ion-button full (click)="charge()" color="primary">네, 충전합니다</button></ion-col>
 </ion-row>
 </ion-footer>

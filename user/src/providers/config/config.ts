@@ -10,8 +10,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ConfigProvider {
     //public serverAddress:string="http://192.168.0.8:8080";
-    //public serverAddress:string="https://takit.biz:443";
-    public serverAddress:string="http://takit.biz:8000";
+   public serverAddress:string="https://takit.biz:443";
+   // public serverAddress:string="http://takit.biz:8000";
 
     public awsS3OCR:string="https://s3.ap-northeast-2.amazonaws.com/seerid.html/";
  

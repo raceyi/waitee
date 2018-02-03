@@ -116,8 +116,6 @@ export class PasswordResetPage {
       return new Promise((resolve, reject)=>{
               console.log("callServerResetPassword");
               let body = {email:email,phone:phone};
-              let headers = new Headers();
-              headers.append('Content-Type', 'application/json');
               console.log("server:"+ this.storageProvider.serverAddress);
 
               this.serverProvider.postAnonymous(this.storageProvider.serverAddress+"/passwordReset", body).then((res:any)=>{

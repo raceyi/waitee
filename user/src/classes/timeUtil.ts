@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 export class TimeUtil {
 
   getGMTtimeInMilliseconds(time:string){
@@ -54,6 +56,24 @@ export class TimeUtil {
     let localTimeString=fullYear.substr(2,2)+"/"+monthStr+"/"+dayStr+" "+hourStr+":"+minStr;
     console.log("getlocalTimeStringWithoutDay:"+localTimeString);
     return localTimeString;
+  }
+
+  getTodayString(){
+    let d = new Date();
+
+    let mm = d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1); // getMonth() is zero-based
+    let dd  = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
+    let hh = d.getHours() <10? "0"+d.getHours(): d.getHours();
+    let dString=d.getFullYear()+'-'+(mm)+'-'+dd+'T'+hh+":00"+moment().format("Z");
+
+    return dString;          
+  }
+
+  getTimezoneLocalTime(time:Date){ // return current local time in timezone area
+    console.log("timeInMilliSec:"+time);
+    let offset=time.getTimezoneOffset(); // offset in minutes
+    console.log("offset:"+offset);
+    return (time.getTime() + (offset*60*1000))/1000; //return local time in seconds
   }
 }
 

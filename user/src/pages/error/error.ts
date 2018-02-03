@@ -6,6 +6,7 @@ import { StorageProvider } from '../../providers/storage/storage';
 import { LoginProvider } from '../../providers/login/login';
 import {LoginMainPage} from '../login-main/login-main';
 import { TabsPage } from '../tabs/tabs';
+import { ServerProvider } from '../../providers/server/server';
 
 /**
  * Generated class for the ErrorPage page.
@@ -27,6 +28,7 @@ export class ErrorPage {
               private app:App,
               private nativeStorage: NativeStorage,
               public storageProvider:StorageProvider,
+              private serverProvider:ServerProvider,
               public loginProvider:LoginProvider,              
               private platform: Platform) {
         this.isAndroid=platform.is("android");        
@@ -71,6 +73,7 @@ export class ErrorPage {
                                     console.log("res.email:"+res.email +"res.name:"+res.name);
                                     if(res.userInfo.hasOwnProperty("shopList")){
                                         this.storageProvider.shoplistSet(JSON.parse(res.userInfo.shopList));
+                                        this.serverProvider.shopListUpdate();
                                     }
                                     this.storageProvider.emailLogin=false;
                                     this.storageProvider.userInfoSetFromServer(res.userInfo);
@@ -98,6 +101,7 @@ export class ErrorPage {
                                     if(res.userInfo.hasOwnProperty("shopList")){
                                         //save shoplist
                                         this.storageProvider.shoplistSet(JSON.parse(res.userInfo.shopList));
+                                        this.serverProvider.shopListUpdate();
                                     }
                                     this.storageProvider.emailLogin=true;
                                     this.storageProvider.userInfoSetFromServer(res.userInfo);

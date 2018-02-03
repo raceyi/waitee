@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,App,Platform ,AlertController} from 'ionic-angular';
+import { IonicPage, NavController,Events, NavParams,App,Platform ,ModalController,AlertController} from 'ionic-angular';
 import {CashRefundMainPage} from '../cash-refund-main/cash-refund-main';
 import {CashChargePage} from '../cash-charge/cash-charge';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
 import { CardProvider } from '../../providers/card/card';
+import {TimeUtil} from '../../classes/TimeUtil';
+import {CashTutorialPage} from '../cash-tutorial/cash-tutorial';
+import {CashConfirmPage} from '../cash-confirm/cash-confirm';
 
 import * as moment from 'moment';
 
@@ -22,11 +25,19 @@ import * as moment from 'moment';
   templateUrl: 'wallet.html',
 })
 export class WalletPage {
-  search_mode="full";
-  startDate="";
-  endDate="";
+   timeUtil= new TimeUtil(); 
   
-  cashList;
+  search_mode="full";
+  startDate=""; //고객 입력값
+  endDate="";   //고객 입력값
+  
+  cashList=[];
+  lastTuno;
+  infiniteScroll;
+  periodSearch:boolean=false;
+
+  periodStartTime; //고객 검색 설정값
+  periodEndTime;   //고객 검색 설정값
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -35,43 +46,38 @@ export class WalletPage {
               private alertController:AlertController,
               public storageProvider:StorageProvider,
               public serverProvider:ServerProvider,
+              public modalCtrl: ModalController,
+              private events:Events,              
               private cardProvider: CardProvider) {
     var date=new Date();
     var month=date.getMonth()+1;
 
     this.startDate=this.getTodayString();
     this.endDate=this.getTodayString();
-    
-    //주문 취소일 경우 takitId가 필요하다. 서버단 수정필요함
-    this.cashList=[{"takitId":"TEST2@TAKIT","orderName":"바닐라라떼(1)","cashTuno":"1456","cashId":"TAKIT02","transactionType":"payment","amount":"0","fee":null,"nowBalance":"26554","transactionTime":"2018-01-02 07:53:18","orderId":"1490","depositTime":null,"depositDate":null,"depositHour":null,"bankCode":null,"bankName":null,"branchCode":null,"branchName":null,"account":null,"confirm":"1"},
-                   {"takitId":"TEST2@TAKIT","orderName":"아메리카노(1)","cashTuno":"1447","cashId":"TAKIT02","transactionType":"payment","amount":"0","fee":null,"nowBalance":"26554","transactionTime":"2017-12-26 00:20:49","orderId":"1485","depositTime":null,"depositDate":null,"depositHour":null,"bankCode":null,"bankName":null,"branchCode":null,"branchName":null,"account":null,"confirm":"1"},
-                   {"takitId":null,"orderName":null,"cashTuno":"1445","cashId":"TAKIT02","transactionType":"refund","amount":"1","fee":"0","nowBalance":"26554","transactionTime":"2017-12-22 07:22:06","orderId":null,"depositTime":null,"depositDate":null,"depositHour":null,"bankCode":null,"bankName":"우리","branchCode":null,"branchName":null,"account":"1002330959408","confirm":null},
-                   {"takitId":"TEST2@TAKIT","orderName":null,"cashTuno":"1444","cashId":"TAKIT02","transactionType":"cancel","amount":"0","fee":null,"nowBalance":"26555","transactionTime":"2017-12-20 05:04:36","orderId":null,"depositTime":null,"depositDate":null,"depositHour":null,"bankCode":null,"bankName":null,"branchCode":null,"branchName":null,"account":null,"confirm":"1"},
-                   {"takitId":"TEST2@TAKIT","orderName":"바닐라라떼(1)","cashTuno":"1443","cashId":"TAKIT02","transactionType":"payment","amount":"0","fee":null,"nowBalance":"26555","transactionTime":"2017-12-20 05:00:35","orderId":"1484","depositTime":null,"depositDate":null,"depositHour":null,"bankCode":null,"bankName":null,"branchCode":null,"branchName":null,"account":null,"confirm":"1"},
-                   {"takitId":null,"orderName":null,"cashTuno":"1348","cashId":"TAKIT02","transactionType":"deposit","amount":"1","fee":null,"nowBalance":null,"transactionTime":"2017-09-04 02:25:38","orderId":null,"depositTime":"2017-09-04 11:25:26","depositDate":null,"depositHour":null,"bankCode":"011","bankName":"농협","branchCode":null,"branchName":null,"account":null,"confirm":"0"},
-                   {"takitId":null,"orderName":null,"cashTuno":"1342","cashId":"TAKIT02","transactionType":"deposit","amount":"1","fee":null,"nowBalance":"26555","transactionTime":"2017-09-03 00:04:16","orderId":null,"depositTime":"2017-09-03 09:04:08","depositDate":null,"depositHour":null,"bankCode":"011","bankName":"농협","branchCode":null,"branchName":null,"account":null,"confirm":"1"},
-                   {"takitId":"TEST2@TAKIT","orderName":"아메리카노(1)","cashTuno":"1340","cashId":"TAKIT02","transactionType":"payment","amount":"0","fee":null,"nowBalance":"26553","transactionTime":"2017-08-31 05:52:32","orderId":"1417","depositTime":null,"depositDate":null,"depositHour":null,"bankCode":null,"bankName":null,"branchCode":null,"branchName":null,"account":null,"confirm":"1"},
-                   {"takitId":"TEST2@TAKIT","orderName":"아메리카노(1)","cashTuno":"1339","cashId":"TAKIT02","transactionType":"payment","amount":"0","fee":null,"nowBalance":"26553","transactionTime":"2017-08-31 05:50:59","orderId":"1416","depositTime":null,"depositDate":null,"depositHour":null,"bankCode":null,"bankName":null,"branchCode":null,"branchName":null,"account":null,"confirm":"1"},
-                   {"takitId":"TEST2@TAKIT","orderName":"아메리카노(1)","cashTuno":"1338","cashId":"TAKIT02","transactionType":"payment","amount":"0","fee":null,"nowBalance":"26553","transactionTime":"2017-08-31 05:44:17","orderId":"1415","depositTime":null,"depositDate":null,"depositHour":null,"bankCode":null,"bankName":null,"branchCode":null,"branchName":null,"account":null,"confirm":"1"}];
 
-   this.cashList.forEach(element => {
-       element.displayTime = this.getDisplayTime(element.transactionTime);
-       if(element.takitId!=null){
-            let strs=element.takitId.split("@");
-            element.brand  =strs[0];
-            element.service=strs[1];
-       }
-   });
-
+       events.subscribe('cashUpdate', (param) =>{
+        console.log("cashUpdate comes at WalletPage");
+            this.startDate=this.getTodayString();
+            this.endDate=this.getTodayString();    
+            this.periodSearch=false;
+            this.refreshCashList();
+    });    
   }
 
 
-  getDisplayTime(measureTime){
+  getDisplayTime(measureTime){    
+// workaround code for iOS
+     let hourH=parseInt(measureTime[11]);
+     let hourL=parseInt(measureTime[12]);
+     let hour=hourH*10+hourL;
+     hour=(hour+9)%24;
+
     return measureTime[2]+measureTime[3]+"/"+
           measureTime[5]+measureTime[6]+"/"+
           measureTime[8]+measureTime[9]+" "+
-          measureTime[11]+measureTime[12]+":"+
+          hour+":"+
           measureTime[14]+measureTime[15];
+
   }
 
   getTodayString(){
@@ -87,6 +93,100 @@ export class WalletPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad WalletPage');
+  }
+
+  ionViewWillEnter() {
+    console.log('ionViewWillEnter WalletPage');
+    this.startDate=this.getTodayString();
+    this.endDate=this.getTodayString();    
+    this.periodSearch=false;
+    this.refreshCashList();
+  }
+
+  refreshCashList(){
+    if(this.infiniteScroll!=undefined)
+        this.infiniteScroll.enable(true); //stop infinite scroll
+    this.cashList=[]; // refresh  when it enters this page.
+    this.lastTuno=-1;
+    this.getCashLists().then((value)=>{
+        console.log("getCashList done continue"+value);
+        if(value){
+            console.log("more is true");
+            if(this.infiniteScroll!=undefined)
+                this.infiniteScroll.complete();
+        }else{
+            console.log("more is false");
+            if(this.infiniteScroll!=undefined)
+                this.infiniteScroll.enable(false); //stop infinite scroll
+        }
+    });
+  }
+
+  getCashLists(){
+        return new Promise((resolve, reject)=>{
+            let body;
+            if(this.periodSearch){
+                  body = {cashId:this.storageProvider.cashId,
+                                lastTuno: this.lastTuno,
+                                startGMTTime: this.periodStartTime,
+                                endGMTTime:  this.periodEndTime,
+                                limit: this.storageProvider.TransactionsInPage};
+            }else{
+                  body = {cashId:this.storageProvider.cashId,
+                                lastTuno: this.lastTuno,
+                                limit: this.storageProvider.TransactionsInPage};
+            }
+            this.serverProvider.post( this.storageProvider.serverAddress+"/getCashList",body).then((res:any)=>{
+                    console.log("res:"+JSON.stringify(res));
+                    if(res.result=="success" && Array.isArray(res.cashList)){
+                        this.lastTuno=res.cashList[res.cashList.length-1].cashTuno;
+                        res.cashList.forEach(element => {
+                            element.displayTime = this.getDisplayTime(element.transactionTime);
+                            if(element.takitId!=null){
+                                  let strs=element.takitId.split("@");
+                                  element.brand  =strs[0];
+                                  element.service=strs[1];
+                            }
+                        });
+                        this.cashList=this.cashList.concat(res.cashList);
+                        console.log("cashList:"+JSON.stringify(this.cashList));
+                        if(res.cashList.length<this.storageProvider.TransactionsInPage){
+                              resolve(false); // no more 
+                        }else{
+                              resolve(true); // more  can be shown.
+                        }
+                    }else if(res.result=="success" && res.cashList=="0"){ //Please check if it works or not
+                        console.log("no more orders");
+                        resolve(false);
+                    }else{ 
+                        reject("serverFailure");
+                    }
+            },(err)=>{
+                    let alert = this.alertController.create({
+                        title: '서버와 통신에 문제가 있습니다',
+                        subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                        buttons: ['OK']
+                    });
+                    alert.present();              
+                    reject(err);
+            });
+        });
+  }
+
+  doInfinite(infiniteScroll) {
+    console.log('Begin async operation');
+    this.infiniteScroll=infiniteScroll;
+    this.getCashLists().then((more)=>{
+      if(more){
+          console.log("more is true");
+          infiniteScroll.complete();
+      }else{
+          console.log("more is false");
+          infiniteScroll.enable(false); //stop infinite scroll
+      }
+    },err=>{
+          // hum...
+    });
   }
 
   configureSearchMode(){
@@ -105,8 +205,35 @@ export class WalletPage {
 
   }
 
-  search(){
+  searchPeriod(){ //기간 검색 
+    var startDate=new Date(this.startDate);
+    var endDate=new Date(this.endDate);
+    var currDate=new Date(); 
+    if(startDate.getTime()>endDate.getTime()){
+          let alert = this.alertController.create({
+              title: '시작일은 종료일보다 늦을수 없습니다',
+              buttons: ['OK']
+          });
+          alert.present();
+         return;
+    }
+    if(endDate.getTime()>currDate.getTime()){
+          let alert = this.alertController.create({
+              title: '종료일은 현재시점보다 늦을수 없습니다.',
+              buttons: ['OK']
+          });
+          alert.present();
+         return;
+    }
 
+    startDate.setHours(0,0,0,0);
+    endDate.setHours(23,59,59,999);
+    this.periodStartTime= startDate.toISOString(); 
+    this.periodEndTime  = endDate.toISOString();
+    console.log("startDate:"+startDate.toISOString());
+    console.log("endDate:"+endDate.toISOString());
+    this.periodSearch=true;    
+    this.refreshCashList();
   }
 
   refundCash(){
@@ -114,10 +241,19 @@ export class WalletPage {
   }
 
   chargeCash(){
-    this.app.getRootNavs()[0].push(CashChargePage);
+    this.app.getRootNavs()[0].push(CashChargePage,{class:"CashChargePage"});
   }
 
   addCard(){
+        if(this.storageProvider.tourMode){
+            let alert = this.alertController.create({
+                title: '둘러보기 모드입니다.',
+                buttons: ['OK']
+            });
+            alert.present()
+            return;
+    }
+
     this.cardProvider.addCard();
   }
 
@@ -143,5 +279,19 @@ export class WalletPage {
     alert.present();
   
   }
+
+  exitTourMode(){
+    console.log("exit Tour Mode");
+    this.app.getRootNav().pop();
+  }
+  
+  cashTutorial(){
+    this.app.getRootNav().push(CashTutorialPage);
+  }
+ 
+ cashConfirm(trans){
+      let cashConfirmModal= this.modalCtrl.create(CashConfirmPage, { custom: trans });
+      cashConfirmModal.present();
+ }
   ////////////////////////////////////////////////////////////////
 }

@@ -7,6 +7,8 @@ import { Network } from '@ionic-native/network';
 import { HomePage } from '../pages/home/home';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { StorageProvider } from '../providers/storage/storage';
+import { ServerProvider } from '../providers/server/server';
+
 import {SignupPaymentPage} from '../pages/signup-payment/signup-payment';
 import { TabsPage } from '../pages/tabs/tabs';
 import { ErrorPage } from '../pages/error/error';
@@ -25,6 +27,7 @@ export class MyApp {
              splashScreen: SplashScreen,
              private nativeStorage: NativeStorage,
              public storageProvider:StorageProvider,
+             private serverProvider:ServerProvider,
              public loginProvider:LoginProvider,
              private network: Network) {
     platform.ready().then(() => {
@@ -72,6 +75,7 @@ export class MyApp {
                                     console.log("res.email:"+res.userInfo.email +"res.name:"+res.userInfo.name);
                                     if(res.userInfo.hasOwnProperty("shopList")){
                                         this.storageProvider.shoplistSet(JSON.parse(res.userInfo.shopList));
+                                        this.serverProvider.shopListUpdate();
                                     }
                                     this.storageProvider.emailLogin=false;
                                     this.storageProvider.userInfoSetFromServer(res.userInfo);
@@ -106,6 +110,7 @@ export class MyApp {
                                     if(res.userInfo.hasOwnProperty("shopList")){
                                         //save shoplist
                                         this.storageProvider.shoplistSet(JSON.parse(res.userInfo.shopList));
+                                        this.serverProvider.shopListUpdate();
                                     }
                                     this.storageProvider.emailLogin=true;
                                     this.storageProvider.userInfoSetFromServer(res.userInfo);

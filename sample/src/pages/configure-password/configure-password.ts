@@ -22,4 +22,7 @@ export class ConfigurePasswordPage {
     console.log('ionViewDidLoad ConfigurePasswordPage');
   }
 
+  back(){
+    this.navCtrl.pop();
+  }
 }

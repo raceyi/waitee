@@ -8,6 +8,7 @@ import {StorageProvider} from '../../providers/storage/storage';
 import { NativeStorage } from '@ionic-native/native-storage';
 import {TabsPage} from '../tabs/tabs';
 import {SignupPaymentPage} from '../signup-payment/signup-payment';
+import { ServerProvider } from '../../providers/server/server';
 
 /**
  * Generated class for the LoginEmailPage page.
@@ -34,6 +35,7 @@ export class LoginEmailPage {
               private nativeStorage: NativeStorage,              
               public navParams: NavParams,private app:App,
               private ngZone:NgZone,private platform:Platform,
+              private serverProvider:ServerProvider,              
               public loadingCtrl: LoadingController) {
       if(platform.is("android")){
           var permissions = cordova.plugins.permissions;
@@ -129,6 +131,7 @@ export class LoginEmailPage {
                                     console.log("email-shoplist:"+res.userInfo.shopList);
                                     if(res.userInfo.hasOwnProperty("shopList")){
                                         this.storageProvider.shoplistSet(JSON.parse(res.userInfo.shopList));
+                                        this.serverProvider.shopListUpdate();
                                     }
                                     this.storageProvider.emailLogin=true;
                                     this.storageProvider.userInfoSetFromServer(res.userInfo);

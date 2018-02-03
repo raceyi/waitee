@@ -64,11 +64,22 @@
   <ion-datetime text-center no-padding displayFormat="YYYY/MM/DD" min="2018" (ionChange)="endPicker(endDate)" [(ngModel)]="endDate"></ion-datetime>
   </ion-col>
   <ion-col col-3 text-right>
-      <button class="search-button" no-padding no-margin ion-button>조회</button>
+      <button class="search-button" (click)="search()" no-padding no-margin ion-button>조회</button>
   </ion-col>
   </ion-row>
-</div> 
+</div>
 
+<div *ngIf="cashList.length==0">
+<div text-center>
+    <ion-row text-center><ion-col style="padding-top:30px;font-size:4vw;">거래내역이 없습니다.</ion-col></ion-row>
+    <ion-row text-center><ion-col><button ion-button clear style="color: #33b9c6;" (click)="cashTutorial()">캐쉬 충전 알아보기</button></ion-col></ion-row>
+</div>
+<div text-right>
+<img class="profile-smile" src="assets/imgs/profile-smile.png">
+</div>
+</div>
+
+<div *ngIf="cashList.length>0">
 <div *ngFor="let trans of cashList">
 <div *ngIf="trans.transactionType=='refund'" class="transaction">
  <ion-row class="refund">
@@ -162,6 +173,7 @@
      {{trans.displayTime}}
      </ion-col>
  </ion-row>
+</div>
 </div>
 </div>
 

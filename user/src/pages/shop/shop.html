@@ -81,8 +81,8 @@
                              <img class="img-shop" [src]="storageProvider.awsS3+menu[0].imagePath">
                              -->
                              <div text-center class="img-shop" [ngStyle]="menu[0].ngStyle">
-                              <label *ngIf="menu[0].soldout" class="sold-out"> <b>판매종료</b></label>
-                              <label *ngIf="!menu[0].soldout"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
+                              <label *ngIf="menu[0].soldout==1" class="sold-out"> <b>판매종료</b></label>
+                              <label *ngIf="menu[0].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>
 
                             <h2>{{menu[0].menuName}}</h2>
@@ -98,8 +98,8 @@
                              <img class="img-shop" [src]="storageProvider.awsS3+menu[1].imagePath">
                              -->
                              <div text-center class="img-shop" [ngStyle]="menu[1].ngStyle">
-                              <label *ngIf="menu[1].soldout" class="sold-out"> <b>판매종료</b></label>
-                              <label *ngIf="!menu[1].soldout"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
+                              <label *ngIf="menu[1].soldout==1" class="sold-out"> <b>판매종료</b></label>
+                              <label *ngIf="menu[1].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>                             
                             <h2>{{menu[1].menuName}}</h2>
                             <p>{{menu[1].price}}원 <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 

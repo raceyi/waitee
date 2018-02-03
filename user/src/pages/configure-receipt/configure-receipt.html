@@ -1,0 +1,42 @@
+<!--
+  Generated template for the ConfigureReceiptPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="background-color:#6441a5;color:white;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title style="padding:0px;"> 현금영수증 발급 정보 변경
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+    <ion-item class="group border-bottom">
+      결제정보
+    </ion-item>
+      <ion-row class="border-bottom">
+        <ion-col no-padding>
+            <ion-item>
+            <ion-label>현금영수증 번호</ion-label>
+            </ion-item>
+        </ion-col>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input type="number" [(ngModel)]="receiptId" pattern="[0-9a-zA-Z]{5,7}" placeholder="현금영수증 번호"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    <ion-item class="border-bottom">
+    <ion-label class="select-label">현금 영수증 발급 목적</ion-label>
+    <ion-select interface='action-sheet' [(ngModel)]="receiptType">
+      <ion-option value="IncomeDeduction">소득공제용(개인)</ion-option>
+      <ion-option value="ExpenseProof">지출증빙용(사업자)</ion-option>
+    </ion-select>
+    </ion-item>
+</ion-content>
+<ion-footer>
+    <button no-margin ion-button full (click)="modify()">변경하기</button>
+</ion-footer>

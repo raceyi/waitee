@@ -2,15 +2,15 @@ import {Injectable} from '@angular/core';
 
 @Injectable()
 export class ConfigProvider{
-    public serverAddress:string="http://takit.biz:8000"; // server ip and port
-   // public serverAddress:string="https://takit.biz:443"; // server ip and port
+    //public serverAddress:string="http://takit.biz:8000"; // server ip and port
+    public serverAddress:string="https://takit.biz:443"; // server ip and port
 
     public awsS3OCR:string="https://s3.ap-northeast-2.amazonaws.com/seerid.html/";
     public awsS3:string="https://s3.ap-northeast-2.amazonaws.com/seerid.cafe.image/";
     public homeJpegQuality=100;
     public menusInRow=3;
 
-    public version="0.04"; //server version
+    public version="0.05"; //server version
     public OrdersInPage=10;
 
     public userSenderID="986862676163";

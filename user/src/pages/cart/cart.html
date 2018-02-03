@@ -13,8 +13,9 @@
   </ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content>
 
+<ion-content>
+<div *ngIf="carts.length>0">
 <ion-row text-right> 
     <ion-col><button ion-button clear *ngIf="carts.length>0" (click)="removeAll()">전체삭제</button></ion-col>
 </ion-row>
@@ -102,7 +103,12 @@
           <b>  {{totalAmount}}원</b>
     </ion-col>
 </ion-row>
+</div>
+<div *ngIf="carts.length==0" text-center>
+    <img class="empty-cart" src="assets/imgs/empty-cart.png"/> 
+    <p style="font-size:4.5vw;color: #9b9b9b;">카트가 비었습니다</p>
+</div>
 </ion-content>
-<ion-footer style="background-color:#f2f2f2;font-size:4vw;">
+<ion-footer *ngIf="carts.length>0" style="background-color:#f2f2f2;font-size:4vw;">
   <button class="review-button" *ngIf="carts.length>0" no-margin full ion-button (click)="doOrder()"> 주문하기 </button>
 </ion-footer>

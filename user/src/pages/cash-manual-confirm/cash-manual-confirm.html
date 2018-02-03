@@ -79,7 +79,7 @@
       통장표시
     </ion-col>
     <ion-col class="account-num-value" col-9>
-      <ion-input text-right type="text" [(ngModel)]="memo"></ion-input>
+      <ion-input text-right type="text" [(ngModel)]="memo" [placeholder]="storageProvider.name" ></ion-input>
     </ion-col>
   </ion-row>
   <ion-row>
@@ -89,5 +89,5 @@
   </ion-grid>
 </ion-content>
 <ion-footer>
-  <button (click)="check()" ion-button full no-margin no-padding >입금확인</button>
+  <button (click)="cashInComplete()" ion-button full no-margin no-padding >입금확인</button>
 </ion-footer>

@@ -44,6 +44,7 @@ import {CartPageModule} from '../pages/cart/cart.module';
 import {CompanyInfoPageModule} from '../pages/company-info/company-info.module';
 import {PolicyDetailPageModule} from '../pages/policy-detail/policy-detail.module';
 import {PasswordResetPageModule} from '../pages/password-reset/password-reset.module';
+import {CashCancelChargePageModule} from '../pages/cash-cancel-charge/cash-cancel-charge.module';
 import {CashConfirmPageModule} from '../pages/cash-confirm/cash-confirm.module';
 import {CashRefundMainPageModule} from  '../pages/cash-refund-main/cash-refund-main.module';
 import {CashRefundAccountPageModule} from '../pages/cash-refund-account/cash-refund-account.module';
@@ -60,7 +61,9 @@ import {CashTutorialPageModule} from '../pages/cash-tutorial/cash-tutorial.modul
 import { CardProvider } from '../providers/card/card';
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { CartProvider } from '../providers/cart/cart';
-
+import {ConfigureReceiptPageModule} from '../pages/configure-receipt/configure-receipt.module';
+import {ConfigurePasswordPageModule} from '../pages/configure-password/configure-password.module';
+import {ConfigurePaymentPageModule} from '../pages/configure-payment/configure-payment.module';
 
 @NgModule({
   declarations: [
@@ -101,6 +104,10 @@ import { CartProvider } from '../providers/cart/cart';
     BrowserModule,
     ErrorPageModule,
     CashTutorialPageModule,
+    ConfigureReceiptPageModule,
+    ConfigurePasswordPageModule,
+    ConfigurePaymentPageModule,  
+    CashCancelChargePageModule,  
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],

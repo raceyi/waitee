@@ -117,7 +117,7 @@ export class SearchPage {
        this.visited.splice(index,1);
      }
      let shops=[shop];
-     this.visited=this.visited=shops.concat(this.visited);
+     this.visited=shops.concat(this.visited);
      if(this.visited.length>5){
        this.visited.splice(5,this.visited.length-5);
      }

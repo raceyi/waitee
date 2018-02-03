@@ -19,19 +19,24 @@
         <button ion-button outline round class="one-button" (click)="signup()">휴대폰 본인 인증하기(필수)</button>
     </div>
      <p text-center style="color: #6441a5;margin-top:10px">인증완료되었습니다.</p>
-
-    <ion-item>
-    <ion-label class="value-label" style="margin-top:0px;" >새비밀번호</ion-label>
-    </ion-item>
-    <ion-item>
-    <button ion-button class="keypad-button" clear (click)="passwordInput()">6자리 숫자</button>
-    </ion-item>
-    <ion-item>
-    <ion-label class="value-label" >새비밀번호 확인</ion-label>
-    </ion-item>
-    <ion-item>
-    <button ion-button class="keypad-button" clear (click)="passwordInput()" >6자리 숫자</button>
-    </ion-item>
+    <ion-row>
+    <ion-col no-padding>
+    <ion-label class="value-label" >새비밀번호</ion-label>
+    </ion-col>
+    <ion-col no-padding>
+    <button ion-button *ngIf="!passwordMask" class="keypad-button" clear (click)="passwordInput()">6자리 숫자</button>
+    <button ion-button *ngIf="passwordMask" class="keypad-button" clear (click)="passwordInput()">******</button>
+    </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col no-padding>
+      <ion-label class="value-label" >새비밀번호 확인</ion-label>
+      </ion-col>
+      <ion-col no-padding>
+      <button ion-button *ngIf="!passwordConfirmMask" class="keypad-button" clear (click)="passwordConfirmInput()" >6자리 숫자</button>
+      <button ion-button *ngIf="passwordConfirmMask" class="keypad-button" clear (click)="passwordConfirmInput()" >******</button>
+      </ion-col>
+    </ion-row>
 </ion-content>
 <ion-footer>
     <button no-margin ion-button full (click)="modify()">변경하기</button>

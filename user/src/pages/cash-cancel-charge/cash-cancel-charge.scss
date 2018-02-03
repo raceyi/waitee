@@ -1,0 +1,64 @@
+page-cash-cancel-charge {
+  .toolbar-background-ios {
+        background: $default-color;
+        color:white;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+    }
+
+    .toolbar-title-ios {
+        color: white;
+    }
+
+    .deny{
+        background-color:white;
+        color:$default-color;
+        border-style:solid;
+        border-color:$default-color;
+        border-width:1px;
+    }
+
+    .scroll-content{
+        background-color:$default-color;
+        color:white;
+    }
+
+    .warning{
+        background-color:#f2f2f2;
+        color:#4a4a4a;
+        height:calc((175/667)*100vh);
+        padding-top:calc((45/667)*100vh);
+        font-size:3.4vw;
+    }
+
+    .cashId{
+        padding-top:calc((34/667)*100vh); //376
+        font-size: 4.5vw;
+        padding-bottom:calc((16/667)*100vh);
+    }
+
+    .amount{
+        font-size:5.5vw;
+    }
+
+    .info{
+        background-color:white;
+        color: #4a4a4a;
+        margin-left:calc((21/376)*100vw);
+        width:calc((334/376)*100vw);
+        margin-bottom: calc((62/667)*100vh);
+        margin-top:calc((20/667)*100vh);
+    }
+
+    .info-label{
+        border-right-style:solid;
+        border-width:1px;
+        border-color: #dddddd;
+    }
+}

@@ -74,7 +74,7 @@ export class TabsPage {
             console.log("call registerPushService");
             this.registerPushService(); 
         }
-        if(this.storageProvider.tourMode==false){    
+        //if(this.storageProvider.tourMode==false){    
             this.cartProvider.open().then(()=>{
 
             },()=>{
@@ -85,7 +85,7 @@ export class TabsPage {
                 alert.present();
 
             })
-        }     
+        //}     
     });
 
     events.subscribe('cashUpdate', (param) =>{
@@ -210,15 +210,15 @@ export class TabsPage {
                 android: {
                     senderID: this.storageProvider.userSenderID,
                     sound: "true",
-                    clearBadge: "true"
+                   // clearBadge: "true"
                 },
                 ios: {
-                    //"fcmSandbox": "false", //code for production mode
-                    "fcmSandbox": "true",  //code for development mode
+                    "fcmSandbox": "false", //code for production mode
+                    //"fcmSandbox": "true",  //code for development mode
                     "alert": "true",
                     "sound": "true",
                     "badge": "true",
-                    "clearBadge": "true"
+                   // "clearBadge": "true"
                 },
                 windows: {}
             });

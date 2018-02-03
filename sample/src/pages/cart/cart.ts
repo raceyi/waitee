@@ -35,8 +35,10 @@ export class CartPage {
               public navParams: NavParams,
               private alertCtrl:AlertController,
               public storageProvider:StorageProvider) {
-  console.log("cart:"+navParams.get('cart'));
-
+ // console.log("cart:"+navParams.get('cart'));
+  if(navParams.get('cart')==undefined){
+        
+  }else{
   let cart:any=JSON.parse(navParams.get("cart"));
  
        // orderName: 매콤제육볶음 외 2개
@@ -79,6 +81,7 @@ console.log("menus:"+JSON.stringify(this.order.orderListObj.menus[0]));
       cart.hidden=true;
     });
     this.computeTotalAmount();
+  }
   }
 
   computeTotalAmount(){

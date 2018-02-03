@@ -20,8 +20,8 @@
    </div> 
 </div>
 
-<p *ngIf="shops.length!=0" class="section-title section-shop-title"><b>즐겨찾는 음식점</b></p>
-<div *ngIf="shops.length!=0" >
+<p *ngIf="storageProvider.shopList.length!=0" class="section-title section-shop-title"><b>즐겨찾는 음식점</b></p>
+<div *ngIf="storageProvider.shopList.length!=0 && shops.length!=0" >
             <ion-row>
                 <ion-col *ngIf="shops.length>0" class="col-left">
                             <button class="shop-button" (click)="enterShop(shops[0].takitId)" no-padding no-margin ion-button>
@@ -100,8 +100,8 @@
             </ion-row>            
 </div>
 
-<p *ngIf="menus.length!=0" class="section-title"><b>즐겨찾는 메뉴</b></p>
-<div *ngIf="menus.length!=0">
+<p *ngIf="storageProvider.shopList.length!=0" class="section-title"><b>즐겨찾는 메뉴</b></p>
+<div *ngIf="storageProvider.shopList.length!=0 && menus.length!=0">
             <ion-row>
                 <ion-col *ngIf="menus.length>0" class="col-left">
                             <button class="menu-button" (click)="selectMenu(menus[0])" no-padding no-margin ion-button>

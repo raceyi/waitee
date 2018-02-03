@@ -3,6 +3,10 @@ import { IonicPage, NavController, NavParams,App } from 'ionic-angular';
 import { PolicyPage} from  '../policy/policy';
 import {FaqPage} from '../faq/faq';
 import {CompanyInfoPage} from '../company-info/company-info';
+import {ConfigureReceiptPage} from '../configure-receipt/configure-receipt';
+import {ConfigurePasswordPage} from '../configure-password/configure-password';
+import {ConfigurePaymentPage} from '../configure-payment/configure-payment';
+
 /**
  * Generated class for the MyInfoPage page.
  *
@@ -36,4 +40,17 @@ export class MyInfoPage {
   goToCompanyInfo(){
     this.app.getRootNavs()[0].push(CompanyInfoPage);
   }
+
+  modifyEmailLogin(){
+     this.app.getRootNavs()[0].push(ConfigurePasswordPage);
+  }
+
+  modifyPaymentPassword(){
+     this.app.getRootNavs()[0].push(ConfigurePaymentPage);
+  }
+
+  modifyReceiptInfo(){
+     this.app.getRootNavs()[0].push(ConfigureReceiptPage);
+  }
+
 }

@@ -267,6 +267,15 @@ export class PaymentPage {
   pay(){
     console.log("carts:"+JSON.stringify(this.carts));
 
+    if(this.storageProvider.tourMode){
+            let alert = this.alertController.create({
+                title: '둘러보기모드입니다.',
+                buttons: ['OK']
+            });
+            alert.present();
+            return;
+    }
+
     if(!this.checkAddressValidityCart()){   //동일상점 주소에서 대해서만 장바구니 주문이 가능합니다.
         let alert = this.alertController.create({
             subTitle: '동일상점 주소에서 대해서만 장바구니 주문이 가능합니다.',
@@ -399,6 +408,14 @@ export class PaymentPage {
   }
   
   addCard(){
+    if(this.storageProvider.tourMode){
+            let alert = this.alertController.create({
+                title: '둘러보기모드입니다.',
+                buttons: ['OK']
+            });
+            alert.present();
+            return;
+    }
     this.cardProvider.addCard();
   }
 

@@ -4,6 +4,10 @@ import {CashRefundMainPage} from '../cash-refund-main/cash-refund-main';
 import {CashChargePage} from '../cash-charge/cash-charge';
 import * as moment from 'moment';
 import {StorageProvider} from '../../providers/storage/storage';
+import {ConfigurePasswordPage} from '../configure-password/configure-password';
+import {ConfigurePaymentPage} from '../configure-payment/configure-payment';
+import {ConfigureReceiptPage} from '../configure-receipt/configure-receipt';
+import {CashTutorialPage} from '../cash-tutorial/cash-tutorial';
 /**
  * Generated class for the WalletPage page.
  *
@@ -52,6 +56,7 @@ export class WalletPage {
     var date=new Date();
     var month=date.getMonth()+1;
 
+
     this.startDate=this.getTodayString();
     this.endDate=this.getTodayString();
     
@@ -75,14 +80,22 @@ export class WalletPage {
             element.service=strs[1];
        }
    });
+
+   //test
+   this.cashList=[];
   }
 
 
   getDisplayTime(measureTime){
+        let date=new Date(measureTime);
+        let localTime=date.getTime()-date.getTimezoneOffset()*60*1000;
+        let localDate=new Date(localTime);
+         console.log("date.getHours():"+localDate.getHours());
+
     return measureTime[2]+measureTime[3]+"/"+
           measureTime[5]+measureTime[6]+"/"+
           measureTime[8]+measureTime[9]+" "+
-          measureTime[11]+measureTime[12]+":"+
+          localDate.getHours()+":"+
           measureTime[14]+measureTime[15];
   }
 
@@ -114,10 +127,6 @@ export class WalletPage {
   }
 
   endPicker(endDate){
-
-  }
-
-  search(){
 
   }
 
@@ -163,4 +172,19 @@ export class WalletPage {
 
   }
 
+  search(){
+        var startDate=new Date(this.startDate);
+    var endDate=new Date(this.endDate);
+    var currDate=new Date(); 
+
+    startDate.setHours(0,0,0,0);
+    endDate.setHours(23,59,59,999);
+
+    console.log("startDate:"+startDate.toISOString());
+    console.log("endDate:"+endDate.toISOString());
+  }
+
+  cashTutorial(){
+    this.app.getRootNav().push(CashTutorialPage);
+  }
 }

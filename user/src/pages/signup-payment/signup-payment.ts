@@ -24,7 +24,7 @@ export class SignupPaymentPage {
   email:string;
   name:string;
   phone:string;
-  oldpassword:string;
+//  oldpassword:string;
   cashIdPassword:string;
   cashIdPasswordConfirm:string;
 
@@ -59,7 +59,7 @@ export class SignupPaymentPage {
             this.storageProvider.name=this.name;
             this.storageProvider.phone=this.phone;
     }
-    this.oldpassword=this.navParams.get("password");
+  //  this.oldpassword=this.navParams.get("password");
   }
 
   ionViewDidLoad() {
@@ -155,20 +155,6 @@ checkCashIdDuplicate(){
     });
   }
 
-
-  myCallbackFunction = (_params) => {
-      return new Promise((resolve, reject) => {
-          console.log("password params:"+_params);
-          this.cashIdPassword=_params;
-          this.ngZone.run(()=>{
-                this.passwordString="******";
-                this.passwordMask=true;
-                console.log("this.passwordString:"+this.passwordString);
-          });
-          resolve();
-      });
-  }
-
  myCallbackPasswordFunction = (_params) => {
       return new Promise((resolve, reject) => {
           console.log("password confirm params:"+_params);
@@ -212,7 +198,7 @@ checkCashIdDuplicate(){
     if(this.startInProgress) return;
       if(this.checkValidity()){
           this.startInProgress=true;
-          let body = JSON.stringify({cashId:this.cashId.trim().toUpperCase(),password:this.cashIdPassword});
+          let body:any = {cashId:this.cashId.trim().toUpperCase(),password:this.cashIdPassword};
                 console.log("[configureCashId]body:"+body);
                 this.serverProvider.post(this.storageProvider.serverAddress+"/createCashId",body).then((res:any)=>{
                     console.log("configureCashId:"+JSON.stringify(res));
@@ -238,25 +224,14 @@ checkCashIdDuplicate(){
                         console.log(" taxIssueEmail:"+this.issueEmail);
                         console.log(" taxIssueCompanyName:"+this.issueCompanyName);
                         */
-                        if(this.storageProvider.emailLogin){
 
-                            body= JSON.stringify({email:this.email.trim(),
-                                              phone:this.phone.trim(), 
-                                              name:this.name.trim(),
-                                              receiptIssue:receiptIssueVal,
-                                              receiptId:this.receiptId,
-                                              receiptType:this.receiptType,
-                                              oldPassword:this.oldpassword
-                                            });
-                        }else{
-                            body= JSON.stringify({email:this.email.trim(),
+                            body= {email:this.email.trim(),
                                               phone:this.phone.trim(), 
                                               name:this.name.trim(),
                                               receiptIssue:receiptIssueVal,
                                               receiptId:this.receiptId,
                                               receiptType:this.receiptType
-                                            });
-                        }              
+                                            };
                         console.log("modifyUserInfo:"+body);
                         this.serverProvider.post(this.storageProvider.serverAddress+"/modifyUserInfo",body).then((res:any)=>{
                             console.log("res:"+JSON.stringify(res));

@@ -25,7 +25,7 @@
 
 <div [hidden]="!refundAccount" class="refund-account" text-center>
     <div class="message" *ngIf="refundBank" >{{ refundBank.name}}</div>
-    <div class="account">{{refundAccount}}</div>
+    <div class="account">{{refundAccountMask}}</div>
 </div>
 <div [hidden]="!refundAccount" text-right class="modify">
      <button style="color:#4a4a4a;" (click)="modifyAccount()" ion-button clear>환급계좌 수정하기</button>
@@ -41,16 +41,20 @@
   </ion-col>
 </ion-row>
 <div [hidden]="!refundAccount" class="balance" text-right style="font-size:3.4vw;color:#4a4a4a;">
-  현재잔액: 32500원
+  현재잔액: {{storageProvider.cashAmount}}원
 </div>
 </ion-content>
 
 <ion-footer>
+  <div class="warning">
+  <div text-center class="warning-section" style="color:#6441a5;">
+    캐시 환불은 월4회 무료입니다. 이후 수수료가 부과됩니다.
+  </div>
   <div text-center class="warning-section" style="background-color: #f2f2f2;">
-  
   *이용 제한 시간 : 00:00 - 00:30 , 셋째 주 월요일 23:55 - 04:00
   </div>
+  </div>
   <div class="refund-button-area">
-      <button no-padding no-margin ion-button class="refund-button" full style="color:white;background-color:#6441a5;"> 환급받기</button>    
+      <button no-padding no-margin ion-button class="refund-button" (click)="refundCash()" [disabled]="!refundAccount" full style="color:white;background-color:#6441a5;"> 환급받기</button>    
   </div>
 </ion-footer>

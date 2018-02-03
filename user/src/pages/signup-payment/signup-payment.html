@@ -22,7 +22,7 @@
     <ion-row>
       <ion-col col-8>
         <ion-item>
-        <ion-input class="keypad-input keypad-cashId" type="text" placeholder="영문,숫자조합 5~7자리" pattern="[0-9a-zA-Z]{5,7}" [(ngModel)]="cashId"></ion-input>
+        <ion-input class="keypad-input keypad-cashId" type="text" placeholder="영문,숫자조합 5~7자리" [(ngModel)]="cashId"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col col-4>
@@ -52,7 +52,7 @@
     <ion-label class="value-label" >현금영수증 번호</ion-label>
     </ion-item>
     <ion-item>
-    <ion-input class="keypad-input keypad-receiptId" type="number" pattern="[0-9a-zA-Z]{5,7}" ></ion-input>
+    <ion-input class="keypad-input keypad-receiptId" [(ngModel)]="receiptId" type="number" pattern="[0-9a-zA-Z]{5,7}" ></ion-input>
     </ion-item>
     <ion-item>
     <ion-label class="select-label">현금 영수증 발급 목적</ion-label>

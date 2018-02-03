@@ -68,9 +68,6 @@ export class StorageProvider {
     public cashAmount:number=0;
 
     public shopList=[];          // 최근 주문 샵목록
-    //public frequentShopList=[];  // 최다 주문 샵목록
-    //public frequentMenuList=[];  // 최다 주문 메뉴 
-                        // 직접 저장한 샵목록, 메뉴 목록 => 향후에 추가하기 
     shopResponse:any;
     takitId:string;
     payInfo=[];
@@ -352,31 +349,25 @@ defaultCardColor ="#33B9C6";
     reset(){
         console.log("storageProvider.reset");
         if(this.cartProvider.db!=undefined){
+            this.cartProvider.dropCartInfo();
             this.cartProvider.db.close(); // humm... should I remove db here? how about logout? 
         } 
+        this.nativeStorage.clear();
         this.cartProvider.db=undefined;
         this.shopList=[];
-       // this.takitId=undefined; 
-       // this.shopInfo=undefined;   
-       // this.shoplistCandidate=[];
-       // this.cart=undefined;
+        this.takitId=undefined; 
+        this.shopInfo=undefined;   
         this.id=undefined;
         this.email="";
         this.name="";
         this.phone="";
         this.shopResponse=undefined;
-       // this.run_in_background=false;
         this.tourMode=false;
         this.cashId="";
         this.cashAmount=undefined;
         this.payInfo=[];
-       // this.refundBank="";
-       // this.refundAccount="";
-        /////////////////////////////////////
-        // 캐쉬정보 수동입력 
-       // this.depositBank=undefined;
-       // this.depositBranch=undefined;
-       // this.depositBranchInput=undefined;
+        this.cashInProgress=[];
+        this.orderInProgress=[];
     }   
 
      shopInfoSet(shopInfo:any){

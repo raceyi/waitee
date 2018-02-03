@@ -35,7 +35,7 @@
     ***********
   </ion-col>
   <ion-col col-3 style="padding-top:0px;">
-      <button ion-button clear>변경하기</button>   
+      <button ion-button clear  (click)="modifyEmailLogin()">변경하기</button>   
   </ion-col>  
   </ion-row>  
   <ion-row class="each-menu">
@@ -46,7 +46,7 @@
     010-xxxx-xxxx
   </ion-col>
   <ion-col col-3 style="padding-top:0px;">
-      <button ion-button clear>변경하기</button>   
+      <button ion-button clear >변경하기</button>   
   </ion-col>  
   </ion-row>  
   <ion-row class="group-title" style="background-color: #f7f7f7">
@@ -60,7 +60,7 @@
     ******
   </ion-col>
   <ion-col col-3 style="padding-top:0px;">
-      <button ion-button clear>변경하기</button>   
+      <button ion-button clear (click)="modifyPaymentPassword()" >변경하기</button>   
   </ion-col>  
   </ion-row>  
     <ion-row class="each-menu">
@@ -71,7 +71,7 @@
     xxxxxxxxxxxx
   </ion-col>
   <ion-col col-3 style="padding-top:0px;">
-      <button ion-button clear>변경하기</button>   
+      <button ion-button clear (click)="modifyReceiptInfo()">변경하기</button>   
   </ion-col>  
   </ion-row>  
   <ion-row class="group-title" style="background-color: #f7f7f7">

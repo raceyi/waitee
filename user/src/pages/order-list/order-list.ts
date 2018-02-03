@@ -26,16 +26,25 @@ export class OrderListPage {
 
   index=0; // 0: 1개월, 1:2개월, 2:3개월, 3:6개월 
   searchText;
-  searchDone=false;
+  searchButtonHide=false;
   colStyle=[];
   buttonStyle=[];
+
+  periodShown:boolean=false;
+  startDate;
+  endDate;
+  periodSearch:boolean=false;
+  keywordSearch:boolean=false;
+  periodLocalStartTime;
+  periodLocalEndTime;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public storageProvider:StorageProvider,
               public serverProvider:ServerProvider,
               public alertController:AlertController,
-              private events:Events,  
+              private events:Events, 
+              private ngZone:NgZone, 
               private app:App) {
     this.colStyle=[
           {"border-right-style": "solid",
@@ -64,6 +73,9 @@ export class OrderListPage {
       console.log("orderUpdate comes at order-list");
       this.refreshOrderList();
     });
+
+    this.startDate=this.timeUtil.getTodayString();
+    this.endDate=this.timeUtil.getTodayString();
 }
 
   getOrderStatusString(order){
@@ -95,16 +107,32 @@ export class OrderListPage {
   
   ionViewWillEnter() {
     console.log('ionViewWillEnter OrderListPage');
+    this.startDate=this.timeUtil.getTodayString();
+    this.endDate=this.timeUtil.getTodayString();
+    this.periodSearch=false;
+    this.keywordSearch=false;
     this.refreshOrderList();
   }
 
   refreshOrderList(){
     if(this.infiniteScroll!=undefined)
         this.infiniteScroll.enable(true); //stop infinite scroll
+   this.ngZone.run(()=>{     
     this.orders=[]; // refresh orders when it enters this page.
+   });
     this.lastOrderId=-1;
     this.getOrders().then((value)=>{
         console.log("getOrders done continue"+value);
+        if(value){
+          console.log("more is true");
+          if(this.infiniteScroll!=undefined)
+            this.infiniteScroll.complete();
+      }else{
+          console.log("more is false");
+          if(this.infiniteScroll!=undefined)
+            this.infiniteScroll.enable(false); //stop infinite scroll
+      }
+
     });
   }
 
@@ -156,14 +184,27 @@ export class OrderListPage {
     console.log("index:"+index);                       
   }
 
-  search(){
-    console.log("search comes");
-    this.searchDone=true;
+  searchKeyword(){
+    console.log("searchKeyword comes");
+    if(this.searchKeyword==undefined){
+          let alert = this.alertController.create({
+              title: '검색어를 입력해주세요.',
+              buttons: ['OK']
+          });
+          alert.present();
+         return;      
+    }
+    this.searchButtonHide=true;
+    this.keywordSearch=true;
+    this.refreshOrderList();
   }
 
-  clear(){
-    console.log("clear comes");
-    this.searchDone=false;
+  keywordClear(){
+    console.log("keyWord clear comes");
+    this.searchButtonHide=false;
+    this.keywordSearch=false;
+    this.searchText=""; 
+    this.refreshOrderList();
   }
 
   inputReview(order){
@@ -212,26 +253,46 @@ export class OrderListPage {
             let headers = new Headers();
             headers.append('Content-Type', 'application/json');
             console.log("server:"+ this.storageProvider.serverAddress);
-            let body={ lastOrderId: this.lastOrderId,
+            let body;           
+            if(this.periodSearch){
+              body={ 
+                       lastOrderId: this.lastOrderId,
+                       limit:this.storageProvider.OrdersInPage,
+                       startLocalTime:this.periodLocalStartTime.toISOString(),
+                       endLocalTime:this.periodLocalEndTime.toISOString()
+                   };
+            }else if(this.keywordSearch){
+              body={ 
+                      lastOrderId: this.lastOrderId,
+                       limit:this.storageProvider.OrdersInPage,
+                       keyword:this.searchText
+                   };
+            }else{
+              body={ 
+                      lastOrderId: this.lastOrderId,
                        limit:this.storageProvider.OrdersInPage
-                     };
-            console.log("getOrders:"+body);
+                   };
+            }
+
+            console.log("getOrders:"+JSON.stringify(body));
             this.serverProvider.post(this.storageProvider.serverAddress+"/getOrdersDefault",body).then((res:any)=>{
               console.log("orders:"+JSON.stringify(res.orders));
-              console.log("orders.length:"+res.orders.length);
-              console.log("orders[0]:"+JSON.stringify(res.orders[0]));
             if(res.result=="success" && Array.isArray(res.orders)){
-                  res.orders.forEach((order)=>{
-                        this.convertOrder(order);              
-                        this.orders.push(order);
-                  })
-                  console.log("orders:"+JSON.stringify(this.orders));
-                  this.lastOrderId=res.orders[res.orders.length-1].orderId;
-                  if(res.orders.length<this.storageProvider.OrdersInPage){
-                        resolve(false); // no more orders
-                  }else{
-                        resolve(true); // more orders can be shown.
-                  }
+                  this.ngZone.run(()=>{
+                  console.log("orders.length:"+res.orders.length);
+                  console.log("orders[0]:"+JSON.stringify(res.orders[0]));
+                      res.orders.forEach((order)=>{
+                            this.convertOrder(order);              
+                            this.orders.push(order);
+                      })
+                      console.log("orders:"+JSON.stringify(this.orders));
+                      this.lastOrderId=res.orders[res.orders.length-1].orderId;
+                      if(res.orders.length<this.storageProvider.OrdersInPage){
+                            resolve(false); // no more orders
+                      }else{
+                            resolve(true); // more orders can be shown.
+                      }
+                  });
             }else if(res.orders=="0"){ //Please check if it works or not
                 console.log("no more orders");
                 resolve(false);
@@ -250,4 +311,60 @@ export class OrderListPage {
        });
   }
 
+  periodOn(){
+    console.log("periodOn");
+    this.periodShown=true;
+  }
+
+  periodOff(){
+    console.log("periodOff");
+    this.periodShown=false;  
+    this.periodSearch=false;  
+  }
+
+  doPeriodSearch(){
+    console.log("doPeriodSearch");
+    var startDate=new Date(this.startDate);
+    var endDate=new Date(this.endDate);
+    var currDate=new Date(); 
+    console.log("startDate:"+startDate.toISOString());
+    console.log("endDate:"+endDate.toISOString());
+   
+    if(startDate.getTime()>endDate.getTime()){
+          let alert = this.alertController.create({
+              title: '시작일은 종료일보다 늦을수 없습니다',
+              buttons: ['OK']
+          });
+          alert.present();
+         return;
+    }
+    if(endDate.getTime()>currDate.getTime()){
+          let alert = this.alertController.create({
+              title: '종료일은 현재시점보다 늦을수 없습니다.',
+              buttons: ['OK']
+          });
+          alert.present();
+         return;
+    }
+
+    this.periodSearch=true;
+    this.keywordSearch=false;  // keyword와 기간 검색중에 하나만 가능함.
+   
+   startDate.setUTCHours(0,0,0,0);
+   endDate.setUTCHours(23,59,59,999);
+
+   this.periodLocalStartTime=startDate;
+   this.periodLocalEndTime=endDate;
+
+    console.log("!!! periodStartTime:"+this.periodLocalStartTime.toISOString());
+    console.log("!!! periodEndTime:"+this.periodLocalEndTime.toISOString());
+    
+    this.refreshOrderList();
+  }
+
+  exitTourMode(){
+    console.log("exit Tour Mode");
+    this.app.getRootNav().pop();
+  }
+  
 }

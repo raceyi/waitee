@@ -33,7 +33,7 @@ import {ConfigurePaymentPage} from '../pages/configure-payment/configure-payment
   templateUrl: 'app.html'
 })
 export class MyApp {
-  //rootPage:any = CashConfirmPage;
+  rootPage:any = CashConfirmPage;
   //rootPage:any = CashRefundAccountPage;
   //rootPage:any = CashRefundMainPage;
   //rootPage:any =PaymentPage;
@@ -53,7 +53,7 @@ export class MyApp {
   //rootPage:any =SoldOutPage;
   //rootPage:any=ConfigureReceiptPage;
   //rootPage:any=ConfigurePasswordPage;
-  rootPage:any=ConfigurePaymentPage;
+  //rootPage:any=ConfigurePaymentPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {

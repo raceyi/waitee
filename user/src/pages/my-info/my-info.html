@@ -35,7 +35,7 @@
     ***********
   </ion-col>
   <ion-col col-3 style="padding-top:0px;">
-      <button ion-button clear>변경하기</button>   
+      <button ion-button clear  (click)="modifyEmailLogin()">변경하기</button>   
   </ion-col>  
   </ion-row>  
   <ion-row class="each-menu">
@@ -46,7 +46,7 @@
     {{storageProvider.phone}}
   </ion-col>
   <ion-col col-3 style="padding-top:0px;">
-      <button ion-button clear>변경하기</button>   
+      <button ion-button clear (click)="modifyPhone()">변경하기</button>   
   </ion-col>  
   </ion-row>  
   <ion-row class="group-title" style="background-color: #f7f7f7">
@@ -60,7 +60,7 @@
     ******
   </ion-col>
   <ion-col col-3 style="padding-top:0px;">
-      <button ion-button clear>변경하기</button>   
+      <button ion-button clear (click)="modifyPaymentPassword()" >변경하기</button>   
   </ion-col>  
   </ion-row>  
     <ion-row class="each-menu">
@@ -74,10 +74,10 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   </ion-col>  
   <ion-col *ngIf="storageProvider.receiptId!=undefined && storageProvider.receiptId!=null && storageProvider.receiptId.length>0" col-3 style="padding-top:0px;">
-      <button ion-button clear>변경하기</button>   
+      <button ion-button clear (click)="modifyReceiptInfo()">변경하기</button>   
   </ion-col>  
   <ion-col *ngIf="storageProvider.receiptId==undefined || storageProvider.receiptId==null || storageProvider.receiptId.length==0" col-3 style="padding-top:0px;">
-      <button ion-button clear>설정하기</button>   
+      <button ion-button clear (click)="modifyReceiptInfo()">설정하기</button>   
   </ion-col>  
   </ion-row>  
   <ion-row class="group-title" style="background-color: #f7f7f7">

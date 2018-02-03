@@ -14,6 +14,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'configure-receipt.html',
 })
 export class ConfigureReceiptPage {
+  receiptType='IncomeDeduction';
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
@@ -22,4 +23,7 @@ export class ConfigureReceiptPage {
     console.log('ionViewDidLoad ConfigureReceiptPage');
   }
 
+  back(){
+    this.navCtrl.pop();
+  }
 }

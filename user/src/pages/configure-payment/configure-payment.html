@@ -1,0 +1,43 @@
+<!--
+  Generated template for the ConfigurePaymentPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="background-color:#6441a5;color:white;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title style="padding:0px;"> 결제 비밀번호 변경
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <div text-center style="padding-top:20px;">
+        <button ion-button outline round class="one-button" (click)="phoneAuth()">휴대폰 본인 인증하기(필수)</button>
+    </div>
+     <p text-center *ngIf="mobileAuthentication" style="color: #6441a5;margin-top:10px">인증완료되었습니다.</p>
+    <ion-row>
+    <ion-col no-padding>
+    <ion-label class="value-label" >새비밀번호</ion-label>
+    </ion-col>
+    <ion-col no-padding>
+    <button ion-button *ngIf="!passwordMask" class="keypad-button" clear (click)="passwordInput()">6자리 숫자</button>
+    <button ion-button *ngIf="passwordMask" class="keypad-button" clear (click)="passwordInput()">******</button>
+    </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col no-padding>
+      <ion-label class="value-label" >새비밀번호 확인</ion-label>
+      </ion-col>
+      <ion-col no-padding>
+      <button ion-button *ngIf="!passwordConfirmMask" class="keypad-button" clear (click)="passwordConfirmInput()" >6자리 숫자</button>
+      <button ion-button *ngIf="passwordConfirmMask" class="keypad-button" clear (click)="passwordConfirmInput()" >******</button>
+      </ion-col>
+    </ion-row>
+</ion-content>
+<ion-footer>
+    <button [disabled]="!mobileAuthentication" no-margin ion-button full (click)="modify()">변경하기</button>
+</ion-footer>
