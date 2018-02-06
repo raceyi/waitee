@@ -131,7 +131,7 @@ export class SoldOutPage {
 
   selectMenu(menu){
     console.log("selectMenu");
-      if(!menu.soldout){
+      if(menu.soldout==0){
           let confirm = this.alertController.create({
                 message: menu.menuName+'를 판매종료 하시겠습니까?',
                 buttons: [
