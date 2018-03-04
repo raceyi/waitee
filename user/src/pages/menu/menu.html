@@ -32,7 +32,7 @@
    가격
   </ion-col>
   <ion-col class="menu-text-info" text-right>
-  {{menu.price}}원
+  <amount-display [amount]="menu.price"></amount-display>원
   </ion-col>
 </ion-row>
 
@@ -49,7 +49,7 @@
         {{option.name}}
     </ion-col>
     <ion-col class="option-price" no-padding no-margin col-5 text-right>
-        +{{option.price}}원
+        +<amount-display [amount]="option.price"></amount-display>원
     </ion-col>
     <ion-col class="col-border" *ngIf="option.default==undefined" no-padding no-margin col-1>
         <button no-padding ion-button clear (click)="decrease(option)"><ion-icon name="ios-remove"></ion-icon></button>
@@ -106,7 +106,7 @@
 <div class="price">
 <ion-row>
   <ion-col class="left-col" text-left>결제금액</ion-col>
-  <ion-col class="right-col" text-right>{{amount}}원</ion-col>
+  <ion-col class="right-col" text-right> <amount-display [amount]="amount" ></amount-display>원</ion-col>
 </ion-row>
 </div>
 <div class="request">

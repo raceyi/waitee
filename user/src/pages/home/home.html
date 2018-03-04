@@ -17,10 +17,10 @@
                                 <p class="classification">{{shop.classification}}&nbsp;
                                 -->
                                 <p class="classification">
-                                  <span class="noti-box" *ngIf="shop.paymethod.cash!=undefined">캐시
-                                  <b *ngIf="shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>&nbsp;
-                                  <span class="noti-box" *ngIf="shop.paymethod.card!=undefined">카드
-                                  <b *ngIf="shop.paymethod.card!=undefined && shop.paymethod.card!='0%'">{{shop.paymethod.card}}</b></span>
+                                  <span class="noti-box" *ngIf="shop.paymethod.cash!=undefined">캐시<b *ngIf="shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>
+                                  <span *ngIf="shop.paymethod.cash!=undefined"></span>
+                                  <span class="noti-box" *ngIf="shop.paymethod.card!=undefined">카드<b *ngIf="shop.paymethod.card!=undefined && shop.paymethod.card!='0%'">{{shop.paymethod.card}}</b></span>
+                                  <span *ngIf="shop.paymethod.card!=undefined"></span>
                                   <span class="noti-box" *ngIf="shop.deliveryArea!=undefined && shop.deliveryArea!=null">배달</span>                                  
                                 </p>
                                 <div class="star_rating" *ngIf="shop.rate!=undefined && shop.rate>0">
@@ -69,10 +69,10 @@
                                 -->
                                 
                                 <p class="classification">
-                                  <span class="noti-box" *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined">캐시
-                                  <b *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>&nbsp;
-                                  <span class="noti-box" *ngIf="shop.paymethod!=undefined && shop.paymethod.card!=undefined">카드
-                                  <b *ngIf="shop.paymethod!=undefined && shop.paymethod.card!=undefined && shop.paymethod.card!='0%'">{{shop.paymethod.card}}</b></span>
+                                  <span class="noti-box" *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined">캐시<b *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>
+                                  <span *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined"></span>
+                                  <span class="noti-box" *ngIf="shop.paymethod!=undefined && shop.paymethod.card!=undefined">카드<b *ngIf="shop.paymethod!=undefined && shop.paymethod.card!=undefined && shop.paymethod.card!='0%'">{{shop.paymethod.card}}</b></span>
+                                  <span  *ngIf="shop.paymethod!=undefined && shop.paymethod.card!=undefined"></span>
                                   <span class="noti-box" *ngIf="shop.deliveryArea!=undefined && shop.deliveryArea!=null">배달</span>                                  
                                 </p>
                             </button>

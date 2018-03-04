@@ -34,7 +34,6 @@ export class MyFavoritePage {
     events.subscribe('orderUpdate', (param) =>{
         this.getInfos();        
     });
-    this.getInfos();
   }
 
   ionViewDidLoad() {
@@ -43,8 +42,7 @@ export class MyFavoritePage {
 
   ionViewWillEnter(){
      console.log("ionViewWillEnter MyFavoritePage");
-
-
+     this.getInfos();
   }
 
   openCart(){

@@ -201,19 +201,24 @@ export class PaymentPage {
 
   checkDeliveryAvailable(){
     // 하나의 상점 주문에서만 배송 가능
+    //console.log("checkDeliveryAvailable-1 ");
     if(this.carts.length>1){
         this.deliveryAvailable=false;
         return;
     }
+    //console.log("checkDeliveryAvailable-2 ");
     if(this.carts[0].deliveryArea==undefined || this.carts[0].deliveryArea==null){
         this.deliveryAvailable=false;
         return;
     }
+    //console.log("checkDeliveryAvailable-3 ");
     for(var j=0;j<this.carts[0].orderList.menus.length;j++)
-    if(this.carts[0].orderList.menus[j].takeout<2){
-        this.deliveryAvailable=false;
-        return;
-    }
+        if(this.carts[0].orderList.menus[j].takeout<1){
+            this.deliveryAvailable=false;
+            return;
+        }
+    //console.log("checkDeliveryAvailable-4 ");
+
     this.deliveryAvailable=true;
   }
 
@@ -416,7 +421,19 @@ export class PaymentPage {
             alert.present();
             return;
     }
-    this.cardProvider.addCard();
+    this.cardProvider.addCard().then((res)=>{
+            this.ngZone.run(()=>{
+                this.currentCardClassesArray.push({
+                    'card-card':true,
+                    'scroll-col-latest':true,
+                    'card-unselect-border':true,
+                    'select-scroll-col-latest':false,
+                    'card-select-border':false
+                });
+            });            
+        },err=>{
+
+        });
   }
 
   removeCard(i){
@@ -428,6 +445,7 @@ export class PaymentPage {
           handler: () => {
             console.log('Agree clicked');
             this.cardProvider.removeCard(i);
+            this.currentCardClassesArray.splice(i,1);
           }
         },
         {

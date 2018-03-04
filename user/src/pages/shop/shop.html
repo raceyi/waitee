@@ -12,16 +12,20 @@
   <ion-title>  {{shopName}} &nbsp;
               <a *ngIf="storageProvider.shopResponse.shopInfo.contactPhone" [href]="shopPhoneHref"><ion-icon color="black" name="call"></ion-icon></a>
   </ion-title>
-  <!--
   <ion-buttons end>
-        <a [href]="shopPhoneHref"><ion-icon color="black" name="call"></ion-icon></a>
+        <button *ngIf="storeInfoHide" ion-button (click)="showInfoDisplay()" style="background-color:white;color:#6441a5;">
+            <ion-icon  class="store-information-button"name="ios-information-circle-outline"></ion-icon>
+        </button>
+        <button *ngIf="!storeInfoHide" ion-button (click)="hideInfoDisplay()" style="background-color:white;color:#6441a5;">        
+            <ion-icon  class="store-information-button"name="ios-arrow-up"></ion-icon>
+        </button>
   </ion-buttons>
-  -->
   </ion-navbar>
   
 </ion-header>
 
 <ion-content #shophomeContent>
+<div [hidden]="!storeInfoHide">    
 <div class="shop-img" [ngStyle]="ngStyle">
 <ion-row text-right *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash!=undefined">
     <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash=='0%'">&nbsp;캐시결제</span>
@@ -34,7 +38,8 @@
     </ion-col>
 </ion-row>
 </div>
-
+</div>
+<div [hidden]="storeInfoHide">
 <ion-row>
 <ion-col no-padding class="shop-text-info">
 <label class="label">영업시간</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.TodayBusinessTime}}</span>
@@ -43,7 +48,6 @@
 <label class="label">브레이크</label>  <span class="value"> {{storageProvider.shopResponse.shopInfo.breakTime}} </span>
 </ion-col>
 </ion-row>
-
 <ion-row>
 <ion-col no-padding div class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.shopPhone!=null && storageProvider.shopResponse.shopInfo.shopPhone!=undefined">
 <label class="label">전화번호</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.shopPhone}} </span>
@@ -56,9 +60,12 @@
 <label class="label">주소</label>  <span class="value">{{shop.shopInfo.address}}</span>
 </div>
 <div class="shop-text-info" *ngIf="shop.shopInfo.deliveryArea!=null">
-<label class="label">배달</label>  <span class="value">{{shop.shopInfo.freeDelivery}}원이상 무료 배송</span>
+<label class="label">배달</label>  <span class="value"><amount-display [amount]="shop.shopInfo.freeDelivery"></amount-display>원이상 무료 배송</span>
 </div>
-
+<div class="shop-text-info" *ngIf="shop.shopInfo.foodOrigin!=null">
+<label class="label">원산지</label>  <span class="value">{{shop.shopInfo.foodOrigin}}</span>
+</div>
+</div>
 <ion-row class="row-categories-menus">
              <ion-col col-3 class="col-categories" no-padding>
                 <ion-scroll scrollY="true" class="scroll-categories">
@@ -86,7 +93,7 @@
                              </div>
 
                             <h2>{{menu[0].menuName}}</h2>
-                            <p>{{menu[0].price}} <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 
+                            <p><amount-display [amount]="menu[0].price"></amount-display>원 <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 
                                                  <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea!=null" >포장/배달</span></p>
                         </ion-item>
                     </button>
@@ -102,7 +109,7 @@
                               <label *ngIf="menu[1].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>                             
                             <h2>{{menu[1].menuName}}</h2>
-                            <p>{{menu[1].price}}원 <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 
+                            <p><amount-display [amount]="menu[1].price"></amount-display>원 <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 
                                                    <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea!=null" >포장/배달</span></p> 
                         </ion-item>
                     </button>

@@ -61,7 +61,7 @@
 <div class="history" *ngFor="let order of orders">
   <ion-row class="order-first-line">
    <ion-col> {{order.orderName}}</ion-col>
-   <ion-col text-right>  {{order.amount}}원</ion-col>
+   <ion-col text-right>  <amount-display [amount]="order.amount" ></amount-display>원</ion-col>
   </ion-row>
   <ion-row class="order-second-line">
     <ion-col>

@@ -46,7 +46,7 @@ export class CardProvider {
             buyer_tel : '02-1234-1234'
         }
 
-    const redirectUrl = "http://takit.biz:8000/oauth";//It brings about load error. Please change it with your server address
+    const redirectUrl = this.storageProvider.authReturnUrl;//It brings about load error. Please change it with your server address
     let localfile;
     if(this.platform.is('android')){
         console.log("android");
@@ -55,7 +55,12 @@ export class CardProvider {
         console.log("ios");
         localfile='assets/iamport.html';
     }
-    this.browserRef=this.iab.create(localfile,"_blank");
+    if(this.platform.is("android")){
+        this.browserRef=this.iab.create(localfile,"_blank" ,'toolbar=no,location=no');
+    }else{ // ios
+        console.log("ios");
+        this.browserRef=this.iab.create(localfile,"_blank" ,'location=no,closebuttoncaption=종료');
+    }
     this.browserRef.on("loadstart").subscribe(function (e) {
         if (e.url.startsWith(redirectUrl)) {
             if(gWalletPage.browserRef!=undefined){
@@ -72,9 +77,10 @@ export class CardProvider {
                 console.log("strs[1]:"+strs[1]);
                 console.log("strs1[1]:"+strs1[1]); 
                 resolve({customer_uid:customer_uid,imp_uid:strs1[0]});
-            }else
+            }else{
                 console.log("cert failure");            
                 reject('카드 등록에 실패하였습니다.');
+            }
         }
     });
     this.browserRef.on("loaderror").subscribe((event)=>{
@@ -124,11 +130,13 @@ export class CardProvider {
   }
 
   addCard(){
+    return new Promise((resolve,reject)=>{
       this.registerCard().then((param)=>{
         console.log("param:"+JSON.stringify(param));
         this.serverProvider.post(this.storageProvider.serverAddress+"/addPayInfo", param).then((res:any)=>{
                 if(res.result=="success"){
                     this.storageProvider.updatePayInfo(res.payInfo);
+                    resolve();
                 }
             },(err=>{
                     if(err=="NetworkFailure"){
@@ -145,6 +153,7 @@ export class CardProvider {
                                 });
                                 alert.present();
                     }
+                    reject();
             }));
       },(err)=>{
                 let alert = this.alertController.create({
@@ -152,7 +161,9 @@ export class CardProvider {
                     buttons: ['OK']
                 });
                 alert.present();
+                reject();
       });
+    });
   }
   
   removeCard(i){

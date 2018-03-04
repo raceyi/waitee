@@ -16,7 +16,7 @@
 // automatically applied to the <body> element in the app.
 
 $default-font-size:4vw;
-$default-font-style: NotoSansCJKkr-Regular;
+//$default-font-style: NotoSansCJKkr-Regular;
 $default-color:#6441a5;
 
 @mixin calc($property, $expression) { 
@@ -89,4 +89,10 @@ $default-color:#6441a5;
     -ms-flex: 1;
     flex: 1;
     font-size: 18vw !important;
+}
+
+ion-fab {
+    custom-icon{
+        padding-top:calc((12/667)*100vh);
+    }
 }

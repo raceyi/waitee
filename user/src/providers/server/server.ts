@@ -267,7 +267,7 @@ saveOrderCart(body){
     return new Promise((resolve,reject)=>{
       // move into CertPage and then 
       if(this.platform.is("android")){
-            this.browserRef=this.iab.create(this.storageProvider.certUrl,"_blank" ,'toolbar=no');
+            this.browserRef=this.iab.create(this.storageProvider.certUrl,"_blank" ,'toolbar=no,location=no');
       }else{ // ios
             console.log("ios");
             this.browserRef=this.iab.create(this.storageProvider.certUrl,"_blank" ,'location=no,closebuttoncaption=종료');
@@ -278,7 +278,7 @@ saveOrderCart(body){
               });
               this.browserRef.on("loadstart").subscribe((event:InAppBrowserEvent)=>{
                   console.log("InAppBrowserEvent(loadstart):"+String(event.url));
-                  if(event.url.startsWith("https://takit.biz/oauthSuccess")){ // Just testing. Please add success and failure into server 
+                  if(event.url.startsWith(this.storageProvider.authReturnUrl)){ // Just testing. Please add success and failure into server 
                         console.log("cert success");
                         var strs=event.url.split("userPhone=");    
                         if(strs.length>=2){
@@ -316,7 +316,7 @@ saveOrderCart(body){
                         }
                         this.browserRef.close();
                         return;
-                  }else if(event.url.startsWith("https://takit.biz/oauthFailure")){
+                  }else if(event.url.startsWith(this.storageProvider.authFailReturnUrl)){
                         console.log("cert failure");
                         this.browserRef.close();
                          reject();

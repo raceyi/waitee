@@ -118,7 +118,7 @@
 <div class="show-border" *ngFor="let menu of order.orderListObj.menus">
   <ion-row>
             <ion-col col-8 text-left><span class="status">{{menu.menuName}}({{menu.quantity}})</span></ion-col>
-            <ion-col col-4 text-right><span class="status">{{menu.price}}원</span></ion-col>
+            <ion-col col-4 text-right><span class="status"><amount-display [amount]="menu.price"></amount-display>원</span></ion-col>
   </ion-row>          
   <ion-row *ngFor="let option of menu.options" class="menu-detail">
       <ion-col col-8 text-left>{{option.name}}({{option.number}})<span class="status" *ngIf="option.select!=undefined">:{{option.select}}</span> </ion-col>
@@ -155,7 +155,7 @@
     주문 금액  
   </ion-col>
   <ion-col text-right>
-    {{order.price}}원
+    <amount-display [amount]="order.price"></amount-display>원
   </ion-col>
 </ion-row>
 
@@ -164,7 +164,7 @@
     할인 금액  
   </ion-col>
   <ion-col text-right>
-    -{{order.discount}}원
+    -<amount-display [amount]="order.discount"></amount-display>원
   </ion-col>
 </ion-row>
 
@@ -173,7 +173,7 @@
     배달비   
   </ion-col>
   <ion-col text-right>
-    {{order.deliveryFee}}원
+    <amount-display [amount]="order.deliveryFee"></amount-display>원
   </ion-col>
 </ion-row>
 
@@ -182,8 +182,8 @@
     <b>결제 금액</b>  
   </ion-col>
   <ion-col text-right>
-    <b *ngIf="order.deliveryFee!=null && order.deliveryFee!=undefined">{{order.amount+order.deliveryFee}}원</b>
-    <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined">{{order.amount}}원</b>
+    <b *ngIf="order.deliveryFee!=null && order.deliveryFee!=undefined"><amount-display [amount]="order.amount+order.deliveryFee"></amount-display>원</b>
+    <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined"><amount-display [amount]="order.amount"></amount-display>원</b>
   </ion-col>
 </ion-row>
 </div>
@@ -199,8 +199,8 @@
     <b>환불 금액</b>  
   </ion-col>
   <ion-col text-right>
-    <b *ngIf="order.deliveryFee!=null && order.deliveryFee!=undefined">-{{order.amount+order.deliveryFee}}원</b>
-    <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined">-{{order.amount}}원</b>
+    <b *ngIf="order.deliveryFee!=null && order.deliveryFee!=undefined">-<amount-display [amount]="order.amount+order.deliveryFee"></amount-display>원</b>
+    <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined">-<amount-display [amount]="order.amount"></amount-display>원</b>
   </ion-col>
 </ion-row>
 </div>

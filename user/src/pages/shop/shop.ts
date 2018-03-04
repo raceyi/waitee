@@ -33,6 +33,8 @@ export class ShopPage {
   shopInfo:any;
   regularOff;
   ngStyle;
+  storeInfoHide:boolean=true;
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
               public serverProvider:ServerProvider,private app:App,
@@ -259,5 +261,13 @@ export class ShopPage {
   }
   openCart(){
       this.app.getRootNav().push( CartPage,{class:"CartPage"});
+  }
+
+  showInfoDisplay(){
+      this.storeInfoHide=false;
+  }
+  
+  hideInfoDisplay(){
+      this.storeInfoHide=true;    
   }
 }

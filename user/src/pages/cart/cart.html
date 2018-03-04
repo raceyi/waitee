@@ -73,7 +73,7 @@
     </ion-row>
     <ion-row class="top-padding left-padding gray-color">
         <ion-col text-left>가격</ion-col>
-        <ion-col text-right>{{menu.unitPrice}}원</ion-col>
+        <ion-col text-right><amount-display [amount]="menu.unitPrice"></amount-display>원</ion-col>
     </ion-row>
     <ion-row class="top-padding left-padding gray-color" *ngFor="let option of menu.options">
         <ion-col>{{option.name}}({{option.number}})</ion-col>
@@ -91,7 +91,7 @@
     </ion-row>
     <ion-row class="left-padding menu-price">
         <ion-col text-left><b>소계</b></ion-col>
-        <ion-col text-right><b>{{menu.quantity*menu.unitPrice}}원</b></ion-col>
+        <ion-col text-right><b><amount-display [amount]="menu.quantity*menu.unitPrice"></amount-display>원</b></ion-col>
     </ion-row>
 </div>
 </div>
@@ -100,7 +100,7 @@
         <b>총 주문 금액</b> 
     </ion-col>
     <ion-col text-right>
-          <b>  {{totalAmount}}원</b>
+          <b> <amount-display [amount]="totalAmount"></amount-display>원</b>
     </ion-col>
 </ion-row>
 </div>

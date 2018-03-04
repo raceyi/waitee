@@ -109,7 +109,10 @@
                                 <p class="menu-shopname-sub">{{menus[0].name_sub}}</p>
                                 <p class="menu-shopname-main">{{menus[0].name_main}}</p>
                                 <p class="menu-name"><b>{{menus[0].menuName}}&nbsp;({{menus[0].count}}회)</b></p>
-                                <p class="menu-price">{{menus[0].price}}</p>
+                                <p class="menu-price"><amount-display [amount]="menus[0].price" ></amount-display></p>
+
+
+                                
                             </button>
                 </ion-col>
                 <ion-col *ngIf="menus.length>1" >
@@ -118,7 +121,7 @@
                                 <p class="menu-shopname-sub">{{menus[1].name_sub}}</p>
                                 <p class="menu-shopname-main">{{menus[1].name_main}}</p>
                                 <p class="menu-name"><b>{{menus[1].menuName}}&nbsp;({{menus[1].count}}회)</b></p>
-                                <p class="menu-price">{{menus[1].price}}</p>
+                                <p class="menu-price"><amount-display [amount]="menus[1].price" ></amount-display></p>
                             </button>
                 </ion-col>
             </ion-row>
@@ -129,7 +132,7 @@
                                 <p class="menu-shopname-sub">{{menus[2].name_sub}}</p>
                                 <p class="menu-shopname-main">{{menus[2].name_main}}</p>
                                 <p class="menu-name"><b>{{menus[2].menuName}}&nbsp;({{menus[2].count}}회)</b></p>
-                                <p class="menu-price">{{menus[2].price}}</p>
+                                <p class="menu-price"><amount-display [amount]="menus[2].price" ></amount-display></p>
                             </button>
                 </ion-col>
                 <ion-col *ngIf="menus.length>3" >
@@ -138,7 +141,7 @@
                                 <p class="menu-shopname-sub">{{menus[3].name_sub}}</p>
                                 <p class="menu-shopname-main">{{menus[3].name_main}}</p>
                                 <p class="menu-name"><b>{{menus[3].menuName}}&nbsp;({{menus[3].count}}회)</b></p>
-                                <p class="menu-price">{{menus[3].price}}</p>
+                                <p class="menu-price"><amount-display [amount]="menus[3].price" ></amount-display></p>
                             </button>
                 </ion-col>
             </ion-row>            

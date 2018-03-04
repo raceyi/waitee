@@ -41,7 +41,7 @@
   </ion-col>
 </ion-row>
 <div [hidden]="!refundAccount" class="balance" text-right style="font-size:3.4vw;color:#4a4a4a;">
-  현재잔액: {{storageProvider.cashAmount}}원
+  현재잔액: <amount-display [amount]="storageProvider.cashAmount"></amount-display>원
 </div>
 </ion-content>
 

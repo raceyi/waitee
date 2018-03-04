@@ -8,8 +8,8 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-<div class="cashId" text-center> {{memo}} </div>
-<div class="amount" text-center> <b>{{amount}}원 충전</b> </div>
+<div class="cashId" text-center> {{memo}}</div>
+<div class="amount" text-center><b><amount-display [amount]="amount"></amount-display>원 충전</b></div>
 <ion-grid class="info" style="font-size:4vw;">
   <ion-row>
     <ion-col class="info-label" col-3>

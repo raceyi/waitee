@@ -34,7 +34,8 @@ export class StorageProvider {
     public accountMaskExceptEnd=this.configProvider.getAccountMaskExceptEnd();
 
     public certUrl=this.configProvider.getCertUrl();
-    
+    public authReturnUrl=this.configProvider.getAuthReturnUrl();
+    public authFailReturnUrl=this.configProvider.getAutFailReturnUrl();
     syncTimeout=500; //0.5 second
 
     //public messageEmitter= new EventEmitter();

@@ -3,6 +3,19 @@
 <b>지갑</b>
 </div>
 
+<div class="cash-only">
+    <ion-row style="border:0px;" >
+    <button no-margin no-padding  ion-button full   class="cash-label" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐쉬</b></button>
+    </ion-row>
+    <ion-row class="cash-value-row" style="border:0px;"> 
+    <button no-margin no-padding  ion-button  full class="cash-value"  style="font-size:4vw;"> 잔액: <amount-display [amount]="storageProvider.cashAmount"></amount-display>원</button>
+    </ion-row>
+    <ion-row>
+        <ion-col no-padding no-margin (click)="chargeCash()" class="left-button" ><button no-padding no-margin full clear ion-button>충전</button></ion-col>
+        <ion-col no-padding no-margin><button (click)="refundCash()" no-padding no-margin full clear ion-button>환급</button></ion-col>
+    </ion-row>
+</div>
+<!--
 <div class="scroll-div">
         <ion-scroll scrollX="true" class="scroll-latest">
             <ion-row class="scroll-row-latest">
@@ -12,7 +25,7 @@
                   <button no-margin no-padding  ion-button full  class="cash-label" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐시</b></button>
                   </ion-row>
                   <ion-row class="cash-value-row" style="border:0px;"> 
-                  <button no-margin no-padding  ion-button  full full class="cash-value" style="font-size:4vw;"> 잔액: {{storageProvider.cashAmount}}원</button>
+                  <button no-margin no-padding  ion-button  full full class="cash-value" style="font-size:4vw;"> 잔액:<amount-display [amount]="storageProvider.cashAmount" ></amount-display>원</button>
                   </ion-row>
                   <ion-row>
                       <ion-col no-padding no-margin (click)="chargeCash()" class="left-button" ><button no-padding no-margin full clear ion-button>충전</button></ion-col>
@@ -42,6 +55,7 @@
             </ion-row>
         </ion-scroll>
 </div>
+-->
 
 <div class="period-section">
   <ion-row>
@@ -78,12 +92,12 @@
          캐시환급
      </ion-col>
      <ion-col text-right>
-         -{{trans.amount}}원
+         -<amount-display [amount]="trans.amount" ></amount-display>원
      </ion-col>
  </ion-row>
  <ion-row class="extra-info">
      <ion-col text-left>
-     {{trans.bankName}} <span>(수수료:{{trans.fee}})</span>
+     {{trans.bankName}} <span>(수수료: <amount-display [amount]="trans.fee"></amount-display>)</span>
      </ion-col>
      <ion-col text-right>  
      {{trans.displayTime}}
@@ -96,7 +110,7 @@
          {{trans.service}}&nbsp;주문취소
      </ion-col>
      <ion-col text-right>
-         +{{trans.amount}}원
+         +<amount-display [amount]="trans.amount" ></amount-display>원
      </ion-col>
  </ion-row>
  <ion-row class="extra-info">
@@ -115,7 +129,7 @@
          {{trans.service}}
      </ion-col>
      <ion-col text-right>
-         -{{trans.amount}}원
+         -<amount-display [amount]="trans.amount"></amount-display>원
      </ion-col>
  </ion-row>
  <ion-row class="extra-info">
@@ -133,7 +147,7 @@
          충전
      </ion-col>
      <ion-col text-right>
-         +{{trans.amount}}원
+         +<amount-display [amount]="trans.amount" ></amount-display>원
      </ion-col>
  </ion-row>
  <ion-row class="extra-info">
@@ -152,7 +166,7 @@
          <b>입금확인 대기중!</b>
      </ion-col>
      <ion-col text-right>
-         +{{trans.amount}}원
+         +<amount-display [amount]="trans.amount" ></amount-display>원
      </ion-col>
     </button>
  </ion-row>  
