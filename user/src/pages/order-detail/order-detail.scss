@@ -157,4 +157,34 @@ page-order-detail {
         color:#bdbdbd;
         font-size:3.4vw;
     }
+
+    .review-section{
+            .detail{
+                border: solid 1px #bdbdbd;
+                margin-left:calc((20/376)*100vw);
+                margin-right:calc((20/376)*100vw);
+                padding-left:calc((24/376)*100vw);
+                padding-right:calc((15/376)*100vw);
+                //padding-top:
+                padding-bottom:calc((10/376)*100vw);
+                .star{
+                    padding-top:calc((10/667)*100vh);
+                    padding-bottom:calc((10/667)*100vh);
+                    font-size:4vw;
+                    color: #6445a3;
+                }
+            }
+            .time-area{
+                font-size:3.4vw;
+                color: #bdbdbd;
+                border-right:0px;
+                border-left:0px;
+                margin-right:calc((20/376)*100vw);
+                margin-left:calc((20/376)*100vw);
+                padding-top:0;
+                padding-bottom:0;
+                padding-left: calc((24/376)*100vw); 
+                padding-right: calc((24/376)*100vw); 
+            }            
+    }    
 }

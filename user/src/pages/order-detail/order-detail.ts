@@ -149,6 +149,11 @@ export class OrderDetailPage {
         this.order.localPickupTimeString=this.timeUtil.getlocalTimeString(this.order.pickupTime);        
     }
 
+    if(this.order.hasOwnProperty('reviewTime') && this.order.reviewTime!=null){
+        console.log("pickupTime:"+this.order.reviewTime);
+        this.order.localReviewTimeString=this.timeUtil.getlocalTimeString(this.order.reviewTime);        
+    }
+
     if(this.order.orderStatus=="cancelled"){
         this.payClasses={
             paymentLast:false,

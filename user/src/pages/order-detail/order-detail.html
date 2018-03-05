@@ -145,6 +145,10 @@
 <ion-col col-3 text-left>결제 방식</ion-col> 
 <ion-col col-9 text-right> {{order.paymentString}}</ion-col>
 </ion-row>
+<ion-row *ngIf="order.receiptId!=undefined && order.receiptId.length>0">
+<ion-col text-left>현금영수증</ion-col> 
+<ion-col text-right> {{order.receiptId}}</ion-col>
+</ion-row>
 <ion-row *ngIf="this.order.payMethod=='card'">
 <ion-col col-3 text-left>승인 번호</ion-col> 
 <ion-col col-9 text-right> {{order.approval}}</ion-col>
@@ -203,6 +207,32 @@
     <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined">-<amount-display [amount]="order.amount"></amount-display>원</b>
   </ion-col>
 </ion-row>
+</div>
+
+<div class="review-section" *ngIf="order.review!=null && order.review!=undefined">
+  <ion-row class="time-area">
+    <ion-col col-4 text-left>
+    후기작성:    
+    </ion-col>
+    <ion-col col-8 text-right>
+      {{order.localReviewTimeString}}
+    </ion-col>
+  </ion-row>  
+  <div class="detail">
+    <div class="star" text-center>
+          <ion-icon *ngIf="order.starRate>=1" name="md-star"></ion-icon>
+          <ion-icon *ngIf="order.starRate<1" name="ios-star-outline"></ion-icon>
+          <ion-icon *ngIf="order.starRate>=2" name="md-star"></ion-icon>
+          <ion-icon *ngIf="order.starRate<2" name="ios-star-outline"></ion-icon>
+          <ion-icon *ngIf="order.starRate>=3" name="md-star"></ion-icon>
+          <ion-icon *ngIf="order.starRate<3" name="ios-star-outline"></ion-icon>
+          <ion-icon *ngIf="order.starRate>=4" name="md-star"></ion-icon>
+          <ion-icon *ngIf="order.starRate<4" name="ios-star-outline"></ion-icon>
+          <ion-icon *ngIf="order.starRate>=5" name="md-star"></ion-icon>
+          <ion-icon *ngIf="order.starRate<5" name="ios-star-outline"></ion-icon>
+    </div>
+    {{order.review}}
+  </div>
 </div>
 </div>
 
