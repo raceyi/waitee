@@ -1,0 +1,27 @@
+page-shop-info {
+    .text-area-input{
+         font-size:4vw !important;
+         margin-top:calc((10/376)*100vw);
+         padding-left:calc((20/376)*100vw);
+         padding-right:calc((20/376)*100vw);
+         color:$default-color;
+         ion-textarea{
+            height: calc((88/667)*100vh);
+            color:black;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #bdbdbd;
+            width: calc((334/376)*100vw);
+            margin-bottom:calc((10/376)*100vw);
+            margin-top: calc((10/376)*100vw);
+         }
+    }
+
+    .list-ios > .item-block:last-child, .list-ios > .item-wrapper:last-child .item-block {
+         border-bottom: 0px;
+    } 
+
+    .item-ios.item-block .item-inner {
+         border-bottom: 0px; 
+    }       
+}

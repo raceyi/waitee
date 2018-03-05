@@ -5,8 +5,7 @@ import {StorageProvider} from '../../providers/storageProvider';
 import {ServerProvider} from '../../providers/serverProvider';
 //import { Storage } from '@ionic/storage';
 import { NativeStorage } from '@ionic-native/native-storage';
-
-declare var moment:any;
+import * as moment from 'moment';
 
 @Component({
   selector: 'page-cash',

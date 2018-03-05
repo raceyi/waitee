@@ -1,0 +1,550 @@
+<!--
+  Generated template for the ShoptablePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar hideBackButton="true">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-row>
+       <ion-col [hidden]="storageProvider.isTestServer"  class="title">
+        <span *ngIf="storageProvider.shopInfo!=undefined" ><b> {{storageProvider.shopInfo.shopName}}</b></span>
+       </ion-col>
+       <ion-col [hidden]="!storageProvider.isTestServer" class="title">
+        검증 
+       </ion-col>
+       <ion-col text-center>
+            <ion-icon class="store-status" [style.color]="storeColor" name="bulb" (click)="configureStore()"></ion-icon>
+       </ion-col>
+       <ion-col text-center>
+            <ion-icon class="store-status" [style.color]="notiColor" name="person" (click)="configureGotNoti()"></ion-icon>
+       </ion-col>
+      <ion-col text-center>
+            <ion-icon class="store-status" name="print" [style.color]="printColor" (click)="testPrint()"></ion-icon>
+      </ion-col>
+      <ion-col text-center>
+            <b><ion-icon class="store-status" name="refresh" style="color:#33b9c6;" (click)="update()"></ion-icon></b>
+      </ion-col>
+    </ion-row>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-segment [(ngModel)]="Option" (ionChange)="changeValue(Option)">
+      <ion-segment-button  value="today">
+      오늘
+      </ion-segment-button>
+      <ion-segment-button  value="week">
+      일주일
+      </ion-segment-button>
+      <ion-segment-button  value="month">
+      한달
+      </ion-segment-button>
+      <ion-segment-button  value="period">
+       기간설정
+      </ion-segment-button>
+    </ion-segment>
+<div [hidden]="Option!='period'"> 
+  <ion-row >
+  <ion-item ion-col width-50>
+  <ion-label>시작일</ion-label>
+  <ion-datetime displayFormat="YYYY M DD" min="2016" (ionChange)="startPicker(startDate)" [(ngModel)]="startDate"></ion-datetime>
+  </ion-item>
+  <ion-item ion-col width-50> 
+  <ion-label>종료일</ion-label>
+  <ion-datetime displayFormat="YYYY M DD" min="2016" (ionChange)="endPicker(endDate)" [(ngModel)]="endDate"></ion-datetime>
+  </ion-item>
+  </ion-row>
+    <button ion-button full (click)="searchPeriod()">검색</button>
+ </div> 
+
+  <ion-list class="phone" *ngIf="column==1">
+  <ion-item *ngFor="let order of orders">
+               <ion-row>
+                 <ion-col text-center col-2 >
+                   <ion-row>
+                   <button class="checked-button" ion-button *ngIf="order.orderStatus=='paid'">
+                       접수                    
+                   </button>
+                   <button class="completed-button" ion-button *ngIf="order.orderStatus=='checked'">
+                       완료
+                   </button>
+                   <button class="pickup-button" ion-button *ngIf="order.orderStatus=='completed'">
+                       전달
+                   </button>
+                   <p class="cancelled-button" *ngIf="order.orderStatus=='cancelled'">
+                       취소
+                   </p>
+                   <p class="done-button" *ngIf="order.orderStatus=='pickup'">
+                       종료
+                   </p> 
+                   </ion-row>
+                   <ion-row *ngIf="order.orderStatus=='completed'">
+                      <button class="notify-button" ion-button >
+                          알림
+                      </button> 
+                   </ion-row>
+                   <ion-row *ngIf="!AfterOnedayCompleteCancel(order)">
+                       <button class="custom-phone-button" ion-button >
+                          <custom-icon set="customs" name="phone"></custom-icon>
+                       </button>
+                   </ion-row>
+                 </ion-col>
+                 <ion-col col-10>
+                   <ion-row class="order-no">
+                    <ion-col col-8>
+                    <b>{{order.orderNO}}. {{order.orderName}}</b>
+                    <span class="outline" *ngIf="order.takeout=='2'">배달</span>
+                    <span class="outline" *ngIf="order.takeout=='1'">포장</span>
+                    <button no-padding no-margin clear class="custom-printer-button" ion-button >
+                          <custom-icon set="customs" name="printer"></custom-icon>
+                    </button>
+                    </ion-col>
+                    <ion-col  text-right col-4 no-margin no-padding *ngIf="(order.orderStatus=='pickup' || order.orderStatus=='cancelled') && !order.hidden">
+                        <button  *ngIf="order.orderStatus=='pickup'" ion-button clear no-padding no-margin class="cancel-button" style="font-size:3.4vw;">취소하기</button>                                              
+                        <ion-icon (click)="toggleOrder(order)" name="ios-arrow-up"></ion-icon>
+                    </ion-col>
+                     <ion-col text-right col-4 no-padding no-margin *ngIf="(order.orderStatus!='pickup' && order.orderStatus!='cancelled')">
+                        <button ion-button clear no-padding no-margin class="cancel-button" style="font-size:4vw;">취소하기</button>
+                     </ion-col>
+                     <ion-col text-right col-4 no-padding no-margin *ngIf="(order.orderStatus=='pickup' || order.orderStatus=='cancelled') && order.hidden">
+                        <button  *ngIf="order.orderStatus=='pickup'" ion-button clear no-padding no-margin class="cancel-button" style="font-size:3.4vw;">취소하기</button>                       
+                        <ion-icon (click)="toggleOrder(order)" name="ios-arrow-down"></ion-icon>
+                     </ion-col>
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='paid'">
+                     주문시간:{{order.localOrderedTime}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='checked' && order.localCheckedTimeString!=undefined">
+                     접수시간:{{order.localCheckedTimeString}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='completed' && order.localCompleteTimeString!=undefined">
+                     완료시간:{{order.localCompleteTimeString}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='cancelled' && order.localCancelledTimeString!=undefined">
+                     <ion-col no-padding no-margin>
+                     취소시간:{{order.localCancelledTimeString}}
+                     </ion-col>
+                     <ion-col text-right no-padding no-margin col-4 *ngIf="order.hidden">
+                          <amount-display [amount]="order.amount"></amount-display>원
+                     </ion-col>
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='pickup' && order.localPickupTimeString!=undefined">
+                     <ion-col no-padding no-margin>
+                     전달시간:{{order.localPickupTimeString}}
+                     </ion-col>
+                     <ion-col text-right no-padding no-margin col-4 *ngIf="order.hidden">
+                          <amount-display [amount]="order.amount"></amount-display>원
+                     </ion-col>
+                   </ion-row> 
+               <ion-row [hidden]="order.hidden">
+                 <ion-col no-padding no-margin text-left>
+                   <div class="menu-detail">
+                        <div *ngFor="let menu of order.orderListObj.menus">
+                              <ion-row>
+                                        <ion-col><span class="orderInfo">{{menu.menuName}}({{menu.quantity}})</span></ion-col>
+                              </ion-row>
+                              <ion-row *ngIf="menu.options!=undefined && menu.options.length>0">
+                                        <ion-col col-4 > </ion-col>
+                                        <ion-col col-8 > 
+                                          <p class="option" *ngFor="let option of menu.options">{{option.name}}({{option.number}}) &nbsp;<span *ngIf="option.select!=undefined">{{option.select}}</span> </p>
+                                        </ion-col>
+                              </ion-row>
+                              <ion-row [hidden]="menu.memo==null || menu.memo==undefined">
+                                        <ion-col col-4> 요청사항 </ion-col>
+                                        <ion-col col-8 style="background-color:lightgray;">{{menu.memo}}</ion-col>
+                              </ion-row>
+                        </div>
+                        <ion-row *ngIf="order.takeout=='2' && order.deliveryAddress!=undefined && order.deliveryAddress!=null">
+                        <ion-col>배달지:{{order.deliveryAddress}}</ion-col>
+                        </ion-row>
+                   </div> 
+                   <div class="time-section">
+                        <ion-row *ngIf="order.orderStatus=='cancelled'"> 
+                          <ion-col *ngIf="order.cancelReasonString!=undefined && order.cancelReasonString!=null" text-left>
+                                취소사유:{{order.cancelReasonString}}
+                          </ion-col>
+                          <ion-col text-right>
+                                  취소금액:-{{order.amount}}원
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.localCompleteTimeString"> 
+                          <ion-col text-left>
+                                완료시간:{{order.localCompleteTimeString}}
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.orderStatus!='paid' && order.localOrderedTimeString"> 
+                          <ion-col text-left>
+                                주문시간:{{order.localOrderedTimeString}}
+                          </ion-col>
+                          <ion-col text-right>
+                                  결제금액:{{order.amount}}원
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.orderStatus=='paid'"> 
+                          <ion-col text-left>
+                          </ion-col>
+                          <ion-col text-right>
+                                  결제금액:{{order.amount}}원
+                          </ion-col>
+                        </ion-row>                        
+                   </div>
+                   <div class="review-section" *ngIf="order.review!=null || order.review!=undefined">
+                        <ion-row>
+                            <ion-col text-left>리뷰작성:{{order.localReviewTimeString}}</ion-col>
+                            <ion-col text-right>
+                               <ion-icon *ngIf="order.starRate>=1" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<1" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=2" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<2" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=3" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<3" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=4" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<4" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=5" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<5" name="ios-star-outline"></ion-icon>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col>
+                              {{order.review}}
+                          </ion-col>
+                        </ion-row>
+                   </div>
+                 </ion-col>
+               </ion-row>
+              </ion-col>
+              </ion-row> 
+</ion-item>
+</ion-list>
+
+<ion-list class="tablet" *ngIf="column==2">
+<ion-row>
+<ion-col class="order-background" no-padding col-6 *ngFor="let order of orders;let i=index;">
+    <div style="background-color:white;" class="order-outline" *ngIf="i%2==0">
+               <ion-row>
+                 <ion-col text-center col-2 >
+                   <ion-row>
+                   <button class="checked-button" ion-button *ngIf="order.orderStatus=='paid'">
+                       접수                    
+                   </button>
+                   <button class="completed-button" ion-button *ngIf="order.orderStatus=='checked'">
+                       완료
+                   </button>
+                   <button class="pickup-button" ion-button *ngIf="order.orderStatus=='completed'">
+                       전달
+                   </button>
+                   <p class="cancelled-button" *ngIf="order.orderStatus=='cancelled'">
+                       취소
+                   </p>
+                   <p class="done-button" *ngIf="order.orderStatus=='pickup'">
+                       종료
+                   </p> 
+                   </ion-row>
+                   <ion-row *ngIf="order.orderStatus=='completed'">
+                      <button class="notify-button" ion-button >
+                          알림
+                      </button> 
+                   </ion-row>
+                   <ion-row *ngIf="!AfterOnedayCompleteCancel(order)">
+                       <button class="custom-phone-button" ion-button >
+                          <custom-icon set="customs" name="phone"></custom-icon>
+                       </button>
+                   </ion-row>
+                 </ion-col>
+                 <ion-col col-10>
+                   <ion-row class="order-no">
+                    <ion-col col-8>
+                    <b>{{order.orderNO}}. {{order.orderName}}</b>
+                    <span class="outline" *ngIf="order.takeout=='2'">배달</span>
+                    <span class="outline" *ngIf="order.takeout=='1'">포장</span>
+                    <button no-padding no-margin clear class="custom-printer-button" ion-button >
+                          <custom-icon set="customs" name="printer"></custom-icon>
+                    </button>
+                    </ion-col>
+                    <ion-col  text-right col-4 no-margin no-padding *ngIf="(order.orderStatus=='pickup' || order.orderStatus=='cancelled') && !order.hidden">
+                        <button  *ngIf="order.orderStatus=='pickup'" ion-button clear no-padding no-margin class="cancel-button" style="font-size:1.7vw;">취소하기</button>                                              
+                        <ion-icon (click)="toggleOrder(order)" name="ios-arrow-up"></ion-icon>
+                    </ion-col>
+                     <ion-col text-right col-4 no-padding no-margin *ngIf="(order.orderStatus!='pickup' && order.orderStatus!='cancelled')">
+                        <button ion-button clear no-padding no-margin class="cancel-button" style="font-size:2vw;">취소하기</button>
+                     </ion-col>
+                     <ion-col text-right col-4 no-padding no-margin *ngIf="(order.orderStatus=='pickup' || order.orderStatus=='cancelled') && order.hidden">
+                        <button  *ngIf="order.orderStatus=='pickup'" ion-button clear no-padding no-margin class="cancel-button" style="font-size:1.7vw;">취소하기</button>                       
+                        <ion-icon (click)="toggleOrder(order)" name="ios-arrow-down"></ion-icon>
+                     </ion-col>
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='paid'">
+                     주문시간:{{order.localOrderedTime}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='checked' && order.localCheckedTimeString!=undefined">
+                     접수시간:{{order.localCheckedTimeString}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='completed' && order.localCompleteTimeString!=undefined">
+                     완료시간:{{order.localCompleteTimeString}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='cancelled' && order.localCancelledTimeString!=undefined">
+                     <ion-col no-padding no-margin>
+                     취소시간:{{order.localCancelledTimeString}}
+                     </ion-col>
+                     <ion-col text-right no-padding no-margin col-4 *ngIf="order.hidden">
+                          <amount-display [amount]="order.amount"></amount-display>원
+                     </ion-col>
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='pickup' && order.localPickupTimeString!=undefined">
+                     <ion-col no-padding no-margin>
+                     전달시간:{{order.localPickupTimeString}}
+                     </ion-col>
+                     <ion-col text-right no-padding no-margin col-4 *ngIf="order.hidden">
+                          <amount-display [amount]="order.amount"></amount-display>원
+                     </ion-col>
+                   </ion-row> 
+               <ion-row [hidden]="order.hidden">
+                 <ion-col no-padding no-margin text-left>
+                   <div class="menu-detail">
+                        <div *ngFor="let menu of order.orderListObj.menus">
+                              <ion-row>
+                                        <ion-col><span class="orderInfo">{{menu.menuName}}({{menu.quantity}})</span></ion-col>
+                              </ion-row>
+                              <ion-row *ngIf="menu.options!=undefined && menu.options.length>0">
+                                        <ion-col col-4 > </ion-col>
+                                        <ion-col col-8 > 
+                                          <p class="option" *ngFor="let option of menu.options">{{option.name}}({{option.number}}) &nbsp;<span *ngIf="option.select!=undefined">{{option.select}}</span> </p>
+                                        </ion-col>
+                              </ion-row>
+                              <ion-row [hidden]="menu.memo==null || menu.memo==undefined">
+                                        <ion-col col-4> 요청사항 </ion-col>
+                                        <ion-col col-8 style="background-color:lightgray;">{{menu.memo}}</ion-col>
+                              </ion-row>
+                        </div>
+                        <ion-row *ngIf="order.takeout=='2' && order.deliveryAddress!=undefined && order.deliveryAddress!=null">
+                        <ion-col>배달지:{{order.deliveryAddress}}</ion-col>
+                        </ion-row>
+                   </div> 
+                   <div class="time-section">
+                        <ion-row *ngIf="order.orderStatus=='cancelled'"> 
+                          <ion-col *ngIf="order.cancelReasonString!=undefined && order.cancelReasonString!=null" text-left>
+                                취소사유:{{order.cancelReasonString}}
+                          </ion-col>
+                          <ion-col text-right>
+                                  취소금액:-{{order.amount}}원
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.localCompleteTimeString"> 
+                          <ion-col text-left>
+                                완료시간:{{order.localCompleteTimeString}}
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.orderStatus!='paid' && order.localOrderedTimeString"> 
+                          <ion-col text-left>
+                                주문시간:{{order.localOrderedTimeString}}
+                          </ion-col>
+                          <ion-col text-right>
+                                  결제금액:{{order.amount}}원
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.orderStatus=='paid'"> 
+                          <ion-col text-left>
+                          </ion-col>
+                          <ion-col text-right>
+                                  결제금액:{{order.amount}}원
+                          </ion-col>
+                        </ion-row>                        
+                   </div>
+                   <div class="review-section" *ngIf="order.review!=null || order.review!=undefined">
+                        <ion-row>
+                            <ion-col text-left>리뷰작성:{{order.localReviewTimeString}}</ion-col>
+                            <ion-col text-right>
+                               <ion-icon *ngIf="order.starRate>=1" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<1" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=2" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<2" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=3" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<3" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=4" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<4" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=5" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<5" name="ios-star-outline"></ion-icon>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col>
+                              {{order.review}}
+                          </ion-col>
+                        </ion-row>
+                   </div>
+                 </ion-col>
+               </ion-row>
+              </ion-col>
+              </ion-row> 
+      </div>
+    <div style="background-color:white;" *ngIf="i%2==1">
+               <ion-row>
+                 <ion-col text-center col-2 >
+                   <ion-row>
+                   <button class="checked-button" ion-button *ngIf="order.orderStatus=='paid'">
+                       접수                    
+                   </button>
+                   <button class="completed-button" ion-button *ngIf="order.orderStatus=='checked'">
+                       완료
+                   </button>
+                   <button class="pickup-button" ion-button *ngIf="order.orderStatus=='completed'">
+                       전달
+                   </button>
+                   <p class="cancelled-button" *ngIf="order.orderStatus=='cancelled'">
+                       취소
+                   </p>
+                   <p class="done-button" *ngIf="order.orderStatus=='pickup'">
+                       종료
+                   </p> 
+                   </ion-row>
+                   <ion-row *ngIf="order.orderStatus=='completed'">
+                      <button class="notify-button" ion-button >
+                          알림
+                      </button> 
+                   </ion-row>
+                   <ion-row *ngIf="!AfterOnedayCompleteCancel(order)">
+                       <button class="custom-phone-button" ion-button >
+                          <custom-icon set="customs" name="phone"></custom-icon>
+                       </button>
+                   </ion-row>
+                 </ion-col>
+                 <ion-col col-10>
+                   <ion-row class="order-no">
+                    <ion-col col-8>
+                    <b>{{order.orderNO}}. {{order.orderName}}</b>
+                    <span class="outline" *ngIf="order.takeout=='2'">배달</span>
+                    <span class="outline" *ngIf="order.takeout=='1'">포장</span>
+                    <button no-padding no-margin clear class="custom-printer-button" ion-button >
+                          <custom-icon set="customs" name="printer"></custom-icon>
+                    </button>
+                    </ion-col>
+                    <ion-col  text-right col-4 no-margin no-padding *ngIf="(order.orderStatus=='pickup' || order.orderStatus=='cancelled') && !order.hidden">
+                        <button  *ngIf="order.orderStatus=='pickup'" ion-button clear no-padding no-margin class="cancel-button" style="font-size:1.7vw;">취소하기</button>                                              
+                        <ion-icon (click)="toggleOrder(order)" name="ios-arrow-up"></ion-icon>
+                    </ion-col>
+                     <ion-col text-right col-4 no-padding no-margin *ngIf="(order.orderStatus!='pickup' && order.orderStatus!='cancelled')">
+                        <button ion-button clear no-padding no-margin class="cancel-button" style="font-size:2vw;">취소하기</button>
+                     </ion-col>
+                     <ion-col text-right col-4 no-padding no-margin *ngIf="(order.orderStatus=='pickup' || order.orderStatus=='cancelled') && order.hidden">
+                        <button  *ngIf="order.orderStatus=='pickup'" ion-button clear no-padding no-margin class="cancel-button" style="font-size:1.7vw;">취소하기</button>                       
+                        <ion-icon (click)="toggleOrder(order)" name="ios-arrow-down"></ion-icon>
+                     </ion-col>
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='paid'">
+                     주문시간:{{order.localOrderedTime}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='checked' && order.localCheckedTimeString!=undefined">
+                     접수시간:{{order.localCheckedTimeString}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='completed' && order.localCompleteTimeString!=undefined">
+                     완료시간:{{order.localCompleteTimeString}}
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='cancelled' && order.localCancelledTimeString!=undefined">
+                     <ion-col no-padding no-margin>
+                     취소시간:{{order.localCancelledTimeString}}
+                     </ion-col>
+                     <ion-col text-right no-padding no-margin col-4 *ngIf="order.hidden">
+                          <amount-display [amount]="order.amount"></amount-display>원
+                     </ion-col>
+                   </ion-row>
+                   <ion-row class="display-time" *ngIf="order.orderStatus=='pickup' && order.localPickupTimeString!=undefined">
+                     <ion-col no-padding no-margin>
+                     전달시간:{{order.localPickupTimeString}}
+                     </ion-col>
+                     <ion-col text-right no-padding no-margin col-4 *ngIf="order.hidden">
+                          <amount-display [amount]="order.amount"></amount-display>원
+                     </ion-col>
+                   </ion-row> 
+               <ion-row [hidden]="order.hidden">
+                 <ion-col no-padding no-margin text-left>
+                   <div class="menu-detail">
+                        <div *ngFor="let menu of order.orderListObj.menus">
+                              <ion-row>
+                                        <ion-col><span class="orderInfo">{{menu.menuName}}({{menu.quantity}})</span></ion-col>
+                              </ion-row>
+                              <ion-row *ngIf="menu.options!=undefined && menu.options.length>0">
+                                        <ion-col col-4 > </ion-col>
+                                        <ion-col col-8 > 
+                                          <p class="option" *ngFor="let option of menu.options">{{option.name}}({{option.number}}) &nbsp;<span *ngIf="option.select!=undefined">{{option.select}}</span> </p>
+                                        </ion-col>
+                              </ion-row>
+                              <ion-row [hidden]="menu.memo==null || menu.memo==undefined">
+                                        <ion-col col-4> 요청사항 </ion-col>
+                                        <ion-col col-8 style="background-color:lightgray;">{{menu.memo}}</ion-col>
+                              </ion-row>
+                        </div>
+                        <ion-row *ngIf="order.takeout=='2' && order.deliveryAddress!=undefined && order.deliveryAddress!=null">
+                        <ion-col>배달지:{{order.deliveryAddress}}</ion-col>
+                        </ion-row>
+                   </div> 
+                   <div class="time-section">
+                        <ion-row *ngIf="order.orderStatus=='cancelled'"> 
+                          <ion-col *ngIf="order.cancelReasonString!=undefined && order.cancelReasonString!=null" text-left>
+                                취소사유:{{order.cancelReasonString}}
+                          </ion-col>
+                          <ion-col text-right>
+                                  취소금액:-{{order.amount}}원
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.localCompleteTimeString"> 
+                          <ion-col text-left>
+                                완료시간:{{order.localCompleteTimeString}}
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.orderStatus!='paid' && order.localOrderedTimeString"> 
+                          <ion-col text-left>
+                                주문시간:{{order.localOrderedTimeString}}
+                          </ion-col>
+                          <ion-col text-right>
+                                  결제금액:{{order.amount}}원
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="order.orderStatus=='paid'"> 
+                          <ion-col text-left>
+                          </ion-col>
+                          <ion-col text-right>
+                                  결제금액:{{order.amount}}원
+                          </ion-col>
+                        </ion-row>                        
+                   </div>
+                   <div class="review-section" *ngIf="order.review!=null || order.review!=undefined">
+                        <ion-row>
+                            <ion-col text-left>리뷰작성:{{order.localReviewTimeString}}</ion-col>
+                            <ion-col text-right>
+                               <ion-icon *ngIf="order.starRate>=1" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<1" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=2" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<2" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=3" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<3" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=4" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<4" name="ios-star-outline"></ion-icon>
+                               <ion-icon *ngIf="order.starRate>=5" name="md-star"></ion-icon>
+                               <ion-icon *ngIf="order.starRate<5" name="ios-star-outline"></ion-icon>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col>
+                              {{order.review}}
+                          </ion-col>
+                        </ion-row>
+                   </div>
+                 </ion-col>
+               </ion-row>
+              </ion-col>
+              </ion-row> 
+      </div>      
+</ion-col>
+</ion-row>
+
+</ion-list>
+ <ion-infinite-scroll (ionInfinite)="doInfinite($event)" [hidden]="orders.length==0">
+   <ion-infinite-scroll-content></ion-infinite-scroll-content>
+ </ion-infinite-scroll>
+ <div class="dummy">
+ </div>
+</ion-content>
