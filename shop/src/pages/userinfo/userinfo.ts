@@ -4,11 +4,10 @@ import {StorageProvider} from '../../providers/storageProvider';
 import {App} from 'ionic-angular';
 import {ServerProvider} from '../../providers/serverProvider';
 import {Http,Headers} from '@angular/http';
-//import {Storage} from '@ionic/storage';
 import { NativeStorage } from '@ionic-native/native-storage';
+import {ConfigurePasswordPage} from '../configure-password/configure-password';
 
 declare var cordova:any;
-declare var zxcvbn:any;
 
 @Component({
   templateUrl: 'userinfo.html',
@@ -16,10 +15,6 @@ declare var zxcvbn:any;
 })
 
 export class UserInfoPage{
-    phone:string;
-    email:string;
-    name:string;
-    loginMethod:string;
     
      constructor(public storageProvider:StorageProvider,private alertController:AlertController
         ,private app: App,private navController: NavController, private navParams: NavParams
@@ -28,20 +23,9 @@ export class UserInfoPage{
 	      console.log("UserInfoPage constructor");
      }
 
-    ionViewWillEnter(){
-      this.email=this.storageProvider.email;
-      this.name=this.storageProvider.name;
-      this.phone=this.storageProvider.phone;
-      console.log("UserInfoPage- email:"+this.storageProvider.email);      
-      if(this.storageProvider.id.startsWith("facebook"))
-          this.loginMethod="페이스북";
-      else if(this.storageProvider.id.startsWith("kakao")){
-          this.loginMethod="카카오톡";
-      }else{
-          this.loginMethod="이메일";
-      }  
-    }
-
+  modifyPassword(){
+         this.app.getRootNavs()[0].push(ConfigurePasswordPage);
+  }
 
 }
 

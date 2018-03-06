@@ -125,6 +125,7 @@ export class ShoptablePage {
           }else{
                   order.localCancelledTimeString=undefined;
           }
+          console.log("orderedHour/Min"+this.timeUtil.getlocalTimeStringWithoutDate(order.orderedTime));
 
           if(order.hasOwnProperty('completedTime') && order.completedTime!=null){
               console.log("completedTime:"+order.completedTime);

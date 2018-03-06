@@ -12,6 +12,7 @@ import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import {CancelConfirmPage} from '../cancel-confirm/cancel-confirm';
 import {IosPrinterProvider} from '../../providers/ios-printer';
 import { BackgroundMode } from '@ionic-native/background-mode';
+import {TimeUtil} from '../../classes/TimeUtil';
 
 declare var cordova:any;
 
@@ -24,16 +25,18 @@ export class ShopTablePage {
   Option="today";
   startDate;
   endDate;
- // currTime;
   orders=[];
   pushNotification:PushObject;
   infiniteScroll:any=undefined;
   smsInboxPlugin;
-  //isAndroid;
   storeColor="gray";
   notiColor="gray";
   printColor="gray";
   printerEmitterSubscription;
+
+  column=1; //default value
+
+  timeUtil= new TimeUtil(); 
 
   getTodayString(){
     var d = new Date();
@@ -49,8 +52,19 @@ export class ShopTablePage {
       public viewCtrl: ViewController,private serverProvider:ServerProvider,private push: Push,
       private mediaProvider:MediaProvider,private events:Events,private iosPrinterProvider:IosPrinterProvider) {
     console.log("ShopTablePage constructor");
-    //this.isAndroid=this.platform.is("android");
-  
+      platform.ready().then(() => {
+      console.log('Width: ' + platform.width());
+      console.log('Height: ' + platform.height());
+      if(platform.width()/2>380){ // Hum... Just for kalen's tablet. 380
+          // hum... display two columns 
+          this.column=2;
+      }else{
+          // display one columns
+          this.column=1;
+      }
+    });
+
+
     this.registerPushService();
     
     var date=new Date();
@@ -69,15 +83,17 @@ export class ShopTablePage {
     if(this.storageProvider.myshop.GCMNoti=="off"){
       this.notiColor="gray";
     }else if(this.storageProvider.myshop.GCMNoti=="on"){
-      this.notiColor="primary";
+      this.notiColor="#33b9c6";
     }else{
       console.log("unknown GCMNoti");
     }
 
-    if(this.storageProvider.storeOpen==true)
-      this.storeColor="primary";
-    else 
+    console.log("!!! storeOpen:"+this.storageProvider.storeOpen);
+    if(this.storageProvider.storeOpen==true){
+      this.storeColor="#33b9c6";
+    }else{ 
       this.storeColor="gray";  
+    }
     /////////////////////////////////////////////////////////////////
   }
 
@@ -196,38 +212,17 @@ export class ShopTablePage {
          }, 100/* high priority rather than login page */);
    }
 
-/*
-        if(this.platform.is("android")){
-            if(this.smsInboxPlugin==undefined)
-                this.smsInboxPlugin = cordova.require('cordova/plugin/smsinboxplugin');
-            this.smsInboxPlugin.isSupported((supported)=>{
-              console.log("supported :"+supported);
-              if(supported){
-                  ////////////////////////////////
-                  this.smsInboxPlugin.startReception ((msg)=> {
-                  console.log("sms "+msg);
-                  },(err)=>{
-                      console.log("startReception error:"+JSON.stringify(err));
-                  });
-              }else{
-                  console.log("SMS is not supported");
-              }
-            },(err)=>{
-              console.log("isSupported:"+JSON.stringify(err));
-            });
-        }
-*/
         this.events.subscribe('printer:status', (status) => {
                     console.log("printer status:"+status);
                     this.ngZone.run(()=>{
                       if(this.platform.is('android')){
                         if(this.printerProvider.printerStatus=="connected")
-                            this.printColor="primary";
+                            this.printColor="#33b9c6";
                         else  
                             this.printColor="gray";
                       }else if(this.platform.is('ios')){
                         if(this.iosPrinterProvider.printerStatus=="connected")
-                            this.printColor="primary";
+                            this.printColor="#33b9c6";
                         else  
                             this.printColor="gray";
                       }
@@ -241,7 +236,7 @@ export class ShopTablePage {
           if(res.result=="success"){
               this.ngZone.run(()=>{
                 if(res.shopInfo.business=="on"){
-                     this.storeColor="primary";
+                     this.storeColor="#33b9c6";
                      this.storageProvider.storeOpen=true;
                 }else{
                     this.storeColor="gray";
@@ -286,12 +281,12 @@ export class ShopTablePage {
 
           //console.log("local ordered time:"+ date.toLocaleString());//date.toLocaleDateString('ko-KR')
           order.statusString=this.getStatusString(order.orderStatus);
-          if(order.orderStatus=="completed" || order.orderStatus=="cancelled")
+          if(order.orderStatus=="pickup" || order.orderStatus=="cancelled")
             order.hidden=true;
           else  
             order.hidden=false;
 
-          if(order.hasOwnProperty("review")){
+          if(order.hasOwnProperty("review") && order.review!=null){
                 order.hidden=false;
           }  
           order.orderListObj=JSON.parse(order.orderList);
@@ -309,7 +304,35 @@ export class ShopTablePage {
             order.cancelReasonString=order.cancelReason;
           else
             order.cancelReasonString=undefined;
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+          if(order.orderStatus=="cancelled"){
+              if(order.hasOwnProperty("cancelledTime")){
+                  console.log("call getLocalTimeString")
+                  order.localCancelledTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.cancelledTime);
+              }
+          }else{
+                  order.localCancelledTimeString=undefined;
+          }
 
+          if(order.hasOwnProperty('completedTime') && order.completedTime!=null){
+              console.log("completedTime:"+order.completedTime);
+              order.localCompleteTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.completedTime);
+          }
+          if(order.hasOwnProperty('checkedTime') && order.completedTime!=null){
+              console.log("checkedTime:"+order.checkedTime);
+              order.localCheckedTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.checkedTime);        
+          }
+          if(order.hasOwnProperty('pickupTime') && order.pickupTime!=null){
+              console.log("pickupTime:"+order.pickupTime);
+              order.localPickupTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.pickupTime);        
+          }
+          if(order.hasOwnProperty('orderedTime') && order.orderedTime!=null){
+              order.localOrderedTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.orderedTime);
+          }
+          if(order.hasOwnProperty('reviewTime') && order.reviewTime!=null){
+              order.localReviewTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.reviewTime);        
+          }
+      ///////////////////////////////////////////////////////////////////////////////////////////////////
           return order;
     }
 
@@ -485,6 +508,7 @@ export class ShopTablePage {
         }else{
             title="**CANCEL["+order.orderNO+"]";
         }
+        title+=this.timeUtil.getlocalTimeStringWithoutDate(order.cancelledTime);
         order.orderListObj.menus.forEach((menu)=>{
             message+="-------------\n";
             message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
@@ -547,9 +571,9 @@ export class ShopTablePage {
       if(order.orderStatus=="paid" ||order.orderStatus=="checked"){
           if(this.platform.is('android')){
               title="타킷주문["+order.orderNO+"]";
-              if(order.takeout=='1')          
+              if(order.takeout=='1'){          
                 title+="포장";
-              else if(order.takeout=='2'){
+              }else if(order.takeout=='2'){
                 title+="배달"; 
                 message=order.deliveryAddress+"\n";
               }
@@ -562,6 +586,7 @@ export class ShopTablePage {
                 message=order.deliveryAddress+"\n";
               }
           }
+          title+=this.timeUtil.getlocalTimeStringWithoutDate(order.orderedTime);                
           order.orderListObj.menus.forEach((menu)=>{
               message+="-------------\n";
               message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
@@ -578,7 +603,7 @@ export class ShopTablePage {
               message+=order.userMSG;
               message+="\n";
           }
-      }else if(order.orderStatus=="completed"){ //print receipt
+      }else if(order.orderStatus=="completed" || order.orderStatus=="pickup"){ //print receipt
           if(this.platform.is("android")){
               title="        영수증\n";
           }else if(this.platform.is("ios")){
@@ -1061,7 +1086,7 @@ export class ShopTablePage {
        if(order.orderStatus==='completed'){
           return 'gray';
        }else{
-         return 'primary';
+         return '#33b9c6';
        }
      }
 
@@ -1162,14 +1187,14 @@ export class ShopTablePage {
         if(res.result=="success"){
           this.ngZone.run(()=>{
             if(res.shopUserInfo.GCMNoti=="on"){
-                this.notiColor="primary";
+                this.notiColor="#33b9c6";
                 this.storageProvider.amIGotNoti=true;
             }else{ // This should be "off"
                 this.notiColor="gray";
                 this.storageProvider.amIGotNoti=false;
             }
             if(res.shopInfo.business=="on"){
-                this.storeColor="primary";
+                this.storeColor="#33b9c6";
                 this.storageProvider.storeOpen=true;
             }else{ // This should be "off"
                 this.storeColor="gray";
@@ -1210,14 +1235,14 @@ export class ShopTablePage {
            console.log("refreshInfo res:"+JSON.stringify(res));
           if(res.result=="success"){
              if(res.shopUserInfo.GCMNoti=="on"){
-                this.notiColor="primary";
+                this.notiColor="#33b9c6";
                 this.storageProvider.amIGotNoti=true;
             }else{ // This should be "off"
                 this.notiColor="gray";
                 this.storageProvider.amIGotNoti=false;
             }
             if(res.shopInfo.business=="on"){
-                this.storeColor="primary";
+                this.storeColor="#33b9c6";
                 this.storageProvider.storeOpen=true;
             }else{ // This should be "off"
                 this.storeColor="gray";
@@ -1254,7 +1279,7 @@ export class ShopTablePage {
                 handler: () => {
                   console.log('Agree clicked');
                   this.requestManager().then(()=>{
-                        this.notiColor="primary";
+                        this.notiColor="#33b9c6";
                         this.storageProvider.myshop.GCMNoti=="on";
                         let alert = this.alertController.create({
                           title: '주문요청이 전달됩니다',
@@ -1332,7 +1357,7 @@ export class ShopTablePage {
                             handler:()=>{
                               this.openStore().then(()=>{
                                   console.log("open shop successfully");
-                                  this.storeColor="primary";
+                                  this.storeColor="#33b9c6";
                                   this.storageProvider.storeOpen=true;
                               },(err)=>{
                                   if(err=="NetworkFailure"){

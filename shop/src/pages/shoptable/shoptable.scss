@@ -1,204 +1,259 @@
 page-shoptable {
-    ion-header {
-         //position: relative !important; 
-
+ion-header {
          .title{
             margin-top: auto !important;
             margin-bottom: auto !important;
-            font-size: 1.4rem !important;
+            font-size: 3vw !important;
+            color:white;
+            background-color: transparent;
          }
          .toolbar-ios ion-title {
             position:relative !important;
          }
-
-         .buttonsInHeader{
-            background-color: transparent;
-            color: #424242;
-            box-shadow: inherit;
+        .toolbar-background{
+            background-color: #6441a5;
         }
-        .button-md:hover:not(.disable-hover) {
-            background-color: transparent;
+        .ion-ios-menu{
+            color:white;
         }
-        .button-md.activated {
-            background-color: transparent;
-            box-shadow: inherit;
+        .store-status{
+            font-size:8vw;
         }
      }
-/*
-    ion-content.segmentButton{
-        position:relative !important;
-        height:min-content !important;
-        > .scroll-content{
-            position:relative !important;
-             overflow-y: hidden;
-        }
+
+    .content-ios {
+        background-color: #e8e8e8;
     }
-*/
-/*
+
     ion-content{
-        position:relative !important;
-        height: 100% !important;
-        width: 100% !important;
-    }
-*/
-    ion-content.infiniteScroll{
-        position: relative !important; 
-        ion-label {
-            margin: 0px 0px 0px 0px !important;
-        }
-        .scroll-content{
-            margin-top:0px !important;
-            margin-bottom:0px !important;
+        .segment-ios .segment-button {
+            border-radius: 0px !important; 
         }
 
-    }
-
-    .segment-md>.segment-button {
-            border-width: 2px !important;
-            border-style: solid !important;
-            border-color: #3474e1 !important;
-            padding:0px !important;
-    }
-
-    .segment-md>.segment-activated {
-        background-color: #387ef5 !important;
-        color: white !important;
-    }
-
-    .updateButton{
-        height:1.7rem !important;
-    }
-
-    .updateButtonText{
-        font-size: 1.2rem;
-    }
-
-    .statusButton{
-        height:1.8rem !important;
-    }
-
-    .statusButtonText{
-        font-size: 1.5rem;
-    }
-
-    div.dummy{ //workaround solution for infinite scroll
-        height:50vh;
-    }
-
-    #optionRow{
-        margin-top : 3%;
-        margin-left : 5%;
-        font-size: 1.3rem;
-        text-align: center;
-    }
-
-    .orderManagement>div.item-inner{
-        border-bottom: 0px;
-    }
-
-    .orderManagement{
-        padding-left: 0px; 
-        .item-inner{
-            padding-right:0px;
-        }
-        ion-label {
-             margin: 0px 0px 0px 0; 
-        }
-        .item-button {
-            padding: 0px;
+        .segment-ios>.segment-button {
+                border-width: 1px !important;
+                border-style: solid !important;
+                border-color: #6441a5 !important;
+                background-color:white !important;
         }
 
-        border-bottom-style: solid;
-        border-bottom-color: #dedede;
-        border-bottom-width: 1px;
-    }
+        .segment-ios>.segment-activated {
+            background-color: #33b9c6 !important;
+            color: white !important;
+        }
+        
+        .list-ios.phone{
+            margin-top:calc((12/667)*100vh);
+            margin-left:calc((11/375)*100vw);
+            margin-right:calc((11/375)*100vw); 
+            ion-item{
+                margin-bottom:calc((4/667)*100vh);
+                border: solid 1px #bdbdbd;
+            }    
+            .item-ios.item-block .item-inner {
+                border-bottom: 0px;
+            }            
+            .checked-button{
+                font-size:4vw;  
+                color:white;
+                background-color: #33b9c6;
+                border: solid 2px #33b9c6;
+                border-radius: 10%;
+            }  
+            .completed-button{
+                font-size:4vw;  
+                color:#33b9c6;
+                background-color: rgba(51, 185, 198, 0.2);
+                border: solid 2px #33b9c6;
+                border-radius: 10%;
+            }  
+            .pickup-button{
+                font-size:4vw;  
+                color:white;
+                background-color: #6441a5;
+                border: solid 2px #6441a5;
+                border-radius: 10%;
+            }
 
-    .TableButton1{
-    width: 100px;
-    height: 30px;
-    font-size: 1.4rem;
-    }
+            .cancelled-button{
+                padding-top:calc((8/375)*100vw);
+                margin-left:calc((10/375)*100vw);                
+                width:calc((33/375)*100vw);   
+                height:calc((33/375)*100vw);
+                font-size:3.4vw;  
+                background-color: #ffffff;
+           }
 
-    .bottomLine{
-        border-bottom : 1px solid black;
-        margin-bottom : -2%;
-        margin-top : -2%;
-    }
+           .done-button{
+                padding-top:calc((8/375)*100vw);
+                margin-left:calc((10/375)*100vw);                
+                width:calc((33/375)*100vw);   
+                height:calc((33/375)*100vw);
+                font-size:3.4vw;  
+                color:#6441a5;
+                background-color: #ffffff;
+           }
+           .notify-button{
+                font-size:3.4vw;  
+                color:#6441a5;
+                background-color: rgba(100, 65, 165, 0.2);
+                border: solid 2px #6441a5;
+                border-radius: 10%;               
+           }
 
-    .TableButton2{
-    width: 100px;
-    height: 30px;
-    font-size: 1.4rem;
-    background-color: #bebebe;
-    }
+           .custom-printer-button{
+                height:calc((20/375)*100vw);
+                font-size:3.4vw;  
+                color: #979797;
+                background-color: #ffffff;
+           }
 
-    .TableButton3{
-    width: 100px;
-    height: 30px;
-    font-size: 1.4rem;
-    border: 1px dotted #bebebe;
-    }
+           .order-no{
+               font-size:4vw;
+               .outline{
+                    font-size:3.7vw;
+                    margin-left:5px;
+                    border: solid 1px #4a4a4a;
+               }
+           }
 
-    .MenuName{
-        padding-left: 15px;
-        text-align: left;
-    }
+           .display-time{
+               font-size:3.4vw;
+               color:#9B9B9B;
+           }
 
-    .detail{
-        text-align: left;
-        color: #7f7f7f;
-        font-size: 1.2rem;
-    }
+           .cancel-button{
+               height:calc((19/375)*100vw);
+           }
 
-    .orderManagementTable{
-        text-align: center;
-        font-size: 1.4rem;
-        white-space: pre-line;
-    }
+           .menu-detail{
+               border-top: solid 1px #d8d8d8;
+               border-bottom: solid 1px #d8d8d8;
+               font-size:3.4vw;
+           }
 
-    .orderManagementTable>ion-row:first-child{
-        background-color: #eeeeee;
-        color: #7f7f7f;
-        font-weight: bold;
-    }
+           .time-section{
+               font-size:3.4vw;
+               padding-top:calc((4/667)*100vh); 
+               color:lightgray;                              
+               .col{
+                   padding-top:0px;
+                   padding-bottom:0px;
+               }               
+           }
 
-    .orderManagementTable>ion-row{
-        border-bottom: 1px solid #bebebe;
-    }
+           .review-section{
+                border-top: solid 1px #d8d8d8;               
+                font-size:3.4vw;
+                padding-top:calc((4/667)*100vh);                
+               .col{
+                   padding-top:0px;
+                   padding-bottom:0px;
+               }                
+           }
+        }
 
-    .orderManagementTable>ion-row>ion-col{
-        margin: 3px 0px 3px 0px;
-    }
+        .list-ios.tablet{
+            margin-top:calc((12/667)*100vh);
+            margin-left:calc((11/(375*2))*100vw);
+            margin-right:calc((11/(375*2))*100vw); 
+            .order-background{
+                border: solid 5px #e8e8e8;
+            }
+            ion-item{
+                margin-bottom:calc((4/667)*100vh);
+                border: solid 1px #bdbdbd;
+            }    
+            .checked-button{
+                font-size:1.7vw;  
+                color:white;
+                background-color: #33b9c6;
+                border: solid 2px #33b9c6;
+                border-radius: 10%;
+            }  
+            .completed-button{
+                font-size:1.7vw;  
+                color:#33b9c6;
+                background-color: rgba(51, 185, 198, 0.2);
+                border: solid 2px #33b9c6;
+                border-radius: 10%;
+            }  
+            .pickup-button{
+                font-size:1.7vw;  
+                color:white;
+                background-color: #6441a5;
+                border: solid 2px #6441a5;
+                border-radius: 10%;
+            }
 
-    ion-col.dropdown{
-        padding: 0px;
-    }
+            .cancelled-button{
+                font-size:1.7vw;  
+                background-color: #ffffff;
+           }
 
-    .option{
-        color: black !important;  
-    }    
+           .done-button{
+                font-size:1.7vw;  
+                color:#6441a5;
+                background-color: #ffffff;
+           }
+           .notify-button{
+                font-size:1.7vw;  
+                color:#6441a5;
+                background-color: rgba(100, 65, 165, 0.2);
+                border: solid 2px #6441a5;
+                border-radius: 10%;               
+           }
 
-    .orderName{
-        color: #7f7f7f !important;  
-        align-items: center;
-        display: flex;
-    }
+           .custom-printer-button{
+                height:calc((20/(375*2))*100vw);
+                font-size:1.7vw;  
+                color:#9b9b9b;
+                background-color: #ffffff;
+           }
+            
+           .order-no{
+               font-size:2vw;
+               .outline{
+                    font-size:1.9vw;
+                    margin-left:5px;
+                    border: solid 1px #4a4a4a;
+               }
+           }
 
-    span.orderName{
-        font-size: 1.5rem;
-    }
+           .display-time{
+               font-size:1.7vw;
+               color:#9B9B9B;
+           }
 
-    .verticalAlign{
-        align-items: center;
-        display: flex;
-    }
+           .cancel-button{
+               height:calc((19/(375*2))*100vw);
+           }
 
+           .menu-detail{
+               border-top: solid 1px #d8d8d8;
+               border-bottom: solid 1px #d8d8d8;
+               font-size:1.7vw;
+           }
 
-    .ios{
-        ion-radio{
-                    border-color: black !important;
-                    border-style: solid !important;
-                    border-width: 1px !important;
+           .time-section{
+               font-size:1.7vw;
+               padding-top:calc((4/667)*100vh); 
+               color:lightgray;                              
+               .col{
+                   padding-top:0px;
+                   padding-bottom:0px;
+               }               
+           }
+
+           .review-section{
+                border-top: solid 1px #d8d8d8;               
+                font-size:1.7vw;
+                padding-top:calc((4/667)*100vh);                
+               .col{
+                   padding-top:0px;
+                   padding-bottom:0px;
+               }                
+           }
         }
     }
 }

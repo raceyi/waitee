@@ -40,6 +40,10 @@ import { HttpModule } from '@angular/http';
 import { MyErrorHandler } from '../classes/my-error-handler';
 import {CancelConfirmPageModule} from '../pages/cancel-confirm/cancel-confirm.module';
 import { SoldOutPageModule } from '../pages/sold-out/sold-out.module';
+import {ComponentsModule} from '../components/components.module';
+import {CustomIconsModule} from 'ionic2-custom-icons';
+
+import {ConfigurePasswordPageModule} from '../pages/configure-password/configure-password.module';
 
 @NgModule({
   declarations: [
@@ -63,7 +67,10 @@ import { SoldOutPageModule } from '../pages/sold-out/sold-out.module';
     IonicStorageModule.forRoot(),
     CancelConfirmPageModule,
     ErrorPageModule,
-    SoldOutPageModule
+    ComponentsModule,
+    CustomIconsModule,
+    SoldOutPageModule,
+    ConfigurePasswordPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
