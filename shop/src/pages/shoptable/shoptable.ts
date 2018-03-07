@@ -508,7 +508,7 @@ export class ShopTablePage {
         }else{
             title="**CANCEL["+order.orderNO+"]";
         }
-        title+=this.timeUtil.getlocalTimeStringWithoutDate(order.cancelledTime);
+        title+="\n"+this.timeUtil.getlocalTimeStringWithoutYear(order.cancelledTime);
         order.orderListObj.menus.forEach((menu)=>{
             message+="-------------\n";
             message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
@@ -570,7 +570,7 @@ export class ShopTablePage {
       console.log("order:"+JSON.stringify(order));
       if(order.orderStatus=="paid" ||order.orderStatus=="checked"){
           if(this.platform.is('android')){
-              title="타킷주문["+order.orderNO+"]";
+              title="웨이티["+order.orderNO+"]";
               if(order.takeout=='1'){          
                 title+="포장";
               }else if(order.takeout=='2'){
@@ -583,10 +583,10 @@ export class ShopTablePage {
                 title+="Takeout";
               else if(order.takeout=='2'){
                 title+="Delivery"; 
-                message=order.deliveryAddress+"\n";
+                message="배달장소:"+order.deliveryAddress+"\n";
               }
           }
-          title+=this.timeUtil.getlocalTimeStringWithoutDate(order.orderedTime);                
+          title+="\n"+this.timeUtil.getlocalTimeStringWithoutYear(order.orderedTime);                
           order.orderListObj.menus.forEach((menu)=>{
               message+="-------------\n";
               message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
@@ -597,12 +597,12 @@ export class ShopTablePage {
                 }
                 message+="\n";
               });
+                if(menu.memo && menu.memo!=null){
+                    message+=menu.memo;
+                    message+="\n";
+                    message+="-------------\n";
+                }
           });
-          if(order.userMSG){
-              message+="-------------\n";
-              message+=order.userMSG;
-              message+="\n";
-          }
       }else if(order.orderStatus=="completed" || order.orderStatus=="pickup"){ //print receipt
           if(this.platform.is("android")){
               title="        영수증\n";
