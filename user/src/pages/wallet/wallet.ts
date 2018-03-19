@@ -64,7 +64,7 @@ export class WalletPage {
     });    
   }
 
-
+/*
   getDisplayTime(measureTime){    
 // workaround code for iOS
      let hourH=parseInt(measureTime[11]);
@@ -79,7 +79,7 @@ export class WalletPage {
           measureTime[14]+measureTime[15];
 
   }
-
+*/
   getTodayString(){
     let d = new Date();
 
@@ -141,7 +141,10 @@ export class WalletPage {
                     if(res.result=="success" && Array.isArray(res.cashList)){
                         this.lastTuno=res.cashList[res.cashList.length-1].cashTuno;
                         res.cashList.forEach(element => {
-                            element.displayTime = this.getDisplayTime(element.transactionTime);
+                            //element.displayTime = this.getDisplayTime(element.transactionTime);
+                            let localTimeString=this.timeUtil.getlocalTimeStringWithoutDay(element.transactionTime);                             
+                            element.displayTime =  localTimeString.substr(9,5); 
+                            element.displayDate =  localTimeString.substr(0,8);
                             if(element.takitId!=null){
                                   let strs=element.takitId.split("@");
                                   element.brand  =strs[0];

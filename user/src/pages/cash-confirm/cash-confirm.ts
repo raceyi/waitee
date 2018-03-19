@@ -58,11 +58,16 @@ export class CashConfirmPage {
       //console.log("!!!depositTime:"+custom.depositTime);
       //console.log("hasOwnProperty:"+ (custom.hasOwnProperty("depositTime")));
       //console.log("hasOwnProperty ?null:"+ custom.despositTime!='null');
-      if(custom.hasOwnProperty("depositTime") && custom.despositTime!='null'){ // iOS에서 custom.depositTime!=null 이 동작하지 않음. 다른 코드도 문제 없나 확인 필요함.
+      if(custom.hasOwnProperty("depositTime")&& custom.despositTime!='null'){
+        if(custom.depositTime.includes('-')){ // iOS에서 custom.depositTime!=null 이 동작하지 않음. 다른 코드도 문제 없나 확인 필요함.
             //console.log("depositTime...");
             this.timeString=custom.depositTime.substr(0,4)+"."+custom.depositTime.substr(5,2)+"."+custom.depositTime.substr(8,2)
-                            + custom.depositTime.substr(10,8);
-            //console.log("timeString:"+this.timeString);                
+                            + custom.depositTime.substr(10,9);
+            console.log("timeString:"+this.timeString);                
+        }else{
+            this.timeString=custom.depositTime.substr(0,4)+"."+custom.depositTime.substr(4,2)+"."+custom.depositTime.substr(6,2)
+                            +" "+custom.depositTime.substr(8,2)+":"+ custom.depositTime.substr(10,2)+":"+ custom.depositTime.substr(12,2);
+        }  
       }else if(custom.hasOwnProperty("depositDate") && custom.depositDate!='null'){ //Is it necessary? 
             this.timeString=custom.depositDate.substr(0,4)+"."+custom.depositDate.substr(5,2)+"."+custom.depositDate.substr(8,2);
             if(custom.hasOwnProperty("depositHour")){
@@ -109,7 +114,7 @@ export class CashConfirmPage {
                         depositDate:this.timeString};
        this.removeDuplicate();      
        this.viewCtrl.dismiss();
-       this.app.getRootNav().push(CashCancelChargePage,param);
+//       this.app.getRootNav().push(CashCancelChargePage,param);
   }
 
   charge(){

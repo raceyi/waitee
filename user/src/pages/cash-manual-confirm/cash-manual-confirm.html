@@ -19,7 +19,7 @@
         {{bankName}}
       </ion-col>
       <ion-col text-right style="color:#bdbdbd;" *ngIf="bankName==undefined && !bankCodeMode" text-center class="bank-select-value" col-7>
-        이체 시 사용한 본인 은행
+        이체 시 사용한 기관
       </ion-col>      
       <ion-col text-right *ngIf="bankCodeMode" text-center class="account-num-value" col-7>
          <ion-input text-right type="number" [(ngModel)]="bankCode"></ion-input>

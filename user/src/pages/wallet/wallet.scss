@@ -240,35 +240,37 @@ page-wallet {
         
         .cash-label{                            ///////////////        
             padding-top: calc((24/667)*100vh);
-            height:calc((47/667)*100vh);
+            height:calc((53/667)*100vh);
             border-radius: 5px;
         }
-            .cash-value{
+        .cash-value{
             padding-top:calc((7/667)*100vh);     ////////////////////////
             padding-bottom:calc((17/667)*100vh); ///////////////////////
-            }
-            .cash-value-row{
+        }
+        .cash-value-row{
             padding-bottom:calc((7/667)*100vh); ///////////////////////                     
-            } 
-            ion-row{
+            height:calc((29/667)*100vh);            
+        }
+        .next-step{
                 button{
-                height:calc((25/667)*100vh);
+                height:calc((35/667)*100vh);
                 }
                 border-top: solid 0.5px #ffffff;
                 ion-col{
-                button{
-                        color:white;
-                        padding-bottom:calc((7/667)*100vh); // Please check it on the phone
-                        span{
-                            font-size:4vw;
-                        }
-                }
+                    button{
+                            color:white;
+                            padding-bottom:calc((7/667)*100vh); // Please check it on the phone
+                            span{
+                                font-size:4vw;
+                            }
+                            border-top: solid 0.5px #ffffff;
+                    }
                 }
 
                 .left-button{
                     border-right: solid 0.5px #ffffff;
                 }
-            }
+        }
     }
 
 }

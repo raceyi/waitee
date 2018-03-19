@@ -114,6 +114,31 @@ export class TabsPage {
        if(this.storageProvider.tourMode==false && this.storageProvider.id!=undefined){    // login status
             this.backgroundMode.enable(); 
 
+        /////////////////////////////////////// 
+        this.platform.pause.subscribe(()=>{
+            console.log("pause event comes");
+            this.storageProvider.backgroundMode=true;
+        }); //How about reporting it to server?
+        this.platform.resume.subscribe(()=>{
+            console.log("resume event comes.send app:foreground");
+            this.storageProvider.backgroundMode=false;
+        }); //How about reporting it to server?
+        this.backgroundMode.on("enable").subscribe(()=>{
+            console.log("background mode has been activated");
+            this.storageProvider.backgroundMode=true;
+        });
+
+        this.backgroundMode.on("deactivate").subscribe(()=> {
+        console.log("background mode has been deactivated");
+        this.storageProvider.backgroundMode=false;
+        });
+
+        this.backgroundMode.setDefaults({
+            title:  '웨이티가 실행중입니다',
+            ticker: '주문알림 대기',
+            text:   '웨이티가 실행중입니다'
+        });
+        //////////////////////////////////////// 
             let ready = true;
             this.platform.registerBackButtonAction(()=>{
                 console.log("Back button action called");
@@ -308,7 +333,7 @@ export class TabsPage {
                     }
                 }else if(additionalData.GCMType==="cash"){
                   console.log("cash-additionalData.custom:"+additionalData.custom);
-                  if(this.platform.is("ios") //ios resume event comes before notification.
+                  if((!this.storageProvider.backgroundMode && this.platform.is("ios"))//ios resume event comes before notification.
                         ||(this.platform.is("android") && !this.storageProvider.cashExistInProgress(additionalData.custom))){ // android resume event comes late.
                         let cashConfirmModal;
                         if(typeof additionalData.custom === 'string'){ 

@@ -73,8 +73,9 @@ export class SignupPage {
     console.log(this.platform.is("android"));
     
     if(navParams.get("login")=="email"){
-      this.emailLogin=true;
-    }else if(!navParams.get("email") && this.platform.is("android")){ // no email info given
+        this.emailLogin=true;
+        if(!navParams.get("email") && this.platform.is("android")){ // no email info given
+          console.log("get accounts under android");
           var permissions = cordova.plugins.permissions;
           permissions.hasPermission(permissions.GET_ACCOUNTS,(status)=> {
             if (status.hasPermission ) {
@@ -104,6 +105,7 @@ export class SignupPage {
           },(err)=>{
 
           });
+        }
     }
 
     if(navParams.get("login")=="facebook"){

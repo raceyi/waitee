@@ -13,6 +13,10 @@ page-my-favorite {
                 position: absolute;
                 left: 0px;
                 top: 0px;
+                //apply border
+                background-color: #6441a5;
+                border: solid 1px #979797;
+                border-radius: 5px;                
             }
             ion-icon{
                 color:$default-color;
@@ -87,6 +91,10 @@ page-my-favorite {
                 position: absolute;
                 left: 0px;
                 top: 0px;
+                //apply border
+                background-color: #6441a5;
+                border: solid 1px #979797;
+                border-radius: 5px;                                
             }
             ion-icon{
                 color:$default-color;

@@ -1,6 +1,6 @@
 page-home {
     $scroll-H:  calc((197/667)*100vh);
-    $latest-W : calc((145/376)*100vw);
+    $latest-W : calc((145/375)*100vw);
     $latest-H : calc((181/667)*100vh);
 
     .scroll-latest {
@@ -48,6 +48,10 @@ page-home {
                 position: absolute;
                 left: 0px;
                 top: 0px;
+                //apply border
+                background-color: #6441a5;
+                border: solid 1px #979797;
+                border-radius: 5px;
             }
             ion-icon{
                 color:$default-color;
@@ -95,14 +99,14 @@ page-home {
                 font-size:3.8vw;  
                 color: #4a4a4a;
                 ion-icon{
-                    width: calc((10/376)*100vw);
-                    height: calc((10/376)*100vw);
+                    width: calc((10/375)*100vw);
+                    height: calc((10/375)*100vw);
                 }
                 p{
                     margin:0px;
                     position:absolute;
                     top:0px;
-                    left: calc((80/376)*100vw);
+                    left: calc((80/375)*100vw);
                 }
             }
     }  
@@ -111,8 +115,8 @@ page-home {
         margin-top: calc((24/667)*100vh);
         padding: 0px;
         
-        margin-left: calc((21/376)*100vw);
-        width: calc((340/376)*100vw);
+        margin-left: calc((20/375)*100vw);
+        width: calc((340/375)*100vw);
 
         background-color:white;
         color: #bdbdbd;
@@ -169,7 +173,7 @@ page-home {
     }
 
     .profile-smile{
-        width:calc((150/376)*100vw);
+        width:calc((150/375)*100vw);
     }
 
 

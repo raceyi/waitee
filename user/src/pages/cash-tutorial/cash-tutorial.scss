@@ -15,21 +15,22 @@ page-cash-tutorial {
         margin:0px;
         font-size:4vw !important;
         color:white;
-        margin-left:calc((60/376)*100vw);
-        margin-right:calc((60/376)*100vw);
+        margin-left:calc((60/375)*100vw);
+        margin-right:calc((60/375)*100vw);
     }
 
     .addition{
-        margin-left:calc((60/376)*100vw);
-        margin-right:calc((60/376)*100vw);
+        margin-left:calc((60/375)*100vw);
+        margin-right:calc((60/375)*100vw);
     }
 
     .slide-zoom {
-        margin-top:calc((100/667)*100vh);
+     //   margin-top:calc((20/667)*100vh);
     }
 
     .swiper-slide img {
-        max-width: 80%;
+        max-width: 75%;
+        padding-top:calc((5/667)*100vh);
     }
 
     .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {

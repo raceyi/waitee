@@ -29,9 +29,12 @@ page-shop {
     }
 
     .shop-img{
-        width: 100vw;
+        width: 54vw;
         height: calc((136/667)*100vh);
-        background-size: 100vw calc((136/667)*100vh); 
+        background-size: 54vw calc((136/667)*100vh); 
+
+        margin-left:23vw;//calc((35/376)*100vw);
+        margin-right:23vw;//calc((35/376)*100vw);
         span{
             font-size:3.4vw;
         	border-radius: 13px;

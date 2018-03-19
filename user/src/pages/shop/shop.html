@@ -28,13 +28,13 @@
 <div [hidden]="!storeInfoHide">    
 <div class="shop-img" [ngStyle]="ngStyle">
 <ion-row text-right *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash!=undefined">
-    <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash=='0%'">&nbsp;캐시결제</span>
-                        <span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash!='0%'">&nbsp;캐시결제{{storageProvider.shopResponse.shopInfo.paymethod.cash}}할인&nbsp;</span>
+    <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash=='0%'">&nbsp;&nbsp;캐시결제&nbsp;&nbsp;</span>
+                        <span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash!='0%'">&nbsp;&nbsp;캐시결제{{storageProvider.shopResponse.shopInfo.paymethod.cash}}할인&nbsp;&nbsp;</span>
     </ion-col>
 </ion-row>
 <ion-row text-right *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card!=undefined">
-    <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card=='0%'">&nbsp;카드결제</span>
-                        <span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card!='0%'"> &nbsp;카드결제{{storageProvider.shopResponse.shopInfo.paymethod.card}}할인&nbsp;</span>
+    <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card=='0%'">&nbsp;&nbsp;카드결제&nbsp;&nbsp;</span>
+                        <span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card!='0%'"> &nbsp;&nbsp;카드결제{{storageProvider.shopResponse.shopInfo.paymethod.card}}할인&nbsp;&nbsp;</span>
     </ion-col>
 </ion-row>
 </div>
@@ -93,8 +93,8 @@
                              </div>
 
                             <h2>{{menu[0].menuName}}</h2>
-                            <p><amount-display [amount]="menu[0].price"></amount-display>원 <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 
-                                                 <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea!=null" >포장/배달</span></p>
+                            <p><amount-display [amount]="menu[0].price"></amount-display>원 <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea==null" >&nbsp;&nbsp;포장&nbsp;&nbsp;</span> 
+                                                 <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea!=null" >&nbsp;&nbsp;포장/배달&nbsp;&nbsp;</span></p>
                         </ion-item>
                     </button>
                     </ion-col>
@@ -109,8 +109,8 @@
                               <label *ngIf="menu[1].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>                             
                             <h2>{{menu[1].menuName}}</h2>
-                            <p><amount-display [amount]="menu[1].price"></amount-display>원 <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea==null" >포장</span> 
-                                                   <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea!=null" >포장/배달</span></p> 
+                            <p><amount-display [amount]="menu[1].price"></amount-display>원 <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea==null" >&nbsp;&nbsp;포장&nbsp;&nbsp;</span> 
+                                                   <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea!=null" >&nbsp;&nbsp;포장/배달&nbsp;&nbsp;</span></p> 
                         </ion-item>
                     </button>
                     <button *ngIf="!menu[1]" color="white" ion-button full no-padding no-margin>
