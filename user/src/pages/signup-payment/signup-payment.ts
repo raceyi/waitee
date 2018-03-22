@@ -78,7 +78,7 @@ export class SignupPaymentPage {
 
         if(this.cashId.trim().length<5 || this.cashId.trim().length>7 || valid==false){
             let alert = this.alertCtrl.create({
-                        title: '영문,숫자조합 5~7자리로 캐시아이디를 설정해주시기 바랍니다.',
+                        title: '영문,숫자조합 5~7자리로 충전힌트를 설정해주시기 바랍니다.',
                         buttons: ['OK']
                     });
             alert.present();       
@@ -86,7 +86,7 @@ export class SignupPaymentPage {
         }
         if(!this.cashIdUnique){
             let alert = this.alertCtrl.create({
-                        title: '캐시아이디 중복을 확인해 주시기 바랍니다',
+                        title: '충전힌트 중복을 확인해 주시기 바랍니다',
                         buttons: ['OK']
                     });
             alert.present();       
@@ -108,7 +108,7 @@ checkCashIdDuplicate(){
 
     if(this.cashId.trim().length<5 || this.cashId.trim().length>7 || valid==false){
         let alert = this.alertCtrl.create({
-                    title: '영문,숫자조합 5~7자리로 캐시아이디를 설정해주시기 바랍니다.',
+                    title: '영문,숫자조합 5~7자리로 충전힌트를 설정해주시기 바랍니다.',
                     buttons: ['OK']
                 });
         alert.present();       
@@ -130,7 +130,7 @@ checkCashIdDuplicate(){
                     }else{ // res.duplication=='duplication'
                         this.cashIdUnique=false;
                         let alert = this.alertCtrl.create({
-                            title: "사용불가능합니다. 캐시아이디를 다시 설정해주시기 바랍니다.",
+                            title: "사용불가능합니다. 충전힌트를 다시 설정해주시기 바랍니다.",
                             buttons: ['OK']
                         });
                         alert.present();
@@ -147,7 +147,7 @@ checkCashIdDuplicate(){
                         alert.present();
                     }else{
                             let alert = this.alertCtrl.create({
-                                title: "캐시아이디 중복확인에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",
+                                title: "충전힌트 중복확인에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",
                                 buttons: ['OK']
                             });
                             alert.present();
@@ -254,13 +254,13 @@ checkCashIdDuplicate(){
                         this.startInProgress=false;
                         if(res.hasOwnProperty("error") && res.error=="duplicationCashId"){
                             let alert = this.alertCtrl.create({
-                                title: this.cashId.trim().toUpperCase()+"(이)가 이미 존재합니다. 캐시아이디를 변경해주시기바랍니다.",
+                                title: this.cashId.trim().toUpperCase()+"(이)가 이미 존재합니다. 충전힌트를 변경해주시기바랍니다.",
                                 buttons: ['OK']
                             });
                             alert.present();
                         }else{
                             let alert = this.alertCtrl.create({
-                                title: "캐시아이디 설정에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",
+                                title: "충전힌트 설정에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",
                                 buttons: ['OK']
                             });
                             alert.present();
@@ -276,7 +276,7 @@ checkCashIdDuplicate(){
                         alert.present();
                     }else{
                             let alert = this.alertCtrl.create({
-                                title: "캐시아이디 설정에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",
+                                title: "충전힌트 설정에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",
                                 buttons: ['OK']
                             });
                             alert.present();

@@ -114,7 +114,7 @@ export class CashConfirmPage {
                         depositDate:this.timeString};
        this.removeDuplicate();      
        this.viewCtrl.dismiss();
-//       this.app.getRootNav().push(CashCancelChargePage,param);
+       this.app.getRootNav().push(CashCancelChargePage,param);
   }
 
   charge(){
@@ -168,7 +168,7 @@ export class CashConfirmPage {
                         alert.present();
                     }else{
                             let alert = this.alertController.create({
-                                title: "캐쉬아이디 설정에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",
+                                title: "충전 확인에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",
                                 buttons: ['OK']
                             });
                             alert.present();

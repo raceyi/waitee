@@ -19,6 +19,7 @@
       {{timeString}}
     </ion-col>
   </ion-row>
+  <!--
   <ion-row  style="padding:0px;border-top:solid;border-width:1px;border-top-color:#dddddd;">
     <ion-col class="info-label" col-3>
       입금은행  
@@ -27,6 +28,7 @@
       {{bank}}
     </ion-col>
   </ion-row>
+  -->
 </ion-grid>
 <div style="font-size:4.5vw;" text-center>
 타인의 입금으로 캐쉬 충전을 취소합니다.
@@ -35,10 +37,12 @@
 </ion-content>
 <ion-footer>
 <div class="warning" text-center>
-*본인의 입금일 경우, 고객센터로 연락 주시면 <br><br>
+*본인의 입금일 경우,<br>
+고객센터((0505-170-3636,help@takit.biz)로 연락 주시면 <br>
 다시 충전 확인이 가능합니다.
 </div>
 <ion-row>
-<ion-col no-padding no-margin><button no-margin ion-button full (click)="deleteDepositInput()" color="primary">확인</button></ion-col>
+<ion-col no-padding no-margin><button no-margin ion-button full (click)="back()" class="deny" >취소</button></ion-col>
+<ion-col no-padding no-margin><button no-margin ion-button full (click)="deleteDepositInput()" color="primary">타인 입금</button></ion-col>
 </ion-row>
 </ion-footer>
