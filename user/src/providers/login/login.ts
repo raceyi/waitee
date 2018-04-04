@@ -214,7 +214,7 @@ export class LoginProvider {
             
             let body;
 
-            console.log("serverLogin body:"+JSON.stringify(body));
+            //console.log("serverLogin body:"+JSON.stringify(body));
 
             console.log("server:"+ loginProvider.storageProvider.serverAddress);
 

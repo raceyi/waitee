@@ -9,6 +9,7 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
+<!--
 <button no-padding no-margin (click)="moveTutorial()" class="tutorial-button" ion-button full>
   <ion-row no-padding no-margin> 
     <ion-col no-padding no-margin class="tutorial" text-left col-11>
@@ -19,16 +20,22 @@
     </ion-col>
   </ion-row>
 </button>
+-->
 <div  class="account-info" text-center>
     <div class="message"><b>예금주: 타킷주식회사</b></div>
-    <div class="account">농협 301-2323-3636-21</div>
-</div>
+    <div class="account">농협 301-2424-3636-21</div>
+</div> 
 <div class="account-copy" no-padding no-margin text-right>
     <button no-padding no-margin ion-button clear (click)="copyAccountInfo()">계좌복사</button>
 </div>
+<div class="tutorial-button">
+<button (click)="moveTutorial()"  ion-button full>
+      웨이티 캐쉬 충전 방법 알아보기(클릭)
+</button>
+</div>
 <ion-row class="cash-id">
   <ion-col col-9 no-padding no-margin text-left>
-  받는 통장 표시 내용 (충전 힌트)
+  충전힌트 (받는 통장 표시 내용)
   </ion-col>
   <ion-col col-3 no-padding no-margin text-right>
     {{storageProvider.cashId}}
@@ -37,10 +44,10 @@
 <button class="manual-check" (click)="manualCheck()" no-padding no-margin ion-button full>
   <ion-row no-padding no-margin> 
     <ion-col no-padding no-margin class="question" text-left col-11>
-      충전 힌트 입력을 잊으셨나요?
+      충전힌트 입력을 잊으셨나요?
     </ion-col>
     <ion-col no-padding no-margin text-right col-1>
-      <ion-icon name="ios-add"></ion-icon>
+      <b><ion-icon name="ios-add"></ion-icon></b>
     </ion-col>
   </ion-row>
 </button>

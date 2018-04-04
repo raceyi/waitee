@@ -41,11 +41,28 @@ page-cash-charge {
         }
     }
 
-    .tutorial-button{
-        color: #4a4a4a;
-        background-color: #f2f2f2;
-        font-size:4.5vw; 
+       .tutorial-button{
+        padding-left:calc((13/375)*100vw);
+        padding-right:calc((12/375)*100vw);
+        padding-top:calc((23/667)*100vh);
+        padding-bottom:calc((23/667)*100vh);
+        background-color:#f2f2f2;
+        button{
+            width:calc((350/375)*100vw);
+            height:calc((55/667)*100vh);
+            background-color: #33b9c6;;
+            font-size:4.5vw; 
+            font-weight: 600;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: normal;
+            letter-spacing: -0.4px;
+            text-align: center;
+            color: #ffffff;
+            border-radius: 5px;
+        }
     }
+
 
     .account-copy{
         margin-right:calc((55/376)*100vw) !important;
@@ -59,14 +76,13 @@ page-cash-charge {
     }
 
     .cash-id{
-        border-top:solid calc((19/667)*100vh) #f2f2f2;
         border-bottom:solid calc((19/667)*100vh) #f2f2f2;
         font-size:4.5vw;
         color: #6441a5;
         padding-left:calc((20/376)*100vw); 
         padding-right:calc((20/376)*100vw); 
-        height:calc((80/667)*100vh);
-        padding-top:calc((10/667)*100vh);
+        height:calc((73/667)*100vh); //60+13
+        padding-top:calc((15/667)*100vh);
     }
 
     .manual-check{
@@ -79,13 +95,13 @@ page-cash-charge {
             font-size: 4.5vw;
         }
         padding-top:calc((10/667)*100vh);
-        height:calc((40/667)*100vh);
+        height:calc((50/667)*100vh);
     }
 
     .warning-section{
        	color: #bdbdbd;
         background-color: #f2f2f2;
-        height:calc((235/667)*100vh);
+        height:calc((175/667)*100vh); //???
         padding-top:calc((23/667)*100vh);
         font-size:3.4vw;
    }

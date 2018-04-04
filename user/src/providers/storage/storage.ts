@@ -62,7 +62,7 @@ export class StorageProvider {
 
     //public login:boolean=false;
     
-    backgroundMode:boolean;
+    backgroundMode:boolean=false;
 
     shopInfo;
 

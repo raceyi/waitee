@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController ,Events} from 'ionic-angular';
+import { IonicPage, LoadingController, NavController, NavParams, AlertController ,Events} from 'ionic-angular';
 import {CashRefundAccountPage} from '../cash-refund-account/cash-refund-account';
 import {ServerProvider} from '../../providers/server/server';
 import {StorageProvider} from '../../providers/storage/storage';
@@ -26,15 +26,19 @@ export class CashRefundMainPage {
   refundAmount;
   refundFee;
 
+  inProgress:boolean=false;
+  public progressBarLoader : any;
+
   constructor(public navCtrl: NavController, public navParams: NavParams
               ,public alertCtrl:AlertController
+              ,public loadingCtrl: LoadingController                           
               ,public storageProvider:StorageProvider
               ,public serverProvider:ServerProvider
               ,public nativeStorage:NativeStorage
               ,private events:Events) {
 
       if(this.storageProvider.tourMode){
-            this.refundAccount="3012323363621";
+            this.refundAccount="3012424363621";
             this.refundAccountMask="301*****63621";
             this.refundBank={name:"농협",value:"011"};
       }else{
@@ -190,6 +194,8 @@ export class CashRefundMainPage {
 
 
   doWithraw(){
+      if(this.inProgress) return;
+       this.inProgress=true;
         let body = {depositorName:this.storageProvider.name,
                                 bankCode:this.refundBank.value ,
                                 bankName:this.refundBank.name,
@@ -198,7 +204,15 @@ export class CashRefundMainPage {
                                 withdrawalAmount:this.refundAmount,
                                 fee:this.refundFee};
       console.log("refundCash:"+body);
+      this.progressBarLoader = this.loadingCtrl.create({
+        content: "진행중입니다.",
+        duration: 10000 //3 seconds
+        });
+      this.progressBarLoader.present();
       this.serverProvider.post(this.storageProvider.serverAddress+"/refundCash",body).then((res:any)=>{
+          this.inProgress=false;
+          if(this.progressBarLoader)
+                this.progressBarLoader.dismiss();          
           console.log("refundCash res:"+JSON.stringify(res));
           if(res.result=="success"){
               //console.log("cashAmount:"+res.cashAmount);
@@ -228,6 +242,9 @@ export class CashRefundMainPage {
                 alert.present();
           }
       },(err)=>{
+                this.inProgress=false;
+                if(this.progressBarLoader)
+                        this.progressBarLoader.dismiss();
                 if(err=="NetworkFailure"){
                             let alert = this.alertCtrl.create({
                                 title: "서버와 통신에 문제가 있습니다.",

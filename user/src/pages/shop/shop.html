@@ -42,7 +42,7 @@
 <div [hidden]="storeInfoHide">
 <ion-row>
 <ion-col no-padding class="shop-text-info">
-<label class="label">영업시간</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.TodayBusinessTime}}</span>
+<label class="label">주문시간</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.TodayBusinessTime}}</span>
 </ion-col>
 <ion-col no-padding  class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.breakTime!=null">
 <label class="label">브레이크</label>  <span class="value"> {{storageProvider.shopResponse.shopInfo.breakTime}} </span>

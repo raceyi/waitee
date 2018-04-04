@@ -83,12 +83,17 @@ export class CartPage {
   computeTotalAmount(){
     this.totalAmount=0;
     this.carts.forEach(cart=>{
+        let cartAmount=0;        
         cart.orderList.menus.forEach((menu)=>{
           console.log(" "+menu.unitPrice+" "+menu.quantity);
             let unitPrice:number=menu.unitPrice;
             let quantity:number=menu.quantity;
+            menu.price=menu.unitPrice*menu.quantity;
+            cartAmount+=menu.unitPrice*menu.quantity;            
             this.totalAmount+=menu.unitPrice*menu.quantity;
         });
+        cart.amount=cartAmount;
+        cart.price=cartAmount; // price는 db에 저장된 값? price를 이렇게 지정하는게 맞을까? 맞다. 이름을 price대신 amount로 사용할껄...
     });
     console.log("totalAmount:"+this.totalAmount);
   }

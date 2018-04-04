@@ -123,10 +123,10 @@ export class TabsPage {
             console.log("resume event comes.send app:foreground");
             this.storageProvider.backgroundMode=false;
         }); //How about reporting it to server?
-        this.backgroundMode.on("enable").subscribe(()=>{
-            console.log("background mode has been activated");
-            this.storageProvider.backgroundMode=true;
-        });
+        //this.backgroundMode.on("enable").subscribe(()=>{
+        //    console.log("background mode has been activated");
+        //   // this.storageProvider.backgroundMode=true;
+        //});
 
         this.backgroundMode.on("deactivate").subscribe(()=> {
         console.log("background mode has been deactivated");
@@ -332,7 +332,7 @@ export class TabsPage {
                         orderDoneModal.present();
                     }
                 }else if(additionalData.GCMType==="cash"){
-                  console.log("cash-additionalData.custom:"+additionalData.custom);
+                  console.log("cash-additionalData.custom:"+additionalData.custom+"backgroundMode:"+this.storageProvider.backgroundMode);
                   if((!this.storageProvider.backgroundMode && this.platform.is("ios"))//ios resume event comes before notification.
                         ||(this.platform.is("android") && !this.storageProvider.cashExistInProgress(additionalData.custom))){ // android resume event comes late.
                         let cashConfirmModal;

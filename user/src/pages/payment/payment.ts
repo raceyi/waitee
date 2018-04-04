@@ -88,6 +88,7 @@ export class PaymentPage {
     //request the recent discount rate for each cart
     let shops=[];
     this.carts.forEach(cart => { 
+        console.log("cart.price:"+cart.price);
       this.totalAmount+=cart.price; 
       shops.push(cart.takitId)
     });

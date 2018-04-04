@@ -93,11 +93,11 @@ export class CashConfirmPage {
        this.storageProvider.cashRemoveInProgress(this.customStr,this.viewCtrl);
        //hum... just remove one? yes. Workaround code
        for(var i=0;i<this.storageProvider.cashInProgress.length;i++){
-            console.log("removeDuplicate "+i);
+            console.log("removeDuplicate "+i+this.customStr);
             if(this.storageProvider.cashInProgress[i].cashStr==this.customStr){
                 //console.log("0.removeView-hum..."+this.app.getRootNav().getViews().length);
                 //console.log("1.removeView-hum..."+this.navController.getViews().length);
-                //console.log("removeView "+this.customStr);
+                console.log("removeView "+this.customStr);
                 this.navCtrl.removeView(this.storageProvider.cashInProgress[i].viewController);
                 this.storageProvider.cashInProgress.splice(i,1);
                  console.log("call splice with "+i);

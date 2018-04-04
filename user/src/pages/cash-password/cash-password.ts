@@ -240,9 +240,16 @@ export class CashPasswordPage {
                                     buttons: ['OK']
                                 });
                                 alert.present();
-                        }else if(error=="shop's off"){
+                        }else if(error.startsWith("shop's off")){
+                            let msg;
+                            if(error.substr(10).length>2){
+                                msg='상점의 주문시간'+ error.substr(10) +'을 확인해주시기 바랍니다.';
+                            }else{
+                                msg='상점의 주문시간을 확인해주시기 바랍니다.';
+                            }
                             let alert = this.alertController.create({
                                     title: '지금은 주문을 할 수 없습니다.',
+                                    subTitle:'상점의 주문시간'+ error.substr(10) +'을 확인해주시기 바랍니다.',
                                     buttons: ['OK']
                                 });
                                 alert.present();

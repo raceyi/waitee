@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams ,AlertController} from 'ionic-angular';
+import { LoadingController, IonicPage, NavController, NavParams ,AlertController,ModalController} from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import {CashConfirmPage} from '../cash-confirm/cash-confirm';
+
 import * as moment from 'moment';
 /**
  * Generated class for the CashManualConfirmPage page.
@@ -25,9 +27,14 @@ export class CashManualConfirmPage {
   bankCodeMode:boolean=false;
   bankCode:string;
 
+  InProgress=false;
+  public progressBarLoader : any;
+
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
+              public loadingCtrl: LoadingController,              
               private alertController:AlertController,
+              private modalCtrl:ModalController,
               private serverProvider:ServerProvider,
               private storageProvider:StorageProvider) {
       this.defaultTransferDate();
@@ -75,7 +82,10 @@ bankSelect(bank){
 
 
 cashInComplete(){
+      if(this.InProgress) return;
+      this.InProgress=true;
       if(this.storageProvider.tourMode){
+            this.InProgress=false;
             let alert = this.alertController.create({
                 title: '둘러보기모드입니다.',
                 buttons: ['OK']
@@ -85,6 +95,7 @@ cashInComplete(){
       }
 
       if(this.amount==undefined){
+            this.InProgress=false;          
             let alert = this.alertController.create({
                 title: "입금액을 입력해주시기바랍니다.",
                 buttons: ['OK']
@@ -95,6 +106,7 @@ cashInComplete(){
 
         //console.log("this.bank:"+JSON.stringify(this.bank));
         if(this.bank==undefined && (this.bankCodeMode && this.bankCode==undefined)){
+            this.InProgress=false;            
             let alert = this.alertController.create({
                 title: '입금 은행을 선택해주시기바랍니다',
                 buttons: ['OK']
@@ -104,6 +116,7 @@ cashInComplete(){
         }
 
       if(this.memo==undefined || this.memo.trim().length==0){
+            this.InProgress=false;                      
              this.memo=this.storageProvider.name;
       }
 
@@ -125,17 +138,23 @@ cashInComplete(){
             };
 
       console.log("body:"+JSON.stringify(body));
+      this.progressBarLoader = this.loadingCtrl.create({
+        content: "진행중입니다.",
+        duration: 10000 //3 seconds
+        });
+      this.progressBarLoader.present();
 
       this.serverProvider.post(this.storageProvider.serverAddress+"/checkCashUserself",body).then((res:any)=>{
+                                    if(this.progressBarLoader)
+                                        this.progressBarLoader.dismiss();
                                     console.log("res:"+JSON.stringify(res));
                                     if(res.result=="success"){
-                                      /*
-                                          let alert = this.alertController.create({
-                                              title: '입금 확인을 요청했습니다.',
-                                              buttons: ['OK']
-                                          });
-                                          alert.present();
-                                       */
+                                        if(res.cashlist){
+                                            res.cashlist.forEach(cash=>{
+                                                let cashConfirmModal= this.modalCtrl.create(CashConfirmPage, { custom: cash });
+                                                cashConfirmModal.present(); 
+                                            })
+                                        }
                                       this.navCtrl.pop();  
                                     }else if(res.result=="failure" && res.error=="gcm:400"){
                                           let alert = this.alertController.create({
@@ -181,6 +200,9 @@ cashInComplete(){
                                         }
                                     }
                                 },(err)=>{
+                                           if(this.progressBarLoader) 
+                                                this.progressBarLoader.dismiss();                                    
+                                           this.InProgress=false;
                                            if(err=="NetworkFailure"){
                                                   let alert = this.alertController.create({
                                                       subTitle: '네트웍상태를 확인해 주시기바랍니다',

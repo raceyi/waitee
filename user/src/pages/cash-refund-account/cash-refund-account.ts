@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component ,NgZone} from '@angular/core';
 import { IonicPage, NavController, NavParams,AlertController } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
@@ -10,6 +10,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
+declare var cordova:any;
 
 @IonicPage()
 @Component({
@@ -25,11 +26,19 @@ export class CashRefundAccountPage {
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
+              private ngZone:NgZone,
               private alertController:AlertController,
               private serverProvider:ServerProvider,
               public nativeStorage:NativeStorage,
               private storageProvider:StorageProvider) {
          this.callback = this.navParams.get("callback");       
+
+         cordova.plugins.clipboard.paste((text)=>{ 
+             console.log("clipboard:"+text);
+             this.ngZone.run(()=>{
+                this.refundAccount=text; 
+             })
+        });
   }
 
   ionViewDidLoad() {
