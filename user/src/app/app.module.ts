@@ -64,6 +64,7 @@ import { CartProvider } from '../providers/cart/cart';
 import {ConfigureReceiptPageModule} from '../pages/configure-receipt/configure-receipt.module';
 import {ConfigurePasswordPageModule} from '../pages/configure-password/configure-password.module';
 import {ConfigurePaymentPageModule} from '../pages/configure-payment/configure-payment.module';
+import {InputCouponPageModule} from '../pages/input-coupon/input-coupon.module';
 
 @NgModule({
   declarations: [
@@ -108,6 +109,7 @@ import {ConfigurePaymentPageModule} from '../pages/configure-payment/configure-p
     ConfigurePasswordPageModule,
     ConfigurePaymentPageModule,  
     CashCancelChargePageModule,  
+    InputCouponPageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],

@@ -63,6 +63,7 @@ export class OrderDetailPage {
     this.storageProvider.orderAddInProgress(this.order,this.viewCtrl); // call this function at the begin of constructor
 
     this.convertOrderInfo();
+
     events.subscribe('orderUpdate', (param)=>{
         // user and time are the same arguments passed in `events.publish(user, time)`
         console.log("orderUpdate comes at order-details"+JSON.stringify(param.order));
@@ -170,6 +171,10 @@ export class OrderDetailPage {
         };
     }
 
+   //console.log("deliveryFee:"+this.order.deliveryFee + " "+parseInt(this.order.deliveryFee));
+   //console.log("deliveryFee:"+this.order.amount + " "+parseInt(this.order.amount));
+   //this.order.amountWithDeliveryFee=parseInt(this.order.amount)+parseInt(this.order.deliveryFee);
+   //console.log("this.order.amountWithDeliveryFee:"+this.order.amountWithDeliveryFee);
   }
 
 

@@ -209,6 +209,30 @@
      </ion-col>
  </ion-row>
 </div>
+<div *ngIf="trans.transactionType=='coupon'"  class="transaction">
+ <ion-row class="charge-done">
+     <ion-col style="font-size:3.4vw;" col-3>
+      {{trans.displayDate}}
+     </ion-col>     
+     <ion-col col-5 text-left>
+         쿠폰
+     </ion-col>
+     <ion-col col-4 text-right>
+         +<amount-display [amount]="trans.amount" ></amount-display>원
+     </ion-col>
+ </ion-row>
+ <ion-row class="extra-info">
+     <ion-col col-3>
+     {{trans.displayTime}}
+     </ion-col>              
+     <ion-col col-5 text-left>
+       {{trans.couponName}}
+     </ion-col>
+     <ion-col col-4 text-right *ngIf="trans.nowBalance!=null && trans.nowBalance!=undefined">  
+        <amount-display [amount]="trans.nowBalance"></amount-display>
+     </ion-col>
+ </ion-row>
+</div>
 </div>
 
 <ion-infinite-scroll (ionInfinite)="doInfinite($event)">

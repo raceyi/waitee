@@ -88,6 +88,11 @@ export class TabsPage {
         //}     
     });
 
+    events.subscribe("myWalletPage",(param)=>{
+        console.log("move into my wallet tab");
+       this.tabs.select(3); 
+    });
+
     events.subscribe('cashUpdate', (param) =>{
         console.log("cashUpdate comes at TabsPage");
         if(this.storageProvider.cashId!=undefined && this.storageProvider.cashId.length>=5){

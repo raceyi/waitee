@@ -1,0 +1,23 @@
+page-input-coupon {
+    .toolbar-background-ios {
+        background:$default-color;
+    }
+
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border-style: hidden;
+    }
+
+    ion-title{
+        font-size:4.8vw;
+        padding:0px;
+    }
+
+   .toolbar-title-ios{
+        color:white;
+   }
+
+    .item-ios.item-block .item-inner {
+        border-bottom: 0px;
+    }
+
+}

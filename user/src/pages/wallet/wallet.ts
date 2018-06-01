@@ -56,11 +56,15 @@ export class WalletPage {
     this.endDate=this.getTodayString();
 
        events.subscribe('cashUpdate', (param) =>{
-        console.log("cashUpdate comes at WalletPage");
+        console.log("cashUpdate comes at WalletPage "+JSON.stringify(param));
+        if(param!=undefined && param.cashListNoUpdate){
+            //just ignore it
+        }else{
             this.startDate=this.getTodayString();
             this.endDate=this.getTodayString();    
             this.periodSearch=false;
             this.refreshCashList();
+        }
     });    
   }
 
@@ -101,11 +105,31 @@ export class WalletPage {
     this.endDate=this.getTodayString();    
     this.periodSearch=false;
     this.refreshCashList();
+
+    // cash정보가 업데이트 되지 않는 경우가 있다. 이경우 보안책으로 다른 탭으로 이동했다 다시왔을때라도 보여주자.
+            if(this.storageProvider.cashId!=undefined && this.storageProvider.cashId.length>=5){
+            let body = {cashId:this.storageProvider.cashId};
+
+            this.serverProvider.post(this.storageProvider.serverAddress+"/getBalanceCash",body).then((res:any)=>{
+                console.log("getBalanceCash res:"+JSON.stringify(res));
+                if(res.result=="success"){
+                    this.storageProvider.cashAmount=res.balance;
+                }else{
+                    let alert = this.alertController.create({
+                        title: "캐시정보를 가져오지 못했습니다.",
+                        buttons: ['OK']
+                    });
+                    alert.present();
+                }
+            });
+        }
+
   }
 
   refreshCashList(){
     if(this.infiniteScroll!=undefined)
         this.infiniteScroll.enable(true); //stop infinite scroll
+    console.log("reset cashList");    
     this.cashList=[]; // refresh  when it enters this page.
     this.lastTuno=-1;
     this.getCashLists().then((value)=>{

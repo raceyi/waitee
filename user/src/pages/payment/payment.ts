@@ -174,6 +174,8 @@ export class PaymentPage {
 
     if(this.takeout==2 && this.payAmount<this.carts[0].freeDelivery){
         this.deliveryFee=parseInt(this.carts[0].deliveryFee);
+    }else if(this.takeout==2 && this.carts[0].takitId=="세종대@더큰도시락"){    // 더큰도시락 임시 코드임. 향후 minimum 주문에도 delivery fee를 추가하는 방안에 대해 정식구현이 필요함.
+        this.deliveryFee=1000;
     }else
         this.deliveryFee=undefined;
 
@@ -351,7 +353,14 @@ export class PaymentPage {
             body.deliveryFee=this.deliveryFee;
         }
     }
-      this.navCtrl.push(CashPasswordPage,{body:body,trigger:this.trigger,
+
+    if(body.deliveryFee)
+        body.total=body.amount+body.deliveryFee;
+    else    
+        body.total= body.amount;
+    
+    console.log("body.total:"+body.total);
+    this.navCtrl.push(CashPasswordPage,{body:body,trigger:this.trigger,
                                          title:"결제비밀번호" ,description:"결제 비밀번호를 입력해주세요.",
                                          class:"CashPasswordPage"});
   }

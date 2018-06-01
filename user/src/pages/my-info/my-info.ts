@@ -14,6 +14,8 @@ import {ConfigurePasswordPage} from '../configure-password/configure-password';
 import {ConfigurePaymentPage} from '../configure-payment/configure-payment';
 import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
 import {ServerProvider} from '../../providers/server/server';
+import {InputCouponPage} from '../input-coupon/input-coupon';
+
 
 /**
  * Generated class for the MyInfoPage page.
@@ -267,4 +269,7 @@ export class MyInfoPage {
     this.app.getRootNav().pop();
   }
 
+  enterCoupon(){
+    this.app.getRootNav().push(InputCouponPage);  
+  }
 }

@@ -10,7 +10,7 @@
 </div>
 
   <div text-center class="personal-info-section">
-      <img class="user-img" src="assets/imgs/profile-pic.png">
+       <img class="user-img" src="assets/imgs/profile-pic.png">
       <p class="user-name">
       {{storageProvider.name}}님
       </p>
@@ -49,6 +49,19 @@
       <button ion-button clear (click)="modifyPhone()">변경하기</button>   
   </ion-col>  
   </ion-row>  
+<!-- 쿠폰-begin -->
+  <ion-row class="each-menu">
+  <ion-col col-4>
+    쿠폰 코드
+  </ion-col>
+  <ion-col col-5>
+    &nbsp;
+  </ion-col>
+  <ion-col col-3 style="padding-top:0px;">
+      <button ion-button clear (click)="enterCoupon()">입력하기</button>   
+  </ion-col>  
+  </ion-row>  
+<!-- 쿠폰-end -->
   <ion-row class="group-title" style="background-color: #f7f7f7">
   <p>결제정보</p>
   </ion-row>

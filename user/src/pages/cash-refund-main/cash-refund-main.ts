@@ -112,6 +112,18 @@ export class CashRefundMainPage {
             alert.present();
             return;
       }
+      
+      ///////////////////////////////////////////////
+      // 가입 포인트 1000원만 인출하는 고객을 막기위해 추가함.
+      /*
+      if(this.storageProvider.shopList.length==0 && this.storageProvider.cashAmount<=1000){  // 1000원만 인출하는 고객을 막기위한 코드 
+            let alert = this.alertCtrl.create({
+                title: '가입 포인트는 주문없이는 인출이 불가능합니다.',
+                buttons: ['OK']
+            });
+            alert.present();
+          return;
+      }*/
 
       if(this.refundAmount==undefined || this.refundAmount<=0){
             let alert = this.alertCtrl.create({
@@ -229,6 +241,14 @@ export class CashRefundMainPage {
           if(res.result=="failure" && res.error=='check your balance'){
                 let alert = this.alertCtrl.create({
                     title: '잔액이 부족합니다.',
+                    buttons: ['OK']
+                });
+                alert.present();
+              return;
+          }
+          if(res.result=="failure" && res.error=='no deposit'){
+                let alert = this.alertCtrl.create({
+                    title: '지급된 캐쉬는 환불이 불가능합니다.',
                     buttons: ['OK']
                 });
                 alert.present();

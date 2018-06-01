@@ -186,8 +186,12 @@
     <b>결제 금액</b>  
   </ion-col>
   <ion-col text-right>
+    <!--
     <b *ngIf="order.deliveryFee!=null && order.deliveryFee!=undefined"><amount-display [amount]="order.amount+order.deliveryFee"></amount-display>원</b>
     <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined"><amount-display [amount]="order.amount"></amount-display>원</b>
+    -->
+    <b *ngIf="order.total==null || order.total==undefined"><amount-display [amount]="order.amount"></amount-display>원</b>
+    <b *ngIf="order.total!=null && order.total!=undefined"><amount-display [amount]="order.total"></amount-display>원</b>
   </ion-col>
 </ion-row>
 </div>
@@ -203,8 +207,12 @@
     <b>환불 금액</b>  
   </ion-col>
   <ion-col text-right>
+    <!--
     <b *ngIf="order.deliveryFee!=null && order.deliveryFee!=undefined">-<amount-display [amount]="order.amount+order.deliveryFee"></amount-display>원</b>
     <b *ngIf="order.deliveryFee==null || order.deliveryFee==undefined">-<amount-display [amount]="order.amount"></amount-display>원</b>
+    -->
+    <b *ngIf="order.total==null || order.total==undefined">-<amount-display [amount]="order.amount"></amount-display>원</b>
+    <b *ngIf="order.total!=null && order.total!=undefined">-<amount-display [amount]="order.total"></amount-display>원</b>
   </ion-col>
 </ion-row>
 </div>

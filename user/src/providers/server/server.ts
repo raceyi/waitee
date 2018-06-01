@@ -350,4 +350,12 @@ saveOrderCart(body){
             }            
         }    
   }
+
+  inputCoupon(coupon){
+
+  }
+
+  checkDeposit(){
+      // send cashId
+  }
 }

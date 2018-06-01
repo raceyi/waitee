@@ -203,9 +203,16 @@ checkCashIdDuplicate(){
                 this.serverProvider.post(this.storageProvider.serverAddress+"/createCashId",body).then((res:any)=>{
                     console.log("configureCashId:"+JSON.stringify(res));
                     if(res.result=="success"){
-                        console.log("res.result is success");
+                        console.log("res.result is success "+res.cashBalance);
                         this.storageProvider.cashId=this.cashId.trim().toUpperCase();
-                        this.storageProvider.cashAmount=0;
+                        this.storageProvider.cashAmount=res.cashBalance;
+                        if(res.cashBalance>0){
+                                    let alert=this.alertCtrl.create({
+                                            title: res.cashBalance+"원의 캐시가 충전되었습니다.",
+                                            buttons: ['OK']
+                                    });
+                                    alert.present();
+                        }
                         /////////////////////////////////////////
                         //configure payment info
                         console.log("configure payment info "+this.receiptId.trim().length);

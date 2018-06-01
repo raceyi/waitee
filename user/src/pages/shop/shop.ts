@@ -270,4 +270,43 @@ export class ShopPage {
   hideInfoDisplay(){
       this.storeInfoHide=true;    
   }
+
+  split1(string:string){
+      let substrs=string.split(" ");
+      let sum=0,i=0;
+      for(i=0;i<substrs.length;i++){
+          sum+=substrs[i].length;
+          if(sum>12)
+             break;
+      }
+      let lines="";
+      if(i==0){ // 스페이스 상관없이 두라인으로 표기함
+           lines=string.substr(0,12)+"<br>"+string.substr(12);
+      }else{
+          let j=0;
+          for(j=0;j<i;j++)
+              lines+=substrs[j]+" ";
+      }
+      return lines;
+  }
+
+  split2(string:string){
+      let substrs=string.split(" ");
+      let sum=0,i=0;
+      for(i=0;i<substrs.length;i++){
+          sum+=substrs[i].length;
+          if(sum>12)
+             break;
+      }
+      let lines="";
+      if(i==0){ // 스페이스 상관없이 두라인으로 표기함
+           lines=string.substr(12);
+      }else{
+          for(let j=i;j<substrs.length;j++)
+              lines+=substrs[j];
+      }
+      return lines;
+  }
+
+
 }
