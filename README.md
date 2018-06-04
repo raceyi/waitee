@@ -123,6 +123,8 @@ $npm install crypto-js
 
 $npm install @types/crypto-js --save
 
+$npm install ng-socket-io --save
+
 $ionic cordova build ios
 
 $ionic cordova build android

@@ -351,6 +351,36 @@ saveOrderCart(body){
         }    
   }
 
+ updateCash(){
+            return new Promise((resolve,reject)=>{
+            let body = {cashId:this.storageProvider.cashId};
+
+            this.post(this.storageProvider.serverAddress+"/getBalanceCash",body).then((res:any)=>{
+                console.log("getBalanceCash res:"+JSON.stringify(res));
+                if(res.result=="success"){
+                    this.storageProvider.cashAmount=res.balance;
+                    resolve();
+                }else{
+                    let alert = this.alertCtrl.create({
+                        title: "캐시값을 가져오지 못했습니다.",
+                        subTitle:"캐시값이 정상이 아닐경우 앱을 종료후 다시 실행해주세요. ",
+                        buttons: ['OK']
+                    });
+                    alert.present();
+                    reject("server failure");
+                }
+            },err=>{
+                let alert = this.alertCtrl.create({
+                    title: "캐시값을 가져오지 못했습니다.",
+                    subTitle: "네트웍상태를 확인해주세요.",
+                    buttons: ['OK']
+                });
+                alert.present();
+                reject("network failure");
+            });
+            });
+    }
+
   inputCoupon(coupon){
 
   }

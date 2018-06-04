@@ -125,9 +125,14 @@ export class CashConfirmPage {
           this.serverProvider.post(this.storageProvider.serverAddress+"/addCash",body).then((res:any)=>{
                     console.log("addCash:"+JSON.stringify(res));
                     if(res.result=="success"){
-                      this.events.publish("cashUpdate");
-                      this.removeDuplicate();
-                      this.viewCtrl.dismiss();
+                      this.serverProvider.updateCash().then(()=>{
+                            this.events.publish("cashUpdate");
+                            this.removeDuplicate();
+                            this.viewCtrl.dismiss();
+                      },err=>{
+                            this.removeDuplicate();
+                            this.viewCtrl.dismiss(); 
+                      })  
                     }else{ 
                           if(res.error=="already checked cash"){
                               let alert = this.alertController.create({

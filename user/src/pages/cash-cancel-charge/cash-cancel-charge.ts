@@ -50,7 +50,11 @@ export class CashCancelChargePage {
             console.log("removeWrongCashList:"+JSON.stringify(res));
             if(res.result=="success"){
                 this.events.publish("cashUpdate");
-                this.app.getRootNav().pop();
+                this.serverProvider.updateCash().then(()=>{
+                    this.app.getRootNav().pop();
+                },(err)=>{
+                    this.app.getRootNav().pop();
+                })
             }else{
                   let alert = this.alertController.create({
                       title: "캐쉬입금 삭제에 실패했습니다. 잠시후 다시 시도해 주시기 바랍니다.",

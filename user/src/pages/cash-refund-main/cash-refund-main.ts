@@ -229,13 +229,23 @@ export class CashRefundMainPage {
           if(res.result=="success"){
               //console.log("cashAmount:"+res.cashAmount);
               this.events.publish("cashUpdate");
-               let alert = this.alertCtrl.create({
-                    title: '환불요청에 성공했습니다.',
-                    subTitle: '환불계좌를 확인하시기 바랍니다',
-                    buttons: ['OK']
-                });
-                alert.present();
-                this.navCtrl.pop();
+              this.serverProvider.updateCash().then(()=>{
+                let alert = this.alertCtrl.create({
+                        title: '환불요청에 성공했습니다.',
+                        subTitle: '환불계좌를 확인하시기 바랍니다',
+                        buttons: ['OK']
+                    });
+                    alert.present();
+                    this.navCtrl.pop();
+              },err=>{
+                let alert = this.alertCtrl.create({
+                        title: '환불요청에 성공했습니다.',
+                        subTitle: '환불계좌를 확인하시기 바랍니다',
+                        buttons: ['OK']
+                    });
+                    alert.present();
+                    this.navCtrl.pop();
+              })
               return;
           }
           if(res.result=="failure" && res.error=='check your balance'){

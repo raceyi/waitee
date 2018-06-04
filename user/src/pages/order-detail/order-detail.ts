@@ -242,6 +242,7 @@ export class OrderDetailPage {
         this.serverProvider.cancelOrder(this.order).then((resOrder)=>{
             this.events.publish('orderUpdate',{order:resOrder});
             this.events.publish("cashUpdate");
+            this.serverProvider.updateCash();
             // do nothing
             this.payClasses={
                 paymentLast:false,

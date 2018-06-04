@@ -15,7 +15,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class FaqPage {
   questions=[{hidden:true,
-               question:"충전힌트를 어떻게 입력하나요?",answer:"스마트폰과 인터넷 뱅킹으로 계좌이체시 받는통장 표시내용에 충전힌트를 입력하시면 됩니다. 은행마다 충전힌트 입력방법이 다릅니다. <br> <a href=\"http://www.takit.biz/cashId.html\">토스/주요은행 충전힌트 입력방법 보기</a>"},
+               question:"충전힌트를 어떻게 입력하나요?",answer:"스마트폰과 인터넷 뱅킹으로 계좌이체시 받는통장 표시내용에 충전힌트를 입력하시면 됩니다. 은행마다 충전힌트 입력방법이 다릅니다. <br> <a href=\"http://www.waitee.co.kr/cashId.html\">토스/주요은행 충전힌트 입력방법 보기</a>"},
              {hidden:true,
                question:"충전힌트 입력을 잊어버렸어요",answer:"지갑탭->충전버튼 선택-> \"충전힌트 입력을 잊으셨나요? +\" 버튼 선택->직접 계좌이체한 정보를 입력하시고 입금확인하기 버튼을 눌러주세요. 계좌이체시 충전힌트를 입력하지 않았을 경우 받는 통장 표시내용은 본인의 실명이 기재됩니다."},
              {hidden:true,
