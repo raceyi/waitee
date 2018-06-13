@@ -14,9 +14,10 @@ import { Events } from 'ionic-angular';
 
 export class PrinterPage {
     printerlist=[];
-    printerStatus;  
+    //printerStatus;  
     printerEmitterSubscription;
     printOn;
+    printerNames=[];
 
   constructor(private navController: NavController, private navParams: NavParams,public printerProvider:PrinterProvider,
                 private alertController:AlertController,private ngZone:NgZone,private nativeStorage: NativeStorage,
@@ -31,8 +32,7 @@ export class PrinterPage {
         this.events.subscribe('printer:status', (status) => {
                     console.log("printer status:"+status);
                     this.ngZone.run(()=>{
-                        this.printerStatus=status;
-                        console.log("ngZone=> change status into "+this.printerStatus);
+
                     });
         });
   }
@@ -50,10 +50,24 @@ export class PrinterPage {
       console.log("scanPrinter");
       if(this.platform.is('android')){
             this.printerProvider.scanPrinter().then((list:any)=>{
-                this.ngZone.run(()=>{    
-                        this.printerlist=list;
-                        console.log("pinterlist:"+JSON.stringify(this.printerlist));
+                this.ngZone.run(()=>{
+                        if(!list)
+                            this.printerlist=[]; 
+                        else{ 
+                            this.printerlist=[];      
+                            list.forEach((printer)=>{
+                                console.log("printer added:"+JSON.stringify(printer));
+                                this.printerlist.push(printer);
+                            })
+                            for(let i=0;i<this.printerlist.length;i++){
+                                if(this.printerlist[i].name=="Thermal Printer"){
+                                    this.printerProvider.printer=this.printerlist[i];
+                                    break;
+                                }
+                            }
+                        }
                 });
+                console.log("printerPage-pinterlist:"+JSON.stringify(this.printerlist));
             },(error)=>{
                 this.printerlist=[];
                 let alert = this.alertController.create({
@@ -66,6 +80,9 @@ export class PrinterPage {
       }else if(this.platform.is('ios')){ //ios
             this.iosPrinterProvider.scanPrinter().then((list:any)=>{
                 this.ngZone.run(()=>{    
+                    if(!list)
+                        this.printerlist=[];
+                    else    
                         this.printerlist=list;
                         console.log("pinterlist:"+JSON.stringify(this.printerlist));
                 });
@@ -107,29 +124,8 @@ export class PrinterPage {
 
   connectPrinter(){
        if(this.platform.is('android')){
-                this.printerProvider.connectPrinter().then((status)=>{
-                            console.log("connectPrinter:"+status);
-                            this.printerStatus=status;
-                            if(status=="lost"){
-                                let alert = this.alertController.create({
-                                    title: '프린터에 연결할수 없습니다.',
-                                    subTitle: '네트워크->블루투스 설정에서 등록된 장치를 삭제후 다시 검색하여 등록해 주시기바랍니다',
-                                    buttons: ['OK']
-                                });
-                                alert.present();
+                this.printerProvider.connectPrinter().then(()=>{
 
-                            }else if(status=="unable"){
-                                let alert = this.alertController.create({
-                                    title: '프린터에 연결할수 없습니다.',
-                                    subTitle: '프린터를 상태를 확인해 주시기바랍니다',
-                                    buttons: ['OK']
-                                });
-                                alert.present();
-                            }else{
-                                //////////////////////////////////
-                                // connected, connecting
-                                console.log("connected or connecting status");
-                            }
                 },(err)=>{
                             console.log("fail to connect");
                                 let alert = this.alertController.create({
@@ -143,27 +139,7 @@ export class PrinterPage {
                 console.log("call this.iosPrinterProvider.connectPrinter");
                 this.iosPrinterProvider.connectPrinter().then((status)=>{
                             console.log("connectPrinter:"+status);
-                            this.printerStatus=status;
-                            if(status=="lost"){
-                                let alert = this.alertController.create({
-                                    title: '프린터에 연결할수 없습니다.',
-                                    subTitle: '네트워크->블루투스 설정에서 등록된 장치를 삭제후 다시 검색하여 등록해 주시기바랍니다',
-                                    buttons: ['OK']
-                                });
-                                alert.present();
 
-                            }else if(status=="unable"){
-                                let alert = this.alertController.create({
-                                    title: '프린터에 연결할수 없습니다.',
-                                    subTitle: '프린터를 상태를 확인해 주시기바랍니다',
-                                    buttons: ['OK']
-                                });
-                                alert.present();
-                            }else{
-                                //////////////////////////////////
-                                // connected, connecting
-                                console.log("connected or connecting status");
-                            }
                 },(err)=>{
                             console.log("fail to connect");
                                 let alert = this.alertController.create({
@@ -214,20 +190,25 @@ export class PrinterPage {
 
   savePrinter(){
       if(this.platform.is('android')){
-            this.nativeStorage.setItem('printer',this.printerProvider.printer);
-            this.storageProvider.printerName=this.printerProvider.printer;
+            this.nativeStorage.setItem('printer',JSON.stringify(this.printerProvider.printer));
+            this.storageProvider.printerName=this.printerProvider.printer.name;
       }else if(this.platform.is('ios')){
-            this.nativeStorage.setItem('printer',this.iosPrinterProvider.printer);
-            this.storageProvider.printerName=this.iosPrinterProvider.printer;
+            this.nativeStorage.setItem('printer',JSON.stringify(this.iosPrinterProvider.printer));
+            //this.storageProvider.printerName=this.iosPrinterProvider.printer.name;
       }
       //save it into localstorage
       this.storageProvider.printOn=this.printOn;
       this.nativeStorage.setItem("printOn",this.storageProvider.printOn.toString());
+        let alert = this.alertController.create({
+            title: '프린터 정보가 저장되었습니다.',
+            buttons: ['OK']
+        });
+        alert.present();
   }    
 
   printOnChange(){
       //save it into localstorage
-      //console.log("printOn:"+this.printOn);
+      console.log("printOn:"+this.printOn);
       this.storageProvider.printOn=this.printOn;
       console.log("save printOn as "+this.storageProvider.printOn.toString());
       this.nativeStorage.setItem("printOn",this.storageProvider.printOn.toString());

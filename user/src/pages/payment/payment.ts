@@ -174,8 +174,6 @@ export class PaymentPage {
 
     if(this.takeout==2 && this.payAmount<this.carts[0].freeDelivery){
         this.deliveryFee=parseInt(this.carts[0].deliveryFee);
-    }else if(this.takeout==2 && this.carts[0].takitId=="세종대@더큰도시락"){    // 더큰도시락 임시 코드임. 향후 minimum 주문에도 delivery fee를 추가하는 방안에 대해 정식구현이 필요함.
-        this.deliveryFee=1000;
     }else
         this.deliveryFee=undefined;
 

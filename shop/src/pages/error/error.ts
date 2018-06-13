@@ -116,8 +116,9 @@ export class ErrorPage {
              }
         }
         this.nativeStorage.getItem("printer").then((value:string)=>{
-            this.storageProvider.printerName=value;
-            this.printerProvider.setPrinter(value);
+            let printer=JSON.parse(value);
+            this.storageProvider.printerName=printer.name;
+            this.printerProvider.setPrinter(printer);
             this.nativeStorage.getItem("printOn").then((value:string)=>{
                 console.log("printOn:"+value);
                 this.storageProvider.printOn= JSON.parse(value);

@@ -17,7 +17,7 @@
 <ion-content>
   <ion-list>
     <ion-item>
-    <ion-label class="value-label" >충전힌트(필수)</ion-label>
+    <ion-label class="value-label" >웨이티아이디(필수)</ion-label>
     </ion-item>
     <ion-row>
       <ion-col col-8>
@@ -55,7 +55,7 @@
     <ion-input class="keypad-input keypad-receiptId" [(ngModel)]="receiptId" type="number" pattern="[0-9a-zA-Z]{5,7}" ></ion-input>
     </ion-item>
     <ion-item>
-    <ion-label class="select-label">현금 영수증 발급 목적</ion-label>
+    <ion-label class="select-label">현금 영수증 발급 목적(선택)</ion-label>
     <ion-select interface='action-sheet' [(ngModel)]="receiptType">
       <ion-option value="IncomeDeduction">소득공제용(개인)</ion-option>
       <ion-option value="ExpenseProof">지출증빙용(사업자)</ion-option>

@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Injectable ,NgZone} from '@angular/core';
 import {StorageProvider} from '../storage/storage';
-import {AlertController,Events,Platform} from 'ionic-angular';
+import {AlertController,LoadingController,Events,Platform} from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
 import {LoginProvider} from '../../providers/login/login';
 import {TimeUtil} from '../../classes/TimeUtil';
@@ -17,11 +17,13 @@ import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
 export class ServerProvider {
   timeUtil= new TimeUtil(); 
   browserRef;
+  timeout=30; // 30 seconds
 
     constructor(public http: HttpClient
                 ,private storageProvider:StorageProvider
                 ,private nativeStorage: NativeStorage
                 ,public alertCtrl:AlertController
+                ,public loadingCtrl: LoadingController                            
                 ,public loginProvider:LoginProvider
                 ,private events:Events
                 ,private iab: InAppBrowser
@@ -55,7 +57,7 @@ export class ServerProvider {
        console.log("request:"+request);
 
        return new Promise((resolve,reject)=>{
-            this.http.post(request,bodyObj).subscribe((res:any)=>{               
+            this.http.post(request,bodyObj, {headers: new HttpHeaders({timeout:'${30000}'})}).subscribe((res:any)=>{               
                 console.log("post version:"+res.version+" version:"+this.storageProvider.version);
                 resolve(res);                    
             },(err)=>{
@@ -64,7 +66,7 @@ export class ServerProvider {
                     //login again with id
                     this.loginAgain().then(()=>{
                         //call http post again
-                        this.http.post(request,bodyObj).subscribe((res:any)=>{
+                        this.http.post(request,bodyObj, {headers: new HttpHeaders({timeout:'${30000}'})}).subscribe((res:any)=>{
                             console.log("post version:"+res.version+" version:"+this.storageProvider.version);
                             if(parseFloat(res.version)>parseFloat(this.storageProvider.version)){
                                 console.log("post invalid version");
@@ -135,6 +137,7 @@ loginAgain(){
         });
   }
 
+/*
   saveOrder(body){
       return new Promise((resolve,reject)=>{
             let headers = new Headers();
@@ -155,13 +158,23 @@ loginAgain(){
             this.nativeStorage.setItem("orderDoneFlag","true");
       });
   }
+*/
 
 saveOrderCart(body){
       return new Promise((resolve,reject)=>{
+
             let headers = new Headers();
             headers.append('Content-Type', 'application/json');
             console.log("saveOrder:"+JSON.stringify(body));
+
+            let progressBarLoader = this.loadingCtrl.create({
+                content: "진행중입니다.",
+                duration: this.timeout*1000
+            });
+            progressBarLoader.present();
+
             this.post(encodeURI(this.storageProvider.serverAddress+"/saveOrderCart"),body).then((res:any)=>{
+                  progressBarLoader.dismiss();
                   console.log("res:"+JSON.stringify(res));
                   console.log("saveOrder-res.result:"+res.result);
                   if(res.result=="success"){
@@ -171,6 +184,7 @@ saveOrderCart(body){
                     reject(res.error);
                   }
             },(err)=>{
+                progressBarLoader.dismiss();                
                 reject(err);  
             });
       });

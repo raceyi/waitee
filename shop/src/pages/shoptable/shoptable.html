@@ -11,16 +11,23 @@
         검증 
        </ion-col>
        <ion-col text-center>
+            &nbsp;
+            <!--
             <ion-icon class="store-status" [style.color]="storeColor" name="bulb" (click)="configureStore()"></ion-icon>
+            -->
        </ion-col>
        <ion-col text-center>
+         &nbsp;
+            <!--
             <ion-icon class="store-status" [style.color]="notiColor" name="person" (click)="configureGotNoti()"></ion-icon>
+            -->
        </ion-col>
       <ion-col text-center>
             <ion-icon class="store-status" name="print" [style.color]="printColor" (click)="testPrint()"></ion-icon>
       </ion-col>
       <ion-col text-center>
-            <b><ion-icon class="store-status" name="refresh" style="color:#33b9c6;" (click)="update()"></ion-icon></b>
+            <b *ngIf="socket.ioSocket.connected" ><ion-icon class="store-status" name="refresh" style="color:#33b9c6;" (click)="update()"></ion-icon></b>
+            <b *ngIf="!socket.ioSocket.connected" ><ion-icon class="store-status" name="refresh" style="color:#ff0000;" (click)="update()"></ion-icon></b>
       </ion-col>
     </ion-row>
   </ion-navbar>
@@ -58,6 +65,11 @@
   <ion-item *ngFor="let order of orders">
                <ion-row>
                  <ion-col text-center col-2 >
+                   <ion-row class="order-number">
+                        <ion-col text-center no-padding no-margin>
+                          {{order.orderNO}}
+                        </ion-col>
+                   </ion-row>                   
                    <ion-row>
                    <button full class="checked-button"  (click)="updateOrder(order)" ion-button *ngIf="order.orderStatus=='paid'">
                       <b>접수</b>                    
@@ -75,16 +87,18 @@
                        종료
                    </p> 
                    </ion-row>
+                   <!--
                    <ion-row *ngIf="order.orderStatus=='completed'">
                       <button full class="notify-button" (click)="notifyOrder(order)" ion-button >
                           알림
                       </button> 
                    </ion-row>
+                   -->
                  </ion-col>
                  <ion-col col-10>
                    <ion-row class="order-no">
                     <ion-col col-8>
-                        <b>{{order.orderNO}}. {{order.orderName}}</b>
+                        <b> {{order.orderName}}</b>
                         <span class="outline" *ngIf="order.takeout=='2'">배달</span>
                         <span class="outline" *ngIf="order.takeout=='1'">포장</span>
                     </ion-col>
@@ -141,9 +155,13 @@
                           <ion-col *ngIf="order.cancelReasonString!=undefined && order.cancelReasonString!=null" text-left>
                                 취소사유:{{order.cancelReasonString}}
                           </ion-col>
-                          <ion-col text-right>
+                          <ion-col *ngIf="!order.total" text-right>
                                   취소금액:-{{order.amount}}원
                           </ion-col>
+                          <ion-col *ngIf="order.total" text-right>
+                                  취소금액:-{{order.total}}원
+                          </ion-col>
+
                         </ion-row>
                         <ion-row *ngIf="order.localCompleteTimeString"> 
                           <ion-col text-left>
@@ -154,15 +172,21 @@
                           <ion-col text-left>
                                 주문시간:{{order.localOrderedTimeString}}
                           </ion-col>
-                          <ion-col text-right>
+                          <ion-col *ngIf="!order.total" text-right>
                                   결제금액:{{order.amount}}원
                           </ion-col>
+                          <ion-col *ngIf="order.total" text-right>
+                                  결제금액:{{order.total}}원
+                          </ion-col>                          
                         </ion-row>
                         <ion-row *ngIf="order.orderStatus=='paid'"> 
                           <ion-col text-left>
                           </ion-col>
-                          <ion-col text-right>
+                          <ion-col *ngIf="!order.total" text-right>
                                   결제금액:{{order.amount}}원
+                          </ion-col>
+                          <ion-col *ngIf="order.total" text-right>
+                                  결제금액:{{order.total}}원
                           </ion-col>
                         </ion-row>                        
                    </div>
@@ -191,7 +215,10 @@
                    <div *ngIf="order.orderStatus!='cancelled'">
                      <ion-row>
                        <ion-col no-padding no-margin text-center col-6>
-                        <a *ngIf="!AfterOnedayCompleteCancel(order)" [href]="order.userPhoneHref" style="color:#979797;font-size:3.4vw;"> 고객연락 <custom-icon set="customs" name="phone"></custom-icon></a>                    
+                         <!--  just test -begin -->
+                        <a [href]="order.userPhoneHref" style="color:#979797;font-size:3.4vw;"> 고객연락 {{order.userPhoneHref}} <custom-icon set="customs" name="phone"></custom-icon></a>                    
+                         <!-- just test -end--> 
+                        <a *ngIf="!AfterOnedayCompleteCancel(order)" [href]="order.userPhoneHref" style="color:#979797;font-size:3.4vw;"> 고객연락 <custom-icon set="customs" name="phone"></custom-icon></a>                                             
                        </ion-col>
                        <ion-col no-padding no-margin text-center col-6>
                         <button no-margin no-padding clear full ion-button (click)="printOrder(order)" class="custom-printer-button">
@@ -204,6 +231,11 @@
                </ion-row>
               </ion-col>
               </ion-row> 
+              <ion-row *ngIf="order.orderStatus=='completed'">
+                <button full class="notify-button" (click)="notifyOrder(order)" ion-button >
+                    고객 알림 보내기 
+                </button> 
+              </ion-row>
 </ion-item>
 </ion-list>
 
@@ -213,6 +245,11 @@
     <div style="background-color:white;" class="order-outline">
                <ion-row>
                  <ion-col text-center col-2 >
+                    <ion-row class="order-number">
+                        <ion-col text-center no-padding no-margin>
+                          {{order.orderNO}}
+                        </ion-col>
+                   </ion-row>                   
                    <ion-row>
                    <button full class="checked-button"  (click)="updateOrder(order)" ion-button *ngIf="order.orderStatus=='paid'">
                       <b>접수</b>                    
@@ -230,16 +267,18 @@
                        종료
                    </p> 
                    </ion-row>
+                   <!--
                    <ion-row *ngIf="order.orderStatus=='completed'">
                       <button full class="notify-button" (click)="notifyOrder(order)" ion-button >
                           알림
                       </button> 
                    </ion-row>
+                   -->  
                  </ion-col>
                  <ion-col col-10>
                    <ion-row class="order-no">
                     <ion-col col-8>
-                        <b>{{order.orderNO}}. {{order.orderName}}</b>
+                        <b>{{order.orderName}}</b>
                         <span class="outline" *ngIf="order.takeout=='2'">배달</span>
                         <span class="outline" *ngIf="order.takeout=='1'">포장</span>
                     </ion-col>
@@ -296,9 +335,13 @@
                           <ion-col *ngIf="order.cancelReasonString!=undefined && order.cancelReasonString!=null" text-left>
                                 취소사유:{{order.cancelReasonString}}
                           </ion-col>
-                          <ion-col text-right>
+                          <ion-col *ngIf="!order.total" text-right>
                                   취소금액:-{{order.amount}}원
                           </ion-col>
+                          <ion-col *ngIf="order.total" text-right>
+                                  취소금액:-{{order.total}}원
+                          </ion-col>
+                          
                         </ion-row>
                         <ion-row *ngIf="order.localCompleteTimeString"> 
                           <ion-col text-left>
@@ -309,15 +352,21 @@
                           <ion-col text-left>
                                 주문시간:{{order.localOrderedTimeString}}
                           </ion-col>
-                          <ion-col text-right>
+                          <ion-col *ngIf="!order.total" text-right>
                                   결제금액:{{order.amount}}원
                           </ion-col>
+                          <ion-col *ngIf="order.total" text-right>
+                                  결제금액:{{order.total}}원
+                          </ion-col>                          
                         </ion-row>
                         <ion-row *ngIf="order.orderStatus=='paid'"> 
                           <ion-col text-left>
                           </ion-col>
-                          <ion-col text-right>
+                          <ion-col *ngIf="!order.total" text-right>
                                   결제금액:{{order.amount}}원
+                          </ion-col>
+                          <ion-col *ngIf="order.total" text-right>
+                                  결제금액:{{order.total}}원
                           </ion-col>
                         </ion-row>                        
                    </div>
@@ -359,6 +408,11 @@
                </ion-row>
               </ion-col>
               </ion-row> 
+              <ion-row *ngIf="order.orderStatus=='completed'">
+                <button full class="notify-button" (click)="notifyOrder(order)" ion-button >
+                    고객 알림 보내기 
+                </button> 
+              </ion-row>
       </div>  
 </ion-col>
 </ion-row>

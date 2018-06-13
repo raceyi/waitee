@@ -97,6 +97,7 @@ export class SalesPage {
                               });
       this.serverProvider.post("/shop/getSalesAndSatas",body).then((res:any)=>{
             if(res.result=="success"){
+                console.log("res:"+JSON.stringify(res));
                   // show sales info
                   //if(this.sales==0){
                   //      this.statistics=[];
@@ -143,6 +144,7 @@ export class SalesPage {
         //request getSalesAndSatas
         let body=JSON.stringify({takitId:this.storageProvider.myshop.takitId,option:option});
         this.serverProvider.post("/shop/getSalesAndSatas",body).then((res:any)=>{
+            console.log("getSalesAndSatas:"+JSON.stringify(res));
             if(res.result=="success"){
                   // show sales info
                    this.sales=res.sales;

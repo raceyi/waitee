@@ -5,7 +5,7 @@
 
 <div class="cash-only">
     <ion-row style="border:0px;" >
-    <button no-margin no-padding  ion-button full   class="cash-label" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐쉬</b></button>
+    <button no-margin no-padding  ion-button full   class="cash-label" style="font-size:4.5vw;"> <b>{{storageProvider.cashId}} </b></button>
     </ion-row>
     <ion-row class="cash-value-row" style="border:0px;"> 
     <button no-margin no-padding  ion-button  full class="cash-value"  style="font-size:4vw;"> 잔액: <amount-display [amount]="storageProvider.cashAmount"></amount-display>원</button>
@@ -15,47 +15,6 @@
         <ion-col no-padding no-margin><button (click)="refundCash()" no-padding no-margin full clear ion-button>환급</button></ion-col>
     </ion-row>
 </div>
-<!--
-<div class="scroll-div">
-        <ion-scroll scrollX="true" class="scroll-latest">
-            <ion-row class="scroll-row-latest">
-                <ion-col class="cash-card card-unselect-border scroll-col-latest" text-center no-padding >
-
-                  <ion-row  style="border:0px;" >
-                  <button no-margin no-padding  ion-button full  class="cash-label" style="font-size:4.5vw;"> <b><custom-icon set="tabs" name="coin"></custom-icon>웨이티 캐시</b></button>
-                  </ion-row>
-                  <ion-row class="cash-value-row" style="border:0px;"> 
-                  <button no-margin no-padding  ion-button  full full class="cash-value" style="font-size:4vw;"> 잔액:<amount-display [amount]="storageProvider.cashAmount" ></amount-display>원</button>
-                  </ion-row>
-                  <ion-row>
-                      <ion-col no-padding no-margin (click)="chargeCash()" class="left-button" ><button no-padding no-margin full clear ion-button>충전</button></ion-col>
-                      <ion-col no-padding no-margin><button (click)="refundCash()" no-padding no-margin full clear ion-button>환급</button></ion-col>
-                  </ion-row>
-                </ion-col>
-                 <ion-col  class="scroll-col-latest card-card card-unselect-border"  [style.background-color]="payment.background" *ngFor="let payment of storageProvider.payInfo;let i=index;" no-padding>
-                            <ion-row class="card-remove"><ion-col col-10 no-padding no-margin >&nbsp;</ion-col> 
-                                    <ion-col col-2 no-padding no-margin><button (click)="removeCard(i)" no-padding no-margin ion-button clear style="color:white;"><ion-icon name="md-close"></ion-icon></button></ion-col>
-                            </ion-row>
-                            <button class="card-button"   full clear no-padding no-margin ion-button>
-                             {{payment.info.name}} 
-                            </button>                     
-                            <button style="font-size:4vw;" class="card-button" full clear no-padding no-margin ion-button>
-                             {{payment.info.mask_no}}
-                            </button>
-                </ion-col>
-                 <ion-col text-center class="card-add card-button scroll-col-latest"  no-padding>
-                              <ion-row text-center class="card-add-label"><b style="font-size:4.5vw;">카드 등록</b></ion-row>
-                              <ion-row text-center class="card-add-label"><span style="font-size:3.4vw;">10원이 결제되고 등록 후 취소됩니다</span></ion-row>
-                              <ion-row text-center>
-                                <button style="background-color:#e8e8e8;;color:#6441a5;" (click)="addCard()" no-padding no-margin full ion-button>
-                                    <b style="font-size:4.8vw;"><ion-icon name="ios-add-circle-outline"></ion-icon></b>
-                                </button>
-                              </ion-row>
-                </ion-col>
-            </ion-row>
-        </ion-scroll>
-</div>
--->
 
 <div class="period-section">
   <ion-row>
@@ -246,5 +205,9 @@
     </button>
 </ion-fab>
 
+<ion-fab bottom right>
+     <a class="fab-btn" style="background-color:yellow;color:#6441a5;" ion-fab href="kakaoplus://plusfriend/home/@웨이티">
+     <custom-icon set="tabs" name="plus" style="font-size: 6vw !important; padding: 0px;"></custom-icon></a>
+</ion-fab>
 </ion-content>
 

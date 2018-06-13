@@ -20,7 +20,7 @@
     <ion-slides no-margin no-padding #Slides (ionSlideDidChange)="slideChanged()" pager=true >
         <ion-slide centeredSlides parallaxed *ngFor="let tt of tutorials; let i=index" class="slide-tt">
                 <p  text-left class="p-desc-contents">{{tt.contents}}</p>
-                <a *ngIf="i===0" style="font-size:3.2vw;color:#BDBDBD" href="http://www.waitee.co.kr/cashId.html">토스/주요은행 충전힌트 입력방법</a>              
+                <a *ngIf="i===0" style="font-size:3.2vw;color:#BDBDBD" href="http://www.waitee.co.kr/cashId.html">토스/주요은행 웨이티아이디 입력방법</a>              
                 <p *ngIf="i===1" text-left class="addition" style="font-size:3.2vw;color:#BDBDBD" no-margin no-padding>(단 00:00~00:30, 매월 3주 월요일 23:55~04:00 이용제한시간 이후 메시지가 전달됩니다.)</p>
                 <img [src]="tt.img">
         </ion-slide>

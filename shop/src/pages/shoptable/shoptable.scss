@@ -97,7 +97,8 @@ ion-header {
                 font-size:3.4vw;  
                 color:#6441a5;
                 background-color: rgba(100, 65, 165, 0.2);
-                border: solid 2px #6441a5;
+                //border: solid 2px #6441a5;
+                border: solid 2px #ff0000;
                 border-radius: 10%;               
            }
 
@@ -115,6 +116,9 @@ ion-header {
                     margin-left:5px;
                     border: solid 1px #4a4a4a;
                }
+           }
+           .order-number{
+               font-size:6vw;
            }
 
            .display-time{
@@ -218,6 +222,9 @@ ion-header {
                     margin-left:5px;
                     border: solid 1px #4a4a4a;
                }
+           }
+           .order-number{
+               font-size:3.4vw;
            }
 
            .display-time{

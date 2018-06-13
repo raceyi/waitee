@@ -23,10 +23,10 @@ export class MenuModalPage {
 @ViewChild('menuContent') menuContentRef:Content;
 
     menu;
-    flags = {"add":false, "options":true, "imageUpload":true, "segment": false};
+    flags = {"add":false, "options":true, "imageUpload":false, "hasImage":false, "segment": false};
     imageURI;
     menuSelected=1;
-
+   
 
   constructor(public params:NavParams, public viewCtrl: ViewController, 
               public navCtrl: NavController, private alertController:AlertController,
@@ -43,16 +43,17 @@ export class MenuModalPage {
         this.menu=params.get('menu');
       }
 
-    //   if(params.get('menu').imagePath === undefined || params.get('menu').imagePath === null){
-    //     //   this.flags.imageUpload = false;
-    //   }else{
-        //   this.flags.imageUpload = true;
+       if(this.menu.imagePath === undefined || this.menu.imagePath === null){
+            this.flags.hasImage = false;
+       }else{
+           this.flags.hasImage = true;
+       }
+
       if(params.get('menu').hasOwnProperty('imagePath') && params.get('menu').imagePath !== null){
           console.log(this.menu.imagePath);
           this.menu.imagePath= this.menu.imagePath.substr(this.menu.imagePath.indexOf('_') + 1);
       }
       
-
       if(params.get('menu').hasOwnProperty('takeout') && params.get('menu').takeout === '1'){
         this.menu.takeout = true;
       }else if(params.get('menu').hasOwnProperty('takeout') && params.get('menu').takeout === '2'){
@@ -174,7 +175,7 @@ export class MenuModalPage {
     if(!this.isNull(this.menu.menuName) && 
         !this.isNull(this.menu.price)){
     
-        if(!this.isNull(this.menu.imagePath) && !this.flags.imageUpload){
+        if(!this.flags.hasImage && !this.flags.imageUpload){ //기존 등록된 이미지가 없다면
             let alert = this.alertController.create({
                         title: "사진을 업로드 해주세요.",
                         buttons: ['확인']
@@ -262,6 +263,11 @@ export class MenuModalPage {
 
                 if(!this.isNull(this.menu.imagePath)){
                     this.menu.imagePath = this.storageProvider.myshop.takitId+"_"+this.menu.imagePath;
+                }
+                // 기존의 이미지를 사용할경우 menu.imagePath를 삭제한다.
+                if(this.flags.hasImage && !this.flags.imageUpload){
+                    delete this.menu.imagePath;
+                    console.log("delete this.menu.imagePath");
                 }
 
                 this.serverProvider.modifyMenuInfo(this.menu)
@@ -508,7 +514,7 @@ export class MenuModalPage {
       if(this.menu.imagePath !== null && this.menu.imagePath !==""){
         console.log("imageInput event");
         this.flags.imageUpload = false;
-      }else{ //이미지 url이 입력되지 않은 상태로 업로드 할 필요 없음.
+      }else{ //이미지 url이 입력되지 않은 상태로 업로드 할 필요 없음.  ????
           this.flags.imageUpload=true;
       }
   }

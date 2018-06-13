@@ -26,12 +26,12 @@
       <ion-radio value="영업마감" (ionSelect)="changeReasonType('영업마감')"></ion-radio>
     </ion-item>
 
-    <ion-item *ngIf="order.orderStatus=='completed'">
+    <ion-item *ngIf="order.orderStatus=='completed' || order.orderStatus=='pickup'">
       <ion-label>고객불만</ion-label>
       <ion-radio value="고객불만" (ionSelect)="changeReasonType('고객불만')"></ion-radio>
     </ion-item>
 
-    <ion-item *ngIf="order.orderStatus=='completed'">
+    <ion-item *ngIf="order.orderStatus=='completed' || order.orderStatus=='pickup'">
       <ion-label>전달오류</ion-label>
       <ion-radio value="전달오류" (ionSelect)="changeReasonType('전달오류')"></ion-radio>
     </ion-item>

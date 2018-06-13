@@ -13,6 +13,7 @@ import {CancelConfirmPage} from '../cancel-confirm/cancel-confirm';
 import {IosPrinterProvider} from '../../providers/ios-printer';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import {TimeUtil} from '../../classes/TimeUtil';
+import { Socket } from 'ng-socket-io';
 
 declare var cordova:any;
 
@@ -37,6 +38,8 @@ export class ShopTablePage {
   column=1; //default value
 
   timeUtil= new TimeUtil(); 
+  
+  registrationId; // socket에 전달할 registrationId를 저장함.
 
   getTodayString(){
     var d = new Date();
@@ -50,7 +53,8 @@ export class ShopTablePage {
       private http:Http,private alertController:AlertController,private ngZone:NgZone,private ionicApp: IonicApp,
       private printerProvider:PrinterProvider,private platform:Platform,private menuCtrl: MenuController,
       public viewCtrl: ViewController,private serverProvider:ServerProvider,private push: Push,
-      private mediaProvider:MediaProvider,private events:Events,private iosPrinterProvider:IosPrinterProvider) {
+      private mediaProvider:MediaProvider,private events:Events,private iosPrinterProvider:IosPrinterProvider,
+      private socket: Socket) {
     console.log("ShopTablePage constructor");
       platform.ready().then(() => {
       console.log('Width: ' + platform.width());
@@ -62,6 +66,34 @@ export class ShopTablePage {
           // display one columns
           this.column=1;
       }
+    /////////////////////////////////////////////////
+   // console.log("!!!call socket.connect!!!");
+   // this.socket.connect();
+   // this.socket.emit('takitId',{takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
+
+    this.socket.on('order', (data) => {
+      console.log("data:"+JSON.stringify(data));
+      this.orderNotificationSocket(data.order);
+    });
+
+    this.socket.on('disconnect', (reason) => {
+        console.log("reason:"+reason);  
+        let confirm = this.alertController.create({
+            title: '서버와 연결을 다시 시도합니다.',
+            message: '실패시 연결을 위해 업데이트 버튼을클릭해주세요.',
+            buttons: ['OK']
+        });
+        confirm.present();
+        this.socket.connect();
+        this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
+      /*
+      if(!this.socket.ioSocket.connected){
+             this.socket.connect();
+      }
+      */
+      ////////////////////////////////////////////
+    });
+
     });
 
 
@@ -563,7 +595,7 @@ export class ShopTablePage {
     }
 
     printOrder(order){
-      if(this.storageProvider.printOn==false)
+      if(this.storageProvider.printOn==false || this.storageProvider.myshop.GCMNoti=="off" )
         return;
       
       var title,message="";
@@ -734,6 +766,62 @@ export class ShopTablePage {
         }
       }
 
+     orderNotificationSocket(incommingOrder){
+                console.log("!!!orderNotificationSocket!!!");
+                var playback=false;
+                if(this.Option!="period" ||(this.Option=="period" && this.hasItToday() )){
+                       //새로운 order이거나 order가 cancel되었다면(order의 상태가 일치하지 않는다면)  
+                        console.log("incommingOrder:"+ incommingOrder);
+                        console.log("incomingOrder.orderStatus:"+ incommingOrder.orderStatus);
+                        var i=0;
+                        for(;i<this.orders.length;i++){
+                                console.log(this.orders[i].orderId+incommingOrder.orderId);
+                                if(this.orders[i].orderId == incommingOrder.orderId)
+                                      break;
+                        }
+                        if(i==this.orders.length){
+                            var newOrder=this.convertOrderInfo(incommingOrder);
+                            this.orders=[];
+                            this.getOrders(-1);
+                            if(newOrder.orderStatus=="paid"){
+                                  this.printOrder(newOrder);
+                                  playback=true;
+                            }
+                        }else{
+                           if(incommingOrder.orderStatus=="cancelled" &&  this.orders[i].orderStatus=="paid"){
+                                this.orders[i]=this.convertOrderInfo(incommingOrder);   
+                                        this.printCancel(this.orders[i]);
+                                        if(!this.paidOrdersExist()){
+                                            this.mediaProvider.stop();
+                                            playback=false;
+                                        }
+                           }else{
+                                this.orders[i]=this.convertOrderInfo(incommingOrder);
+                           }
+                        }
+                        console.log("orders update:"+JSON.stringify(this.orders));
+                }
+                if(playback){
+                    this.mediaProvider.play(); //Please playback after confirmMsg delivered. Playing sound causes error of confirmMsgDelivery due to unknown reasons.
+                }else{
+                    this.checkPaidOrderExist();
+                }
+     }
+
+    checkPaidOrderExist(){
+        let i=0,paidExist=false;
+
+        for(;i<this.orders.length;i++){
+            if(this.orders[i].orderStatus=="paid"){
+                paidExist=true;
+                break;
+            }
+        }
+        if(!paidExist){
+            this.mediaProvider.stop();
+        }
+    }
+    
       registerPushService(){ // Please move this code into tabs.ts
             this.pushNotification=this.push.init({
                 android: {
@@ -752,6 +840,10 @@ export class ShopTablePage {
                         
              this.pushNotification.on('registration').subscribe((response:any)=>{
               console.log("registration..."+response.registrationId);
+             this.registrationId=response.registrationId;
+             this.socket.connect();
+             this.socket.emit('takitId',{takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
+
               var platform;
               if(this.platform.is("android")){
                   platform="android";
@@ -807,27 +899,44 @@ export class ShopTablePage {
 
                         console.log("incommingOrder:"+ incommingOrder);
                         console.log("incomingOrder.orderStatus:"+ incommingOrder.orderStatus);
+
                         var i=0;
+                        i=this.orders.findIndex(function(order){
+                            return (order.orderId== incommingOrder.orderId);
+                        })
+                        /*
                         for(;i<this.orders.length;i++){
                                 console.log(this.orders[i].orderId+incommingOrder.orderId);
                                 if(this.orders[i].orderId == incommingOrder.orderId)
                                       break;
                         }
-                        if(i==this.orders.length){
+                        if(i==this.orders.length){    //새로운 주문이 왔다면
+                        */
+                        if(i<0){    //새로운 주문이 왔다면                            
                             var newOrder=this.convertOrderInfo(incommingOrder);
-                            this.orders.unshift(newOrder);
-                            if(newOrder.orderStatus=="paid"){
+                            //this.orders.unshift(newOrder); // 주문 목록을 가져오는것이 맞지 않을까?
+                            this.orders=[];
+                            this.getOrders(-1);
+                            if(incommingOrder.orderStatus=="paid"){
                                   this.printOrder(newOrder);
                                   playback=true;
                             }
                         }else{
-                           this.orders[i]=this.convertOrderInfo(incommingOrder);   
-                           if(this.orders[i].orderStatus=="cancelled"){
-                                  this.printCancel(this.orders[i]);
-                                  if(!this.paidOrdersExist()){
-                                      this.mediaProvider.stop();
-                                      playback=false;
-                                  }
+                            console.log("this.orders[i].orderStatus:"+this.orders[i].orderStatus);
+                           if(incommingOrder.orderStatus=="cancelled" &&  this.orders[i].orderStatus=="paid"){ //주문취소가 처리되지 않았다면
+                                this.orders[i]=this.convertOrderInfo(incommingOrder);   
+                                console.log("this.orders[i].orderStatus:"+this.orders[i].orderStatus);
+                                if(this.orders[i].orderStatus=="cancelled"){
+                                        this.printCancel(this.orders[i]);
+                                        console.log("printCancel");
+                                        if(!this.paidOrdersExist()){
+                                            console.log("stop");
+                                            this.mediaProvider.stop();
+                                            playback=false;
+                                        }
+                                }
+                           }else{
+                                this.orders[i]=this.convertOrderInfo(incommingOrder); 
                            }
                         }
                         console.log("orders update:"+JSON.stringify(this.orders));
@@ -853,6 +962,8 @@ export class ShopTablePage {
 
                 if(playback){
                     this.mediaProvider.play(); //Please playback after confirmMsg delivered. Playing sound causes error of confirmMsgDelivery due to unknown reasons.
+                }else{
+                    this.checkPaidOrderExist();
                 }
                 this.confirmMsgDelivery(additionalData.notId).then(()=>{
                       console.log("confirmMsgDelivery success");
@@ -1177,6 +1288,12 @@ export class ShopTablePage {
   }
 */
   update(){
+    ///////////////////////////////////////////////////////////
+    if(!this.socket.ioSocket.connected){
+             this.socket.connect();
+             this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
+    }
+    ///////////////////////////////////////////////////////////  
     this.orders=[];
     if(this.infiniteScroll!=undefined)
         this.infiniteScroll.enable(true);
@@ -1504,6 +1621,11 @@ export class ShopTablePage {
         console.log("body:"+JSON.stringify(body));
         this.serverProvider.post("/shop/notifyOrder",body).then((res:any)=>{   
             console.log("...res:"+JSON.stringify(res));
+              let alert = this.alertController.create({
+                                    title: '고객님께 알림이 전달되었습니다.',
+                                    buttons: ['OK']
+                                });
+                alert.present();
          },(err)=>{
            if(err=="NetworkFailure"){
               console.log("서버와 통신에 문제가 있습니다");

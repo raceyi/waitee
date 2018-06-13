@@ -14,7 +14,8 @@
   </ion-title>
   <ion-buttons end>
         <button *ngIf="storeInfoHide" ion-button (click)="showInfoDisplay()" style="background-color:white;color:#6441a5;">
-            <ion-icon  class="store-information-button"name="ios-information-circle-outline"></ion-icon>
+            <!-- <ion-icon  class="store-information-button"name="ios-information-circle-outline"></ion-icon> -->
+            상점정보
         </button>
         <button *ngIf="!storeInfoHide" ion-button (click)="hideInfoDisplay()" style="background-color:white;color:#6441a5;">        
             <ion-icon  class="store-information-button"name="ios-arrow-up"></ion-icon>
@@ -62,14 +63,9 @@
 <label class="label">주소</label>  <span class="value">{{shop.shopInfo.address}}</span>
 
 </div>
-<div class="shop-text-info" *ngIf="shop.shopInfo.deliveryArea!=null && takitId!='세종대@더큰도시락'">
+<div class="shop-text-info" *ngIf="shop.shopInfo.deliveryArea!=null">
 <label class="label">배달</label>  <span class="value"><amount-display [amount]="shop.shopInfo.freeDelivery"></amount-display>원이상 무료 배송</span>
 </div>
-
-<div class="shop-text-info" *ngIf="shop.shopInfo.deliveryArea!=null && takitId=='세종대@더큰도시락'">
-<label class="label">배달</label>  <span class="value"><amount-display [amount]="shop.shopInfo.freeDelivery"></amount-display>원이상 배송료 1,000원</span>
-</div>
-
 <div class="shop-text-info" *ngIf="shop.shopInfo.foodOrigin!=null">
 <label class="label">원산지</label>  <span class="value">{{shop.shopInfo.foodOrigin}}</span>
 </div>

@@ -54,7 +54,10 @@
     <ion-row>
         <ion-item style="width:58%;">
             <ion-label stacked>사진</ion-label>
+            <span *ngIf="menu.imagePath">{{menu.imagePath}}</span>
+            <!--
             <ion-input [(ngModel)]="menu.imagePath" (keyup)="imageInput($event)"></ion-input>
+            -->
         </ion-item>
         <button class="imageBtn" ion-button icon-only (click)="takePicture()" small><ion-icon name="camera"></ion-icon></button>
         <button class="imageBtn" ion-button icon-only (click)="pickPicture()" small><ion-icon name="image"></ion-icon></button>

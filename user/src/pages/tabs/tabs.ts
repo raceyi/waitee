@@ -350,7 +350,20 @@ export class TabsPage {
                         console.log("GCMCashUpdateEmitter");
                         cashConfirmModal.present();
                   }
+                }else{ // 나중에 추가적인 GCMType으로 고객 noti를 만들자.
+                       // FCM으로는 안드로이드에 전달할 방법이 없음으로 포스트맨을 사용해야만 한다. 
+                       // FCM으로 iOS는 가능함.
+                       /*
+                        if(data.message){
+                            let alert = this.alertCtrl.create({
+                                    title: data.message,
+                                    buttons: ['OK']
+                                });
+                                alert.present();
+                        }
+                        */
                 }
+                
                 if(additionalData.GCMType!=="cash" &&  additionalData.notId!=undefined && additionalData.GCMType!=="multiLogin"){
                         this.confirmMsgDelivery(additionalData.notId).then(()=>{
                             console.log("confirmMsgDelivery success");

@@ -23,7 +23,9 @@
       <button class="menu" clear ion-button icon-left full  menuClose [hidden]="storageProvider.id==undefined || storageProvider.tourMode==true" (click)="openUserInfo()">
         <ion-icon name="person"></ion-icon>&nbsp;&nbsp;회원정보
       </button>
-
+      <button class="menu" clear ion-button icon-left full  menuClose (click)="openConfigure()" >
+        <ion-icon name="md-settings"></ion-icon>&nbsp;&nbsp;환경설정
+      </button>
       <button class="menu" clear ion-button icon-left full menuClose (click)="openServiceInfo()">
         <ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;서비스정보 
       </button>

@@ -42,8 +42,12 @@ import {CancelConfirmPageModule} from '../pages/cancel-confirm/cancel-confirm.mo
 import { SoldOutPageModule } from '../pages/sold-out/sold-out.module';
 import {ComponentsModule} from '../components/components.module';
 import {CustomIconsModule} from 'ionic2-custom-icons';
-
 import {ConfigurePasswordPageModule} from '../pages/configure-password/configure-password.module';
+import {ConfigurePageModule} from '../pages/configure/configure.module';
+
+import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
+//const config: SocketIoConfig = { url: 'http://211.253.18.79:8501', options: {} };
+const config: SocketIoConfig = { url: 'http://211.253.18.79:8500', options: {} };
 
 @NgModule({
   declarations: [
@@ -63,6 +67,7 @@ import {ConfigurePasswordPageModule} from '../pages/configure-password/configure
   imports: [
     BrowserModule,
     HttpModule,
+    SocketIoModule.forRoot(config),    
     IonicModule.forRoot(MyApp,{mode:'ios'}),
     IonicStorageModule.forRoot(),
     CancelConfirmPageModule,
@@ -70,6 +75,7 @@ import {ConfigurePasswordPageModule} from '../pages/configure-password/configure
     ComponentsModule,
     CustomIconsModule,
     SoldOutPageModule,
+    ConfigurePageModule,
     ConfigurePasswordPageModule
   ],
   bootstrap: [IonicApp],

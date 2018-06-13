@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Facebook } from '@ionic-native/facebook';
-import {Platform} from 'ionic-angular';
+import {Platform,AlertController} from 'ionic-angular';
 import {StorageProvider} from '../storage/storage';
 import {Http,Headers} from '@angular/http';
 import { AppAvailability } from '@ionic-native/app-availability';
 import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
-
+import { NativeStorage } from '@ionic-native/native-storage';
 import { HttpClient ,HttpHeaders} from '@angular/common/http';
 
 declare var KakaoTalk:any;
@@ -20,17 +20,31 @@ declare var KakaoTalk:any;
 export class LoginProvider {
 
   browserRef;
+  notice;
   
   constructor(public fb: Facebook,private platform:Platform
-      ,public storageProvider:StorageProvider, private appAvailability: AppAvailability
+      ,public storageProvider:StorageProvider,
+      private nativeStorage: NativeStorage,
+      private appAvailability: AppAvailability,
+      private alertCtrl:AlertController
       ,private iab: InAppBrowser,private httpClient: HttpClient) {
     console.log('Hello LoginProvider Provider');
+      platform.ready().then(() => {
+        this.nativeStorage.getItem("notice").then((value:string)=>{
+            this.notice=decodeURI(value);
+            console.log("!!!notice:"+this.notice);
+        },err=>{
+
+        })
+      });
+
   }
 
   loginSocialLogin(type){
     if(type=="facebook"){
       return new Promise((resolve,reject)=>{
         this.fblogin(this.serverLogin,this,{}).then((res:any)=>{
+                this.alertNotice(res.notice);
                 resolve(res);
             }, (err)=>{
                 reject(err);
@@ -39,6 +53,7 @@ export class LoginProvider {
     }else if(type=="kakao"){
       return new Promise((resolve,reject)=>{
         this.kakaologin(this.serverLogin,this,{}).then((res:any)=>{
+                this.alertNotice(res.notice);            
                 resolve(res);
             }, (err)=>{
                 reject(err);
@@ -47,13 +62,29 @@ export class LoginProvider {
     }
   }
 
+  alertNotice(notice){
+      if(notice){
+          if(!this.notice || this.notice!=notice){ //사용자에게 보여주고 notice를 저장한다.
+                let alert = this.alertCtrl.create({
+                    title: notice ,
+                    buttons: ['OK']
+                });
+                alert.present();
+                this.nativeStorage.setItem('notice',encodeURI(notice));
+          }
+      }
+  }
+
   loginEmail(email:string,password:string){
     return new Promise((resolve, reject)=>{
             console.log("EmailServerLogin");
 
             let body = {email:email,password:password,version:this.storageProvider.version};
 
-            this.httpClient.post(this.storageProvider.serverAddress+"/emailLogin",body).subscribe((res:any)=>{               
+            this.httpClient.post(this.storageProvider.serverAddress+"/emailLogin",body).subscribe((res:any)=>{ 
+                if(res.result=="success"){
+                    this.alertNotice(res.notice);
+                }              
                 resolve(res);
             },(err)=>{
                 console.log("post-err:"+JSON.stringify(err));

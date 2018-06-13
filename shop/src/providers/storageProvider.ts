@@ -37,7 +37,8 @@ export class StorageProvider{
     public bankCode;
     public depositor;
     public isTestServer:boolean;
-    public printer;
+    //public printer;
+    public volume; // 0-100
 
     public serverAddress:string=this.configProvider.getServerAddress();
 
@@ -74,6 +75,7 @@ export class StorageProvider{
             }
         });
         console.log("printOn is "+this.printOn);
+        /*
         if(this.printOn){
             this.nativeStorage.getItem("print").then((value:string)=>{
             console.log("print is "+value+" in storage");
@@ -82,7 +84,16 @@ export class StorageProvider{
         }else{
             this.printer=undefined;
         }
-    
+        */
+        this.nativeStorage.getItem("volume").then((value:string)=>{
+            console.log("volume is "+value+" in storage");
+            if(value==null || value==undefined){
+                this.volume=100;
+            }else{
+                this.volume= parseInt(value);
+            }
+        });    
+
     }
 
     reset(){
@@ -149,6 +160,12 @@ export class StorageProvider{
         this.name=userInfo.name;
         this.phone=userInfo.phone;
         this.tourMode=false;
+    }
+
+    saveVolume(value:number){
+        this.nativeStorage.setItem('volume',value.toString());
+        this.volume=value;
+        console.log("saveVolume:"+this.volume);
     }
 }
 

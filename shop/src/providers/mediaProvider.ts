@@ -3,7 +3,9 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Media, MediaObject } from '@ionic-native/media';
 import { Platform } from 'ionic-angular';
+import {StorageProvider} from './storageProvider';
 
+declare var cordova:any;
 
 /*
   Generated class for the MediaProvider provider.
@@ -15,11 +17,15 @@ import { Platform } from 'ionic-angular';
 export class MediaProvider {
    playing:boolean=false;
              
-   file;
+   file:MediaObject;
+   volumeControl;
 
-  constructor(public http: Http,private platform:Platform,private media: Media) {
+  constructor(public http: Http,private platform:Platform,
+              private media: Media,private storageProvider:StorageProvider,) {
     console.log('Hello MediaProvider Provider');
     platform.ready().then(() => {
+      this.volumeControl = cordova.plugins.VolumeControl;
+
       if(this.platform.is('android'))
         this.file = this.media.create('file:///android_asset/www/assets/ordersound.mp3');
       else{
@@ -40,6 +46,7 @@ export class MediaProvider {
 
   play(){
       this.playing=true;
+      this.volumeControl.setVolume(this.storageProvider.volume/100);
       // play the file
       this.file.play();
       console.log("play ordersound.mp3");
@@ -56,5 +63,11 @@ export class MediaProvider {
 
   release(){ //When should I call this function? When app terminates?
 
+  }
+
+  setVolume(volume){
+    if(this.playing){
+        this.file.setVolume(volume);
+    }
   }
 }

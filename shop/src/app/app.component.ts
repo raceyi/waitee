@@ -15,6 +15,7 @@ import {UserInfoPage} from '../pages/userinfo/userinfo';
 import {SalesPage} from '../pages/sales-page/sales-page';
 import { EditMenuPage } from '../pages/edit-menu-page/edit-menu-page';
 import { SoldOutPage } from '../pages/sold-out/sold-out';
+import {ConfigurePage} from '../pages/configure/configure';
 
 import { StatusBar } from '@ionic-native/status-bar';
 //import { Storage } from '@ionic/storage';
@@ -128,9 +129,12 @@ export class MyApp {
                 this.rootPage=SelectorPage;
              }
         }
+        /*
         this.nativeStorage.getItem("printer").then((value:string)=>{
-            this.storageProvider.printerName=value;
-            this.printerProvider.setPrinter(value);
+            console.log("getItem-printer-value:"+value);
+            let printer=JSON.parse(value);
+            this.storageProvider.printerName=printer.name;
+            this.printerProvider.setPrinter(printer);
             this.nativeStorage.getItem("printOn").then((value:string)=>{
                 console.log("printOn:"+value);
                 this.storageProvider.printOn= JSON.parse(value);
@@ -139,7 +143,9 @@ export class MyApp {
             });
         },()=>{
             this.storageProvider.printOn=false;
+            console.log("getItem printer returns error");         
         });
+        */
   }
 
    openPrint(){
@@ -156,6 +162,10 @@ export class MyApp {
 
     openUserInfo(){
         this.app.getRootNav().push(UserInfoPage);
+    }
+
+    openConfigure(){
+        this.app.getRootNav().push(ConfigurePage);      
     }
 
     openSales(){
