@@ -1,0 +1,60 @@
+<!--
+  Generated template for the ConfigurePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>환경설정</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+<ion-item> 소리 조절</ion-item>
+<ion-item>
+    <ion-range  (ionBlur)='updateVolume()' no-padding no-margin style="padding-top:0px;" [(ngModel)]="volumeValue" color="danger" pin="true">
+      <ion-icon small range-left name="ios-volume-down-outline"></ion-icon>
+      <ion-icon range-right name="ios-volume-up-outline"></ion-icon>
+     </ion-range>
+</ion-item>
+<ion-row>
+  <ion-col>
+  <ion-item>
+  상점 열고 닫기
+  </ion-item>
+  </ion-col>
+  <ion-col>
+  <ion-item>
+      <ion-icon class="store-status" [style.color]="storeColor" name="bulb" (click)="configureStore()" ></ion-icon>
+  </ion-item>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col>
+  <ion-item>
+    <ion-label>주문정보 요청기간</ion-label>
+    <ion-select [(ngModel)]="pollingInterval">
+      <ion-option value='1'> 1분</ion-option>
+      <ion-option value='2'> 2분</ion-option>
+      <ion-option value='3'> 3분</ion-option>
+    </ion-select>
+  </ion-item>    
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col>
+  <ion-item>
+  주문 알림 문자 수신
+  </ion-item>
+  </ion-col>
+  <ion-col>
+  <ion-item>
+      <ion-icon class="store-status" [style.color]="notiColor" name="person" (click)="configureGotNoti()" ></ion-icon>
+  </ion-item>
+  </ion-col>
+</ion-row>
+</ion-content>
