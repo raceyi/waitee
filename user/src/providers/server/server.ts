@@ -178,8 +178,11 @@ saveOrderCart(body){
                   console.log("res:"+JSON.stringify(res));
                   console.log("saveOrder-res.result:"+res.result);
                   if(res.result=="success"){
-                    //resolve(res.orders);
-                    resolve(res);
+                        this.updateCash().then(()=>{   // 버전 다시 만들때는 반듯이 updateCash를 다시 불러주자. !!! 서버에서 응답값으로 변경 값을 보내주도록 하자. !!!
+                            resolve(res);
+                        },err=>{
+                            resolve(res);
+                        })
                   }else{
                     reject(res.error);
                   }

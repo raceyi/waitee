@@ -34,12 +34,12 @@ page-cash-manual-confirm {
     }
 
     .header-section{
-        padding-top: calc((14/667)*100vh);
-        padding-bottom: calc((35/667)*100vh);
+        padding-top: calc((14/375)*100vw);
+        padding-bottom: calc((35/375)*100vw);
     }
 
     .account-info{
-        margin-left:calc((21/376)*100vw);
+        margin-left:calc((21/375)*100vw);
         width: calc((334/376)*100vw);
         background-color:white;
         font-size:4vw;
@@ -56,20 +56,16 @@ page-cash-manual-confirm {
     }
 
     .bank-select{
-        height: calc((53/667)*100vh);
+        height: calc((53/375)*100vw);
         border-bottom-style:solid;
         border-top-style:solid;
         border-width:1px;
         border-color: #dddddd;
     }
 
-    .bank-select-button{
-
-    }
-
     .bank-select-label{
-        margin-top: calc((17/667)*100vh) !important;
-        margin-bottom: calc((17/667)*100vh);
+        margin-top: calc((17/375)*100vw) !important;
+        margin-bottom: calc((17/375)*100vw);
     }
 
     .right-border{
@@ -79,17 +75,17 @@ page-cash-manual-confirm {
     }
 
     .account-num{
-        height:calc((53/667)*100vh);
+        height:calc((53/375)*100vw);
         color:#4a4a4a;
     }
 
     .account-num-label{
-        padding-top:calc((17/667)*100vh) !important;
-        padding-left:calc((17/376)*100vw) !important;
+        padding-top:calc((17/375)*100vw) !important;
+        padding-left:calc((17/375)*100vw) !important;
     }
 
     .account-num-value{
-        padding-top:calc((5/667)*100vh) !important;  
+        padding-top:calc((5/375)*100vw) !important;  
 
         ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
             font-size:3.5vw;
@@ -106,7 +102,7 @@ page-cash-manual-confirm {
     }
 
     .bank-select-value{
-         padding-top:calc((17/667)*100vh) !important;
+         padding-top:calc((17/375)*100vw) !important;
     }
 
 }

@@ -65,6 +65,7 @@ import {ConfigureReceiptPageModule} from '../pages/configure-receipt/configure-r
 import {ConfigurePasswordPageModule} from '../pages/configure-password/configure-password.module';
 import {ConfigurePaymentPageModule} from '../pages/configure-payment/configure-payment.module';
 import {InputCouponPageModule} from '../pages/input-coupon/input-coupon.module';
+import {ComponentsModule} from '../components/components.module';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import {InputCouponPageModule} from '../pages/input-coupon/input-coupon.module';
     TabsPage    
   ],
   imports: [
+    ComponentsModule,
     LoginMainPageModule,
     LoginEmailPageModule,
     SignupPageModule,

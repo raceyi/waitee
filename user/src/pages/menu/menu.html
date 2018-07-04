@@ -21,6 +21,9 @@
   <p *ngIf="menu.explanation!=undefined && menu.explanation!=null" text-wrap text-center style="color:#6441a5;font-size:4vw;">
   {{menu.explanation}}
   </p>
+  <p *ngIf="menu.timeConstraint" text-wrap text-center style="color:#6441a5;font-size:4vw;">
+    {{timeConstraintString}}
+  </p>
 <div *ngIf="menu.ingrediant!=undefined && menu.ingrediant!=null">  
 <button [hidden]="ingredientShown" class="expand-button" (click)="expand()" full no-padding no-margin ion-button><span text-left style="width:80vw;">상세보기</span> <span text-right><ion-icon name="ios-arrow-down"></ion-icon></span> </button>
 <button [hidden]="!ingredientShown" class="expand-button inside-ingredients" (click)="collapse()" full no-padding no-margin ion-button><span text-left style="width:80vw;">&nbsp;</span> <span text-right><ion-icon name="ios-arrow-up"></ion-icon></span> </button>
@@ -111,7 +114,7 @@
 </div>
 <div class="request">
   요청사항 
-<ion-textarea [(ngModel)]="memo" ></ion-textarea>
+<ion-textarea [(ngModel)]="memo" placeholder="특수문자를 제외한 한글,영문,숫자만 전달됩니다." ></ion-textarea>
 </div>
 </ion-content>
 <ion-footer>

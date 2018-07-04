@@ -47,6 +47,60 @@
         </ion-scroll>
 </div>
 
+<div *ngIf="storageProvider.shopList==null || storageProvider.shopList==undefined || storageProvider.shopList.length==0">
+    <p class="section-title">웨이티에 오신 것을 환영합니다!</p>
+    <p class="section-title">첫주문을 해주시겠어요?</p>
+    <div text-right>
+        <img class="profile-smile" src="assets/imgs/profile-smile.png">
+    </div>
+</div>
+
+
+<p *ngIf="storageProvider.shopList!=null && storageProvider.shopList!=undefined && storageProvider.shopList.length!=0" class="section-title"><b>즐겨찾는 메뉴</b></p>
+<div *ngIf="storageProvider.shopList.length!=0 && menus.length!=0">
+            <ion-row>
+                <ion-col *ngIf="menus.length>0" class="col-left">
+                            <button class="menu-button" (click)="selectMenu(menus[0])" no-padding no-margin ion-button>
+                                <img  [src]="menus[0].fullImagePath">
+                                <p class="menu-shopname-sub">{{menus[0].name_sub}}</p>
+                                <p class="menu-shopname-main">{{menus[0].name_main}}</p>
+                                <p class="menu-name"><b>{{menus[0].menuName}}&nbsp;({{menus[0].count}}회)</b></p>
+                                <p class="menu-price"><amount-display [amount]="menus[0].price" ></amount-display></p>
+                            </button>
+                </ion-col>
+                <ion-col *ngIf="menus.length>1" >
+                            <button class="menu-button" (click)="selectMenu(menus[1])" no-padding no-margin ion-button>
+                                <img  [src]="menus[1].fullImagePath">
+                                <p class="menu-shopname-sub">{{menus[1].name_sub}}</p>
+                                <p class="menu-shopname-main">{{menus[1].name_main}}</p>
+                                <p class="menu-name"><b>{{menus[1].menuName}}&nbsp;({{menus[1].count}}회)</b></p>
+                                <p class="menu-price"><amount-display [amount]="menus[1].price" ></amount-display></p>
+                            </button>
+                </ion-col>
+            </ion-row>
+            <ion-row *ngIf="menus.length>2" >
+                <ion-col  *ngIf="menus.length>2"   class="col-left">
+                            <button class="menu-button" (click)="selectMenu(menus[2])" no-padding no-margin ion-button>
+                                <img  [src]="menus[2].fullImagePath">
+                                <p class="menu-shopname-sub">{{menus[2].name_sub}}</p>
+                                <p class="menu-shopname-main">{{menus[2].name_main}}</p>
+                                <p class="menu-name"><b>{{menus[2].menuName}}&nbsp;({{menus[2].count}}회)</b></p>
+                                <p class="menu-price"><amount-display [amount]="menus[2].price" ></amount-display></p>
+                            </button>
+                </ion-col>
+                <ion-col *ngIf="menus.length>3" >
+                            <button class="menu-button" (click)="selectMenu(menus[3])" no-padding no-margin ion-button>
+                                <img  [src]="menus[3].fullImagePath">
+                                <p class="menu-shopname-sub">{{menus[3].name_sub}}</p>
+                                <p class="menu-shopname-main">{{menus[3].name_main}}</p>
+                                <p class="menu-name"><b>{{menus[3].menuName}}&nbsp;({{menus[3].count}}회)</b></p>
+                                <p class="menu-price"><amount-display [amount]="menus[3].price" ></amount-display></p>
+                            </button>
+                </ion-col>
+            </ion-row>            
+</div>
+
+<!--
 <p  class="section-title"><b>최근 주문 음식점</b></p>
 <div *ngIf="storageProvider.shopList==null || storageProvider.shopList==undefined || storageProvider.shopList.length==0">
 <p class="section-title">웨이티에 오신 것을 환영합니다!</p>
@@ -64,10 +118,6 @@
                                 <img  [src]="storageProvider.awsS3+shop.imagePath">
                                 <p class="name-sub">{{shop.name_sub}}</p>
                                 <p class="name-main"><b>{{shop.name_main}}</b></p>
-                                <!--
-                                <p class="classification">{{shop.classification}}&nbsp;
-                                -->
-                                
                                 <p class="classification">
                                   <span class="noti-box" *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined">캐시<b *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>
                                   <span *ngIf="shop.paymethod!=undefined && shop.paymethod.cash!=undefined"></span>
@@ -80,7 +130,7 @@
             </ion-row>
         </ion-scroll>
 </div>
-
+-->
 <ion-fab bottom right>
     <button class="fab-btn" (click)="openCart()" ion-fab color="white">
       <custom-icon set="tabs" name="cart"></custom-icon>

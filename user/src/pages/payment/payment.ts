@@ -270,6 +270,68 @@ export class PaymentPage {
     return true;          
   }
 
+  removeSpecialCharacters(str){
+      var pattern = /^[a-zA-Zㄱ-힣0-9|s]*$/;
+        let update="";
+
+        for(let i=0;i<str.length;i++){
+             if(str[i].match(pattern) || str[i]===" "){
+                update+=str[i];
+            }else{
+                console.log("NOK-special characters");
+            }
+        }
+        return update;
+  }
+
+  checkOneTimeConstraint(timeConstraint){
+        var currTime = new Date();
+        let currLocalTime=currTime.getMinutes()+ currTime.getHours()*60;
+     
+        if(timeConstraint){       
+                if(timeConstraint.from && (!timeConstraint.to || timeConstraint.to==null)){
+                        //current time in seconds is more than or equal to
+                        if(currLocalTime<timeConstraint.fromMins)
+                            return false;
+                }else if((!timeConstraint.from || timeConstraint.from==null) && timeConstraint.to){
+                        //current time is less then or equal to
+                        console.log("currLocalTime:"+currLocalTime+"timeConstraint.ToMins:"+timeConstraint.toMins);
+                        if(currLocalTime>timeConstraint.toMins){
+                            return false;                        
+                        }
+                }else if(timeConstraint.from && timeConstraint.from!=null 
+                        && timeConstraint.to!=null && timeConstraint.to){
+                    if(timeConstraint.condition=='XOR'){
+                        //current time is more than or equal to from OR 
+                        //    current time is less than or equal to to
+                        if(timeConstraint.fromMins<currLocalTime ||currLocalTime<timeConstraint.toMins)
+                            return false;
+                    }else if(timeConstraint.condition=='AND'){
+                        //    current time is more than or equal to from AND
+                        //    current time is less than or equal to to
+                         if(timeConstraint.fromMins>currLocalTime ||currLocalTime>timeConstraint.toMins)
+                            return false;
+                    }
+                }
+        }        
+        return true;
+  }
+
+  checkTimeConstraint(){
+        var currTime = new Date();
+        let currLocalTime=currTime.getMinutes()+ currTime.getHours()*60;
+        console.log("currLocalTime:"+currLocalTime);
+    
+    for(var i=0;i<this.carts.length;i++){
+        let cart=this.carts[i];
+        console.log("cart.timeConstraints:"+JSON.stringify(cart.timeConstraints));
+        for(var j=0;j<cart.timeConstraints.length;j++)
+            if(!this.checkOneTimeConstraint(cart.timeConstraints[j]))
+                return false;
+    }
+    return true;
+  }
+
   pay(){
     console.log("carts:"+JSON.stringify(this.carts));
 
@@ -285,6 +347,19 @@ export class PaymentPage {
     if(!this.checkAddressValidityCart()){   //동일상점 주소에서 대해서만 장바구니 주문이 가능합니다.
         let alert = this.alertController.create({
             subTitle: '동일상점 주소에서 대해서만 장바구니 주문이 가능합니다.',
+            buttons: ['OK']
+        });
+        alert.present().then(()=>{
+            console.log("alert done");
+        });
+        return;           
+    }
+    console.log("this.checkTimeConstraint(): "+this.checkTimeConstraint());
+
+    if(!this.checkTimeConstraint()){
+        console.log("checkTimeConstraint return false");
+        let alert = this.alertController.create({
+            subTitle: '현재 시간에 주문이 불가능한 메뉴가 포한되어 있습니다.',
             buttons: ['OK']
         });
         alert.present().then(()=>{
@@ -346,7 +421,7 @@ export class PaymentPage {
 
     }
     if(this.takeout==2){
-        body.deliveryAddress=this.deliveryAddress;
+        body.deliveryAddress=this.removeSpecialCharacters(this.deliveryAddress);
         if(this.deliveryFee){
             body.deliveryFee=this.deliveryFee;
         }

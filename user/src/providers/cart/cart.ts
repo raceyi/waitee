@@ -96,11 +96,12 @@ export class CartProvider {
                         takeout,
                         cart.orderList.menus[0].memo,
                         cart.orderList.menus[0].menuNO, 
-                        cart.orderList.menus[0].menuName];
+                        cart.orderList.menus[0].menuName,
+                        JSON.stringify(cart.timeConstraints[0])];
 
             console.log("!!!!params:"+JSON.stringify(params));
 
-            queryString="INSERT INTO carts(takitId, address, deliveryArea, freeDelivery, deliveryFee,paymethod, shopName, options,unitPrice, quantity,takeout,memo, menuNO, menuName) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            queryString="INSERT INTO carts(takitId, address, deliveryArea, freeDelivery, deliveryFee,paymethod, shopName, options,unitPrice, quantity,takeout,memo, menuNO, menuName,timeConstraints) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             console.log("query:"+queryString);
             this.db.executeSql(queryString,params).then((resp)=>{
                 console.log("[saveCartInfo]resp:"+JSON.stringify(resp));
@@ -171,7 +172,7 @@ export class CartProvider {
             };
             console.log("call create function")            
             this.sqlite.create(options)
-            .then((db: SQLiteObject) => {
+            .then((db: SQLiteObject) => {  //DB 버전을 넣어서 해결하자. ㅜㅜ  예) pragma user_version = {DB_VERSION};  , pragma user_version
                 this.db=db;
                 this.db.executeSql("create table if not exists carts(id integer primary key autoincrement, \
                  takitId VARCHAR(100),\
@@ -189,7 +190,40 @@ export class CartProvider {
                  menuNO VARCHAR(100),\
                  menuName VARCHAR(100));",[]).then(()=>{
                     console.log("success to create cart table");
-                    resolve();
+                    this.db.executeSql("PRAGMA user_version",[]).then(version=>{
+                                console.log("version is "+JSON.stringify(version.rows.item(0)));
+                                if(version.rows.item(0).user_version==0){
+                                    this.db.executeSql("alter table carts add column timeConstraints VARCHAR(128)",[]).then((alter)=>{
+                                        this.db.executeSql("PRAGMA user_version=1",[]).then(updateVersion=>{
+                                            resolve();
+                                        }).catch(e=>{
+                                            console.log("fail to set user_version with 1"+JSON.stringify(e));
+                                            reject(e);
+                                        });
+                                    }).catch(e=>{
+                                        console.log("fail to add timeConstraints int cart "+JSON.stringify(e));
+                                        reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
+                                    });
+                                }else if(version.rows.item(0).user_version==1){
+                                    resolve();
+                                }
+                             })
+                     /*        
+                      this.db.executeSql("PRAGMA table_info('carts')",[]).then((table_info)=>{
+                            console.log("!!!table_info:"+JSON.stringify(table_info.rows));
+                            for(var i=0;i<table_info.rows.length;i++){
+                                console.log("item:"+JSON.stringify(table_info.rows.item(i)));
+                                if(table_info.rows.item(i).name=="timeConstraints"){
+                                    resolve();
+                                    return;
+                                }
+                            } 
+                             
+                      }).catch(e=>{
+                        console.log("fail to table_info"+JSON.stringify(e));
+                        reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
+                      });
+                      */
                 }).catch(e => {
                     console.log("fail to create table"+JSON.stringify(e));
                     reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
@@ -206,7 +240,7 @@ export class CartProvider {
        let cart:any={takitId:rows[0].takitId,amount:0};
        let totalQuantity=0;
        let menus=[];
-
+       let timeConstraints=[];
        rows.forEach(row=>{
             totalQuantity+=row.quantity;
             let menu:any={
@@ -219,7 +253,11 @@ export class CartProvider {
                   unitPrice:row.unitPrice,
                   takeout:row.takeout,
                   memo:row.memo}
-              menus.push(menu)    
+              menus.push(menu);
+              if(row.timeConstraints!=null && row.timeConstraints!=undefined){
+                    let rowTimeConstraints=JSON.parse(row.timeConstraints);
+                    timeConstraints=timeConstraints.concat(rowTimeConstraints)
+              }
        });
         let orderName;
 
@@ -240,6 +278,7 @@ export class CartProvider {
         cart.paymethod=JSON.parse(rows[rows.length-1].paymethod);
         cart.takitId=rows[rows.length-1].takitId;
         cart.shopName=rows[rows.length-1].shopName;
+        cart.timeConstraints=timeConstraints;
         //cart.price=this.amount;
 
         cart.orderName=orderName;

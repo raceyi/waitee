@@ -176,5 +176,62 @@ page-home {
         width:calc((150/375)*100vw);
     }
 
+/////////////////////////////////////////
+    .menu-button{
+            width : $latest-W;
+            height: $latest-H;
+            background-color:white;
+            color:$default-color;
+            img{
+                height: calc((96/667)*100vh);
+                width: $latest-W;
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                //apply border
+                background-color: #6441a5;
+                border: solid 1px #979797;
+                border-radius: 5px;                                
+            }
+            ion-icon{
+                color:$default-color;
+            }
+            .menu-shopname-sub{
+                margin:0px;
+                position: absolute;
+                left: 0;
+                top: calc((106/667)*100vh);
+                font-size:3.8vw;  
+                color: #33b9c6;                  
+            }
+            .menu-shopname-main{
+                margin:0px;
+                position: absolute;
+                left: 0;
+                top: calc((122/667)*100vh);
+                font-size:3.8vw;  
+                color: #33b9c6;                  
+            }
+            .menu-name{
+                margin:0px;
+                position: absolute;
+                left: 0px;
+                top: calc((140/667)*100vh);
+                font-size:4.4vw;
+                color: #4a4a4a;
+                font-family:NotoSansCJKkr-Bold;
+            }
+            .menu-price{
+                margin:0px;
+                position: absolute;
+                //left: 0px;
+                left:calc((110/376)*100vw);
+                top: calc((160/667)*100vh);
+                font-size:3.8vw;  
+                color: #4a4a4a;
+            }
+    }
+
+
 
 }

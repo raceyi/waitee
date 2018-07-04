@@ -187,8 +187,11 @@ export class CartPage {
         let index=this.carts.indexOf(cart);
         this.carts.splice(index,1);
     }else{
+        /*
         let index=cart.orderList.menus.indexOf(menu);
-        cart.orderList.menus.splice(index,1);                        
+        cart.orderList.menus.splice(index,1);
+        */   
+        this.initializeCarts(); // how to know timeConstraints of this menu? 다시 읽어와야만 한다 ㅜㅜ                     
     }
     console.log("remove done: "+JSON.stringify(this.carts));
     this.computeTotalAmount();

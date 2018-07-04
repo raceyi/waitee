@@ -26,22 +26,6 @@
 </ion-header>
 
 <ion-content #shophomeContent>
-<!--
-<div [hidden]="!storeInfoHide">    
-<div class="shop-img" [ngStyle]="ngStyle">
-<ion-row text-right *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash!=undefined">
-    <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash=='0%'">&nbsp;&nbsp;캐시결제&nbsp;&nbsp;</span>
-                        <span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.cash!='0%'">&nbsp;&nbsp;캐시결제{{storageProvider.shopResponse.shopInfo.paymethod.cash}}할인&nbsp;&nbsp;</span>
-    </ion-col>
-</ion-row>
-<ion-row text-right *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card!=undefined">
-    <ion-col text-right><span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card=='0%'">&nbsp;&nbsp;카드결제&nbsp;&nbsp;</span>
-                        <span *ngIf="storageProvider.shopResponse.shopInfo.paymethod.card!='0%'"> &nbsp;&nbsp;카드결제{{storageProvider.shopResponse.shopInfo.paymethod.card}}할인&nbsp;&nbsp;</span>
-    </ion-col>
-</ion-row>
-</div>
-</div>
--->
 <div [hidden]="storeInfoHide">
 <ion-row>
 <ion-col no-padding class="shop-text-info">

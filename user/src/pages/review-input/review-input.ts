@@ -55,6 +55,20 @@ export class ReviewInputPage {
     return;
   }  
 
+ removeSpecialCharacters(str){
+      var pattern = /^[a-zA-Zㄱ-힣0-9|s]*$/;
+        let update="";
+
+        for(let i=0;i<str.length;i++){
+             if(str[i].match(pattern) || str[i]===" "){
+                update+=str[i];
+            }else{
+                console.log("NOK-special characters");
+            }
+        }
+        return update;
+  }
+
   inputDone(){
     let review:string=this.review;
     if(!review || review.trim().length==0){
@@ -71,7 +85,7 @@ export class ReviewInputPage {
 
     let body = {orderId:this.order.orderId,
                 fiveStar:this.count,
-                review:this.review,
+                review:this.removeSpecialCharacters(this.review),
                 takitId:this.order.takitId};   
 
     this.serverProvider.post(this.storageProvider.serverAddress+"/shop/inputReview",body).then((res:any)=>{

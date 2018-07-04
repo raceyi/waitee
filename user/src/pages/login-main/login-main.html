@@ -4,24 +4,31 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<!--
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>LoginMain</ion-title>
-  </ion-navbar>
-
-</ion-header>
--->
-
 <ion-content>
-    <div  *ngIf="isTestServer" style="font-size:5vw;">
-                    검증
-    </div>
-    <img *ngIf="!isTestServer" class="logo" src="assets/imgs/waitee-logo.png"/> 
-
-<button class="first login-button" (click)="kakao()" outline ion-button><custom-icon class="icon" set="login" name="kakaotalk"></custom-icon><span class="button-text">카카오톡으로 시작하기</span></button>
-<button class="second login-button" (click)="facebook()" outline ion-button><custom-icon class="icon" set="login" name="facebook"></custom-icon><span class="button-text">페이스북으로 시작하기</span></button>
-<button class="third login-button" (click)="emaillogin()" outline ion-button><ion-icon class="icon" style="font-size:6vw;" name="md-mail"></ion-icon><span class="button-text">이메일로 시작하기</span></button>
-<button class="tour" full ion-button clear (click)="tourLogin()"> 웨이티 둘러보기 </button>
+<ion-row no-padding no-margin class="logo">
+    <ion-col no-padding no-margin text-center>
+    <img  *ngIf="!isTestServer" src="assets/imgs/waitee-logo.png"/> 
+    <span  *ngIf="isTestServer">검증</span> 
+    </ion-col>
+  </ion-row>
+<ion-row class="first">
+  <ion-col text-center>
+  <button class="login-button" (click)="kakao()" outline ion-button><custom-icon class="icon" set="login" name="kakaotalk"></custom-icon><span class="button-text">카카오톡으로 시작하기</span></button>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col text-center>
+    <button class="login-button" (click)="facebook()" outline ion-button><custom-icon class="icon" set="login" name="facebook"></custom-icon><span class="button-text">페이스북으로 시작하기</span></button>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col text-center>
+    <button class="login-button" (click)="emaillogin()" outline ion-button><ion-icon class="icon" style="font-size:6vw;" name="md-mail"></ion-icon><span class="button-text">이메일로 시작하기</span></button>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col text-center>
+    <button class="tour" (click)="tourLogin()" full ion-button clear> 웨이티 둘러보기 </button>
+  </ion-col>
+</ion-row>
 </ion-content>

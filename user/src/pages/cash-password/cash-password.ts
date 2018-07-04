@@ -158,7 +158,6 @@ export class CashPasswordPage {
                             console.log("send orderUpdate");
                             this.events.publish('orderUpdate',{order:res.order});
                             this.events.publish("cashUpdate");
-                            //////////////////////////////////////////////////////////////////////////   
                             //임시로 shopEnter로 구현하였다. 서버에서 최근 주문 음식점을 관리하도록 한다.   
                             console.log("body:"+JSON.stringify(this.body));                        
                             let carts=JSON.parse(this.body.orderList);
@@ -249,7 +248,14 @@ export class CashPasswordPage {
                             }
                             let alert = this.alertController.create({
                                     title: '지금은 주문을 할 수 없습니다.',
-                                    subTitle:'상점의 주문시간'+ error.substr(10) +'을 확인해주시기 바랍니다.',
+                                    subTitle:msg,
+                                    buttons: ['OK']
+                                });
+                                alert.present();
+                        }else if(error.startsWith("shop's closed")){
+                            let alert = this.alertController.create({
+                                    title: '상점문이 닫혔습니다',
+                                    subTitle:'상점주께 상점문을 열어달라고 요청해주세요.',
                                     buttons: ['OK']
                                 });
                                 alert.present();
@@ -277,6 +283,18 @@ export class CashPasswordPage {
                                     buttons: ['OK']
                                 });
                                 alert.present();
+                        }else if(error=="check your balance"){
+                            let alert = this.alertController.create({
+                                    title: '잔액이 부족합니다.',
+                                    buttons: ['OK']
+                                });
+                                alert.present();
+                        }else if(error=="menuWithTimeConstraint"){
+                            let alert = this.alertController.create({
+                                    title: '주문시간이 아닌 메뉴가 포함되어 있습니다.',
+                                    buttons: ['OK']
+                                });
+                                alert.present();                            
                         }else{
                             let alert = this.alertController.create({
                                     title: '주문에 실패했습니다.',

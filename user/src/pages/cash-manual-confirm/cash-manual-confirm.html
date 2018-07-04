@@ -13,12 +13,12 @@
   <ion-grid no-padding no-margin class="account-info">
     <ion-row  text-center class="bank-select" style="font-size:4vw;color: #4a4a4a;">
       <ion-col class="right-border bank-select-label" col-3>
-          은행명 
+          이체방법 
       </ion-col>
       <ion-col  *ngIf="bankName!=undefined && !bankCodeMode" text-center class="bank-select-value" col-7>
         {{bankName}}
       </ion-col>
-      <ion-col text-right style="color:#bdbdbd;" *ngIf="bankName==undefined && !bankCodeMode" text-center class="bank-select-value" col-7>
+      <ion-col text-right style="color:#bdbdbd;" (click)="clickBanklistShown()" *ngIf="bankName==undefined && !bankCodeMode" text-center class="bank-select-value" col-7>
         이체 시 사용한 기관
       </ion-col>      
       <ion-col text-right *ngIf="bankCodeMode" text-center class="account-num-value" col-7>

@@ -32,13 +32,44 @@ export class MenuPage {
   optionAmount:number=0;  // 
 
   memo;
+
+  timeConstraint;
+  timeConstraintString;
+
   constructor(public navCtrl: NavController, public navParams: NavParams,
               public alertController:AlertController,
               public cartProvider:CartProvider,
               public storageProvider:StorageProvider) {
     this.menu=JSON.parse(navParams.get('menu'));
     this.shopInfo=JSON.parse(navParams.get('shopInfo'));
+    console.log("this.menu.timeConstraint:"+this.menu.timeConstraint);
 
+    if(this.menu.timeConstraint!=undefined && this.menu.timeConstraint!=null){
+        this.timeConstraint=JSON.parse(this.menu.timeConstraint);
+        let fromHour,toHour,fromMin,toMin;
+        if(this.timeConstraint.toMins && this.timeConstraint.toMins!=null){
+            toHour=(this.timeConstraint.toMins-this.timeConstraint.toMins%60)/60;
+            toMin= this.timeConstraint.toMins%60;
+        }
+        if(this.timeConstraint.fromMins && this.timeConstraint.fromMins!=null){
+            fromHour=(this.timeConstraint.fromMins-this.timeConstraint.fromMins%60)/60;
+            fromMin= this.timeConstraint.fromMins%60;
+        }
+        //고객앱에서 주문 가능시간 표기
+        if(this.timeConstraint.from && this.timeConstraint.from!=null 
+            && this.timeConstraint.to && this.timeConstraint.to!=null){
+            if(this.timeConstraint.condition=="XOR"){
+                this.timeConstraintString="주문가능시간:"+toHour+'시'+toMin+'분 이전',fromHour+'시'+fromMin+'분 이후';
+            }else if(this.timeConstraint.condition=="AND"){
+                this.timeConstraintString="주문가능시간:"+fromHour+'시'+fromMin+'분-'+toHour+'시'+toMin+'분';            
+            }
+        }else if(this.timeConstraint.from && this.timeConstraint.from!=null){
+            this.timeConstraintString="주문가능시간:"+fromHour+'시'+fromMin+"분 이후";
+        }else if(this.timeConstraint.to && this.timeConstraint.to!=null){
+            this.timeConstraintString="주문가능시간"+toHour+'시'+toMin+'분 이전';
+        }
+        console.log("timeConstraintString:"+this.timeConstraintString);
+    }
     if(this.menu.options && this.menu.options!='null'){
           if(typeof this.menu.options ==="string"){
             this.options=JSON.parse(this.menu.options);
@@ -203,7 +234,19 @@ export class MenuPage {
      });
   }
 
+  removeSpecialCharacters(str){
+      var pattern = /^[a-zA-Zㄱ-힣0-9|s]*$/;
+        let update="";
 
+        for(let i=0;i<str.length;i++){
+             if(str[i].match(pattern) || str[i]===" "){
+                update+=str[i];
+            }else{
+                console.log("NOK-special characters");
+            }
+        }
+        return update;
+  }
   command(command){
     if(this.menu.quantity==undefined || this.menu.quantity==0 || this.menu.quantity.toString().length==0){
           let alert = this.alertController.create({
@@ -241,14 +284,19 @@ export class MenuPage {
                   takeout:this.menu.takeout}
 
        console.log("hum..... unitPrice");           
-       if(this.memo!=undefined)
+       if(this.memo!=undefined){
+           // menu.memo=this.removeSpecialCharacters(this.memo); // 숫자,한글,영문자만 가능합니다. 특수문자 입력 불가.
             menu.memo=this.memo;
+       }
         menus.push(menu);
  
         let order:any={ takitId:this.shopInfo.takitId , menus:menus} 
 
         cart.orderList=order; //menu's original price
 
+        cart.timeConstraints=[];
+        if(this.timeConstraint!=null && this.timeConstraint!=undefined)
+            cart.timeConstraints.push(this.timeConstraint);
         cart.deliveryArea=this.shopInfo.deliveryArea;
         cart.freeDelivery=this.shopInfo.freeDelivery;
         cart.deliveryFee=this.shopInfo.deliveryFee;
