@@ -106,7 +106,7 @@ export class ShopPage {
 
   configureButtonColor(i){
      if(i==this.categorySelected)
-          return '#6441a5';
+          return '#FF5F3A';
       else
           return '#bdbdbd';    
   }

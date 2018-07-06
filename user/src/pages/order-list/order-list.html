@@ -75,7 +75,7 @@
     <ion-col col-7 style="padding-right:0px;">
       <span style="color:#bdbdbd;">주문상태:</span>
       <span *ngIf="order.orderStatus!='pickup'" style="color:#bdbdbd;">{{order.orderStatusString}}</span>
-      <span *ngIf="order.orderStatus=='pickup'" style="color:#6441a5;">{{order.orderStatusString}}</span>
+      <span *ngIf="order.orderStatus=='pickup'" style="color:#FF5F3A;">{{order.orderStatusString}}</span>
     </ion-col>
     <ion-col style="padding-top:0px;" no-margin col-2 text-right>
       <button (click)="orderDetail(order)" full no-padding no-margin ion-button>주문상세</button>

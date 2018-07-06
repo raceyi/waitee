@@ -1,0 +1,67 @@
+<!--
+  Generated template for the TossTransferPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar hideBackButton>
+  <ion-buttons start>
+    <button style="background-color:#FF5F3A;color:white;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+  </ion-buttons>
+  <ion-title style="color:white;">토스로 충전하기
+  </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+<ion-list>
+ <ion-row>
+   <ion-col col-1>
+     &nbsp;
+   </ion-col>
+   <ion-col col-9>
+    <ion-item style="border-bottom:0px;" >
+    <ion-label style="font-size:4.5vw;"> 충전 금액 </ion-label>
+    <ion-input  text-right style="border-bottom:solid 0.5px;" type="tel" (input)="inputAmount()" [(ngModel)]="amountString"></ion-input>
+    </ion-item>
+   </ion-col>
+   <ion-col col-2 text-left align-self-center style="font-size:4.5vw;">
+     원
+   </ion-col>
+   </ion-row>
+   <br>
+   <br>
+   <br>
+   <ion-row>
+     <ion-col col-1 text-right>
+       <ion-icon style="color:#FF5F3A;" name="md-alert"></ion-icon>
+     </ion-col>
+     <ion-col text-left>
+     입금 알림을 확인하신후 최종 충전이 완료됩니다.
+     </ion-col>
+   </ion-row>
+   <ion-row>
+     <ion-col col-1 text-right>
+       <ion-icon style="color:#FF5F3A;" name="md-alert"></ion-icon>
+     </ion-col>
+     <ion-col text-left>
+     입금 알림을 못받으셨을 경우 지갑에서 알림 확인이 가능합니다.
+     </ion-col>
+   </ion-row>
+   <ion-row>
+     <ion-col col-1 text-right>
+       <ion-icon style="color:#FF5F3A;" name="md-alert"></ion-icon>
+     </ion-col>
+     <ion-col text-left>
+     토스 화면에서 '메시지(선택사항)'를 변경하지 말아주세요.
+     </ion-col>
+   </ion-row>
+ </ion-list>
+</ion-content>
+<ion-footer>
+  <button style="margin:0px;" (click)="launchToss()" ion-button full>토스 실행</button>
+</ion-footer>
+
+

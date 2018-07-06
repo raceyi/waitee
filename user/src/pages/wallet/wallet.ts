@@ -9,6 +9,7 @@ import { CardProvider } from '../../providers/card/card';
 import {TimeUtil} from '../../classes/TimeUtil';
 import {CashTutorialPage} from '../cash-tutorial/cash-tutorial';
 import {CashConfirmPage} from '../cash-confirm/cash-confirm';
+import {TossTransferPage} from '../toss-transfer/toss-transfer';
 
 import * as moment from 'moment';
 
@@ -319,6 +320,18 @@ export class WalletPage {
  cashConfirm(trans){
       let cashConfirmModal= this.modalCtrl.create(CashConfirmPage, { custom: trans });
       cashConfirmModal.present();
+ }
+
+ launchToss(){
+     this.serverProvider.checkTossExistence().then(()=>{
+        this.app.getRootNavs()[0].push(TossTransferPage);
+     },err=>{
+          let alert = this.alertController.create({
+              title: '토스앱을 설치해주세요.',
+              buttons: ['OK']
+          });
+          alert.present();        
+     })
  }
   ////////////////////////////////////////////////////////////////
 }

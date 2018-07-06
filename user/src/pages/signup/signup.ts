@@ -27,7 +27,7 @@ export class SignupPage {
   password:string;
   passwordConfirm:string;
   agreement:boolean=false;
-  buttonColor:any={'color':'#6441a5'};
+  buttonColor:any={'color':'#FF5F3A'};
   color1="#4a4a4a"; 
   color2="#4a4a4a";
   color3="#4a4a4a"; 
@@ -128,7 +128,7 @@ export class SignupPage {
     if(!this.agreement){
         this.agreement=true;
         this.buttonColor={'color':'white',
-                          'background-color':'#6441a5'
+                          'background-color':'#FF5F3A'
                         };
     }else{
         this.signup();
@@ -159,7 +159,7 @@ export class SignupPage {
         this.color5="#4a4a4a";
         this.pictureShown=false; 
     }else if(title=="1"){
-        this.color1="#6441a5";
+        this.color1="#FF5F3A";
         this.color2="#4a4a4a";
         this.color3="#4a4a4a";
         this.color4="#4a4a4a";
@@ -171,7 +171,7 @@ export class SignupPage {
         this.pictureShown=false;              //5
         this.currentShown="1";
     }else if(title=="2"){
-        this.color2="#6441a5";
+        this.color2="#FF5F3A";
         this.color1="#4a4a4a";
         this.color3="#4a4a4a";
         this.color4="#4a4a4a";
@@ -183,7 +183,7 @@ export class SignupPage {
         this.pictureShown=false;              //5
         this.currentShown="2";
     }else if(title=="3"){
-        this.color3="#6441a5";
+        this.color3="#FF5F3A";
         this.color1="#4a4a4a";
         this.color2="#4a4a4a";
         this.color4="#4a4a4a";
@@ -195,7 +195,7 @@ export class SignupPage {
         this.pictureShown=false;              //5  
         this.currentShown="3";
     }else if(title=="4"){
-        this.color4="#6441a5";
+        this.color4="#FF5F3A";
         this.color1="#4a4a4a";
         this.color2="#4a4a4a";
         this.color3="#4a4a4a";
@@ -207,7 +207,7 @@ export class SignupPage {
         this.pictureShown=false;              //5 
         this.currentShown="4";               
     }else if(title=="5"){
-        this.color5="#6441a5";
+        this.color5="#FF5F3A";
         this.color1="#4a4a4a";
         this.color2="#4a4a4a";
         this.color3="#4a4a4a";

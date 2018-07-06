@@ -172,7 +172,7 @@ export class CartProvider {
             };
             console.log("call create function")            
             this.sqlite.create(options)
-            .then((db: SQLiteObject) => {  //DB 버전을 넣어서 해결하자. ㅜㅜ  예) pragma user_version = {DB_VERSION};  , pragma user_version
+            .then((db: SQLiteObject) => {  //DB 버전을 넣어서 해결하자. 앱을 다시 설치할 경우 user version은 변경되지 않는다. 사용할수 없는 방법임!
                 this.db=db;
                 this.db.executeSql("create table if not exists carts(id integer primary key autoincrement, \
                  takitId VARCHAR(100),\
@@ -188,27 +188,9 @@ export class CartProvider {
                  takeout int,\
                  memo varchar(400),\
                  menuNO VARCHAR(100),\
+                 timeConstraints VARCHAR(128),\
                  menuName VARCHAR(100));",[]).then(()=>{
                     console.log("success to create cart table");
-                    this.db.executeSql("PRAGMA user_version",[]).then(version=>{
-                                console.log("version is "+JSON.stringify(version.rows.item(0)));
-                                if(version.rows.item(0).user_version==0){
-                                    this.db.executeSql("alter table carts add column timeConstraints VARCHAR(128)",[]).then((alter)=>{
-                                        this.db.executeSql("PRAGMA user_version=1",[]).then(updateVersion=>{
-                                            resolve();
-                                        }).catch(e=>{
-                                            console.log("fail to set user_version with 1"+JSON.stringify(e));
-                                            reject(e);
-                                        });
-                                    }).catch(e=>{
-                                        console.log("fail to add timeConstraints int cart "+JSON.stringify(e));
-                                        reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
-                                    });
-                                }else if(version.rows.item(0).user_version==1){
-                                    resolve();
-                                }
-                             })
-                     /*        
                       this.db.executeSql("PRAGMA table_info('carts')",[]).then((table_info)=>{
                             console.log("!!!table_info:"+JSON.stringify(table_info.rows));
                             for(var i=0;i<table_info.rows.length;i++){
@@ -218,12 +200,17 @@ export class CartProvider {
                                     return;
                                 }
                             } 
-                             
+                            this.db.executeSql("alter table carts add column timeConstraints VARCHAR(128)",[]).then((alter)=>{
+                                            resolve();
+                            }).catch(e=>{
+                                        console.log("fail to add timeConstraints int cart "+JSON.stringify(e));
+                                        reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
+                            });                             
                       }).catch(e=>{
                         console.log("fail to table_info"+JSON.stringify(e));
                         reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
                       });
-                      */
+                      
                 }).catch(e => {
                     console.log("fail to create table"+JSON.stringify(e));
                     reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?

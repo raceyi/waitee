@@ -283,12 +283,52 @@ export class CashPasswordPage {
                                     buttons: ['OK']
                                 });
                                 alert.present();
-                        }else if(error=="check your balance"){
-                            let alert = this.alertController.create({
-                                    title: '잔액이 부족합니다.',
-                                    buttons: ['OK']
-                                });
-                                alert.present();
+                        }else if(error.startsWith("check your balance")){
+                            this.serverProvider.checkTossExistence().then(()=>{
+                                this.serverProvider.updateCash().then(()=>{   // 버전 다시 만들때는 반듯이 updateCash를 다시 불러주자. !!! 서버에서 응답값으로 변경 값을 보내주도록 하자. !!!
+                                    let amount=this.body.total-this.storageProvider.cashAmount;
+                                    if(amount>0){
+                                        let alert = this.alertController.create({
+                                                title:'캐시 잔액이 부족합니다.',
+                                                subTitle: amount+'원을 토스로 충전합니다.',
+                                                buttons: [
+                                                            {
+                                                                text: '네',
+                                                                handler: () => {
+                                                                    console.log('launch toss');
+                                                                    this.serverProvider.launchToss(amount);
+                                                                }
+                                                            },
+                                                            {
+                                                                text: '아니오',
+                                                                handler: () => {
+                                                                    //do nothing
+                                                                }
+                                                            }    
+                                                        ]
+                                            });
+                                            alert.present();
+                                    }else{
+                                        let alert = this.alertController.create({
+                                                title: '잔액이 부족합니다.',
+                                                buttons: ['OK']
+                                            });
+                                            alert.present();
+                                    }
+                                },err=>{
+                                        let alert = this.alertController.create({
+                                                title: '잔액이 부족합니다.',
+                                                buttons: ['OK']
+                                            });
+                                            alert.present();
+                                })
+                            },err=>{
+                                    let alert = this.alertController.create({
+                                            title: '잔액이 부족합니다.',
+                                            buttons: ['OK']
+                                        });
+                                        alert.present();
+                            })
                         }else if(error=="menuWithTimeConstraint"){
                             let alert = this.alertController.create({
                                     title: '주문시간이 아닌 메뉴가 포함되어 있습니다.',

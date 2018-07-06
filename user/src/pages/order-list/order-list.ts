@@ -63,7 +63,7 @@ export class OrderListPage {
     ];
 
     this.buttonStyle=[
-          {'color':'#6441a5' },
+          {'color':'#FF5F3A' },
           {'color':'#bdbdbd' },
           {'color':'#bdbdbd' },
           {'color':'#bdbdbd' }
@@ -162,7 +162,7 @@ export class OrderListPage {
   select(index){
     console.log("select "+index+ " this.index:"+this.index);
     this.resetStyle();
-    this.buttonStyle[index]={'color':'#6441a5' };
+    this.buttonStyle[index]={'color':'#FF5F3A' };
     if(index==0)
         this.colStyle[index]={"border-right-style": "solid",
                             "border-width": "1px",

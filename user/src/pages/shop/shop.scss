@@ -39,7 +39,7 @@ page-shop {
             font-size:3.4vw;
         	border-radius: 13px;
 	        background-color: #ffffff;
-	        border: solid 1px #6441a5;
+	        border: solid 1px  $default-color;
             color:$default-color;
         }
     }
@@ -162,7 +162,7 @@ page-shop {
 
     .text-border{
         border-radius: 8px;
-	    border: solid 1px #6441a5;
+	    border: solid 1px  $default-color;
         font-size: 2.6vw;
     }
     

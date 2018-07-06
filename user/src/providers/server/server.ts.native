@@ -1,15 +1,13 @@
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable ,NgZone} from '@angular/core';
 import {StorageProvider} from '../storage/storage';
-import {AlertController,LoadingController,Events,Platform} from 'ionic-angular';
+import {AlertController,Events,Platform} from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
 import {LoginProvider} from '../../providers/login/login';
 import {TimeUtil} from '../../classes/TimeUtil';
 import { InAppBrowser,InAppBrowserEvent } from '@ionic-native/in-app-browser';
-import { AppAvailability } from '@ionic-native/app-availability';
-import { WebIntent } from '@ionic-native/web-intent';
+import {HTTP} from '@ionic-native/http'
 
-declare var window:any;
 /*
   Generated class for the ServerProvider provider.
 
@@ -20,19 +18,18 @@ declare var window:any;
 export class ServerProvider {
   timeUtil= new TimeUtil(); 
   browserRef;
-  timeout=30; // 30 seconds
+
+  timeout:number=5; //in seconds;
 
     constructor(public http: HttpClient
+                ,private httpNative:HTTP
                 ,private storageProvider:StorageProvider
                 ,private nativeStorage: NativeStorage
                 ,public alertCtrl:AlertController
-                ,public loadingCtrl: LoadingController                            
                 ,public loginProvider:LoginProvider
                 ,private events:Events
                 ,private iab: InAppBrowser
                 ,private ngZone:NgZone
-                ,private webIntent: WebIntent
-                ,private appAvailability: AppAvailability
                 ,private platform:Platform) {
       console.log('Hello ServerProvider Provider');
     }
@@ -45,6 +42,16 @@ export class ServerProvider {
        console.log("request:"+request);
 
        return new Promise((resolve,reject)=>{
+          this.httpNative.setDataSerializer("json"); 
+          this.httpNative.setRequestTimeout(this.timeout);
+          this.httpNative.post(request,body, {"Content-Type":"application/json"}).then((response:any)=>{
+                  let res=JSON.parse(response.data);            
+                  resolve(res);
+          },(err)=>{
+                console.log("post-err:"+JSON.stringify(err));
+                reject(err);              
+          });
+           /*
             this.http.post(request,body).subscribe((res:any)=>{               
                 console.log("post version:"+res.version+" version:"+this.storageProvider.version);
                 resolve(res);                    
@@ -52,6 +59,7 @@ export class ServerProvider {
                 console.log("post-err:"+JSON.stringify(err));
                 reject(err);
             });
+            */
        });
     }
 
@@ -62,7 +70,44 @@ export class ServerProvider {
        console.log("request:"+request);
 
        return new Promise((resolve,reject)=>{
-            this.http.post(request,bodyObj, {headers: new HttpHeaders({timeout:'${30000}'})}).subscribe((res:any)=>{               
+          this.httpNative.setDataSerializer("json"); 
+          this.httpNative.setRequestTimeout(this.timeout);
+
+          this.httpNative.post(request,bodyObj, {"Content-Type":"application/json"}).then((response:any)=>{
+                  let res=JSON.parse(response.data);            
+                  console.log("post version:"+res.version+" version:"+this.storageProvider.version);
+                  resolve(res);
+            },(err)=>{
+                console.log("post-err:"+JSON.stringify(err));
+                if(err.hasOwnProperty("status") && err.status==401){
+                    //login again with id
+                    this.loginAgain().then(()=>{
+                        //call http post again
+                        this.httpNative.post(request,bodyObj, {"Content-Type":"application/json"}).then((response:any)=>{
+                            let res=JSON.parse(response.data);            
+                            console.log("post version:"+res.version+" version:"+this.storageProvider.version);
+                            if(parseFloat(res.version)>parseFloat(this.storageProvider.version)){
+                                console.log("post invalid version");
+                                let alert = this.alertCtrl.create({
+                                            title: '앱버전을 업데이트해주시기 바랍니다.',
+                                            subTitle: '현재버전에서는 일부 기능이 정상동작하지 않을수 있습니다.',
+                                            buttons: ['OK']
+                                        });
+                                alert.present();
+                            }
+                            resolve(res);  
+                         },(err)=>{
+                             reject("NetworkFailure");
+                         });
+                    },(err)=>{
+                        reject(err);
+                    });
+                }else{
+                    reject("NetworkFailure");
+                }
+            });
+           /*
+            this.http.post(request,bodyObj).subscribe((res:any)=>{               
                 console.log("post version:"+res.version+" version:"+this.storageProvider.version);
                 resolve(res);                    
             },(err)=>{
@@ -71,7 +116,7 @@ export class ServerProvider {
                     //login again with id
                     this.loginAgain().then(()=>{
                         //call http post again
-                        this.http.post(request,bodyObj, {headers: new HttpHeaders({timeout:'${30000}'})}).subscribe((res:any)=>{
+                        this.http.post(request,bodyObj).subscribe((res:any)=>{
                             console.log("post version:"+res.version+" version:"+this.storageProvider.version);
                             if(parseFloat(res.version)>parseFloat(this.storageProvider.version)){
                                 console.log("post invalid version");
@@ -93,6 +138,7 @@ export class ServerProvider {
                     reject("NetworkFailure");
                 }
             });
+            */
        });
   }
 
@@ -142,7 +188,6 @@ loginAgain(){
         });
   }
 
-/*
   saveOrder(body){
       return new Promise((resolve,reject)=>{
             let headers = new Headers();
@@ -163,36 +208,22 @@ loginAgain(){
             this.nativeStorage.setItem("orderDoneFlag","true");
       });
   }
-*/
 
 saveOrderCart(body){
       return new Promise((resolve,reject)=>{
-
             let headers = new Headers();
             headers.append('Content-Type', 'application/json');
             console.log("saveOrder:"+JSON.stringify(body));
-
-            let progressBarLoader = this.loadingCtrl.create({
-                content: "진행중입니다.",
-                duration: this.timeout*1000
-            });
-            progressBarLoader.present();
-
             this.post(encodeURI(this.storageProvider.serverAddress+"/saveOrderCart"),body).then((res:any)=>{
-                  progressBarLoader.dismiss();
                   console.log("res:"+JSON.stringify(res));
                   console.log("saveOrder-res.result:"+res.result);
                   if(res.result=="success"){
-                        this.updateCash().then(()=>{   // 버전 다시 만들때는 반듯이 updateCash를 다시 불러주자. !!! 서버에서 응답값으로 변경 값을 보내주도록 하자. !!!
-                            resolve(res);
-                        },err=>{
-                            resolve(res);
-                        })
+                    //resolve(res.orders);
+                    resolve(res);
                   }else{
                     reject(res.error);
                   }
             },(err)=>{
-                progressBarLoader.dismiss();                
                 reject(err);  
             });
       });
@@ -373,10 +404,10 @@ saveOrderCart(body){
         }    
   }
 
- updateCash(){
+    updateCash(){
             return new Promise((resolve,reject)=>{
             let body = {cashId:this.storageProvider.cashId};
-
+            
             this.post(this.storageProvider.serverAddress+"/getBalanceCash",body).then((res:any)=>{
                 console.log("getBalanceCash res:"+JSON.stringify(res));
                 if(res.result=="success"){
@@ -388,7 +419,7 @@ saveOrderCart(body){
                         subTitle:"캐시값이 정상이 아닐경우 앱을 종료후 다시 실행해주세요. ",
                         buttons: ['OK']
                     });
-                    alert.present();
+                    alert.present();                    
                     reject("server failure");
                 }
             },err=>{
@@ -410,79 +441,4 @@ saveOrderCart(body){
   checkDeposit(){
       // send cashId
   }
-
-  launchToss(amount:number){
-        return new Promise((resolve,reject)=>{
-                //https://toss.im/transfer-web/linkgen-api/link
-                let body={  "apiKey": this.storageProvider.tossApiKey,
-                            "bankName": "농협",
-                            "bankAccountNo": "3012424363621",
-                            "amount":amount,
-                            "message": this.storageProvider.cashId
-                    }
-                let progressBarLoader = this.loadingCtrl.create({
-                            content: "진행중입니다.",
-                            duration: this.timeout*1000
-                        });
-                progressBarLoader.present();
-                this.http.post("https://toss.im/transfer-web/linkgen-api/link",body, {headers: new HttpHeaders({timeout:'${30000}'})}).subscribe((res:any)=>{
-                    console.log("res:"+JSON.stringify(res));  
-                    progressBarLoader.dismiss();
-                    if(res.resultType=="SUCCESS"){
-                        let link=res.success.link;
-                        console.log("link:"+link);
-                        if(this.platform.is('ios')){
-                            window.open(link);
-                            console.log("launchToss call resolve");
-                            resolve();
-                        }else{ // android
-                            const options = {
-                                            action: this.webIntent.ACTION_VIEW,
-                                            url: link
-                                        };
-                            this.webIntent.startActivity(options);
-                            console.log("webIntent...");
-                            resolve();
-                        }
-                    }else{
-                        let alert = this.alertCtrl.create({
-                                title: '토스연동에 실패했습니다.',
-                                buttons: ['OK']
-                            });
-                        alert.present();
-                        reject();
-                    }
-                },err=>{
-                    progressBarLoader.dismiss();
-                    let alert = this.alertCtrl.create({
-                                title: '토스연동에 실패했습니다.',
-                                subTitle: JSON.stringify(err),
-                                buttons: ['OK']
-                            });
-                    alert.present();
-                    reject();
-                })
-        });
-  }
- 
-   checkTossExistence(){
-    return new Promise((resolve,reject)=>{
-        var scheme;
-        if(this.platform.is('android')){
-            scheme='viva.republica.toss';         
-        }else if(this.platform.is('ios')){
-            scheme='supertoss://';
-        }else{
-            console.log("unknown platform");
-        }
- 
-        this.appAvailability.check(scheme).then(()=> {  // Success callback
-                console.log("toss 설치확인");
-                resolve();
-        },err=>{
-                console.log("toss가 설치되어 있지 않음");
-                reject(err);
-        });
-    });
-   }
 }

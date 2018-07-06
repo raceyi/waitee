@@ -26,12 +26,12 @@ page-login-main {
         width:calc((302/376)*100vw);
         height:calc((50/667)*100vh);
         border-radius: 8px;
-        border: solid 1px #6441a5;
+        border: solid 1px $default-color;
         font-size:$default-font-size;
         font-weight: 500;
         letter-spacing: -0.3px;
         text-align: left;
-        color: #6441a5;
+        color: $default-color;
     }
 
     .icon{

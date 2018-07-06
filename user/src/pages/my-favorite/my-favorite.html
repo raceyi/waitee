@@ -24,7 +24,7 @@
 <div *ngIf="storageProvider.shopList.length!=0 && shops.length!=0" >
             <ion-row>
                 <ion-col *ngIf="shops.length>0" class="col-left">
-                            <button class="shop-button" (click)="enterShop(shops[0].takitId)" no-padding no-margin ion-button>
+                            <button color="white" class="shop-button" (click)="enterShop(shops[0].takitId)" no-padding no-margin ion-button>
                                 <img  [src]="shops[0].imagePath">
                                 <p class="name-sub">{{shops[0].name_sub}}</p>
                                 <p class="name-main"><b>{{shops[0].name_main}}&nbsp;({{shops[0].count}}회)</b></p>
@@ -42,7 +42,7 @@
                             </button>
                 </ion-col>
                 <ion-col *ngIf="shops.length>1">
-                            <button class="shop-button" (click)="enterShop(shops[1].takitId)" no-padding no-margin ion-button>
+                            <button color="white" class="shop-button" (click)="enterShop(shops[1].takitId)" no-padding no-margin ion-button>
                                 <img  [src]="shops[1].imagePath">
                                 <p class="name-sub">{{shops[1].name_sub}}</p>
                                 <p class="name-main"><b>{{shops[1].name_main}}&nbsp;({{shops[1].count}}회)</b></p>
@@ -62,7 +62,7 @@
             </ion-row>
             <ion-row *ngIf="shops.length>2">
                 <ion-col *ngIf="shops.length>2" class="col-left">
-                            <button class="shop-button"  (click)="enterShop(shops[2].takitId)" no-padding no-margin ion-button>
+                            <button color="white" class="shop-button"  (click)="enterShop(shops[2].takitId)" no-padding no-margin ion-button>
                                 <img  [src]="shops[2].imagePath">
                                 <p class="name-sub">{{shops[2].name_sub}}</p>
                                 <p class="name-main"><b>{{shops[2].name_main}}&nbsp;({{shops[2].count}}회)</b></p>
@@ -80,7 +80,7 @@
                             </button>
                 </ion-col>
                 <ion-col *ngIf="shops.length>3">
-                            <button class="shop-button"(click)="enterShop(shops[3].takitId)"  no-padding no-margin ion-button>
+                            <button color="white" class="shop-button"(click)="enterShop(shops[3].takitId)"  no-padding no-margin ion-button>
                                 <img  [src]="shops[3].imagePath">
                                 <p class="name-sub">{{shops[3].name_sub}}</p>
                                 <p class="name-main"><b>{{shops[3].name_main}}&nbsp;({{shops[3].count}}회)</b></p>

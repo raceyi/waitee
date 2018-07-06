@@ -8,9 +8,9 @@
 <ion-header class="header">
   <ion-navbar hideBackButton>
   <ion-buttons start>
-    <button style="background-color:#6441a5;color:white;" (click)="back()" ><b><ion-icon style="font-size:8vw;" name="ios-close"></ion-icon></b></button>
+    <button style="background-color:#FF5F3A;color:white;" (click)="back()" ><b><ion-icon style="font-size:8vw;" name="ios-close"></ion-icon></b></button>
   </ion-buttons>
-  <ion-title class="menu-name"> {{tutorials[currentIndex].title}}
+  <ion-title class="menu-name" style="color:yellow;"> {{tutorials[currentIndex].title}}
   </ion-title>
   </ion-navbar>
 </ion-header>
@@ -20,8 +20,8 @@
     <ion-slides no-margin no-padding #Slides (ionSlideDidChange)="slideChanged()" pager=true >
         <ion-slide centeredSlides parallaxed *ngFor="let tt of tutorials; let i=index" class="slide-tt">
                 <p  text-left class="p-desc-contents">{{tt.contents}}</p>
-                <a *ngIf="i===0" style="font-size:3.2vw;color:#BDBDBD" href="http://www.waitee.co.kr/cashId.html">토스/주요은행 웨이티아이디 입력방법</a>              
-                <p *ngIf="i===1" text-left class="addition" style="font-size:3.2vw;color:#BDBDBD" no-margin no-padding>(단 00:00~00:30, 매월 3주 월요일 23:55~04:00 이용제한시간 이후 메시지가 전달됩니다.)</p>
+                <a *ngIf="i===0" style="font-size:3.2vw;color:yellow" href="http://www.waitee.co.kr/cashId.html">토스/주요은행 웨이티아이디 입력방법</a>              
+                <p *ngIf="i===1" text-left class="addition" style="font-size:3.2vw;color:yellow" no-margin no-padding>(단 00:00~00:30, 매월 3주 월요일 23:55~04:00 이용제한시간 이후 메시지가 전달됩니다.)</p>
                 <img [src]="tt.img">
         </ion-slide>
     </ion-slides>

@@ -17,7 +17,7 @@
 
 $default-font-size:4vw;
 //$default-font-style: NotoSansCJKkr-Regular;
-$default-color:#6441a5;
+$default-color:#FF5F3A;
 
 @mixin calc($property, $expression) { 
         #{$property}: -webkit-calc(#{$expression}); 
@@ -78,7 +78,7 @@ $default-color:#6441a5;
 
 .fab-btn{
         color: white;
-        background-color: #50e3c2;
+        background-color: $default-color;// #50e3c2;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
         border-radius: 50%;
 }

@@ -49,7 +49,7 @@ page-home {
                 left: 0px;
                 top: 0px;
                 //apply border
-                background-color: #6441a5;
+                background-color: $default-color;
                 border: solid 1px #979797;
                 border-radius: 5px;
             }
@@ -181,17 +181,19 @@ page-home {
             width : $latest-W;
             height: $latest-H;
             background-color:white;
-            color:$default-color;
+            color:white;   
+            //color:$default-color; 2018.07.04
             img{
                 height: calc((96/667)*100vh);
-                width: $latest-W;
+                width:100%;
+                //width: $latest-W;  kalen.lee 2018.07.04
                 position: absolute;
                 left: 0px;
                 top: 0px;
                 //apply border
-                background-color: #6441a5;
-                border: solid 1px #979797;
-                border-radius: 5px;                                
+                //background-color: $default-color; kalen.lee 2018.07.04
+                //border: solid 1px #979797;
+                //border-radius: 5px;                                
             }
             ion-icon{
                 color:$default-color;

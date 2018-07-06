@@ -20,7 +20,7 @@ import {CashPasswordPage} from '../cash-password/cash-password';
   templateUrl: 'payment.html',
 })
 export class PaymentPage {
-  inStoreColor="#6441a5";
+  inStoreColor="#FF5F3A";
   takeoutColor="#bdbdbd";
   deliveryColor="#bdbdbd";
 
@@ -228,7 +228,7 @@ export class PaymentPage {
   }
 
   selectInStore(){
-      this.inStoreColor="#6441a5";
+      this.inStoreColor="#FF5F3A";
       this.takeoutColor="#bdbdbd";
       this.deliveryColor="#bdbdbd";
       this.takeout=0; //takeout:1 , takeout:2(delivery)
@@ -237,7 +237,7 @@ export class PaymentPage {
 
   selectTakeOut(){
       this.inStoreColor="#bdbdbd";
-      this.takeoutColor="#6441a5";
+      this.takeoutColor="#FF5F3A";
       this.deliveryColor="#bdbdbd";
       this.takeout=1; //takeout:1 , takeout:2(delivery)
       this.computePayAmount();      
@@ -246,7 +246,7 @@ export class PaymentPage {
   selectDelivery(){
       this.inStoreColor="#bdbdbd";
       this.takeoutColor="#bdbdbd";
-      this.deliveryColor="#6441a5";
+      this.deliveryColor="#FF5F3A";
       this.takeout=2; //takeout:1 , takeout:2(delivery) 
       this.computePayAmount();      
   }
@@ -385,11 +385,35 @@ export class PaymentPage {
     let body:any;
     if(this.paymentSelection=="cash"){
       if(this.storageProvider.cashAmount<this.payAmount){
-        let alert = this.alertController.create({
-            subTitle: '캐시 잔액이 부족합니다.',
-            buttons: ['OK']
+          this.serverProvider.checkTossExistence().then(()=>{
+                let amount=this.payAmount-this.storageProvider.cashAmount;
+                let alert = this.alertController.create({
+                    title:'캐시 잔액이 부족합니다.',
+                    subTitle: amount+'원을 토스로 충전합니다.',
+                    buttons: [
+                                {
+                                    text: '네',
+                                    handler: () => {
+                                        console.log('launch toss');
+                                        this.serverProvider.launchToss(amount);
+                                    }
+                                },
+                                {
+                                    text: '아니오',
+                                    handler: () => {
+                                        //do nothing
+                                    }
+                                }    
+                            ]
+                });
+                alert.present();
+          },err=>{
+                let alert = this.alertController.create({
+                    subTitle: '캐시 잔액이 부족합니다.',
+                    buttons: ['OK']
+                });
+                alert.present();            
         });
-        alert.present();
         return;
       }
       let carts=this.carts;

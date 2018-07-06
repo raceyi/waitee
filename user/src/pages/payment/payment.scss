@@ -92,7 +92,7 @@ page-payment {
         .discount-label{
             padding-top:calc((10/667)*100vh);
             padding-bottom:calc((10/667)*100vh);
-            color: #6441a5;
+            color: $default-color;
         }
 
         .coupon-button{
@@ -129,7 +129,7 @@ page-payment {
         padding-left:calc((20/376)*100vw);
         padding-top: calc((15/667)*100vh);
         //padding-bottom: calc((15/667)*100vh);
-        color: #6441a5;
+        color: $default-color;
         font-size:4.5vw;
     }
     background-color:white;

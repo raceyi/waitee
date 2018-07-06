@@ -10,7 +10,8 @@ page-my-info {
         margin-left:calc((40/376)*100vw);
         margin-right:calc((40/376)*100vw);
         margin-top: calc((21/667)*100vh);
-        height:calc((124/667)*100vh);
+        //height:calc((124/667)*100vh); 2018.07.04
+        height:calc((50/667)*100vh);
         .user-name{
             font-size:5.8vw;
             color:$default-color;

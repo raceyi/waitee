@@ -7,17 +7,17 @@
 <ion-header>
   <ion-navbar hideBackButton>
   <ion-buttons start>
-    <button style="background-color:white;color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
+    <button style="background-color:white;color:#FF5F3A;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="ios-arrow-back"></ion-icon></button>
   </ion-buttons>
   <ion-title>  {{shopName}} &nbsp;
               <a *ngIf="storageProvider.shopResponse.shopInfo.contactPhone" [href]="shopPhoneHref"><ion-icon color="black" name="call"></ion-icon></a>
   </ion-title>
   <ion-buttons end>
-        <button *ngIf="storeInfoHide" ion-button (click)="showInfoDisplay()" style="background-color:white;color:#6441a5;">
+        <button *ngIf="storeInfoHide" ion-button (click)="showInfoDisplay()" style="background-color:white;color:#FF5F3A;">
             <!-- <ion-icon  class="store-information-button"name="ios-information-circle-outline"></ion-icon> -->
             상점정보
         </button>
-        <button *ngIf="!storeInfoHide" ion-button (click)="hideInfoDisplay()" style="background-color:white;color:#6441a5;">        
+        <button *ngIf="!storeInfoHide" ion-button (click)="hideInfoDisplay()" style="background-color:white;color:#FF5F3A;">        
             <ion-icon  class="store-information-button"name="ios-arrow-up"></ion-icon>
         </button>
   </ion-buttons>

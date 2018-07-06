@@ -87,7 +87,7 @@ page-cash-refund-main {
        .account-num-label{
             font-size: 4.5vw;
             padding-left: calc((20/376)*100vw);
-            color:#6441a5;
+            color:$default-color;
             padding-top:calc((10/667)*100vh);
        }
        .account-num-value{

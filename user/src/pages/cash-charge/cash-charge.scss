@@ -78,7 +78,7 @@ page-cash-charge {
     .cash-id{
         border-bottom:solid calc((19/667)*100vh) #f2f2f2;
         font-size:4.5vw;
-        color: #6441a5;
+        color: $default-color;
         padding-left:calc((20/376)*100vw); 
         padding-right:calc((20/376)*100vw); 
         height:calc((73/667)*100vh); //60+13
@@ -86,7 +86,7 @@ page-cash-charge {
     }
 
     .manual-check{
-        color: #6441a5;
+        color: $default-color;
         background-color:white;
         .question{
             width: calc((320/376)*100vw) 

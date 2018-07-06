@@ -192,7 +192,7 @@ page-wallet {
 
         .cancel{
             font-size:4vw;
-            color: #6441a5;            
+            color: $default-color;            
         }
 
         .payment{
@@ -202,7 +202,7 @@ page-wallet {
 
         .charge-done{
             font-size:4vw;
-            color: #6441a5;
+            color: $default-color;
         }
 
         .charge-waiting{

@@ -43,7 +43,7 @@ export class ReviewInputPage {
     console.log("count:"+this.count+" index:"+index);
     if(this.count==index){
       if(this.fontColor[index]=="#f2f2f2"){
-          this.fontColor[index]="#6441a5";
+          this.fontColor[index]="#FF5F3A";
           if(this.count<5)
               this.count++;
       }

@@ -59,6 +59,13 @@ $ionic cordova plugin add cordova-sqlite-storage
 
 $npm install --save @ionic-native/sqlite
 
+*토스 연동
+
+$ionic cordova plugin add com-darryncampbell-cordova-plugin-intent
+
+$npm install --save @ionic-native/web-intent
+
+
 * 그외
 
 $npm install moment --save
@@ -124,6 +131,8 @@ $npm install crypto-js
 $npm install @types/crypto-js --save
 
 $npm install ng-socket-io --save
+
+$npm install ionic2-custom-icons --save
 
 $ionic cordova build ios
 

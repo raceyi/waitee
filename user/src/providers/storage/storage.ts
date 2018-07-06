@@ -36,6 +36,8 @@ export class StorageProvider {
     public certUrl=this.configProvider.getCertUrl();
     public authReturnUrl=this.configProvider.getAuthReturnUrl();
     public authFailReturnUrl=this.configProvider.getAutFailReturnUrl();
+    public tossApiKey=this.configProvider.getTossApiKey();
+
     syncTimeout=500; //0.5 second
 
     //public messageEmitter= new EventEmitter();

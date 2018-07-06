@@ -7,7 +7,12 @@
 <ion-content>
 <ion-row no-padding no-margin class="logo">
     <ion-col no-padding no-margin text-center>
+      <!--
     <img  *ngIf="!isTestServer" src="assets/imgs/waitee-logo.png"/> 
+    -->
+    <span  *ngIf="!isTestServer" style="font-size:8vw;color:#FF5F3A;">
+      <b>WAITEE</b> 
+    </span>
     <span  *ngIf="isTestServer">검증</span> 
     </ion-col>
   </ion-row>

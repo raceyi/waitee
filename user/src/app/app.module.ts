@@ -66,6 +66,8 @@ import {ConfigurePasswordPageModule} from '../pages/configure-password/configure
 import {ConfigurePaymentPageModule} from '../pages/configure-payment/configure-payment.module';
 import {InputCouponPageModule} from '../pages/input-coupon/input-coupon.module';
 import {ComponentsModule} from '../components/components.module';
+import {TossTransferPageModule} from '../pages/toss-transfer/toss-transfer.module';
+import { WebIntent } from '@ionic-native/web-intent';
 
 @NgModule({
   declarations: [
@@ -112,6 +114,7 @@ import {ComponentsModule} from '../components/components.module';
     ConfigurePaymentPageModule,  
     CashCancelChargePageModule,  
     InputCouponPageModule,
+    TossTransferPageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],
@@ -137,7 +140,8 @@ import {ComponentsModule} from '../components/components.module';
     {provide: ErrorHandler, useClass: MyErrorHandler},
     ServerProvider,
     CardProvider,
-    CartProvider
+    CartProvider,
+    WebIntent
   ]
 })
 export class AppModule {}

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar hideBackButton>
   <ion-buttons start>
-    <button style="background-color:white;color:#6441a5;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="md-close"></ion-icon></button>
+    <button style="background-color:white;color:#FF5F3A;" (click)="back()" ><ion-icon style="font-size:4.8vw;" name="md-close"></ion-icon></button>
   </ion-buttons>
   <ion-title> <b>{{order.shopName}}</b>
   </ion-title>
@@ -49,7 +49,7 @@
     <div style="color:#bdbdbd" *ngIf="order.orderStatus!='paid'">
       결제완료
     </div>
-    <div style="color:#6441a5" *ngIf="order.orderStatus=='paid'">
+    <div style="color:#FF5F3A" *ngIf="order.orderStatus=='paid'">
       결제완료
     </div>    
   </ion-col>
@@ -57,7 +57,7 @@
     <div style="color:#bdbdbd" *ngIf="order.orderStatus!='checked'">
       주문접수
     </div>
-    <div style="color:#6441a5" *ngIf="order.orderStatus=='checked'">
+    <div style="color:#FF5F3A" *ngIf="order.orderStatus=='checked'">
       주문접수
     </div>    
   </ion-col>
@@ -65,13 +65,13 @@
     <div style="color:#bdbdbd" *ngIf="order.orderStatus!='completed'">
       준비완료
     </div>
-    <div style="color:#6441a5" *ngIf="order.orderStatus=='completed'">
+    <div style="color:#FF5F3A" *ngIf="order.orderStatus=='completed'">
       준비완료
     </div>    
   </ion-col>
 </ion-row>
 <div text-center class="pickup-area" *ngIf="order.orderStatus=='pickup'" style="background-color:white;">
-<ion-row  style="color: #6441a5;justify-content:center;font-size:4vw;">
+<ion-row  style="color: #FF5F3A;justify-content:center;font-size:4vw;">
        <b>고객 전달이 완료된 주문입니다.</b>
 </ion-row>
 <ion-row style="color: #bdbdbd;" *ngIf="order.localPickupTimeString" >
@@ -81,7 +81,7 @@
 </div>
 
 <div text-center class="pickup-area" *ngIf="order.orderStatus=='cancelled'" style="background-color:white;">
-<ion-row  style="color: #6441a5;justify-content:center;font-size:4vw;">
+<ion-row  style="color: #FF5F3A;justify-content:center;font-size:4vw;">
        <b>취소된 주문입니다. ( 사유 : {{order.cancelReason}} )</b>
 </ion-row>
 <ion-row style="color: #bdbdbd;" *ngIf="order.localCancelledTimeString" >
@@ -92,7 +92,9 @@
 
 <div class="detail-section">
 <ion-row class="logo" text-center>
+  <!--
     <img  src="assets/imgs/waitee-logo.png"/> 
+-->
 </ion-row>
   <div class="time-area">
     <ion-row *ngIf="order.localOrderedTimeString" >
