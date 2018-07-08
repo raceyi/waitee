@@ -323,6 +323,15 @@ export class WalletPage {
  }
 
  launchToss(){
+     if(this.storageProvider.tourMode ){
+          let alert = this.alertController.create({
+              title:"둘러보기 모드입니다.",
+              subTitle: '로그인후 실행해 주세요.',
+              buttons: ['OK']
+          });
+          alert.present();                 
+         return;
+     }
      this.serverProvider.checkTossExistence().then(()=>{
         this.app.getRootNavs()[0].push(TossTransferPage);
      },err=>{

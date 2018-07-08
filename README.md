@@ -10,8 +10,11 @@ $cd user => config.xml의 id,name 수정 splash 관련 사항 추가
     <name>웨이티</name>
     ...
     <preference name="orientation" value="portrait" />
+    <preference name="CordovaWebViewEngine" value="CDVUIWebViewEngine" />
 
 $ionic cordova platform add android
+
+$ionic cordova platform add android@7.1.0
 
 $ionic cordova platform add ios
 
@@ -46,12 +49,34 @@ $ionic cordova plugin add https://github.com/katzer/cordova-plugin-background-mo
 $npm install --save @ionic-native/background-mode
 
 *download kakao plugin and install it from local storage
+*https://github.com/taejaehan/Cordova-Kakaotalk-Plugin 참조해 작업하기 
 
 $ionic cordova plugin add ../ --variable KAKAO_APP_KEY={takitUser.kakao.appId}
 
 $ionic cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="{takitUser.facebook.appId}" --variable APP_NAME="waitee"
 
 $npm install --save @ionic-native/facebook
+
+$cp ../google-services.json .
+
+$cp ../GoogleService-Info.plist .
+
+config.xml 편집
+
+    <platform name="android">
+        
+        <resource-file src="google-services.json" target="google-services.json" />
+
+    <platform name="ios">
+
+        <resource-file src="GoogleService-Info.plist" />
+
+
+$ionic cordova plugin add phonegap-plugin-push
+
+$npm install --save @ionic-native/push
+
+$ info list에 kakao와 toss추가, kakao framework추가하기, beep.wav수정하기 
 
 * 장바구니
 
@@ -65,6 +90,11 @@ $ionic cordova plugin add com-darryncampbell-cordova-plugin-intent
 
 $npm install --save @ionic-native/web-intent
 
+*custom-icon 
+
+$npm install ionic2-custom-icons --save
+
+package.json 수정
 
 * 그외
 
@@ -78,6 +108,9 @@ $git checkout user/resources/splash.png
 
 $ionic cordova resources
 
+src/assets복사하기
+
+pages/contact,about 삭제하기 
 =======================================================================================
 
 $ionic start shop blank
