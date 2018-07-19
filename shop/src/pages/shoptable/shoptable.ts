@@ -14,8 +14,10 @@ import {IosPrinterProvider} from '../../providers/ios-printer';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import {TimeUtil} from '../../classes/TimeUtil';
 import { Socket } from 'ng-socket-io';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
 
 declare var cordova:any;
+var gShopTablePage;
 
 @Component({
   selector:'page-shoptable',
@@ -41,6 +43,9 @@ export class ShopTablePage {
   
   registrationId; // socket에 전달할 registrationId를 저장함.
 
+  pollingAlert=false;
+  disconnectAlert=false;
+
   getTodayString(){
     var d = new Date();
     var mm = d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1); // getMonth() is zero-based
@@ -54,8 +59,10 @@ export class ShopTablePage {
       private printerProvider:PrinterProvider,private platform:Platform,private menuCtrl: MenuController,
       public viewCtrl: ViewController,private serverProvider:ServerProvider,private push: Push,
       private mediaProvider:MediaProvider,private events:Events,private iosPrinterProvider:IosPrinterProvider,
-      private socket: Socket) {
+      private socket: Socket,private tts: TextToSpeech) {
     console.log("ShopTablePage constructor");
+      gShopTablePage=this;
+
       platform.ready().then(() => {
       console.log('Width: ' + platform.width());
       console.log('Height: ' + platform.height());
@@ -78,12 +85,20 @@ export class ShopTablePage {
 
     this.socket.on('disconnect', (reason) => {
         console.log("reason:"+reason);  
-        let confirm = this.alertController.create({
-            title: '서버와 연결을 다시 시도합니다.',
-            message: '실패시 연결을 위해 업데이트 버튼을클릭해주세요.',
-            buttons: ['OK']
-        });
-        confirm.present();
+        if(!this.disconnectAlert){
+            this.disconnectAlert=true;
+            let confirm = this.alertController.create({
+                title: '서버와 연결을 다시 시도합니다.',
+                message: '실패시 연결을 위해 업데이트 버튼을클릭해주세요.',
+                buttons: [{
+                    text: '네',
+                    handler: () => {
+                        this.disconnectAlert=false;
+                    }
+                }]
+            });
+            confirm.present();
+        }
         this.socket.connect();
         this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
       /*
@@ -303,6 +318,55 @@ export class ShopTablePage {
               alert.present();
            }
         })  
+
+        //socket을 사용하여 3분마다 주문 내역을 가지고 온다.
+        setInterval(function(){
+            console.log("setInterval "+gShopTablePage.Option);
+            if(gShopTablePage.Option=='today'){
+                let body; 
+                if(gShopTablePage.orders.length>0){
+                    body  = JSON.stringify({takitId: gShopTablePage.storageProvider.myshop.takitId, orderNO:gShopTablePage.orders[0].orderNO, time:gShopTablePage.orders[0].orderedTime}); //humm... more than last ordered time?
+                }else{
+                    let now=new Date();
+                    let oneHourAgo=new Date(now.getTime()-60*60*1000) ;// one hour ago? today's open hour? 오늘 local time을 구해서 gmt시간으로 변경하자.
+                    body=JSON.stringify({takitId: gShopTablePage.storageProvider.myshop.takitId, orderNO: 0,time: oneHourAgo.toISOString() }); // humm... less than one hours?
+                }
+                
+                var d = new Date();
+                console.log("getRecentOrder: "+d.toLocaleTimeString());
+
+                gShopTablePage.serverProvider.post("/shop/getRecentOrder",body).then((res:any)=>{
+                    console.log("res.more:"+res.more);
+                    if(res.more){
+                        gShopTablePage.orders=[];
+                        gShopTablePage.getOrders(-1).then(()=>{
+                            if(gShopTablePage.orders[0].orderStatus=="paid"){
+                                      gShopTablePage.printOrder(gShopTablePage.orders[0]);
+                                      gShopTablePage.mediaProvider.play();
+                            } 
+                        });
+                    }
+                },err=>{
+                    console.log("fail to check recent order");
+                    gShopTablePage.mediaProvider.playWarning();
+                    /*
+                    if(!gShopTablePage.pollingAlert){
+                        let alert = gShopTablePage.alertController.create({
+                                    title: '주문정보 확인에 실패했습니다.',
+                                    subTitle: '네트웍상태를 확인해주세요.',
+                                    buttons: [{
+                                        text: '네',
+                                        handler: () => {
+                                            gShopTablePage.pollingAlert=false;
+                                        }
+                                    }]
+                                });
+                        alert.present();
+                        gShopTablePage.pollingAlert=true;
+                    }*/
+                })    
+            }
+        }, gShopTablePage.storageProvider.pollingInterval*60*1000); //every 3 minutes 
     }
 
     convertOrderInfo(orderInfo){
@@ -321,12 +385,15 @@ export class ShopTablePage {
           if(order.hasOwnProperty("review") && order.review!=null){
                 order.hidden=false;
           }  
+
+          console.log("order.orderList:"+order.orderList);
           order.orderListObj=JSON.parse(order.orderList);
 
           console.log("menus:"+ order.orderListObj.menus);
-          if( typeof order.orderListObj.menus ==="string")
+          if( typeof order.orderListObj.menus ==="string"){
+                console.log("order.orderListObj.menus:"+order.orderListObj.menus);
                 order.orderListObj.menus=JSON.parse(order.orderListObj.menus);
-
+          }
           order.userPhoneHref="tel:"+order.userPhone; 
           //console.log("order.orderListObj:"+JSON.stringify(order.orderListObj));
           console.log("cancelReason:"+order.cancelReason);
@@ -1643,6 +1710,17 @@ export class ShopTablePage {
                 alert.present();           
             }
          });
+        let name=order.orderName;
+        let options={
+            text:order.orderNO+'번'+name+'이 준비되었습니다.',
+            locale:'ko-KR',
+            rate:0.7
+        }
+        //https://stackoverflow.com/questions/40894457/difference-between-android-speech-to-text-api-recognizer-intent-and-google-clo
+        this.tts.speak( options)
+        .then(() => console.log('Success'))
+        .catch((reason: any) => console.log(reason))
+
       });
      }
 }

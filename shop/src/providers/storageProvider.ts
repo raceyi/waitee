@@ -24,7 +24,8 @@ export class StorageProvider{
     public tourMode=false;
     public tourEmail=this.configProvider.getTourEmail();
     public tourPassword=this.configProvider.getTourPassword();
-
+    public pollingInterval=3; // default value
+    
     public email;
     public name;
     public phone;
@@ -38,7 +39,7 @@ export class StorageProvider{
     public depositor;
     public isTestServer:boolean;
     //public printer;
-    public volume; // 0-100
+    public volume=100; // 0-100
 
     public serverAddress:string=this.configProvider.getServerAddress();
 
@@ -92,6 +93,18 @@ export class StorageProvider{
             }else{
                 this.volume= parseInt(value);
             }
+        });   
+        this.nativeStorage.getItem("pollingInterval").then((value:string)=>{
+            console.log("volume is "+value+" in storage");
+            if(value==null || value==undefined){
+                this.pollingInterval=3; // 3 minutes
+            }else{
+                this.pollingInterval= parseInt(value);
+                if(this.pollingInterval<1 || this.pollingInterval>3){ //invalid value
+                    this.pollingInterval=3;
+                }
+            }
+            console.log("pollingInterval:"+this.pollingInterval);
         });    
 
     }
@@ -166,6 +179,12 @@ export class StorageProvider{
         this.nativeStorage.setItem('volume',value.toString());
         this.volume=value;
         console.log("saveVolume:"+this.volume);
+    }
+
+    savepollingInterval(value){
+        this.nativeStorage.setItem('pollingInterval',value);
+        this.pollingInterval=value;
+        console.log("savepollingInterval:"+this.pollingInterval);
     }
 }
 

@@ -82,7 +82,60 @@
         </ion-col>
     </ion-row>
 
-
+        <ion-row>
+        <ion-col>
+            <ion-item>
+                <ion-label>시간제한</ion-label>
+                <ion-checkbox [(ngModel)]="timeConstraint"></ion-checkbox>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row *ngIf="timeConstraint">
+        <ion-col>
+            <ion-item>
+                <ion-label>from</ion-label>
+                <ion-checkbox [(ngModel)]="from"></ion-checkbox>
+            </ion-item>            
+        </ion-col>
+        <ion-col>
+            <ion-select [(ngModel)]="fromHour" placeholder="시">
+                <ion-option *ngFor="let hour of fromHours" [value]="hour">{{hour}}</ion-option>
+             </ion-select>
+        </ion-col>        
+        <ion-col>
+            <ion-select [(ngModel)]="fromMin" placeholder="분">
+                <ion-option *ngFor="let min of minutes" [value]="min">{{min}}</ion-option>
+             </ion-select>
+        </ion-col>        
+    </ion-row>
+    <ion-row *ngIf="timeConstraint">
+        <ion-col>
+            <ion-item>
+                <ion-label>to</ion-label>
+                <ion-checkbox [(ngModel)]="to"></ion-checkbox>
+            </ion-item>            
+        </ion-col>
+        <ion-col>
+            <ion-select [(ngModel)]="toHour" placeholder="시">
+                <ion-option *ngFor="let hour of toHours" [value]="hour">{{hour}}</ion-option>
+             </ion-select>
+        </ion-col>    
+        <ion-col>
+            <ion-select [(ngModel)]="toMin" placeholder="분">
+                <ion-option *ngFor="let min of minutes" [value]="min">{{min}}</ion-option>
+             </ion-select>
+        </ion-col>                    
+    </ion-row>
+    <ion-row *ngIf="to && from">
+        <ion-col>
+            <ion-item>
+            <ion-select interface='popover' [(ngModel)]="condition">
+                <ion-option value="XOR" selected>제외조건(-to,from-)</ion-option>
+                <ion-option value="AND">포함조건(from-to)</ion-option>
+            </ion-select>
+            </ion-item>
+        </ion-col>        
+    </ion-row>
     
 
     <ion-item-divider>추가 정보</ion-item-divider>

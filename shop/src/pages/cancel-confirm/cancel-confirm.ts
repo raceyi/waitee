@@ -34,6 +34,20 @@ export class CancelConfirmPage {
     this.reasonType=reasonType;
   }
 
+ removeSpecialCharacters(str){
+      var pattern = /^[a-zA-Zㄱ-힣0-9|s]*$/;
+        let update="";
+
+        for(let i=0;i<str.length;i++){
+             if(str[i].match(pattern) || str[i]===" "){
+                update+=str[i];
+            }else{
+                console.log("NOK-special characters");
+            }
+        }
+        return update;
+  }
+
   cancelOrder(){
     console.log("cancelOrder");
     if(!this.reasonType){
@@ -53,9 +67,9 @@ export class CancelConfirmPage {
             return;
     }
     let reason:string;
-    if(this.reasonType=='기타-상세입력')
-        reason=this.reason;
-    else
+    if(this.reasonType=='기타-상세입력'){
+        reason= this.removeSpecialCharacters(this.reason);
+    }else
         reason=this.reasonType;    
     this.callback(this.order, reason).then(()=>{
         this.navCtrl.pop();

@@ -20,6 +20,8 @@ export class MediaProvider {
    file:MediaObject;
    volumeControl;
 
+   warning:MediaObject;
+
   constructor(public http: Http,private platform:Platform,
               private media: Media,private storageProvider:StorageProvider,) {
     console.log('Hello MediaProvider Provider');
@@ -39,18 +41,35 @@ export class MediaProvider {
         
       });
       this.file.onError.subscribe(error => console.log('Error! '+JSON.stringify(error)));
+      /////////////////////////////////////////////////////// 
+      if(this.platform.is('android'))
+          this.warning = this.media.create('file:///android_asset/www/assets/warning.mp3');
+        else{
+          this.warning = this.media.create('assets/warning.mp3');
+        }
+      this.warning.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
+      this.warning.onSuccess.subscribe(() => {
+        console.log('Action is successful');        
+      });
+      this.warning.onError.subscribe(error => console.log('Error! '+JSON.stringify(error)));
+
     });
 
   }
 
-
-  play(){
-      this.playing=true;
+  playWarning(){
       this.volumeControl.setVolume(this.storageProvider.volume/100);
       // play the file
-      this.file.play();
-      console.log("play ordersound.mp3");
-      //file.release(); hum... where should I call this function?
+      this.warning.play();      
+  }
+
+  play(){
+          this.playing=true;
+          this.volumeControl.setVolume(this.storageProvider.volume/100);
+          // play the file
+          this.file.play();
+          console.log("play ordersound.mp3");
+          //file.release(); hum... where should I call this function?
   }
 
   stop(){

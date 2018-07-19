@@ -44,6 +44,7 @@ import {ComponentsModule} from '../components/components.module';
 import {CustomIconsModule} from 'ionic2-custom-icons';
 import {ConfigurePasswordPageModule} from '../pages/configure-password/configure-password.module';
 import {ConfigurePageModule} from '../pages/configure/configure.module';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
 
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 //const config: SocketIoConfig = { url: 'http://211.253.18.79:8501', options: {} };
@@ -109,6 +110,7 @@ const config: SocketIoConfig = { url: 'http://211.253.18.79:8500', options: {} }
     PrinterProvider,
     MediaProvider,
     ServerProvider,
+    TextToSpeech,
     IosPrinterProvider]
 })
 export class AppModule {}

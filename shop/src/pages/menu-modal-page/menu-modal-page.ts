@@ -21,6 +21,19 @@ import {StorageProvider} from '../../providers/storageProvider';
 })
 export class MenuModalPage {
 @ViewChild('menuContent') menuContentRef:Content;
+    //주문 시간 제약 추가 -begin
+    timeConstraint;
+    from;
+    fromHour;
+    fromMin;
+    toHour;
+    toMin;
+    to;
+    condition;
+    fromHours=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+    toHours=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
+    minutes=[0,10,20,30,40,50];
+    //주문 시간 제약 추가 -end
 
     menu;
     flags = {"add":false, "options":true, "imageUpload":false, "hasImage":false, "segment": false};
@@ -32,7 +45,8 @@ export class MenuModalPage {
               public navCtrl: NavController, private alertController:AlertController,
               private camera: Camera, private file: File,
               public serverProvider:ServerProvider, public storageProvider:StorageProvider) {
-      console.log("menu modal constructor:"+params.get('menu'));
+      console.log("menu modal constructor:"+JSON.stringify(params.get('menu')));
+
 
       if(params.get('menu').hasOwnProperty('menuName')){
         this.menu=params.get('menu');
@@ -59,6 +73,22 @@ export class MenuModalPage {
       }else if(params.get('menu').hasOwnProperty('takeout') && params.get('menu').takeout === '2'){
           this.menu.takeout = true;
           this.menu.delivery = true;
+      }
+
+      if(params.get('menu').hasOwnProperty('timeConstraint') && params.get('menu').timeConstraint!=undefined && params.get('menu').timeConstraint!=null){
+            let timeConstraint=JSON.parse(params.get('menu').timeConstraint);
+            this.timeConstraint=true;
+            this.from=timeConstraint.from;
+            this.to=timeConstraint.to;
+            this.condition=timeConstraint.condition;
+            if(timeConstraint.fromMins){
+                this.fromHour=(timeConstraint.fromMins-timeConstraint.fromMins%60)/60;
+                this.fromMin=timeConstraint.fromMins%60;
+            }
+            if(timeConstraint.toMins){
+                this.toHour=(timeConstraint.toMins-timeConstraint.toMins%60)/60;
+                this.toMin=timeConstraint.toMins%60;
+            }
       }
       console.log("construct menu:"+JSON.stringify(this.menu));
       console.log("flags"+JSON.stringify(this.flags));
@@ -167,11 +197,52 @@ export class MenuModalPage {
     });
   }
 
+  checkTimeConstraint(){
+    if(this.timeConstraint){
+        if(this.from && this.fromHour==undefined){
+                let alert = this.alertController.create({
+                            title: "from 시간을 선택해 주세요",
+                            buttons: ['확인']
+                        });
+                alert.present();        
+            return false;
+        }else if(this.from && this.fromMin==undefined){
+                let alert = this.alertController.create({
+                            title: "from 분을 선택해 주세요",
+                            buttons: ['확인']
+                        });
+                alert.present();        
+            return false;
+        }else if(this.to && this.toHour==undefined){
+                let alert = this.alertController.create({
+                            title: "to 시간을 선택해 주세요",
+                            buttons: ['확인']
+                        });
+                alert.present();        
+            return false;
+        }else if(this.to && this.toMin==undefined){
+                let alert = this.alertController.create({
+                            title: "to 분을 선택해 주세요",
+                            buttons: ['확인']
+                        });
+                alert.present();        
+            return false;
+        }    
+        //timeConstraint:{from:true/false, to:true/false, fromMins:number, toHour:number,condition:"XOR"/"AND""}
+        this.menu.timeConstraint=JSON.stringify({from:this.from,to:this.to,fromMins:this.fromHour*60+this.fromMin, toMins:this.toHour*60+this.toMin ,condition:this.condition});
+        console.log("timeConstraint:"+JSON.stringify(this.menu.timeConstraint));
+    }  
+    return true;
+  }
+
   modifyMenuInfo(){
     console.log("modifyMenuInfo"+this.menu);
     console.log(this.flags.imageUpload);
-    //필수 정보 확인
 
+    //시간 제약 확인
+    if(!this.checkTimeConstraint())
+        return;
+    //필수 정보 확인
     if(!this.isNull(this.menu.menuName) && 
         !this.isNull(this.menu.price)){
     
@@ -332,7 +403,8 @@ export class MenuModalPage {
 
     console.log(this.menu);
     console.log(this.flags.imageUpload);
-
+    if(!this.checkTimeConstraint())
+        return;
     //필수 정보 확인
     if(!this.isNull(this.menu.menuName) && 
         !this.isNull(this.menu.price)){

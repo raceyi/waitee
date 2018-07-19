@@ -46,7 +46,7 @@
       <ion-radio value="기타-상세입력" (ionSelect)="changeReasonType('기타-상세입력')"></ion-radio>
     </ion-item>
     <ion-item [hidden]="reasonType!='기타-상세입력'">
-    <ion-textarea class="reason" type="text" [(ngModel)]="reason"></ion-textarea>
+    <ion-textarea class="reason" type="text" placeholder="한글,숫자,영문자만 전달됩니다" [(ngModel)]="reason"></ion-textarea>
     </ion-item>
   </ion-list>
 
