@@ -10,18 +10,20 @@
        <ion-col [hidden]="!storageProvider.isTestServer" class="title">
         검증 
        </ion-col>
+       <ion-col text-center *ngIf="storageProvider.pollingInterval && storageProvider.pollingInterval>0" style="color:white;" align-self-center>
+         {{storageProvider.pollingInterval}}분
+       </ion-col>
        <ion-col text-center>
             &nbsp;
-            <!--
             <ion-icon class="store-status" [style.color]="storeColor" name="bulb" (click)="configureStore()"></ion-icon>
-            -->
        </ion-col>
-       <ion-col text-center>
-         &nbsp;
-            <!--
+       <!--
+       <ion-col text-center *ngIf="storageProvider.pollingInterval">
+         {{storageProvider.pollingInterval}}분
+            &nbsp;
             <ion-icon class="store-status" [style.color]="notiColor" name="person" (click)="configureGotNoti()"></ion-icon>
-            -->
        </ion-col>
+       -->
       <ion-col text-center>
             <ion-icon class="store-status" name="print" [style.color]="printColor" (click)="testPrint()"></ion-icon>
       </ion-col>

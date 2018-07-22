@@ -14,6 +14,9 @@
 
 
 <ion-content>
+<ion-item *ngIf="storageProvider.lastTokenSent!=undefined">
+ token: {{storageProvider.lastTokenSent}}
+</ion-item>   
 <ion-item> 소리 조절</ion-item>
 <ion-item>
     <ion-range  (ionBlur)='updateVolume()' no-padding no-margin style="padding-top:0px;" [(ngModel)]="volumeValue" color="danger" pin="true">

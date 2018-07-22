@@ -4,8 +4,8 @@ import { IonicErrorHandler } from 'ionic-angular';
  export class MyErrorHandler implements ErrorHandler {
     handleError(error) {
       // do something with the exception
-      console.log("error:..."+error);
-      //console.log("error:..."+JSON.stringify(error));
+      //console.log("error:..."+error);
+      console.log("error:..."+JSON.stringify(error));
     }
  }
 

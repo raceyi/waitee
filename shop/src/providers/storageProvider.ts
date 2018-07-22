@@ -59,6 +59,8 @@ export class StorageProvider{
     public accountMaskExceptFront=this.configProvider.getAccountMaskExceptFront();
     public accountMaskExceptEnd=this.configProvider.getAccountMaskExceptEnd();
 
+    public lastTokenSent; // 마지막으로 토큰이 등록된 시간
+
     constructor(private platform:Platform,private nativeStorage: NativeStorage,private configProvider:ConfigProvider){
         console.log("StorageProvider constructor");  
         if(this.serverAddress.endsWith('8000')){
