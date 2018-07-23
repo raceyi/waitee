@@ -48,7 +48,10 @@ $ionic cordova plugin add https://github.com/katzer/cordova-plugin-background-mo
 
 $npm install --save @ionic-native/background-mode
 
+platforms/ios/ios.json에서 remote-notification을 검색하여 audio play를 삭제함
+
 *download kakao plugin and install it from local storage
+
 *https://github.com/taejaehan/Cordova-Kakaotalk-Plugin 참조해 작업하기 
 
 $ionic cordova plugin add ../ --variable KAKAO_APP_KEY={takitUser.kakao.appId}
@@ -120,12 +123,13 @@ config.xml의 id,name 수정
      <widget id="biz.takitApp.shop" ...>
      <name>웨이티상점</name>
      ...
+     <preference name="orientation" value="portrait" />
 
-$ionic cordova platform add android
+$ionic cordova platform add android@latest
 
 $ionic cordova platform add ios
 
-$ionic cordova plugin add phonegap-plugin-push
+$ionic cordova plugin add phonegap-plugin-push   ===> PushInstanceIDListenerService.java를수정한다.
 
 $npm install --save @ionic-native/push
 
@@ -149,7 +153,7 @@ $ionic cordova plugin add cordova-plugin-filepath
 
 $npm install --save @ionic-native/file-path
 
-$ionic cordova plugin add https://github.com/atmosuwiryo/Cordova-Plugin-Bluetooth-Printer
+$ionic cordova plugin add ../btprinterplugin/BtPrinter/
 
 $ionic cordova plugin add https://github.com/katzer/cordova-plugin-background-mode
 
@@ -167,8 +171,20 @@ $npm install ng-socket-io --save
 
 $npm install ionic2-custom-icons --save
 
+$npm install moment --save
+
+$npm install --save @ionic-native/file
+
 $ionic cordova build ios
 
 $ionic cordova build android
 
-* Android build failure=> 안드리드 스튜디오에서 빌드함. build.gradle수정함.
+$ionic cordova plugin add cordova-plugin-tts
+
+$npm install --save @ionic-native/text-to-speech
+
+$ionic cordova plugin add cordova-plugin-volume-control
+
+platforms/android/app/src/main/res/raw 에 mp3파일 복사
+assets파일 복사
+
