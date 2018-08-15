@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {Platform ,NavController} from 'ionic-angular';
+import {Platform ,NavController,LoadingController,AlertController} from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
 import * as CryptoJS from 'crypto-js';
 import {ConfigProvider} from './configProvider';
+declare var cordova:any;
 
 @Injectable()
 export class StorageProvider{
@@ -24,8 +25,9 @@ export class StorageProvider{
     public tourMode=false;
     public tourEmail=this.configProvider.getTourEmail();
     public tourPassword=this.configProvider.getTourPassword();
-    public pollingInterval=3; // default value
-    
+    public pollingInterval=3; // default value in minutes
+    public pollingTimer;
+
     public email;
     public name;
     public phone;
@@ -59,9 +61,14 @@ export class StorageProvider{
     public accountMaskExceptFront=this.configProvider.getAccountMaskExceptFront();
     public accountMaskExceptEnd=this.configProvider.getAccountMaskExceptEnd();
 
-    public lastTokenSent; // 마지막으로 토큰이 등록된 시간
-
-    constructor(private platform:Platform,private nativeStorage: NativeStorage,private configProvider:ConfigProvider){
+    public bootTime;
+    public lastTokenSent;
+    public registrationId;
+    
+    constructor(private platform:Platform,private nativeStorage: NativeStorage,
+                public loadingCtrl: LoadingController, 
+                private alertController:AlertController,
+                private configProvider:ConfigProvider){
         console.log("StorageProvider constructor");  
         if(this.serverAddress.endsWith('8000')){
             console.log("test server 8000");
@@ -69,46 +76,36 @@ export class StorageProvider{
         }else{
             this.isTestServer = false;
         }
-        this.nativeStorage.getItem("printOn").then((value:string)=>{
-            console.log("printOn is "+value+" in storage");
-            if(value==null || value==undefined){
-                this.printOn=false;
-            }else{
-                this.printOn= (value.toLowerCase() === 'true');
-            }
-        });
-        console.log("printOn is "+this.printOn);
-        /*
-        if(this.printOn){
-            this.nativeStorage.getItem("print").then((value:string)=>{
-            console.log("print is "+value+" in storage");
-            this.printer= value;
-            });
-        }else{
-            this.printer=undefined;
-        }
-        */
-        this.nativeStorage.getItem("volume").then((value:string)=>{
-            console.log("volume is "+value+" in storage");
-            if(value==null || value==undefined){
-                this.volume=100;
-            }else{
-                this.volume= parseInt(value);
-            }
-        });   
-        this.nativeStorage.getItem("pollingInterval").then((value:string)=>{
-            console.log("volume is "+value+" in storage");
-            if(value==null || value==undefined){
-                this.pollingInterval=3; // 3 minutes
-            }else{
-                this.pollingInterval= parseInt(value);
-                if(this.pollingInterval<1 || this.pollingInterval>3){ //invalid value
-                    this.pollingInterval=3;
-                }
-            }
-            console.log("pollingInterval:"+this.pollingInterval);
-        });    
 
+        platform.ready().then(() => {
+            this.nativeStorage.getItem("printOn").then((value:string)=>{
+                console.log("printOn is "+value+" in storage");
+                if(value==null || value==undefined){
+                    this.printOn=false;
+                }else{
+                    this.printOn= (value.toLowerCase() === 'true');
+                }
+            });
+            console.log("printOn is "+this.printOn);
+            /*
+            if(this.printOn){
+                this.nativeStorage.getItem("print").then((value:string)=>{
+                console.log("print is "+value+" in storage");
+                this.printer= value;
+                });
+            }else{
+                this.printer=undefined;
+            }
+            */
+            this.nativeStorage.getItem("volume").then((value:string)=>{
+                console.log("volume is "+value+" in storage");
+                if(value==null || value==undefined){
+                    this.volume=100;
+                }else{
+                    this.volume= parseInt(value);
+                }
+            });   
+        });
     }
 
     reset(){
@@ -184,9 +181,34 @@ export class StorageProvider{
     }
 
     savepollingInterval(value){
-        this.nativeStorage.setItem('pollingInterval',value);
-        this.pollingInterval=value;
-        console.log("savepollingInterval:"+this.pollingInterval);
+        if(this.pollingInterval!=value){
+            this.nativeStorage.setItem('pollingInterval',value);
+            //this.pollingInterval=value;
+            //console.log("savepollingInterval:"+this.pollingInterval);
+            //clearInterval(this.pollingTimer);
+            // restart App
+            let confirm = this.alertController.create({
+                title: '주문정보 요청기간 적용을 위해서는 재시작이 필요합니다.',
+                message: '지금 재시작합니다.',
+                buttons: [
+                    {
+                    text: '아니오',
+                    handler: () => {
+                        console.log('Disagree clicked');
+                        return;
+                    }
+                    },
+                    {
+                    text: '네',
+                    handler: () => {
+                        cordova.plugins.restart.restart();
+                        return;
+                    }
+                    }]
+                    // 적용을 위해 앱을 다시 시작합니다. 
+                });
+             confirm.present();
+        }
     }
 }
 

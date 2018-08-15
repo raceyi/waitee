@@ -17,19 +17,19 @@ import java.io.IOException;
 public class PushInstanceIDListenerService extends FirebaseInstanceIdService implements PushConstants {
     public static final String LOG_TAG = "Push_InsIdService";
 
-    @Override
+     @Override
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(LOG_TAG, "Refreshed token: " + refreshedToken);
+        Log.e(LOG_TAG, "kalen-Refreshed token: " + refreshedToken);
         // TODO: Implement this method to send any registration to your app's servers.
         JSONObject json=null;
         try {
             json = new JSONObject().put(REGISTRATION_ID, refreshedToken);
         }catch( JSONException e){
-            Log.v(LOG_TAG," regitrationID refresh");
+            Log.v(LOG_TAG," regitrationID refresh exception");
         }
-        Log.v(LOG_TAG, "onRegistered: " + json.toString());
+        Log.e(LOG_TAG, "kalen-onRegistered: " + json.toString());
         PushPlugin.sendEvent(json);
         //sendRegistrationToServer(refreshedToken);
     }

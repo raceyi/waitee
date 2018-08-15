@@ -15,6 +15,7 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import {TimeUtil} from '../../classes/TimeUtil';
 import { Socket } from 'ng-socket-io';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 declare var cordova:any;
 var gShopTablePage;
@@ -53,67 +54,114 @@ export class ShopTablePage {
     var dString=d.getFullYear()+'-'+(mm)+'-'+dd;
     return dString;
   }
+  
+  platformName; //android,ios
 
   constructor(public navController: NavController,private app:App,private storageProvider:StorageProvider,
       private http:Http,private alertController:AlertController,private ngZone:NgZone,private ionicApp: IonicApp,
       private printerProvider:PrinterProvider,private platform:Platform,private menuCtrl: MenuController,
       public viewCtrl: ViewController,private serverProvider:ServerProvider,private push: Push,
       private mediaProvider:MediaProvider,private events:Events,private iosPrinterProvider:IosPrinterProvider,
-      private socket: Socket,private tts: TextToSpeech) {
+      private socket: Socket,private tts: TextToSpeech,private nativeStorage: NativeStorage) {
     console.log("ShopTablePage constructor");
       gShopTablePage=this;
 
       platform.ready().then(() => {
-      console.log('Width: ' + platform.width());
-      console.log('Height: ' + platform.height());
-      if(platform.width()/2>380){ // Hum... Just for kalen's tablet. 380
-          // hum... display two columns 
-          this.column=2;
-      }else{
-          // display one columns
-          this.column=1;
-      }
-    /////////////////////////////////////////////////
-   // console.log("!!!call socket.connect!!!");
-   // this.socket.connect();
-   // this.socket.emit('takitId',{takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
+            console.log('Width: ' + platform.width());
+            console.log('Height: ' + platform.height());
+            if(platform.width()/2>380){ // Hum... Just for kalen's tablet. 380
+                // hum... display two columns 
+                this.column=2;
+            }else{
+                // display one columns
+                this.column=1;
+            }
+            /////////////////////////////////////////////////
+            // console.log("!!!call socket.connect!!!");
+            // this.socket.connect();
+            // this.socket.emit('takitId',{takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
 
-    this.socket.on('order', (data) => {
-      console.log("data:"+JSON.stringify(data));
-      this.orderNotificationSocket(data.order);
-    });
-
-    this.socket.on('disconnect', (reason) => {
-        console.log("reason:"+reason);  
-        if(!this.disconnectAlert){
-            this.disconnectAlert=true;
-            let confirm = this.alertController.create({
-                title: '서버와 연결을 다시 시도합니다.',
-                message: '실패시 연결을 위해 업데이트 버튼을클릭해주세요.',
-                buttons: [{
-                    text: '네',
-                    handler: () => {
-                        this.disconnectAlert=false;
-                    }
-                }]
+            this.socket.on('order', (data) => {
+            console.log("data:"+JSON.stringify(data));
+            this.orderNotificationSocket(data.order);
             });
-            confirm.present();
-        }
-        this.socket.connect();
-        this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
-      /*
-      if(!this.socket.ioSocket.connected){
-             this.socket.connect();
-      }
-      */
-      ////////////////////////////////////////////
-    });
+
+            this.socket.on('disconnect', (reason) => {
+                    console.log("reason:"+reason);  
+                    if(!this.disconnectAlert){
+                        this.disconnectAlert=true;
+                        let confirm = this.alertController.create({
+                            title: '서버와 연결을 다시 시도합니다.',
+                            message: '실패시 연결을 위해 업데이트 버튼을클릭해주세요.',
+                            buttons: [{
+                                text: '네',
+                                handler: () => {
+                                    this.disconnectAlert=false;
+                                }
+                            }]
+                        });
+                        confirm.present();
+                    }
+                    this.socket.connect();
+                    this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
+                /*
+                if(!this.socket.ioSocket.connected){
+                        this.socket.connect();
+                }
+                */
+                ////////////////////////////////////////////
+            });
+            this.registerPushService();
+
+        this.nativeStorage.getItem("pollingInterval").then((value:string)=>{
+            console.log("volume is "+value+" in storage");
+            if(value==null || value==undefined){
+                this.storageProvider.pollingInterval=3; // 3 minutes
+            }else{
+                this.storageProvider.pollingInterval= parseInt(value);
+                if(this.storageProvider.pollingInterval<1 || this.storageProvider.pollingInterval>3){ //invalid value
+                    this.storageProvider.pollingInterval=3;
+                }
+            }
+            console.log("pollingInterval:"+this.storageProvider.pollingInterval);
+        });    
+
+        // 최대 3분마다 주문 내역을 가지고 온다.
+        this.storageProvider.pollingTimer=setInterval(function(){
+            console.log("setInterval "+gShopTablePage.Option);
+            if(gShopTablePage.Option=='today'){
+                let body; 
+                if(gShopTablePage.orders.length>0){
+                    body  = JSON.stringify({takitId: gShopTablePage.storageProvider.myshop.takitId, orderNO:gShopTablePage.orders[0].orderNO, time:gShopTablePage.orders[0].orderedTime}); //humm... more than last ordered time?
+                }else{
+                    let now=new Date();
+                    let oneHourAgo=new Date(now.getTime()-60*60*1000) ;// one hour ago? today's open hour? 오늘 local time을 구해서 gmt시간으로 변경하자.
+                    body=JSON.stringify({takitId: gShopTablePage.storageProvider.myshop.takitId, orderNO: 0,time: oneHourAgo.toISOString() }); // humm... less than one hours?
+                }
+                
+                var d = new Date();
+                console.log("getRecentOrder: "+d.toLocaleTimeString());
+
+                gShopTablePage.serverProvider.post("/shop/getRecentOrder",body).then((res:any)=>{
+                    console.log("res.more:"+res.more);
+                    if(res.more){
+                        gShopTablePage.orders=[];
+                        gShopTablePage.getOrders(-1).then(()=>{
+                            if(gShopTablePage.orders[0].orderStatus=="paid"){
+                                      gShopTablePage.printOrder(gShopTablePage.orders[0]);
+                                      gShopTablePage.mediaProvider.play();
+                            } 
+                        });
+                    }
+                },err=>{
+                    console.log("fail to check recent order");
+                    gShopTablePage.mediaProvider.playWarning();
+                })    
+            }
+        }, gShopTablePage.storageProvider.pollingInterval*60*1000); //every 3 minutes 
 
     });
 
-
-    this.registerPushService();
-    
     var date=new Date();
     var month=date.getMonth()+1;
 
@@ -167,6 +215,31 @@ export class ShopTablePage {
               console.log("shopInfo:"+JSON.stringify(res));
               this.storageProvider.shopInfoSet(res.shopInfo);
               this.storageProvider.shop = res;
+
+              // 내일 상점 시작 한시간전에 restart를 실행한다.
+              console.log("this.storageProvider.shop.businessTime:"+res.shopInfo.businessTime);
+              //this.storageProvider.shop.businessTime=JSON.parse(res.shopInfo.businessTime);
+              let businessTime=JSON.parse(res.shopInfo.businessTime);;
+              let today=new Date();
+              let weekday=today.getDay();
+              let startHour,startMin;
+              if(weekday==6){
+                    weekday=0;
+              }else{
+                    weekday=weekday+1;
+              }
+              ////////////////////////////
+              console.log("tomorrow open hour:"+businessTime[weekday].substr(0,2));
+              this.storageProvider.bootTime=today.toLocaleString();
+              let hour=parseInt(businessTime[weekday].substr(0,2));
+              // 오늘에서 24시간 더한후에 open hour로 시간설정하고 다시 1시간뺀이후에 timer를 걸면된다.
+              let tomorrow=new Date(today.getTime()+24*60*60*1000);
+              tomorrow.setHours(hour,0,0,0);
+              let restart=new Date(tomorrow.getTime()-60*60*1000); // one hour ago 
+              console.log("restart time:"+restart.toLocaleString()+" diff:"+(restart.getTime()-today.getTime()));
+              setTimeout(function(){
+                  cordova.plugins.restart.restart();
+              },restart.getTime()-today.getTime());
           });
 
    if(this.platform.is("android")){
@@ -319,54 +392,7 @@ export class ShopTablePage {
            }
         })  
 
-        //socket을 사용하여 3분마다 주문 내역을 가지고 온다.
-        setInterval(function(){
-            console.log("setInterval "+gShopTablePage.Option);
-            if(gShopTablePage.Option=='today'){
-                let body; 
-                if(gShopTablePage.orders.length>0){
-                    body  = JSON.stringify({takitId: gShopTablePage.storageProvider.myshop.takitId, orderNO:gShopTablePage.orders[0].orderNO, time:gShopTablePage.orders[0].orderedTime}); //humm... more than last ordered time?
-                }else{
-                    let now=new Date();
-                    let oneHourAgo=new Date(now.getTime()-60*60*1000) ;// one hour ago? today's open hour? 오늘 local time을 구해서 gmt시간으로 변경하자.
-                    body=JSON.stringify({takitId: gShopTablePage.storageProvider.myshop.takitId, orderNO: 0,time: oneHourAgo.toISOString() }); // humm... less than one hours?
-                }
-                
-                var d = new Date();
-                console.log("getRecentOrder: "+d.toLocaleTimeString());
-
-                gShopTablePage.serverProvider.post("/shop/getRecentOrder",body).then((res:any)=>{
-                    console.log("res.more:"+res.more);
-                    if(res.more){
-                        gShopTablePage.orders=[];
-                        gShopTablePage.getOrders(-1).then(()=>{
-                            if(gShopTablePage.orders[0].orderStatus=="paid"){
-                                      gShopTablePage.printOrder(gShopTablePage.orders[0]);
-                                      gShopTablePage.mediaProvider.play();
-                            } 
-                        });
-                    }
-                },err=>{
-                    console.log("fail to check recent order");
-                    gShopTablePage.mediaProvider.playWarning();
-                    /*
-                    if(!gShopTablePage.pollingAlert){
-                        let alert = gShopTablePage.alertController.create({
-                                    title: '주문정보 확인에 실패했습니다.',
-                                    subTitle: '네트웍상태를 확인해주세요.',
-                                    buttons: [{
-                                        text: '네',
-                                        handler: () => {
-                                            gShopTablePage.pollingAlert=false;
-                                        }
-                                    }]
-                                });
-                        alert.present();
-                        gShopTablePage.pollingAlert=true;
-                    }*/
-                })    
-            }
-        }, gShopTablePage.storageProvider.pollingInterval*60*1000); //every 3 minutes 
+       
     }
 
     convertOrderInfo(orderInfo){
@@ -911,18 +937,24 @@ export class ShopTablePage {
              this.socket.connect();
              this.socket.emit('takitId',{takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
 
-              var platform;
               if(this.platform.is("android")){
-                  platform="android";
+                  this.platformName="android";
               }else if(this.platform.is("ios")){
-                  platform="ios";
+                  this.platformName="ios";
               }else{
-                  platform="unknown";
+                  this.platformName="unknown";
               }
-              let body = JSON.stringify({registrationId:response.registrationId,takitId:this.storageProvider.myshop.takitId,platform:platform});
-              console.log("server:"+ this.storageProvider.serverAddress+" body:"+JSON.stringify(body));
+              let body;
+
+              if(this.storageProvider.lastTokenSent){
+                body = JSON.stringify({registrationId:response.registrationId,takitId:this.storageProvider.myshop.takitId,platform:this.platformName,tokenRefresh:true});
+              }else 
+                body = JSON.stringify({registrationId:response.registrationId,takitId:this.storageProvider.myshop.takitId,platform:this.platformName});
+              console.log("server:"+ this.storageProvider.serverAddress+" registration-body:"+JSON.stringify(body));
               this.serverProvider.post("/shop/registrationId",body).then((res:any)=>{    
                   console.log("registrationId sent successfully");
+                  this.storageProvider.lastTokenSent=new Date().toLocaleString();
+                  this.storageProvider.registrationId=response.registrationId;
              },(err)=>{
                   console.log("registrationId sent failure "+JSON.stringify(err));
                   if(err=="NetworkFailure"){
@@ -1064,6 +1096,39 @@ export class ShopTablePage {
              this.pushNotification.on('error').subscribe((e:any)=>{
                 console.log(e.message);
             });
+
+            //listChannels함수를 token을 polling하는 함수로 변경함.
+            setInterval(function(){
+                console.log("check registrationId "+gShopTablePage.storageProvider.registrationId);
+                if(gShopTablePage.storageProvider.registrationId){
+                    gShopTablePage.push.listChannels().then((token)=>{
+                        if(token.registrationId!=gShopTablePage.storageProvider.registrationId){
+                            console.log("token:"+JSON.stringify(token));
+                            let body = JSON.stringify({registrationId:token.registrationId,
+                                                       takitId:gShopTablePage.storageProvider.myshop.takitId,
+                                                       platform:gShopTablePage.platformName,
+                                                       tokenRefresh:true});
+                            gShopTablePage.serverProvider.post("/shop/registrationId",body).then((res:any)=>{    
+                                console.log("registrationId sent successfully");
+                                gShopTablePage.storageProvider.lastTokenSent=new Date().toLocaleString();
+                                gShopTablePage.storageProvider.registrationId=token.registrationId;
+                            },(err)=>{
+                                console.log("registrationId sent failure "+JSON.stringify(err));
+                                if(err=="NetworkFailure"){
+                                    let alert = gShopTablePage.alertController.create({
+                                                title: '토큰 등록에 실패하였습니다. 주문 알림을 받을수 없습니다.',
+                                                subTitle:'앱을 다시 실행해 주세요.',
+                                                buttons: ['OK']
+                                            });
+                                    alert.present();                                     
+                                }
+                            }); 
+                        }else{
+                            console.log("The same registrationId");
+                        }
+                    });
+                }
+            },1*60*1000); //every 1 minutes
     }
 
     updateOrder(order){
@@ -1517,91 +1582,12 @@ export class ShopTablePage {
   }
 
   configureStore(){
-    console.log("click-configureStore(storeOpen):"+this.storageProvider.storeOpen);
-    if(this.storageProvider.tourMode){
-          let alert = this.alertController.create({
-                      title: '상점문을 열고,닫습니다. ',
-                      subTitle:'둘러보기 모드에서는 동작하지 않습니다.',
-                      buttons: ['OK']
-                  });
-          alert.present();
-      return;
-    }
-    if(this.storageProvider.storeOpen===false){
-      let alert = this.alertController.create({
-                        title: '상점문을 여시겠습니까?',
-                        buttons: [{
-                            text:'아니오',
-                            handler:()=>{
-                              console.log("Disagree clicked");
-                            }
-                          },
-                          {
-                            text:'네',
-                            handler:()=>{
-                              this.openStore().then(()=>{
-                                  console.log("open shop successfully");
-                                  this.storeColor="#33b9c6";
-                                  this.storageProvider.storeOpen=true;
-                              },(err)=>{
-                                  if(err=="NetworkFailure"){
-                                    let alert = this.alertController.create({
-                                                      title: '서버와 통신에 문제가 있습니다',
-                                                      subTitle: '네트웍상태를 확인해 주시기바랍니다',
-                                                      buttons: ['OK']
-                                                  });
-                                    alert.present();
-                                  }else{
-                                    let alert = this.alertController.create({
-                                                      title: '샵을 오픈하는데 실패했습니다.',
-                                                      subTitle: '고객센터(0505-170-3636)에 문의바랍니다.',
-                                                      buttons: ['OK']
-                                                  });
-                                    alert.present();
-                                  }
-                              });
-                            }}]
-                          });
-                          alert.present();
-    }else{
-      let alert = this.alertController.create({
-                        title: '상점문을 닫으시겠습니까?',
-                        buttons: [{
-                            text:'아니오',
-                            handler:()=>{
-                              console.log("Disagree clicked");
-                            }
-                          },
-                          {
-                            text:'네',
-                            handler:()=>{
-                                this.closeStore().then(()=>{
-                                    console.log("close shop successfully");
-                                    this.storeColor="gray";
-                                    this.storageProvider.storeOpen=false;
-                                },(err)=>{
-                                    if(err=="NetworkFailure"){
-                                      let alert = this.alertController.create({
-                                                        title: '서버와 통신에 문제가 있습니다',
-                                                        subTitle: '네트웍상태를 확인해 주시기바랍니다',
-                                                        buttons: ['OK']
-                                                    });
-                                      alert.present();
-                                    }else{
-                                      let alert = this.alertController.create({
-                                                        title: '샵을 종료하는데 실패했습니다.',
-                                                        subTitle: '고객센터(0505-170-3636)에 문의바랍니다.',
-                                                        buttons: ['OK']
-                                                    });
-                                      alert.present();
-                                    }
-                                });
-                            }
-                          }
-                        ]
-                    });
-                    alert.present();
-    }
+        console.log("click-configureStore(storeOpen):"+this.storageProvider.storeOpen);
+        let alert = this.alertController.create({
+                    title: '상점문을 열고,닫기는 메뉴->환경설정->상점열고닫기를 통해 가능합니다.',
+                    buttons: ['OK']
+                });
+        alert.present();
   }
 
   testPrint(){
@@ -1710,6 +1696,7 @@ export class ShopTablePage {
                 alert.present();           
             }
          });
+         /*
         let name=order.orderName;
         let options={
             text:order.orderNO+'번'+name+'이 준비되었습니다.',
@@ -1720,7 +1707,7 @@ export class ShopTablePage {
         this.tts.speak( options)
         .then(() => console.log('Success'))
         .catch((reason: any) => console.log(reason))
-
+       */
       });
      }
 }
