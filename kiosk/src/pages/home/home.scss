@@ -1,0 +1,140 @@
+page-home {
+ // screen size: 800*1280, xhdpi
+    $scroll-H: calc((290/1280)*100vh);
+    $latest-W : calc((145/375)*100vw);
+    $latest-H : calc((290/1280)*100vh);
+
+ .footer-area{
+    height: calc((100/1280)*100vh);
+    font-size:4.75vw;
+    padding-top: calc((20/1280)*100vh);
+ }
+
+ .english-button{
+   font-size:3vw;
+   background-color:#d4d1d1;
+   color:#787676;
+   width:131px;
+   height:48px;
+   border-radius: 24px;
+   border:solid 1px #787676;
+ }
+
+ .by-pos{
+    position: absolute;
+    left: 436px;
+    top: 54px;  
+    color:#FF5F3A;               
+ }
+
+ .logo-img{
+    width:87px;
+    height:29px;
+    position: absolute;
+    left: 468px;
+    top: 49px;         
+ }
+ .shop-img{
+    width:185px;
+    height:100px;
+    position: absolute;
+    left: 246px;
+    top: 15px;    
+ }
+
+ .category-button{
+    font-size:3vw;
+    color:black;
+    background-color:white;
+    height:calc((144/1280)*100vh);
+    .button-inner { /*< --- this class added automatically */
+        justify-content: flex-start;
+    }
+    padding-left:30px;
+    border-right:dashed 0.5px #979797; 
+ }
+
+ .menu-button{
+     //width:100%;
+     width:calc((350/800)*100vw);
+     height:calc((290/1280)*100vh);
+    img{
+        margin-top: -60px;
+        //position: absolute;
+        //left: 0px;
+        //top: 0px;        
+        width: calc((136/800)*100vw);
+        height:calc((136/800)*100vw);
+        border-radius:50%;
+    }
+
+    .menu-img{
+        width: 100%;
+        align-items: center;             
+    }
+
+    .menu-name{
+        position: absolute;
+        left: 0px;
+        top: 120px; 
+        color:white;
+        font-size:3.3vw;  
+        width: 100%;
+        align-items: center;             
+    }
+    .menu-price{
+        position: absolute;
+        left: 0px;
+        top: 145px; 
+        color:#20dba5;
+        font-size:4.1vw;               
+        width: 100%;
+        align-items: center;             
+    }
+ }
+
+    .scroll-latest {
+        height: $scroll-H;
+        .scroll-content{
+            padding: 0;
+        }
+    }
+
+    .scroll-div{
+        .scroll-row-latest{
+            flex-wrap : inherit;
+            height: $latest-H;
+            margin-left: 10px;
+            margin-right: 10px;
+
+            .scroll-col-latest {
+                overflow: inherit; 
+                width : $latest-W;
+                height: $latest-H;
+                margin-right: 9px;
+            }
+        }    
+    } 
+
+
+ ion-navbar.toolbar{
+     height:calc((120/1280)*100vh);
+ }
+
+ .toolbar-background-md{
+     background-color:white;
+ }
+
+ .recommendation{
+    height: calc((390/1280)*100vh);
+    background-color: #505355;
+    .best-img{
+        height:calc((39/800)*100vw);
+        width:calc((136/800)*100vw);
+    }
+    .statement{
+        padding-top:calc((15/1280)*100vh);
+    }
+ }
+
+}

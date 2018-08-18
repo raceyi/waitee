@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons left>
+      <button round class="english-button" ion-button icon-only>
+        ENGLISH
+      </button>
+    </ion-buttons>
+     <img *ngIf="shop.shopInfo && shop.shopInfo.imagePath" class="shop-img" [src]="shop.shopInfo.imagePath"> 
+     <span class="by-pos"> by</span> 
+     <img class="logo-img" src="assets/imgs/waitee.png">
+    <ion-buttons end>
+      <button ion-button icon-only style="font-size:4.5vw;color:#FF5F3A">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+  <div class="recommendation">
+  <ion-row>
+   <ion-col col-2> <img class="best-img" src="assets/imgs/tag_top.png"></ion-col> 
+   <ion-col col-10 class="statement" style="color:#fff59c;">고민하지 말고 인기메뉴 빠르게 주문하세요.</ion-col>
+  </ion-row>
+  <div class="scroll-div">
+        <ion-scroll scrollX="true" class="scroll-latest">
+            <ion-row class="scroll-row-latest">
+                 <ion-col *ngFor="let menu of shop.bestMenus" class="scroll-col-latest">
+                            <button (click)="enterMenu(menu)" class="menu-button" clear ion-button>
+                                <div class="menu-img"><img [src]="menu.filename"></div>
+                                <div class="menu-name"><p ><b>{{menu.menuName}}</b></p></div>
+                                <div class="menu-price"><p ><b>{{menu.price}}</b></p></div>
+                            </button>
+                </ion-col>
+            </ion-row>
+        </ion-scroll>
+  </div> 
+</div>
+</ion-header>
+
+
+<ion-content>
+<!--
+   <ion-scroll scrollX="true" class="scroll-latest">
+                            <button *ngFor="let menu of shop.bestMenus" clear class="menu-img" (click)="enterMenu(menu)" no-padding no-margin ion-button>
+                                <img  [src]="menu.filename">
+                                <p>{{menu.menuName}}</p>
+                                <p>{{menu.price}}</p>
+                            </button>
+ </ion-scroll>
+-->
+<!--
+<button ion-button (click)="connectPrinter()" >
+  프린터 연결하기
+</button>
+
+<button ion-button (click)="print()" >
+  출력하기 
+</button>
+<button ion-button (click)="post()" >
+  post호출하기 
+</button>
+
+-->
+<ion-row no-padding no-margin>
+  <ion-col col-6 no-padding no-margin style="border-bottom:dashed 0.5px #979797;" *ngFor="let category of categories">
+    <button class="category-button" block icon-left full color="white" full clear ion-button (click)="selectCategory(category)">
+      <ion-icon name="play" style="color:#FF5F3A;"></ion-icon>&nbsp;&nbsp;{{category.categoryName}}
+    </button>
+  </ion-col>
+</ion-row>
+
+
+ </ion-content>
+
+<ion-footer no-padding no-margin>
+<ion-row style="border-top: solid 3px #ff7f39; " no-padding no-margin>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+   <ion-icon name="cart"></ion-icon>&nbsp;주문 내역
+  </ion-col>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+   <ion-icon name="card"></ion-icon>&nbsp;결제하기 
+  </ion-col>
+</ion-row>
+</ion-footer>
