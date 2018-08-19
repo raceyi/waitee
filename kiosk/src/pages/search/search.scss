@@ -1,0 +1,57 @@
+page-search {
+    .toolbar .searchbar-md {
+        padding-left: 150px;
+        padding-right: 150px;
+        padding-bottom: 30px;
+        padding-top: 0px;
+        background-color:#FF5F3A;
+    }
+    .toolbar-md {
+        padding:0px;
+    }
+    .close-button{
+        color:white;
+    }
+
+    .explain{
+        color:white;
+        font-size:3vw;
+        padding-bottom: 20px;
+    }
+
+    .searchbar-md .searchbar-input {
+        font-size:4vw;
+    }
+    
+    .searchbar-md .searchbar-search-icon , .searchbar-md .searchbar-md-cancel{
+        background-size: 30px;
+    }
+
+    .toolbar-content-md{
+        background-color:#FF5F3A;        
+    }
+    .search-menus-div{
+        .search-menus{
+            height:50px;
+            font-size:4vw;
+            color:black;
+            button{
+                margin-left:calc((38/376)*100vw);
+                margin-bottom:5px;
+                width:calc((290/376)*100vw);
+                span{
+                    justify-content: left;
+                }
+            }
+        }
+        padding-left:100px;
+        padding-top:50px;
+    }
+
+ .footer-area{
+    height: calc((100/1280)*100vh);
+    font-size:4.75vw;
+    padding-top: calc((20/1280)*100vh);
+ }
+
+}

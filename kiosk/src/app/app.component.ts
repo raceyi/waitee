@@ -5,11 +5,13 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { NativeStorage } from '@ionic-native/native-storage';
 import {StorageProvider} from '../providers/storage/storage';
 import {LoginProvider} from '../providers/login/login';
+import {ConfigProvider} from '../providers/config/config';
 
 import { LoginPage } from '../pages/login/login';
 import { ErrorPage } from '../pages/error/error';
 import { HomePage } from '../pages/home/home';
 import {SelectorPage} from '../pages/selector/selector';
+
 
 @Component({
   templateUrl: 'app.html'
@@ -22,6 +24,7 @@ export class MyApp {
               private nativeStorage: NativeStorage, 
               statusBar: StatusBar, 
               private storageProvider:StorageProvider,
+              private configProvider:ConfigProvider,
               public login:LoginProvider,
               splashScreen: SplashScreen) {
 
@@ -63,11 +66,11 @@ export class MyApp {
                     this.rootPage=LoginPage;
                 });
             }else{
-                    this.login.EmailServerLogin("kalen.lee@takit.biz","waitee").then((res:any)=>{
+                    this.login.EmailServerLogin(this.configProvider.testAccount,this.configProvider.testPassword).then((res:any)=>{
                             console.log("MyApp:"+JSON.stringify(res));
                             if(res.result=="success"){
                                 //this.shoplistHandler(res.shopUserInfo);
-                                this.storageProvider.myshop={takitId:"세종대@더큰도시락",manager:true,GCMNoti:"on"};
+                                this.storageProvider.myshop={takitId:this.configProvider.testShop,manager:true,GCMNoti:"on"};
                                 this.rootPage=HomePage;
                             }else if(res.result=='invalidId'){
                                 //console.log("You have no right to access this app");

@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+    <button class="close-button" clear ion-button (click)="back()"><ion-icon style="font-size:6vw;" name="md-close"></ion-icon>
+    </button>
+    <ion-searchbar class="keyword-input" 
+                  placeholder="메뉴 이름 검색"
+                  [(ngModel)]="myInput"  
+                  (ionInput)="onInput($event)">
+    </ion-searchbar>
+    <div class="explain" text-center>
+      <b>초성만으로도 검색가능합니다.</b><br>
+      <b>떡볶이   =>  ㄸㅂㅇ </b><br>
+    </div>
+    <div class="explain" style="padding-left:150px;" text-left>
+      <b>*ㄸ은 ㄷ을 빠르게 두번 클릭해주세요.</b><br>
+      <b>*키패드가 아닌 영역을 클릭하면 키패드가 사라집니다.</b>
+    </div>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+<div class="search-menus-div">
+  <div [hidden]="myInput==undefined || myInput.length==0"  *ngFor="let menu of menus">
+    <button ion-button class="search-menus" clear (click)="goToMenu(menu)">{{menu.menuName}}</button>    
+  </div>
+</div>
+</ion-content>
+<ion-footer no-padding no-margin>
+<ion-row style="border-top: solid 3px #ff7f39; " no-padding no-margin>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+   <ion-icon name="cart"></ion-icon>&nbsp;주문 내역
+  </ion-col>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+   <ion-icon name="card"></ion-icon>&nbsp;결제하기 
+  </ion-col>
+</ion-row>
+</ion-footer>

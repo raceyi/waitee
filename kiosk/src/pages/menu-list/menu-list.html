@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="back()" style="font-size:4.5vw;color:#FF5F3A">
+        <ion-icon name="home"></ion-icon>
+      </button>
+    </ion-buttons>
+     <img *ngIf="storageProvider.shop.shopInfo && storageProvider.shop.shopInfo.imagePath" class="shop-img" [src]="storageProvider.shop.shopInfo.imagePath"> 
+     <span class="by-pos"> by</span> 
+     <img class="logo-img" src="assets/imgs/waitee.png">
+    <ion-buttons end>
+      <button ion-button icon-only (click)="search()" style="font-size:4.5vw;color:#FF5F3A">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+
+<ion-row class="row-categories-menus">
+             <ion-col col-3 class="col-categories" no-padding>
+                <ion-scroll scrollY="true" class="scroll-categories">
+                    <ion-list>
+                        <ion-item *ngFor="let category of categories;let i=index;">
+                          <button style="font-size:3.4vw" value="i" (click)="categoryClick(i)" [style.background-color]="configureButtonBackgroundColor(i)" ion-button full clear no-padding no-margin>
+                           <p text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
+                          </button>
+                        </ion-item>
+                    </ion-list>
+                </ion-scroll>
+             </ion-col>
+            <ion-col  col-9 class="col-menus">
+                <ion-scroll scrollY="true">
+                <ion-row *ngFor="let menu of menus" no-padding no-margin>
+                    <ion-col no-padding>
+                    <button (click)="selectMenu(menu[0])"  ion-button full no-padding no-margin>
+                        <ion-item class="left" text-center no-padding>
+                             <div class="img-shop" *ngIf="menu[0].soldout==0">
+                                <img [src]="menu[0].filename">
+                             </div>
+                             <div *ngIf="menu[0].soldout==1" class="sold-out" text-center align-self-center>
+                              <p><b>판매종료</b></p>
+                             </div>
+                            <h2 *ngIf="menu[0].menuName.length<=12">{{menu[0].menuName}}</h2>
+                            <h2 *ngIf="menu[0].menuName.length>12"> {{split1(menu[0].menuName)}}</h2>
+                            <h2 *ngIf="menu[0].menuName.length>12"> {{split2(menu[0].menuName)}}</h2>
+                            <p><b><amount-display [amount]="menu[0].price"></amount-display>원 <span class="text-border" *ngIf="menu[0].takeout>0 && storageProvider.shop.shopInfo.deliveryArea==null" >&nbsp;&nbsp;포장&nbsp;&nbsp;</span> 
+                                                 <span class="text-border" *ngIf="menu[0].takeout>0 && storageProvider.shop.shopInfo.deliveryArea!=null" >&nbsp;&nbsp;포장/배달&nbsp;&nbsp;</span></b></p>
+                        </ion-item>
+                    </button>
+                    </ion-col>
+                    <ion-col no-padding>
+                    <button *ngIf="menu[1]" (click)="selectMenu(menu[1])"  ion-button full no-padding no-margin>
+                        <ion-item text-center no-padding>
+                             <div class="img-shop" *ngIf="menu[1].soldout==0">
+                                <img [src]="menu[1].filename">
+                             </div>
+                             <div  class="img-shop" *ngIf="menu[1].soldout==1">
+                              <label  class="sold-out"> <b>판매종료</b></label>
+                             </div> 
+                            <h2 *ngIf="menu[1].menuName.length<=12">{{menu[1].menuName}}</h2>
+                            <h2 *ngIf="menu[1].menuName.length>12"> {{split1(menu[1].menuName)}}</h2>
+                            <h2 *ngIf="menu[1].menuName.length>12"> {{split2(menu[1].menuName)}}</h2>
+
+                            <p><amount-display [amount]="menu[1].price"></amount-display>원 <span class="text-border" *ngIf="menu[1].takeout>0 && storageProvider.shop.shopInfo.deliveryArea==null" >&nbsp;&nbsp;포장&nbsp;&nbsp;</span> 
+                                                   <span class="text-border" *ngIf="menu[1].takeout>0 && storageProvider.shop.shopInfo.deliveryArea!=null" >&nbsp;&nbsp;포장/배달&nbsp;&nbsp;</span></p> 
+                        </ion-item>
+                    </button>
+                    <button *ngIf="!menu[1]" color="white" ion-button full no-padding no-margin>
+                        <ion-item no-padding>
+                        </ion-item>
+                    </button>
+                    </ion-col>
+                </ion-row>
+                </ion-scroll>
+            </ion-col>
+</ion-row>
+</ion-content>
+
+<ion-footer no-padding no-margin>
+<ion-row style="border-top: solid 3px #ff7f39; " no-padding no-margin>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+   <ion-icon name="cart"></ion-icon>&nbsp;주문 내역
+  </ion-col>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+   <ion-icon name="card"></ion-icon>&nbsp;결제하기 
+  </ion-col>
+</ion-row>
+</ion-footer>

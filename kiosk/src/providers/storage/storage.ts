@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import {ConfigProvider} from '../config/config';
+
 import * as CryptoJS from 'crypto-js';
 
 /*
@@ -11,14 +13,11 @@ import * as CryptoJS from 'crypto-js';
 @Injectable()
 export class StorageProvider {
 
-  // configProvider-begin
-  public version="0.05"; //server version
-  //public serverAddress:string="https://takit.biz:443";  
-  public serverAddress:string="http://takit.biz:8000";
-  public awsS3:string="https://s3.ap-northeast-2.amazonaws.com/seerid.cafe.image/";
-  // configProvider-end
+  public version=this.configProvider.version; 
+  public serverAddress:string=this.configProvider.serverAddress;
+  public awsS3:string=this.configProvider.awsS3;
              
-  id:string; //login id(email)
+  id:string; 
 
   myshoplist;
   myshop;
@@ -27,9 +26,10 @@ export class StorageProvider {
   name;
   phone;
 
-  shopResponse:any;
+  shop:any;
+  categories:any;
 
-  constructor(public http: HttpClient) {
+  constructor(public http: HttpClient,private configProvider:ConfigProvider) {
     console.log('Hello StorageProvider Provider');
   }
 

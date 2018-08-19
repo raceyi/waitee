@@ -11,19 +11,19 @@ page-home {
  }
 
  .english-button{
-   font-size:3vw;
+   font-size:2vw;
    background-color:#d4d1d1;
    color:#787676;
-   width:131px;
-   height:48px;
+   width:calc(200/800)vw;
+   height:calc(48/1280)vh;
    border-radius: 24px;
    border:solid 1px #787676;
  }
 
  .by-pos{
     position: absolute;
-    left: 436px;
-    top: 54px;  
+    left: 336px;
+    top: 40px;//54px;  
     color:#FF5F3A;               
  }
 
@@ -31,15 +31,15 @@ page-home {
     width:87px;
     height:29px;
     position: absolute;
-    left: 468px;
-    top: 49px;         
+    left: 368px;
+    top: 30px//49px;         
  }
  .shop-img{
     width:185px;
     height:100px;
     position: absolute;
-    left: 246px;
-    top: 15px;    
+    left: 146px;
+    top: 0px;//15px;    
  }
 
  .category-button{

@@ -3,6 +3,9 @@ import { NavController,Platform,AlertController} from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
 import { HttpClient ,HttpHeaders} from '@angular/common/http';
+import {SearchPage} from '../search/search';
+import{MenuListPage} from '../menu-list/menu-list';
+import {MenuPage} from '../menu/menu';
 
 declare var cordova:any;
 
@@ -44,14 +47,16 @@ export class HomePage {
             //console.log("category.category_no:"+category.categoryNO+" no:"+no);
             if(no==category.categoryNO){
                 menu.filename=encodeURI(this.storageProvider.awsS3+menu.imagePath);
+
                 menu.categoryNO=no;
                 //console.log("menu.filename:"+menu.filename);
-                menu.ngStyle={'background-image': 'url('+ menu.filename + ')'};
+                //menu.ngStyle={'background-image': 'url('+ menu.filename + ')'};
                 let menu_name=menu.menuName.toString();
                 //console.log("menu:"+JSON.stringify(menu));
                 menus.push(menu);
             }
         });
+        //console.log("menus:"+JSON.stringify(menus));
         if(!navigator.language.startsWith("ko") && category.categoryNameEn!=undefined && category.categoryNameEn!=null){
             //console.log("!ko && hasEn");
             this.categories.push({sequence:parseInt(category.sequence),categoryNO:parseInt(category.categoryNO),categoryName:category.categoryNameEn,menus:menus});
@@ -83,9 +88,10 @@ export class HomePage {
             this.serverProvider.post(url,body).then((res:any)=>{   
                   console.log("response"+JSON.stringify(res));  
                   if(res.result=="success"){
-                      this.storageProvider.shopResponse=res;
-                      this.shop=this.storageProvider.shopResponse;
+                      this.shop=res;
                       this.configureShopInfo();
+                      this.storageProvider.shop=this.shop;
+                      this.storageProvider.categories=this.categories;
                       //console.log("this.shop.categories:"+)
                   }else{
                     let alert = this.alertCtrl.create({
@@ -118,6 +124,18 @@ export class HomePage {
       
     })
   }
+ 
+ selectCategory(categoryIndex){
+    console.log("category:"+categoryIndex);
+    this.navCtrl.push(MenuListPage,{class:"MenuListPage",categoryIndex:categoryIndex});  
+ }
 
+  search(){
+    this.navCtrl.push(SearchPage,{class:"SearchPage"});
+  }
+
+  enterMenu(menu){
+    this.navCtrl.push(MenuPage,{menu:menu,class:"MenuPage"});
+  }
 
 }

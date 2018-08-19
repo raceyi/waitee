@@ -2,14 +2,14 @@
   <ion-navbar>
     <ion-buttons left>
       <button round class="english-button" ion-button icon-only>
-        ENGLISH
+        &nbsp;ENGLISH&nbsp;
       </button>
     </ion-buttons>
      <img *ngIf="shop.shopInfo && shop.shopInfo.imagePath" class="shop-img" [src]="shop.shopInfo.imagePath"> 
      <span class="by-pos"> by</span> 
      <img class="logo-img" src="assets/imgs/waitee.png">
     <ion-buttons end>
-      <button ion-button icon-only style="font-size:4.5vw;color:#FF5F3A">
+      <button ion-button icon-only (click)="search()" style="font-size:4.5vw;color:#FF5F3A">
         <ion-icon name="search"></ion-icon>
       </button>
     </ion-buttons>
@@ -60,8 +60,8 @@
 
 -->
 <ion-row no-padding no-margin>
-  <ion-col col-6 no-padding no-margin style="border-bottom:dashed 0.5px #979797;" *ngFor="let category of categories">
-    <button class="category-button" block icon-left full color="white" full clear ion-button (click)="selectCategory(category)">
+  <ion-col col-6 no-padding no-margin style="border-bottom:dashed 0.5px #979797;" *ngFor="let category of categories;let i=index;">
+    <button class="category-button" block icon-left full color="white" full clear ion-button (click)="selectCategory(i)">
       <ion-icon name="play" style="color:#FF5F3A;"></ion-icon>&nbsp;&nbsp;{{category.categoryName}}
     </button>
   </ion-col>

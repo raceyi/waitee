@@ -16,9 +16,13 @@ import { LoginProvider } from '../providers/login/login';
 import {LoginPageModule} from '../pages/login/login.module';
 import {ErrorPageModule} from '../pages/error/error.module';
 import {SelectorPageModule} from '../pages/selector/selector.module';
-
+import {SearchPageModule} from '../pages/search/search.module';
+import{MenuListPageModule} from '../pages/menu-list/menu-list.module';
+import {MenuPageModule} from '../pages/menu/menu.module';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { HTTP } from '@ionic-native/http';
+import {ComponentsModule} from '../components/components.module';
+import { ConfigProvider } from '../providers/config/config';
 
 @NgModule({
   declarations: [
@@ -26,6 +30,10 @@ import { HTTP } from '@ionic-native/http';
     HomePage
   ],
   imports: [
+    MenuPageModule,
+    ComponentsModule,
+    MenuListPageModule,
+    SearchPageModule,
     SelectorPageModule,
     ErrorPageModule,
     LoginPageModule,
@@ -46,7 +54,8 @@ import { HTTP } from '@ionic-native/http';
     StorageProvider,
     ServerProvider,
     LoginProvider,
-    HTTP
+    HTTP,
+    ConfigProvider
   ]
 })
 export class AppModule {}
