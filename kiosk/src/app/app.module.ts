@@ -23,6 +23,8 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import { HTTP } from '@ionic-native/http';
 import {ComponentsModule} from '../components/components.module';
 import { ConfigProvider } from '../providers/config/config';
+import {OrderListPageModule} from '../pages/order-list/order-list.module';
+import { CartProvider } from '../providers/cart/cart';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,7 @@ import { ConfigProvider } from '../providers/config/config';
     HomePage
   ],
   imports: [
+    OrderListPageModule,
     MenuPageModule,
     ComponentsModule,
     MenuListPageModule,
@@ -39,7 +42,8 @@ import { ConfigProvider } from '../providers/config/config';
     LoginPageModule,
     HttpClientModule,
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    //IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp,{mode:'ios',animate:false})
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -55,7 +59,8 @@ import { ConfigProvider } from '../providers/config/config';
     ServerProvider,
     LoginProvider,
     HTTP,
-    ConfigProvider
+    ConfigProvider,
+    CartProvider
   ]
 })
 export class AppModule {}

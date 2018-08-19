@@ -9,31 +9,32 @@ $secondary-color:#20dba5;
  }
  .by-pos{
     position: absolute;
-    left: 336px;
-    top: 40px;//54px;  
+    left: 300px;
+    top: 30px;//54px;  
     color:$primary-color;//#FF5F3A;               
  }
 
  .logo-img{
-    width:87px;
-    height:29px;
+    //width:87px;
+    height:27px;
     position: absolute;
-    left: 368px;
-    top: 30px//49px;         
+    left: 338px;
+    top: 25px;//49px;         
  }
  .shop-img{
-    width:185px;
-    height:100px;
+    //width:185px;
+    height:80px;
     position: absolute;
     left: 146px;
-    top: 0px;//15px;    
+    top: 0px;//15px;
+    z-index: 100;    
  }
 
  ion-navbar.toolbar{
      height:calc((120/1280)*100vh);
  }
 
- .toolbar-background-md{
+ .toolbar-background-ios{
      background-color:white;
  }
 
@@ -68,7 +69,7 @@ $secondary-color:#20dba5;
             border-bottom: 0px;
         }
         button{
-            height:calc((142/1280)*100vh) !important;
+            height:calc((100/1280)*100vh) !important;
             background-color:white;
             color:black;
             span{
@@ -90,10 +91,11 @@ $secondary-color:#20dba5;
             height: 100%;
             padding-bottom: 5%;
             margin : 0px;
-            .button-md:hover:not(.disable-hover) {
+            .button-ios:hover:not(.disable-hover) {
                 background-color: white;
             }
             button{
+                border: solid 1px lightgray;
                 background-color:white;
                 height: calc((220/1280)*100vh);
                 h2{
@@ -148,4 +150,15 @@ $secondary-color:#20dba5;
 	    border: solid 1px #bdbdbd;
         font-size: 2.6vw;
     }
+
+ .cart-quantity{
+    font-size:3.5vw;
+    background-color:#20dba5;
+    border-radius:50%;
+    color:white;
+    padding-left:10px;
+    padding-right:10px;
+ }
+
+
 }

@@ -2,16 +2,18 @@
   <ion-navbar hideBackButton>
     <button class="close-button" clear ion-button (click)="back()"><ion-icon style="font-size:6vw;" name="md-close"></ion-icon>
     </button>
-    <ion-searchbar class="keyword-input" 
+    <div class="searchbar-div">
+    <ion-searchbar  mode="md" class="keyword-input" 
                   placeholder="메뉴 이름 검색"
                   [(ngModel)]="myInput"  
                   (ionInput)="onInput($event)">
     </ion-searchbar>
+    </div>
     <div class="explain" text-center>
       <b>초성만으로도 검색가능합니다.</b><br>
       <b>떡볶이   =>  ㄸㅂㅇ </b><br>
     </div>
-    <div class="explain" style="padding-left:150px;" text-left>
+    <div class="explain" style="padding-left:100px;" text-left>
       <b>*ㄸ은 ㄷ을 빠르게 두번 클릭해주세요.</b><br>
       <b>*키패드가 아닌 영역을 클릭하면 키패드가 사라집니다.</b>
     </div>
@@ -24,10 +26,18 @@
   </div>
 </div>
 </ion-content>
-<ion-footer no-padding no-margin>
-<ion-row style="border-top: solid 3px #ff7f39; " no-padding no-margin>
+<ion-footer style="border-top: solid 3px #ff7f39;" no-padding no-margin>
+<ion-row style="background-color:#ff7f39;color:white;" *ngIf="cartProvider.orderName.length>0">
+  <ion-col style="font-size:3.5vw;" text-center>
+  {{cartProvider.orderName}}
+  </ion-col>
+  <ion-col style="font-size:4.125vw;" text-center>
+    <b>{{cartProvider.totalAmount}}</b>
+  </ion-col>
+</ion-row>
+<ion-row  no-padding no-margin>
   <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
-   <ion-icon name="cart"></ion-icon>&nbsp;주문 내역
+   <ion-icon name="cart"></ion-icon>&nbsp;메뉴 주문서 <span *ngIf="cartProvider.totalQuantity>0" class="cart-quantity">{{cartProvider.totalQuantity}}</span>
   </ion-col>
   <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
    <ion-icon name="card"></ion-icon>&nbsp;결제하기 

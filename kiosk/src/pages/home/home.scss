@@ -121,7 +121,7 @@ page-home {
      height:calc((120/1280)*100vh);
  }
 
- .toolbar-background-md{
+ .toolbar-background-ios{
      background-color:white;
  }
 
@@ -137,4 +137,12 @@ page-home {
     }
  }
 
+ .cart-quantity{
+    font-size:3.5vw;
+    background-color:#20dba5;
+    border-radius:50%;
+    color:white;
+    padding-left:10px;
+    padding-right:10px;
+ }
 }

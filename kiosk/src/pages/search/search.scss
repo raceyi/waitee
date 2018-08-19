@@ -1,12 +1,12 @@
 page-search {
-    .toolbar .searchbar-md {
+    .toolbar .searchbar-ios {
         padding-left: 150px;
         padding-right: 150px;
         padding-bottom: 30px;
         padding-top: 0px;
         background-color:#FF5F3A;
     }
-    .toolbar-md {
+    .toolbar-ios {
         padding:0px;
     }
     .close-button{
@@ -19,15 +19,15 @@ page-search {
         padding-bottom: 20px;
     }
 
-    .searchbar-md .searchbar-input {
+    .searchbar-ios .searchbar-input {
         font-size:4vw;
     }
     
-    .searchbar-md .searchbar-search-icon , .searchbar-md .searchbar-md-cancel{
+    .searchbar-ios .searchbar-search-icon , .searchbar-ios .searchbar-ios-cancel{
         background-size: 30px;
     }
 
-    .toolbar-content-md{
+    .toolbar-content-ios{
         background-color:#FF5F3A;        
     }
     .search-menus-div{
@@ -52,6 +52,20 @@ page-search {
     height: calc((100/1280)*100vh);
     font-size:4.75vw;
     padding-top: calc((20/1280)*100vh);
+ }
+
+    .searchbar-div{
+        padding-left:100px;
+        padding-right:100px;    
+    }
+
+ .cart-quantity{
+    font-size:3.5vw;
+    background-color:#20dba5;
+    border-radius:50%;
+    color:white;
+    padding-left:10px;
+    padding-right:10px;
  }
 
 }

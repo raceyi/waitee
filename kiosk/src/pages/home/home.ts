@@ -6,6 +6,7 @@ import { HttpClient ,HttpHeaders} from '@angular/common/http';
 import {SearchPage} from '../search/search';
 import{MenuListPage} from '../menu-list/menu-list';
 import {MenuPage} from '../menu/menu';
+import { CartProvider } from '../../providers/cart/cart';
 
 declare var cordova:any;
 
@@ -22,6 +23,7 @@ export class HomePage {
               public storageProvider:StorageProvider,
               public serverProvider:ServerProvider,
               private alertCtrl:AlertController,
+              public cartProvider:CartProvider,
               private platform:Platform) {
       this.platform.ready().then(() => {
         if(platform.is("cordova")){
@@ -135,7 +137,13 @@ export class HomePage {
   }
 
   enterMenu(menu){
+    //console.log("[homePage] menu:"+JSON.stringify(menu));
     this.navCtrl.push(MenuPage,{menu:menu,class:"MenuPage"});
   }
 
+  orderDetail(){
+    console.log("orderDetail comes");
+    // 주문번호로 주문을 확인하고 취소할수 있도록 한다.
+    // 날짜와 주문번호를 선택하게 한다.  
+  }
 }

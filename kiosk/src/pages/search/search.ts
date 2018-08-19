@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {MenuPage} from '../menu/menu';
 import * as hangul from 'hangul-js';
+import { CartProvider } from '../../providers/cart/cart';
 
 /**
  * Generated class for the SearchPage page.
@@ -20,6 +21,7 @@ export class SearchPage {
 
   menus=[];
   constructor(public navCtrl: NavController,
+              public cartProvider:CartProvider,
               public storageProvider:StorageProvider, 
               public navParams: NavParams) {
   }

@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {SearchPage} from '../search/search';
 import {MenuPage} from '../menu/menu';
+import { CartProvider } from '../../providers/cart/cart';
+
 /**
  * Generated class for the MenuListPage page.
  *
@@ -23,6 +25,7 @@ export class MenuListPage {
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
+              public cartProvider:CartProvider,
               public storageProvider:StorageProvider) {
       this.categories=storageProvider.categories;
       this.categorySelected=this.navParams.get("categoryIndex");
@@ -38,7 +41,7 @@ export class MenuListPage {
            console.log("i:"+i);
         }     
       console.log("menus:"+JSON.stringify(this.menus[0][0].soldout));
-      this.menus[0][0].soldout=1;
+      //this.menus[0][0].soldout=1; Just for testing
   }
 
   ionViewDidLoad() {

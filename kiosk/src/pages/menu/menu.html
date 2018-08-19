@@ -1,18 +1,125 @@
-<!--
-  Generated template for the MenuPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>menu</ion-title>
-  </ion-navbar>
+    <button class="close-button" clear ion-button (click)="back()"><ion-icon style="font-size:6vw;" name="md-close"></ion-icon>
+    </button> 
+  <ion-row>
+    <ion-col col-4 class="menu-img" text-center align-self-center>
+      <img [src]="storageProvider.awsS3+menu.imagePath">   
+    </ion-col>
+    <ion-col col-8 style="padding-right:75px;" align-self-center>
+        <ion-row>
+            <ion-col style="font-size:4vw;" text-right>
+                  <b>{{menu.menuName}}</b>
+            </ion-col>
+        </ion-row>
+        <ion-row class="menu-price">
+          <ion-col text-right>
+              <amount-display [amount]="menu.price"></amount-display>원
+          </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col *ngIf="menu.explanation!=undefined && menu.explanation!=null" text-wrap text-right style="font-size:3vw;">
+                {{menu.explanation}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col *ngIf="timeConstraintString" text-wrap text-right style="color:#FF5F3A;font-size:3vw;">
+                {{timeConstraintString}}
+            </ion-col>
+        </ion-row>
+    </ion-col>
+  </ion-row>
 
 </ion-header>
 
-
-<ion-content padding>
+<ion-content>
+<div class="option-section" *ngIf="options.length>0" >
+  <div class="options" no-padding no-margin *ngFor="let option of options;let i=index;">
+  <ion-row no-padding no-margin>
+    <ion-col no-padding no-margin col-3 class="option-name" text-left>
+        {{option.name}}
+    </ion-col>
+    <ion-col class="option-price" no-padding no-margin col-5 text-right>
+        +<amount-display [amount]="option.price"></amount-display>원
+    </ion-col>
+    <ion-col class="col-border" *ngIf="option.default==undefined" no-padding no-margin col-1>
+        <button no-padding ion-button clear (click)="decrease(option)"><img src="assets/imgs/minusButton.png"></button>
+    </ion-col>
+    <ion-col class="number"  *ngIf="option.default==undefined" text-center no-padding no-margin col-1>
+      {{option.number}}
+    </ion-col>
+    <ion-col class="col-border"   *ngIf="option.default==undefined" no-padding no-margin col-1>
+        <button no-padding ion-button clear (click)="increase(option)"><img src="assets/imgs/plusButton.png"></button>
+    </ion-col>
+    <ion-col  *ngIf="option.default==undefined" no-padding no-margin col-1>
+      &nbsp; 
+    </ion-col>
+    <ion-col  *ngIf="option.default!=undefined" no-padding no-margin col-4>
+      &nbsp; 
+    </ion-col>
+  </ion-row>
+  <ion-row radio-group class="choice" [(ngModel)]="option.select" *ngIf="option.choice!==undefined">
+                      <ion-col  *ngFor="let choice of option.choice">
+                          <ion-item no-lines>
+                              <ion-label>{{choice}}</ion-label>
+                              <ion-radio mode="ios" [value]="choice"></ion-radio>
+                          </ion-item>
+                      </ion-col>
+  </ion-row>
+  </div>
+</div>
+<hr class="separator">
+<div class="quantity">
+      <ion-row [hidden]="quantityInput(true)">
+        <ion-col col-11>
+        <ion-item  class="orderSelect">
+          <ion-label class="orderQuantity">총 수량</ion-label>
+            <ion-select  mode="ios" class="orderSelect0" interface="action-sheet" [(ngModel)]="menu.quantity"  (ionChange)="getQuantity(menu.quantity)">
+              <ion-option value=1>1</ion-option>
+              <ion-option value=2>2</ion-option>
+              <ion-option value=3>3</ion-option>
+              <ion-option value=4>4</ion-option>
+              <ion-option value=5>5</ion-option>
+              <ion-option value=6>직접입력</ion-option>
+            </ion-select>
+        </ion-item>
+        </ion-col>
+      </ion-row>
+       <ion-row style="font-size:3.3vw;" [hidden]="quantityInput(false)">
+         <ion-col col-8 class="input-label">총 수량</ion-col>
+         <ion-col col-3><ion-input #quantityNum (ionBlur)="onBlur($event)" type="number"  min="1" [(ngModel)]= "menu.quantity"></ion-input></ion-col>
+       </ion-row>
+</div>
+<div class="price">
+<ion-row>
+  <ion-col class="left-col" text-left>결제금액</ion-col>
+  <ion-col class="right-col" text-right> <amount-display [amount]="amount" ></amount-display>원</ion-col>
+</ion-row>
+</div>
+<div class="add-order-list">
+  <button ion-button full (click)="addOrder()"> +&nbsp;주문서에 추가하기 </button>
+</div>
+<div class="request">
+  요청사항 
+<ion-textarea [(ngModel)]="memo" placeholder="특수문자를 제외한 한글,영문,숫자만 전달됩니다." ></ion-textarea>
+</div>
 
 </ion-content>
+
+<ion-footer style="border-top: solid 3px #ff7f39;" no-padding no-margin>
+<ion-row style="background-color:#ff7f39;color:white;" *ngIf="cartProvider.orderName.length>0">
+  <ion-col style="font-size:3.5vw;" text-center>
+  {{cartProvider.orderName}}
+  </ion-col>
+  <ion-col style="font-size:4.125vw;" text-center>
+    <b>{{cartProvider.totalAmount}}</b>
+  </ion-col>
+</ion-row>
+<ion-row  no-padding no-margin>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+   <ion-icon name="cart"></ion-icon>&nbsp;메뉴 주문서 <span *ngIf="cartProvider.totalQuantity>0" class="cart-quantity">{{cartProvider.totalQuantity}}</span>
+  </ion-col>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+   <ion-icon name="card"></ion-icon>&nbsp;결제하기 
+  </ion-col>
+</ion-row>
+</ion-footer>

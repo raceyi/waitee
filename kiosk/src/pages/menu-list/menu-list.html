@@ -15,14 +15,14 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content style="border-bottom:solid 1px lightgray;">
 
 <ion-row class="row-categories-menus">
              <ion-col col-3 class="col-categories" no-padding>
                 <ion-scroll scrollY="true" class="scroll-categories">
                     <ion-list>
                         <ion-item *ngFor="let category of categories;let i=index;">
-                          <button style="font-size:3.4vw" value="i" (click)="categoryClick(i)" [style.background-color]="configureButtonBackgroundColor(i)" ion-button full clear no-padding no-margin>
+                          <button style="font-size:3.8vw" value="i" (click)="categoryClick(i)" [style.background-color]="configureButtonBackgroundColor(i)" ion-button full clear no-padding no-margin>
                            <p text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
                           </button>
                         </ion-item>
@@ -77,10 +77,18 @@
 </ion-row>
 </ion-content>
 
-<ion-footer no-padding no-margin>
-<ion-row style="border-top: solid 3px #ff7f39; " no-padding no-margin>
+<ion-footer style="border-top: solid 3px #ff7f39;" no-padding no-margin>
+<ion-row style="background-color:#ff7f39;color:white;" *ngIf="cartProvider.orderName.length>0">
+  <ion-col style="font-size:3.5vw;" text-center>
+  {{cartProvider.orderName}}
+  </ion-col>
+  <ion-col style="font-size:4.125vw;" text-center>
+    <b>{{cartProvider.totalAmount}}</b>
+  </ion-col>
+</ion-row>
+<ion-row  no-padding no-margin>
   <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
-   <ion-icon name="cart"></ion-icon>&nbsp;주문 내역
+   <ion-icon name="cart"></ion-icon>&nbsp;메뉴 주문서 <span *ngIf="cartProvider.totalQuantity>0" class="cart-quantity">{{cartProvider.totalQuantity}}</span>
   </ion-col>
   <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
    <ion-icon name="card"></ion-icon>&nbsp;결제하기 

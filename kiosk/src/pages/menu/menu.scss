@@ -1,3 +1,202 @@
 page-menu {
+$primary-color:#FF5F3A;
+$secondary-color:#20dba5;
+    .close-button{
+        color:$primary-color;
+    }
+    .toolbar-background-ios {
+        background-color:white;
+        border:none;
+    }
+    .footer-area{
+        height: calc((100/1280)*100vh);
+        font-size:4.75vw;
+        padding-top: calc((20/1280)*100vh);
+    }
 
+    .header-ios::after, .tabs-ios[tabsPlacement="top"] > .tabbar::after, .footer-ios::before, .tabs-ios[tabsPlacement="bottom"] > .tabbar::before {
+        background-image:none;    
+    }
+/////////////////////////////////////////////
+    .ingredients{
+        padding-left:75px;
+        padding-right:75px;
+        //padding-top:calc((11/667)*100vh);
+        padding-bottom:calc((11/667)*100vh);
+        background-color:#f2f2f2;
+        margin-top:0px;
+    }
+
+    .inside-ingredients{
+        height: calc((15/667)*100vh);  
+    }
+    
+    .menu-name{
+        padding:0px;
+    }
+    
+    .toolbar-title-ios {
+        color: white;
+    }
+
+    .menu-img{
+        height:200px;
+        img{
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+        }
+    }
+
+    .menu-price{
+        font-size: 4vw;
+        color:$secondary-color;
+    }
+
+    .option-section{
+        //padding-bottom: 75px;
+        .options{
+            padding-top:calc((5/376)*100vw);
+            font-size: 4vw;
+            ion-row{
+                height:calc((80/1280)*100vh);
+                .option-name{
+                    font-size:2.7vw;
+                    padding-left:75px;
+                    padding-top: calc((5/376)*100vw);
+                    color:#919191;
+                }
+                .option-price{
+                    font-size:3.8vw;
+                    padding-top: calc((5/376)*100vw);
+                    padding-right:75px;
+                    color:black;
+                }
+                button{
+                    font-size:5vw;
+                    height:calc((29/376)*100vw);
+                    width:calc((29/376)*100vw);
+                    color: #4a4a4a;
+                    background-color: transparent;
+                    margin:0px;
+                }
+                .number{
+                    font-size:3.3vw;
+                    color: #4a4a4a;
+                    padding-top: 20px;
+                }
+
+            }
+        }
+    }
+
+    .choice{
+        padding-left:75px;
+        padding-right:75px;
+        ion-label{
+            font-size:3vw;
+            color:#919191;
+        }
+
+        ion-radio{
+            border-style:solid;
+            border-width:1px;
+            border-color:#919191;
+            color:$primary-color;
+        }
+    }
+
+    .separator{
+        margin-left:75px;
+        margin-right:75px;
+        color:#d8d8d8;
+    }
+
+    .quantity{
+        padding-left:75px;
+        padding-right:75px;
+
+        font-size:4vw !important;
+        .item-ios.item-block .item-inner {
+            border-bottom: 0px;
+        }        
+        padding:0px;
+        button{
+            span{
+                font-size:4vw;
+            }
+        }
+        .input-label{
+            padding-left:75px;
+            padding-top: calc((18/376)*100vw);
+        }
+
+        ion-input{
+            border-style: solid;
+            border-width: 1px;
+            border-color: #bdbdbd;
+            input{
+                text-align:right;
+            }
+        }
+    }
+
+    .orderSelect{
+        padding-left:75px;
+        padding-right:75px;
+        font-size:3.3vw;
+    }
+
+    .price{
+        font-size:3.3vw;
+        color: black;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        .left-col{
+            padding-left:75px;
+        }
+        .right-col{
+            padding-right:75px;
+            font-size:4.8vw;
+            color:$secondary-color;
+        }
+    }
+    .request{
+         font-size:3.3vw !important;
+         margin-top:calc((10/376)*100vw);
+         padding-left:75px;
+         padding-right:75px;
+         color:#919191;
+         ion-textarea{
+            height: calc((88/667)*100vh);
+            color:black;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #bdbdbd;
+            //width: calc((334/376)*100vw);
+            margin-bottom:calc((10/376)*100vw);
+            margin-top: calc((10/376)*100vw);
+         }
+    }
+
+    .add-order-list{
+        padding-left:75px;
+        padding-right:75px;
+        button{
+            height:100px;
+            font-size:3.75vw;
+            background-color: #505355;
+            color:white;
+        }
+    }  
+
+ .cart-quantity{
+    font-size:3.5vw;
+    background-color:#20dba5;
+    border-radius:50%;
+    color:white;
+    padding-left:10px;
+    padding-right:10px;
+ }
+     
 }
