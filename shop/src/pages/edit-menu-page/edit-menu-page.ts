@@ -67,7 +67,7 @@ export class EditMenuPage {
 
   }
 
-  categoryChange(categoryNO,sequence){
+  categoryChange(categoryNO,/*sequence*/categorySequence){
      if(this.storageProvider.tourMode){
             let alert = this.alertController.create({
                         title: '둘러보기 모드에서는 동작하지 않습니다.',
@@ -76,10 +76,31 @@ export class EditMenuPage {
             alert.present();
         return;
       }
+
+    //kalen.lee@takit.biz 2018-08-22 -begin
+    // category삭제로 sequence값이 항상 +1씩 증가하지는 않음. 빈 sequence가 있을수 있음으로 index를 따로 찾아야한다.
+    // !!! user앱의 shop화면에서 sequence값을 사용하여 sort를 수행하면 카테고리의 순서가 정렬된다. !!!!
+    // seqence 변경시 모든 카테고리의 sequence를 확인해 변경하는 루틴이 있으면 문제가 되지않는다.
+    let sequence=0;
+    console.log("input sequence:"+categorySequence);
+    for(let i=0;i<this.categories.length;i++){
+        console.log("index:"+i+" sequence:"+this.categories[i].sequence);
+        if(this.categories[i].sequence==categorySequence){
+            sequence=i+1;
+            break;
+        }
+    }
+    console.log("sequence:"+sequence);
+    //kalen.lee@takit.biz 2018-08-22 -end
+
     console.log("[categoryChange] "+JSON.stringify(this.categories));
 
     console.log("[categoryChange] categorySelected:"+sequence+" previous:"+this.categorySelected);
     console.log("this.categoryMenuRows.length:"+this.categoryMenuRows.length);
+    
+    console.log("categoryMenuRows:"+JSON.stringify(this.categoryMenuRows));
+    console.log("this.categories:"+JSON.stringify(this.categories));
+
     this.flags.addCategory=true;
     this.flags.categoryName=true;
 
@@ -88,6 +109,12 @@ export class EditMenuPage {
         this.menuRows=this.categoryMenuRows[sequence-1];
         this.categorySelected=sequence; //Please check if this code is correct.
         this.nowCategory=this.categories[sequence-1];
+    }else{
+        //kalen.lee@takit.biz 2018-08-22 begin
+        this.menuRows=this.categoryMenuRows[sequence-1];
+        this.categorySelected=sequence; //Please check if this code is correct.
+        this.nowCategory=this.categories[sequence-1];
+        //kalen.lee@takit.biz 2018-08-22 end        
     }
     this.addMenuContentRef.resize();
 
@@ -193,14 +220,14 @@ export class EditMenuPage {
                 }
             });
 
-        
+           
             this.categories.push({categoryNO:parseInt(category.categoryNO), 
                                 categoryName:category.categoryName,
                                 categoryNameEn:category.categoryNameEn,
                                 sequence:parseInt(category.sequence),
                                 menus:menus
                                 });
-
+            console.log(" ")
 
         //console.log("[categories]:"+JSON.stringify(this.categories));
         //console.log("menus.length:"+menus.length);

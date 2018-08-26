@@ -17,6 +17,7 @@ import { Socket } from 'ng-socket-io';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { NativeStorage } from '@ionic-native/native-storage';
 
+declare var chrome:any;
 declare var cordova:any;
 var gShopTablePage;
 
@@ -45,7 +46,7 @@ export class ShopTablePage {
   registrationId; // socket에 전달할 registrationId를 저장함.
 
   pollingAlert=false;
-  disconnectAlert=false;
+  //disconnectAlert=false;
 
   getTodayString(){
     var d = new Date();
@@ -88,6 +89,7 @@ export class ShopTablePage {
 
             this.socket.on('disconnect', (reason) => {
                     console.log("reason:"+reason);  
+                    /*
                     if(!this.disconnectAlert){
                         this.disconnectAlert=true;
                         let confirm = this.alertController.create({
@@ -102,6 +104,7 @@ export class ShopTablePage {
                         });
                         confirm.present();
                     }
+                    */
                     this.socket.connect();
                     this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
                 /*
@@ -158,6 +161,9 @@ export class ShopTablePage {
                     gShopTablePage.mediaProvider.playWarning();
                 })    
             }
+            if(!this.socket.ioSocket.connected){
+                        this.socket.connect();
+            }
         }, gShopTablePage.storageProvider.pollingInterval*60*1000); //every 3 minutes 
 
     });
@@ -171,7 +177,7 @@ export class ShopTablePage {
     console.log("startDate:"+this.startDate);
     console.log("endDate:"+this.endDate);
 
-    this.getOrders(-1);
+     this.getOrders(-1); 
 
     console.log("this.storageProvider.myshop.GCMNoti:"+this.storageProvider.myshop.GCMNoti);
 
@@ -237,9 +243,16 @@ export class ShopTablePage {
               tomorrow.setHours(hour,0,0,0);
               let restart=new Date(tomorrow.getTime()-60*60*1000); // one hour ago 
               console.log("restart time:"+restart.toLocaleString()+" diff:"+(restart.getTime()-today.getTime()));
-              setTimeout(function(){
-                  cordova.plugins.restart.restart();
-              },restart.getTime()-today.getTime());
+              if(restart.getTime()-today.getTime()>60*60*1000){
+                    setTimeout(function(){
+                        cordova.plugins.restart.restart();
+                    },restart.getTime()-today.getTime());
+              }else{
+                    setTimeout(function(){
+                        cordova.plugins.restart.restart();
+                    },restart.getTime()-today.getTime()+24*60*60*1000);
+              }
+              
           });
 
    if(this.platform.is("android")){
@@ -1064,20 +1077,21 @@ export class ShopTablePage {
                 }else{
                     this.checkPaidOrderExist();
                 }
-                this.confirmMsgDelivery(additionalData.notId).then(()=>{
-                      console.log("confirmMsgDelivery success");
-                },(err)=>{
-                  if(err=="NetworkFailure"){
-                    let alert = this.alertController.create({
-                        title: "서버와 통신에 문제가 있습니다.",
-                        buttons: ['OK']
-                    });
-                    alert.present();
-                  }else if(err=="HttpFailure"){
-                      console.log("confirmMsgDelivery - httpError ");
-                  }
-                });
-
+                if(additionalData && additionalData.notId){
+                        this.confirmMsgDelivery(additionalData.notId).then(()=>{
+                            console.log("confirmMsgDelivery success");
+                        },(err)=>{
+                            if(err=="NetworkFailure"){
+                                let alert = this.alertController.create({
+                                    title: "서버와 통신에 문제가 있습니다.",
+                                    buttons: ['OK']
+                                });
+                                alert.present();
+                            }else if(err=="HttpFailure"){
+                                console.log("confirmMsgDelivery - httpError ");
+                            }
+                        });
+                }
                 console.log("[shoptable.ts]pushNotification.on-data:"+JSON.stringify(data));
                 //console.log("first view name:"+this.navController.first().name);
                 //console.log("active view name:"+this.navController.getActive().name);
@@ -1708,6 +1722,46 @@ export class ShopTablePage {
         .then(() => console.log('Success'))
         .catch((reason: any) => console.log(reason))
        */
+/*      
+        chrome.sockets.tcp.create(function(createInfo) {
+        let addr="192.168.0.16";
+        let port=12345;
+        let name=order.orderName;
+        let options={
+            text:'웨이티 '+order.orderNO+'번'+' '+name+'이 준비되었습니다.',
+            locale:'ko-KR',
+            rate:0.8
+        }
+        chrome.sockets.tcp.connect(createInfo.socketId, addr, port, function(result) {
+            console.log("connect-result:"+result);
+            if (result === 0) {
+                let message=gShopTablePage.stringToArrayBuffer(encodeURI(JSON.stringify(options)));
+                //let message=gShopTablePage.stringToArrayBuffer("connected...");
+                chrome.sockets.tcp.send(createInfo.socketId, message, function(result) {
+                    console.log("send-result:"+result);    
+                    if (result.resultCode === 0) {
+                        console.log('connectAndSend: success');     
+                        chrome.sockets.tcp.disconnect(createInfo.socketId);
+                        chrome.sockets.tcp.close(createInfo.socketId);
+                    }
+                });
+            }
+        });
+        });
+*/
       });
      }
+
+    stringToArrayBuffer(string) {
+        var buf = new ArrayBuffer(string.length);
+        var bufView = new Uint8Array(buf);
+        for (var i = 0, strLen = string.length; i < strLen; i++) {
+        bufView[i] = string.charCodeAt(i);
+        }
+        return buf;
+    }
+
+
+
+
 }

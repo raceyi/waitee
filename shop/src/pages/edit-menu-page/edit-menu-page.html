@@ -114,17 +114,6 @@
         <ion-list *ngSwitchCase="categorySelected" no-lines>
           <ion-item class="menuItems" *ngFor="let row of menuRows">
                 <div>
-                <ion-row> 
-                    <ion-col *ngFor="let menu of row.menus">
-                    <!--<button ion-button clear (click)="menuSelected(menu.category_no,menu.menuName)" class="menuImgButton">-->
-                        <!--<ion-item> 
-                            <ion-thumbnail>
-                                <img [src]="menu.filename"  class="menuImg" >
-                            </ion-thumbnail>
-                        </ion-item> -->
-                        <!--</button>-->
-                    </ion-col>  
-                </ion-row>
                 <ion-row>
                     <ion-col width-50 class="menuItemInfo"  *ngFor="let menu of row.menus">
                         <ion-item> 
