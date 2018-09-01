@@ -1,0 +1,73 @@
+<!--
+  Generated template for the OrderReceiptPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-content>
+  <ion-row>
+    <ion-col>
+     <img *ngIf="storageProvider.shop.shopInfo && storageProvider.shop.shopInfo.imagePath" class="shop-img" [src]="storageProvider.shop.shopInfo.imagePath"> 
+     <span class="by-pos"> by</span> 
+     <img class="logo-img" src="assets/imgs/waitee.png">
+    </ion-col>
+  </ion-row>
+  <ion-row style="padding-top:100px;">
+    <ion-col text-center  style="font-size:3vw;">
+    주문번호
+    </ion-col>
+  </ion-row>
+  <ion-row style="padding-top:15px;">
+    <ion-col text-center style="font-size:13vw;">
+    {{orderNO}}
+    </ion-col>
+  </ion-row>
+  <ion-row style="padding-top:40px;">
+    <ion-col text-center style="font-size:3.5vw;">
+    {{orderName}}
+    </ion-col>
+  </ion-row>
+
+  <ion-row  style="padding-top:40px;" *ngIf="orderNotify">
+    <ion-col col-3>
+    </ion-col>
+    <ion-col text-center style="font-size:3.5vw;color:#20dba5;">
+      주문서와 영수증이 <br>
+      {{phone}}으로<br>
+       발급되었습니다. 
+    </ion-col>
+    <ion-col col-3>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="orderNotify" style="padding-top:50px;" >
+    <ion-col text-center class="confirm-button">
+      <button (click)="confirm()" outline color="primary" ion-button>확인</button> 
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col text-center style="font-size:4.75vw;">
+   모발앱 웨이티를 사용하시면 <br>전 메뉴 3%할인됩니다.<br>
+                  지금 다운로드하세요 !
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col text-center>
+      <img src="assets/imgs/store.jpeg">
+    </ion-col>
+  </ion-row>
+<!--
+  <ion-row *ngIf="!orderNotify">
+    <ion-col text-center>
+      <button (click)="print()" ion-button>주문서출력/영수증 출력</button> 
+    </ion-col>
+  </ion-row>    
+
+  <ion-row *ngIf="!orderNotify">
+    <ion-col text-center>
+      *점원분께 주문서와 영수증을 전달받으시기 바랍니다. 
+    </ion-col>
+  </ion-row>
+-->
+</ion-content>

@@ -4,12 +4,6 @@ page-home {
     $latest-W : calc((145/375)*100vw);
     $latest-H : calc((290/1280)*100vh);
 
- .footer-area{
-    height: calc((100/1280)*100vh);
-    font-size:4.75vw;
-    padding-top: calc((20/1280)*100vh);
- }
-
  .english-button{
    font-size:2vw;
    background-color:#d4d1d1;
@@ -116,7 +110,6 @@ page-home {
         }    
     } 
 
-
  ion-navbar.toolbar{
      height:calc((120/1280)*100vh);
  }
@@ -137,8 +130,18 @@ page-home {
     }
  }
 
+ .order-button{
+    height: calc((100/1280)*100vh);
+    button{
+        font-size:4.75vw;
+    }
+ }
+
+ .order-list{
+    height: calc((100/1280)*100vh);
+ }
  .cart-quantity{
-    font-size:3.5vw;
+    font-size:4.5vw;
     background-color:#20dba5;
     border-radius:50%;
     color:white;

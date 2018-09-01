@@ -96,3 +96,11 @@ ion-fab {
         padding-top:calc((12/667)*100vh);
     }
 }
+
+.toss-alert-button{
+    span{
+        border:solid #2e4996;
+        color:#2e4996;
+        border-radius:5px;   
+    } 
+}

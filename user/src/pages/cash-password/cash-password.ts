@@ -259,6 +259,19 @@ export class CashPasswordPage {
                                     buttons: ['OK']
                                 });
                                 alert.present();
+                        }else if(error=="invalidPrice" || error=="invalidTimeContraint"){
+                            let alert = this.alertController.create({
+                                    title: '메뉴정보가 변경되었습니다.',
+                                    subTitle:'상점에 다시 입장하여 새로운 메뉴정보로 주문해주세요',
+                                    buttons: ['OK']
+                                });
+                                alert.present();
+                        }else if(error=="invalidTimeContraint"){
+                            let alert = this.alertController.create({
+                                    title: '현재 시간에 주문불가능한 메뉴가 포함되어 있습니다.',
+                                    buttons: ['OK']
+                                });
+                                alert.present();
                         }else if(error=="break time"){
                             let alert = this.alertController.create({
                                     title: '지금은 브레이크타임 입니다.',
@@ -287,14 +300,15 @@ export class CashPasswordPage {
                             this.serverProvider.checkTossExistence().then(()=>{
                                 this.serverProvider.updateCash().then(()=>{   // 버전 다시 만들때는 반듯이 updateCash를 다시 불러주자. !!! 서버에서 응답값으로 변경 값을 보내주도록 하자. !!!
                                     let amount=this.body.total-this.storageProvider.cashAmount;
+                                    console.log("....amount:"+amount);
                                     if(amount>0){
                                         let alert = this.alertController.create({
                                                 title:'캐시 잔액이 부족합니다.',
                                                 subTitle: amount+'원을 토스로 충전합니다.',
                                                 buttons: [
                                                             {
-                                                                text: '네',
-                                                                handler: () => {
+                                                                text: 'Toss로 입금',
+                                                                cssClass: 'toss-alert-button',                                                                handler: () => {
                                                                     console.log('launch toss');
                                                                     this.serverProvider.launchToss(amount);
                                                                 }

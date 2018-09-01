@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {ConfigProvider} from '../config/config';
+import { NativeStorage } from '@ionic-native/native-storage';
+import { Platform } from 'ionic-angular';
 
 import * as CryptoJS from 'crypto-js';
 
@@ -16,11 +18,18 @@ export class StorageProvider {
   public version=this.configProvider.version; 
   public serverAddress:string=this.configProvider.serverAddress;
   public awsS3:string=this.configProvider.awsS3;
-             
+
+  public configurePassword:string=this.configProvider.configurePassword;
+  
+  public van:string=this.configProvider.van;      //store it in native storage
+  public catid:string=this.configProvider.catid;  //store it in native storage
+  public cancelFailurePayment=[];
+
   id:string; 
 
   myshoplist;
   myshop;
+  takitId;
 
   email;
   name;
@@ -29,11 +38,42 @@ export class StorageProvider {
   shop:any;
   categories:any;
 
-  constructor(public http: HttpClient,private configProvider:ConfigProvider) {
-    console.log('Hello StorageProvider Provider');
-  }
+  lastTransNo:number; // 카드결제 마지막 tranno
 
-      decryptValue(identifier,value){
+    constructor(public http: HttpClient,
+                private configProvider:ConfigProvider,
+                private nativeStorage:NativeStorage,
+                private platform:Platform) {
+
+            console.log('Hello StorageProvider Provider');
+            this.platform.ready().then(() => {
+                this.nativeStorage.getItem("lastTransNo").then((value:string)=>{
+                    this.lastTransNo=parseInt(value)%10000;
+                },err=>{
+                    this.lastTransNo=0;
+                    this.nativeStorage.setItem('lastTransNo',"0");
+                })
+                this.nativeStorage.getItem("cancelFailurePayment").then((value:string)=>{
+                    this.cancelFailurePayment=JSON.parse(decodeURI(value));
+                },err=>{
+                    this.cancelFailurePayment=[];
+                })
+            });
+    }
+
+    getTransNo(){
+        return new Promise((resolve, reject)=>{
+            let lastTransNo=this.lastTransNo+1;
+            this.nativeStorage.setItem('lastTransNo',lastTransNo.toString()).then((value)=>{
+                this.lastTransNo=lastTransNo;
+                resolve(this.lastTransNo);
+            },err=>{
+                reject("fail to update lastTransNo");
+            })
+        });
+    }
+
+    decryptValue(identifier,value){
         var key=value.substring(0, 16);
         var encrypt=value.substring(16, value.length);
         console.log("value:"+value+" key:"+key+" encrypt:"+encrypt);
@@ -66,5 +106,15 @@ export class StorageProvider {
         this.phone=userInfo.phone;
     }
 
+    public saveCancelFailure(output){
+        this.cancelFailurePayment.push(output);
+        let value=JSON.stringify(this.cancelFailurePayment);
+         this.nativeStorage.setItem('cancelFailurePayment',encodeURI(value));
+    }
 
+    public updateCancelFailure(){
+        let value=JSON.stringify(this.cancelFailurePayment);
+         this.nativeStorage.setItem('cancelFailurePayment',encodeURI(value));
+    }
+    
 }

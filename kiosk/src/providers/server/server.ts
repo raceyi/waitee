@@ -4,7 +4,9 @@ import {StorageProvider} from '../storage/storage';
 import {LoginProvider} from '../login/login';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { HTTP } from '@ionic-native/http';
-import { NavController,Platform,AlertController} from 'ionic-angular';
+import { NavController,Platform,AlertController,LoadingController} from 'ionic-angular';
+import { CartProvider } from '../../providers/cart/cart';
+import { WebIntent } from '@ionic-native/web-intent';
 
 /*
   Generated class for the ServerProvider provider.
@@ -18,9 +20,12 @@ export class ServerProvider {
   constructor(public http: HTTP,
               public httpClient:HttpClient,
               public storage:StorageProvider,
+              public cartProvider:CartProvider,
               private nativeStorage: NativeStorage,
+              public loadingCtrl: LoadingController,              
               private platform:Platform,
-              public login:LoginProvider) {
+              public login:LoginProvider,
+              private webIntent:WebIntent) {
     console.log('Hello ServerProvider Provider');
   }
 
@@ -92,5 +97,93 @@ export class ServerProvider {
                     });
         });
   }
+
+  saveOrder(takeout,notiPhone,paymentType,cardResult,
+            receitIssue,receiptId,receiptType){
+      return new Promise((resolve,reject)=>{
+            let body:any;
+            console.log("shop.shopInfo "+JSON.stringify(this.storage.shop.shopInfo));
+            let output=this.smartroResultParser(JSON.parse(cardResult));
+            body={ takitId: this.storage.takitId,
+                    orderName:this.cartProvider.orderName,
+                    amount: this.cartProvider.totalAmount,
+                    takeout: takeout,
+                    notiPhone:notiPhone,
+                    orderList:this.cartProvider.orderList,
+                    paymentType:paymentType,
+                    shopName:this.storage.shop.shopInfo.shopName,
+                    address:this.storage.shop.shopInfo.address,
+                    businessNumber:this.storage.shop.shopInfo.businessNumber
+                };
+
+            if(paymentType=="cash"){
+                body.receiptIssue=receitIssue;
+                body.receiptId=receiptId;
+                body.receiptType=receiptType;
+            }else if(paymentType="card"){
+                body.cardPayment=cardResult;
+                body.approvalNO=output.approvalNO;
+                body.approvalDate=output.approvalTime.substr(0,8);
+                body.catid=this.storage.catid;
+                body.cardNO=output.cardNO;
+                body.cardName=output.cardName;
+            }
+            console.log("saveOrder body:"+JSON.stringify(body));
+            this.post("/kiosk/saveOrder",body).then(res=>{
+                resolve(res); //orderNO를 받아 보여준다.
+            },err=>{
+                reject(err);
+            })
+      });
+  }
+
+  smartroResultParser(result){
+      console.log("smartroResultParser:"+JSON.stringify(result));
+       let output={
+            shopName:result.extras.shopName,
+            address:result.extras.shopAddress,
+
+            approvalTime: result.extras.approvaldate, // 2018 08 25 19 24 50
+
+            cardNO:result.extras.cardno,
+            cardName: result.extras.issuername,
+            approvalNO: result.extras.approvalno,
+            amount: result.extras.totalamount
+            };
+        return output;            
+  }
+
+
+  smartroCancelPayment(amount,approvalNO,approvalTime){
+      return new Promise((resolve,reject)=>{
+            let approvalDate=approvalTime.substr(0,8);
+            console.log("approvalDate:"+approvalDate);
+
+            let businessno="7721300255";
+            let catid="7098349001";
+             let tmpVal="smartroapp://freepaylink?mode=normal&trantype=card_cancel&amount="+amount+"&totalamount="+amount+"&authedno="+approvalNO+"&autheddate="+approvalDate+"&businessno="+businessno+"&catid="+catid+"&receiptmode=2&dongletype=5";
+           // let tmpVal="smartroapp://freepaylink?mode=normal&trantype=card_cancel&amount="+amount+"&totalamount="+amount+"&authedno="+approvalNO+"&autheddate="+approvalDate+"&businessno="+this.storage.shop.shopInfo.businessNumber+"&catid="+this.storage.catid+"&receiptmode=2&dongletype=5";
+
+            let loading = this.loadingCtrl.create({
+            content: '결제 취소 준비중입니다.'
+            });
+            loading.present();
+
+            this.webIntent.startActivityForResult({ action: this.webIntent.ACTION_VIEW, url: tmpVal }).then((res:any)=>{ 
+                loading.dismiss();
+                console.log('smartroCancelPayment:'+JSON.stringify(res));
+                console.log("res.extras:"+JSON.stringify(res.extras));
+                if(res.extras.resultval==0){ 
+                        resolve();
+                }else{
+                        reject();
+                }
+            }, function(err){
+                    loading.dismiss();
+                    reject();
+            })
+      });
+  }
+
 
 }

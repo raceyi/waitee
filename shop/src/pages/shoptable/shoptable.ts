@@ -114,7 +114,8 @@ export class ShopTablePage {
                 */
                 ////////////////////////////////////////////
             });
-            this.registerPushService();
+            if(this.storageProvider.device)
+                this.registerPushService();
 
         this.nativeStorage.getItem("pollingInterval").then((value:string)=>{
             console.log("volume is "+value+" in storage");
@@ -149,8 +150,8 @@ export class ShopTablePage {
                     console.log("res.more:"+res.more);
                     if(res.more){
                         gShopTablePage.orders=[];
-                        gShopTablePage.getOrders(-1).then(()=>{
-                            if(gShopTablePage.orders[0].orderStatus=="paid"){
+                        gShopTablePage.getOrders(-1,-1).then(()=>{
+                            if(gShopTablePage.orders[0].orderStatus=="paid"){  // 잘못된 코드다. 기존에 출력이 되었는지 확인이 필요하다. 마지막 출력된 orderNO의 저장이 필요하다. ㅜㅜ 
                                       gShopTablePage.printOrder(gShopTablePage.orders[0]);
                                       gShopTablePage.mediaProvider.play();
                             } 
@@ -159,7 +160,25 @@ export class ShopTablePage {
                 },err=>{
                     console.log("fail to check recent order");
                     gShopTablePage.mediaProvider.playWarning();
-                })    
+                })
+
+                if(gShopTablePage.storageProvider.kiosk){
+                        gShopTablePage.serverProvider.post("/kiosk/getKioskRecentOrder",body).then((res:any)=>{
+                            console.log("res.more:"+res.more);
+                            if(res.more){
+                                gShopTablePage.orders=[];
+                                gShopTablePage.getOrders(-1,-1).then(()=>{
+                                    if(gShopTablePage.orders[0].orderStatus=="paid"){
+                                            gShopTablePage.printOrder(gShopTablePage.orders[0]);
+                                              gShopTablePage.mediaProvider.play();
+                                    } 
+                                });
+                            }
+                        },err=>{
+                            console.log("fail to check recent order");
+                            gShopTablePage.mediaProvider.playWarning();
+                        })
+                        }
             }
             if(!this.socket.ioSocket.connected){
                         this.socket.connect();
@@ -177,7 +196,7 @@ export class ShopTablePage {
     console.log("startDate:"+this.startDate);
     console.log("endDate:"+this.endDate);
 
-     this.getOrders(-1); 
+    // this.getOrders(-1,-1); 
 
     console.log("this.storageProvider.myshop.GCMNoti:"+this.storageProvider.myshop.GCMNoti);
 
@@ -209,18 +228,28 @@ export class ShopTablePage {
                     alert.present();
           });
      
-          cordova.plugins.backgroundMode.setDefaults({
-              title:  '타킷운영자가 실행중입니다',
-              ticker: '주문알림 대기',
-              text:   '타킷운영자가 실행중입니다'
-          });
-          
-          cordova.plugins.backgroundMode.enable(); //takitShop always runs in background Mode
+          if(this.storageProvider.device){
+                cordova.plugins.backgroundMode.setDefaults({
+                    title:  '타킷운영자가 실행중입니다',
+                    ticker: '주문알림 대기',
+                    text:   '타킷운영자가 실행중입니다'
+                });
+                
+                cordova.plugins.backgroundMode.enable(); //takitShop always runs in background Mode
+          }
           //get shopInfo from server
+          console.log("call getShopInfoAll");
+
           this.serverProvider.getShopInfoAll(this.storageProvider.myshop.takitId).then((res:any)=>{
               console.log("shopInfo:"+JSON.stringify(res));
               this.storageProvider.shopInfoSet(res.shopInfo);
               this.storageProvider.shop = res;
+              if(res.shopInfo.kiosk!=null){
+                    console.log("kiosk exists in shop");
+                    this.storageProvider.kiosk=true;
+              }
+              console.log("call getOrders");
+              this.getOrders(-1,-1); 
 
               // 내일 상점 시작 한시간전에 restart를 실행한다.
               console.log("this.storageProvider.shop.businessTime:"+res.shopInfo.businessTime);
@@ -408,7 +437,69 @@ export class ShopTablePage {
        
     }
 
+    convertKioskOrderInfo(orderInfo){
+        let order:any={};
+        order=orderInfo;
+        console.log("!!!kiosk-order:"+JSON.stringify(order));
+        order.statusString=this.getStatusString(order.orderStatus);
+          if(order.orderStatus=="pickup" || order.orderStatus=="cancelled")
+            order.hidden=true;
+          else  
+            order.hidden=false;
+
+          if(order.hasOwnProperty("review") && order.review!=null){
+                order.hidden=false;
+          }  
+
+          console.log("order.orderList:"+order.orderList);
+          order.orderListObj=JSON.parse(order.orderList);
+
+          console.log("menus:"+ order.orderListObj.menus);
+          if( typeof order.orderListObj.menus ==="string"){
+                console.log("order.orderListObj.menus:"+order.orderListObj.menus);
+                order.orderListObj.menus=JSON.parse(order.orderListObj.menus);
+          }
+          //console.log("order.orderListObj:"+JSON.stringify(order.orderListObj));
+          console.log("cancelReason:"+order.cancelReason);
+          if(order.cancelReason!=undefined &&
+                order.cancelReason!=null &&
+                order.cancelReason!="")
+            order.cancelReasonString=order.cancelReason;
+          else
+            order.cancelReasonString=undefined;
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+          if(order.orderStatus=="cancelled"){
+              if(order.hasOwnProperty("cancelledTime")){
+                  console.log("call getLocalTimeString")
+                  order.localCancelledTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.cancelledTime);
+              }
+          }else{
+                  order.localCancelledTimeString=undefined;
+          }
+
+          if(order.hasOwnProperty('completedTime') && order.completedTime!=null){
+              console.log("completedTime:"+order.completedTime);
+              order.localCompleteTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.completedTime);
+          }
+          if(order.hasOwnProperty('checkedTime') && order.completedTime!=null){
+              console.log("checkedTime:"+order.checkedTime);
+              order.localCheckedTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.checkedTime);        
+          }
+          if(order.hasOwnProperty('pickupTime') && order.pickupTime!=null){
+              console.log("pickupTime:"+order.pickupTime);
+              order.localPickupTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.pickupTime);        
+          }
+          if(order.hasOwnProperty('orderedTime') && order.orderedTime!=null){
+              order.localOrderedTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.orderedTime);
+          }
+          console.log("kiosk-order result:"+JSON.stringify(order));
+          return order;
+    }
+
     convertOrderInfo(orderInfo){
+        if(orderInfo.type){
+            return this.convertKioskOrderInfo(orderInfo);
+        }else{
           var order:any={};
           order=orderInfo;
           console.log("!!!order:"+JSON.stringify(order));
@@ -472,43 +563,56 @@ export class ShopTablePage {
           }
       ///////////////////////////////////////////////////////////////////////////////////////////////////
           return order;
+        }
     }
 
-     getOrders(lastOrderId){
+     getOrders(lastOrderId,lastKioskOrderId){
       return new Promise((resolve,reject)=>{
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         console.log("getOrders-server:"+ this.storageProvider.serverAddress);
-        let body;
+        let body:any;
         if(this.Option!="period"){
-              body  = JSON.stringify({  option: this.Option,
+              body  = {  option: this.Option,
                                         takitId:this.storageProvider.myshop.takitId,
                                         lastOrderId:lastOrderId, 
-                                        limit:this.storageProvider.OrdersInPage});
+                                        limit:this.storageProvider.OrdersInPage};
         }else{
               console.log("this.startDate:"+this.startDate);
 
               var startDate=new Date(this.startDate);
               var endDate= new Date(this.endDate);
-
-              body  = JSON.stringify({  option: this.Option,
+              body  = {  option: this.Option,
                                         takitId:this.storageProvider.myshop.takitId,
-                                        lastOrderId:lastOrderId, 
+                                        lastOrderId:lastOrderId,
                                         limit:this.storageProvider.OrdersInPage,
                                         startTime:startDate.toISOString(), 
                                          endTime:endDate.toISOString()
-                                      });
+                                      };
+        }
+        let reqUrl="/shop/getOrders";
+
+        console.log("this.storageProvider.shopInfo:"+JSON.stringify(this.storageProvider.shopInfo));
+
+        if(this.storageProvider.kiosk){
+            body.lastKioskOrderId=lastKioskOrderId;
+            reqUrl="/kiosk/getOrders";
         }
          console.log("body:"+JSON.stringify(body));
-         this.serverProvider.post("/shop/getOrders",body).then((res:any)=>{  
+         this.serverProvider.post(reqUrl,JSON.stringify(body)).then((res:any)=>{  
             console.log("!!!getOrders-res:"+JSON.stringify(res));
             var result:string=res.result;
             if(result==="success" &&Array.isArray(res.orders)){
               console.log("res.length:"+res.orders.length);
               res.orders.forEach(order=>{
+                  //console.log("****order:"+JSON.stringify(order));  
+                  console.log("order.orderedTime:"+order.orderedTime);
                   this.orders.push(this.convertOrderInfo(order));
-                  console.log("orders:"+JSON.stringify(this.orders));
               });
+              console.log("orders.length:"+this.orders.length);
+              //orderedTime으로 소팅은 서버에서 한다. Why app에서 정상으로 안될까? 나중에 검증하자.
+
+              //console.log("orders:"+JSON.stringify(this.orders))
               resolve(true);
             }else if(res.orders=="0" || result==="failure"){ //Please check if it works or not
               console.log("no more orders");
@@ -558,7 +662,7 @@ export class ShopTablePage {
         this.infiniteScroll.enable(true);
 
     if(option!="period"){
-        this.getOrders(-1);
+        this.getOrders(-1,-1);
     }else{
         // user select search button
     }
@@ -609,7 +713,7 @@ export class ShopTablePage {
     }
     // send getOrders request and update orders
     this.orders=[];
-    this.getOrders(-1);
+    this.getOrders(-1,-1);
   }
 
   toggleOrder(order){
@@ -636,7 +740,7 @@ export class ShopTablePage {
       });   
     }
     
-    printCancel(order){
+    printCancel(order){  // 마지막 출력된 취소 주문의 NO를 저장하자!!! 재출력되지 않도록...
       if(this.storageProvider.printOn==false)
         return;
       var title,message="";
@@ -888,7 +992,7 @@ export class ShopTablePage {
                         if(i==this.orders.length){
                             var newOrder=this.convertOrderInfo(incommingOrder);
                             this.orders=[];
-                            this.getOrders(-1);
+                            this.getOrders(-1,-1);
                             if(newOrder.orderStatus=="paid"){
                                   this.printOrder(newOrder);
                                   playback=true;
@@ -1028,7 +1132,7 @@ export class ShopTablePage {
                             var newOrder=this.convertOrderInfo(incommingOrder);
                             //this.orders.unshift(newOrder); // 주문 목록을 가져오는것이 맞지 않을까?
                             this.orders=[];
-                            this.getOrders(-1);
+                            this.getOrders(-1,-1);
                             if(incommingOrder.orderStatus=="paid"){
                                   this.printOrder(newOrder);
                                   playback=true;
@@ -1145,6 +1249,124 @@ export class ShopTablePage {
             },1*60*1000); //every 1 minutes
     }
 
+    notifyAudio(order){
+        if(this.storageProvider.device && this.storageProvider.kiosk){
+            chrome.sockets.tcp.create(function(createInfo) {
+            let addr="192.168.0.7";  //더큰도시락 ip
+            //let addr="192.168.0.4";
+            let port=12345;
+            let name=order.orderName;
+            let options={
+                text:'웨이티 '+order.orderNO+'번'+' '+name+' 웨이티 '+order.orderNO+'번'+' '+name,
+                locale:'ko-KR',
+                rate:0.8
+            }
+            chrome.sockets.tcp.connect(createInfo.socketId, addr, port, function(result) {
+                console.log("connect-result:"+result);
+                if (result === 0) {
+                    let message=gShopTablePage.stringToArrayBuffer(encodeURI(JSON.stringify(options)));
+                    //let message=gShopTablePage.stringToArrayBuffer("connected...");
+                    chrome.sockets.tcp.send(createInfo.socketId, message, function(result) {
+                        console.log("send-result:"+result);    
+                        if (result.resultCode === 0) {
+                            console.log('connectAndSend: success');     
+                            chrome.sockets.tcp.disconnect(createInfo.socketId);
+                            chrome.sockets.tcp.close(createInfo.socketId);
+                        }
+                    });
+                }
+            });
+        });
+        }
+    }
+
+    updateKioskOrder(order){
+        if(this.storageProvider.tourMode){
+              let alert = this.alertController.create({
+                          title: '주문을 처리합니다.',
+                          subTitle:'둘러보기 모드에서는 동작하지 않습니다.',
+                          buttons: ['OK']
+                      });
+              alert.present();
+          return;
+        }
+        this.mediaProvider.stop();
+        if(order.orderStatus=="paid"){
+               this.updateKioskStatus(order,"checkOrder").then(()=>{
+                 order.orderStatus="checked";
+                 order.statusString="준비"; 
+                 order.checkedTime=new Date().toISOString();
+               },()=>{
+                 console.log("주문 접수에 실패했습니다.");
+                 //give Alert here
+                 let alert = this.alertController.create({
+                                title: '주문 접수에 실패했습니다.',
+                                buttons: ['OK']
+                            });
+                  alert.present();
+               });
+        }else if(order.orderStatus=="checked"){
+            let confirm = this.alertController.create({
+                title: '고객님께 준비완료 메시지를 전달할까요?',
+                buttons: [{
+                            text: '아니오',
+                            handler: () => {
+                              console.log('Disagree clicked');
+                            }
+                          },
+                          {
+                            text: '네',
+                            handler: () => {
+                                this.updateKioskStatus(order,"completeOrder").then(()=>{
+                                  order.orderStatus="completed";
+                                  order.statusString="전달"; 
+                                  order.completedTime=new Date().toISOString();
+                                  //sound를 전달한다.
+                                  this.notifyAudio(order)
+                                  //order.hidden=true;
+                                },()=>{
+                                  console.log("주문 완료에 실패했습니다.");
+                                  let alert = this.alertController.create({
+                                                  title: '주문 완료에 실패했습니다.',
+                                                  buttons: ['OK']
+                                              });
+                                    alert.present();
+                                });;
+                            }
+                      }]});
+              confirm.present();        
+        }else if(order.orderStatus=="completed"){
+            let confirm = this.alertController.create({
+                title: '고객님께 음식료가 전달되었나요?',
+                buttons: [{
+                            text: '아니오',
+                            handler: () => {
+                              console.log('Disagree clicked');
+                            }
+                          },
+                          {
+                            text: '네',
+                            handler: () => {
+                                this.updateKioskStatus(order,"pickupOrder").then(()=>{
+                                  order.orderStatus="pickup";
+                                  order.statusString="종료"; 
+                                  order.completedTime=new Date().toISOString();
+                                  order.hidden=true;
+                                },()=>{
+                                  console.log("주문 완료에 실패했습니다.");
+                                  let alert = this.alertController.create({
+                                                  title: '주문 완료에 실패했습니다.',
+                                                  buttons: ['OK']
+                                              });
+                                    alert.present();
+                                });;
+                            }
+                      }]});
+              confirm.present();        
+        }
+
+    }
+
     updateOrder(order){
         if(this.storageProvider.tourMode){
               let alert = this.alertController.create({
@@ -1229,6 +1451,43 @@ export class ShopTablePage {
         }
     }
 
+    cancelKioskOrder(order,cancelReason:string){
+      this.mediaProvider.stop();
+      return new Promise((resolve,reject)=>{
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let body= JSON.stringify({ orderId: order.orderId,cancelReason:cancelReason});
+
+        console.log("body:"+JSON.stringify(body));
+        this.serverProvider.post("/kiosk/cancelOrder",body).then((res:any)=>{ 
+            console.log("res:"+JSON.stringify(res));
+            if(res.result=="success"){
+                 order.orderStatus="cancelled";
+                 order.statusString="취소"; 
+                 order.cancelReasonString=cancelReason;
+                 order.cancelledTime=new Date().toISOString();
+                 order.localCancelledTime=new Date().toString(); // Temporary code. Please set this value with the response value of server.
+                 order.hidden=true;
+                resolve();
+            }else{
+                reject();
+            }
+         },(err)=>{
+           if(err=="NetworkFailure"){
+              console.log("서버와 통신에 문제가 있습니다");
+              let alert = this.alertController.create({
+                                    title: '서버와 통신에 문제가 있습니다',
+                                    subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                                    buttons: ['OK']
+                                });
+              alert.present();
+           }else if(err=="HttpFailure"){
+              console.log("kiosk/cancelOrder-HttpFailure");
+           }
+         });
+      });
+    }
+
     cancelOrder(order,cancelReason:string){
       this.mediaProvider.stop();
       return new Promise((resolve,reject)=>{
@@ -1269,13 +1528,23 @@ export class ShopTablePage {
   myCallbackFunction = (order, reason) => {
         return new Promise((resolve, reject) => {
             console.log("cancelReason:"+reason);
-            this.cancelOrder(order,reason).then((result)=>{
-                 console.log("cancel-order result:"+result);
-                 resolve();
-            },(err)=>{
-                 console.log("cancel-order err:"+err);
-                 reject();
-            });
+            if(order.type=='kiosk'){
+                this.cancelKioskOrder(order,reason).then((result)=>{
+                    console.log("cancel-order result:"+result);
+                    resolve();
+                },(err)=>{
+                    console.log("cancel-order err:"+err);
+                    reject();
+                });
+            }else{
+                this.cancelOrder(order,reason).then((result)=>{
+                    console.log("cancel-order result:"+result);
+                    resolve();
+                },(err)=>{
+                    console.log("cancel-order err:"+err);
+                    reject();
+                });
+            }
         });
     }
 
@@ -1292,6 +1561,40 @@ export class ShopTablePage {
       console.log("order cancel comes");
       this.navController.push(CancelConfirmPage,{order:order, callback:this.myCallbackFunction});
     }
+
+    updateKioskStatus(order,request){
+      return new Promise((resolve,reject)=>{
+        let body= JSON.stringify({ orderId: order.orderId, payment:order.paymentType });
+
+        console.log("body:"+JSON.stringify(body));
+        this.serverProvider.post("/kiosk/"+request,body).then((res:any)=>{   
+            console.log(request+"-res:"+JSON.stringify(res));
+            if(res.result=="success"){
+                resolve("주문상태변경에 성공했습니다");
+            }else{
+                resolve("주문상태변경에 실패했습니다");
+                let alert = this.alertController.create({
+                                title: '주문상태변경에 실패했습니다',
+                                buttons: ['OK']
+                            });
+                alert.present();
+            }
+         },(err)=>{
+           if(err=="NetworkFailure"){
+              console.log("서버와 통신에 문제가 있습니다");
+              reject("서버와 통신에 문제가 있습니다");
+              let alert = this.alertController.create({
+                                    title: '서버와 통신에 문제가 있습니다',
+                                    subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                                    buttons: ['OK']
+                                });
+                alert.present();
+           }else if(err=="HttpFailure"){
+              console.log("shop/"+request+"-HttpFailure");
+           }
+         });
+      });
+     }
 
     updateStatus(order,request){
       return new Promise((resolve,reject)=>{
@@ -1327,9 +1630,35 @@ export class ShopTablePage {
       });
      }
 
+     findLastOrderId(){
+        let lastOrderId=-1;
+        for(let i=this.orders.length-1;i>=0;i++){
+            if(!this.orders[i].type){
+                lastOrderId=i;
+                break;
+            }
+        }
+        return lastOrderId;
+     }
+
+     findLastKioskId(){
+        let lastOrderId=-1;
+        for(let i=this.orders.length-1;i>=0;i++){
+            if(this.orders[i].type && this.orders[i].type=="kiosk"){
+                lastOrderId=i;
+                break;
+            }
+        }
+        return lastOrderId;
+     }
+
      doInfinite(infiniteScroll){
-        var lastOrderId=this.orders[this.orders.length-1].orderId;
-        this.getOrders(lastOrderId).then((more)=>{
+        let lastOrderId= this.findLastOrderId();
+        let lastKioskId=-1;
+        if(this.storageProvider.kiosk){
+             lastKioskId=this.findLastKioskId();
+        }
+        this.getOrders(lastOrderId,lastKioskId).then((more)=>{
           if(more)
               infiniteScroll.complete();
           else{
@@ -1443,7 +1772,7 @@ export class ShopTablePage {
     this.orders=[];
     if(this.infiniteScroll!=undefined)
         this.infiniteScroll.enable(true);
-    this.getOrders(-1);
+    this.getOrders(-1,-1);
     let body= JSON.stringify({ takitId: this.storageProvider.myshop.takitId});
     this.serverProvider.post("/shop/refreshInfo",body).then((res:any)=>{
         console.log("res:"+JSON.stringify(res));
@@ -1693,6 +2022,7 @@ export class ShopTablePage {
                                     buttons: ['OK']
                                 });
                 alert.present();
+                this.notifyAudio(order)
          },(err)=>{
            if(err=="NetworkFailure"){
               console.log("서버와 통신에 문제가 있습니다");
@@ -1722,33 +2052,7 @@ export class ShopTablePage {
         .then(() => console.log('Success'))
         .catch((reason: any) => console.log(reason))
        */
-/*      
-        chrome.sockets.tcp.create(function(createInfo) {
-        let addr="192.168.0.16";
-        let port=12345;
-        let name=order.orderName;
-        let options={
-            text:'웨이티 '+order.orderNO+'번'+' '+name+'이 준비되었습니다.',
-            locale:'ko-KR',
-            rate:0.8
-        }
-        chrome.sockets.tcp.connect(createInfo.socketId, addr, port, function(result) {
-            console.log("connect-result:"+result);
-            if (result === 0) {
-                let message=gShopTablePage.stringToArrayBuffer(encodeURI(JSON.stringify(options)));
-                //let message=gShopTablePage.stringToArrayBuffer("connected...");
-                chrome.sockets.tcp.send(createInfo.socketId, message, function(result) {
-                    console.log("send-result:"+result);    
-                    if (result.resultCode === 0) {
-                        console.log('connectAndSend: success');     
-                        chrome.sockets.tcp.disconnect(createInfo.socketId);
-                        chrome.sockets.tcp.close(createInfo.socketId);
-                    }
-                });
-            }
-        });
-        });
-*/
+
       });
      }
 

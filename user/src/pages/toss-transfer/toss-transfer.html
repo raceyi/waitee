@@ -18,17 +18,19 @@
 <ion-content>
 <ion-list>
  <ion-row>
-   <ion-col col-1>
-     &nbsp;
-   </ion-col>
-   <ion-col col-9>
+   <ion-col col-7>
     <ion-item style="border-bottom:0px;" >
     <ion-label style="font-size:4.5vw;"> 충전 금액 </ion-label>
     <ion-input  text-right style="border-bottom:solid 0.5px;" type="tel" (input)="inputAmount()" [(ngModel)]="amountString"></ion-input>
     </ion-item>
    </ion-col>
-   <ion-col col-2 text-left align-self-center style="font-size:4.5vw;">
+   <ion-col col-1 text-left align-self-center style="font-size:4.5vw;">
      원
+   </ion-col>
+      <ion-col col-4 text-left  align-self-center>
+   <button ion-button *ngIf="amountString && amountString.trim().length>0" style="width:90%;" color="toss" outline (click)="launchToss()"> 
+       <b style="font-size:4vw;"> Toss로 입금</b> 
+    </button>
    </ion-col>
    </ion-row>
    <br>
@@ -60,8 +62,9 @@
    </ion-row>
  </ion-list>
 </ion-content>
+<!--
 <ion-footer>
   <button style="margin:0px;" (click)="launchToss()" ion-button full>토스 실행</button>
 </ion-footer>
-
+-->
 

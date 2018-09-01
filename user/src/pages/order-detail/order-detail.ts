@@ -4,6 +4,8 @@ import { ShopPage} from '../shop/shop';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
 import {TimeUtil} from '../../classes/TimeUtil';
+import {ReviewInputPage} from '../review-input/review-input';
+
 /**
  * Generated class for the OrderDetailPage page.
  *
@@ -104,12 +106,16 @@ export class OrderDetailPage {
     this.order.orderListObj=JSON.parse(this.order.orderList);
     
     this.order.price=0;
-    for(var i=0;i<this.order.orderListObj.menus.length;i++)
+    for(var i=0;i<this.order.orderListObj.menus.length;i++){
         this.order.price+= this.order.orderListObj.menus[i].price;
+        console.log("this.order.orderListObj.menus[i]:"+this.order.orderListObj.menus[i].price);
+    }
     console.log("price:"+this.order.price);
 
     this.order.discount=this.order.price-this.order.amount;
-
+    console.log("amount:"+this.order.amount);    
+    console.log("discount:"+this.order.discount);
+    
     this.order.localOrderedTimeString=this.dayInPrintOut(this.order.localOrderedTime,this.order.localOrderedDay);
 
     console.log(this.order.localOrderedTimeString);
@@ -253,5 +259,9 @@ export class OrderDetailPage {
                 payment:false
             };
         });
+  }
+
+  inputReview(){
+         this.app.getRootNavs()[0].push(ReviewInputPage,{order:this.order});
   }
 }

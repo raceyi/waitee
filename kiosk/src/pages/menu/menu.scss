@@ -8,11 +8,6 @@ $secondary-color:#20dba5;
         background-color:white;
         border:none;
     }
-    .footer-area{
-        height: calc((100/1280)*100vh);
-        font-size:4.75vw;
-        padding-top: calc((20/1280)*100vh);
-    }
 
     .header-ios::after, .tabs-ios[tabsPlacement="top"] > .tabbar::after, .footer-ios::before, .tabs-ios[tabsPlacement="bottom"] > .tabbar::before {
         background-image:none;    
@@ -190,13 +185,23 @@ $secondary-color:#20dba5;
         }
     }  
 
+ .order-button{
+    height: calc((100/1280)*100vh);
+    button{
+        font-size:4.75vw;
+    }
+ }
+ 
+  .order-list{
+    height: calc((100/1280)*100vh);
+ }
+ 
  .cart-quantity{
-    font-size:3.5vw;
+    font-size:4.5vw;
     background-color:#20dba5;
     border-radius:50%;
     color:white;
     padding-left:10px;
     padding-right:10px;
- }
-     
+ }     
 }

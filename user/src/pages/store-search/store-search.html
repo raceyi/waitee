@@ -1,0 +1,46 @@
+<!--
+  Generated template for the StoreSearchPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-content >
+
+<button text-left ion-button (click)="showSearchBar()" class="searchbar-button">
+  <ion-icon name="ios-search-outline"></ion-icon> 
+  <span text-left>원하는 음식점을 검색하세요!</span>
+</button>
+
+
+<div class="whole">
+<ion-row>
+  <ion-col class="whole-title" style="font-size:4.2vw;color:#6c646f;" no-padding no-margin>
+    전체보기
+  </ion-col>
+</ion-row>
+<ion-row>
+      <ion-col col-6 *ngFor="let shop of storageProvider.wholeStores" text-center class="scroll-col-latest">
+              <button class="shop-button" (click)="enterShop(shop)" ion-button>
+                  <img  [src]="storageProvider.awsS3+shop.imagePath">
+                  <!-- 세종대이외 매장이 생길때까지 숨기자.
+                  
+                  -->
+                  <p class="name-main"><b>{{shop.name_main}}<span *ngIf="shop.ready==0" style="color:#33b9c6;">(오픈예정)</span></b></p>
+                  <p class="name-classification"> {{shop.classification}} </p>
+                  <!--
+                  <p class="classification">{{shop.classification}}&nbsp;
+                    -->
+                  <p class="info">
+                    <span class="noti-box" *ngIf="shop.paymethod.cash!=undefined">캐시<b *ngIf="shop.paymethod.cash!=undefined && shop.paymethod.cash!='0%'">{{shop.paymethod.cash}}</b></span>
+                    <span *ngIf="shop.paymethod.cash!=undefined"></span>
+                    <span class="noti-box" *ngIf="shop.paymethod.card!=undefined">카드<b *ngIf="shop.paymethod.card!=undefined && shop.paymethod.card!='0%'">{{shop.paymethod.card}}</b></span>
+                    <span *ngIf="shop.paymethod.card!=undefined"></span>
+                    <span class="noti-box" *ngIf="shop.deliveryArea!=undefined && shop.deliveryArea!=null">배달</span>                                  
+                  </p>
+                  <p class="name-sub">{{shop.name_sub}}</p>
+              </button>
+  </ion-col>
+</ion-row>
+</div>
+
+</ion-content>

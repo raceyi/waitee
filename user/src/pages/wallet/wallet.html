@@ -1,4 +1,4 @@
-<ion-content>
+<ion-header>
 <div class="header" text-center>
 <b>지갑</b>
 </div>
@@ -32,17 +32,15 @@
   </ion-col>
   </ion-row>
 </div> 
+</ion-header>
+<ion-content>
+
 
 <div *ngIf="cashList.length==0 && !periodSearch">
 <div text-center>
     <ion-row text-center><ion-col style="padding-top:30px;font-size:4vw;">거래내역이 없습니다.</ion-col></ion-row>
     <ion-row text-center><ion-col><button ion-button clear style="color: #33b9c6;" (click)="cashTutorial()">캐쉬 충전 알아보기</button></ion-col></ion-row>
 </div>
-<!--
-<div text-right>
-<img class="profile-smile" src="assets/imgs/profile-smile.png">
-</div>
--->
 </div>
 
 <div *ngIf="cashList.length>0">
@@ -208,11 +206,12 @@
 </ion-fab>
 
 <ion-fab bottom right>
-    <button class="fab-btn" style="background-color:#2F5FD2;color:white;margin-bottom:2vw;" ion-fab (click)="launchToss()" ion-fab color="white"> 
-        <b style="font-size:4vw;">토스</b> 
-    </button>    
-    <a class="fab-btn" style="background-color:yellow;color:#FF5F3A;" ion-fab href="kakaoplus://plusfriend/home/@웨이티">
-     <custom-icon set="tabs" name="plus" style="font-size: 6vw !important; padding: 0px;"></custom-icon></a>
+    <button class="fab-btn" style="border-radius:5px;font-size:4vw;color:white;background-color:#2e4996;margin-bottom:2vw;height:10vw;width:25vw;" round ion-fab (click)="launchToss()" color="white"> 
+        <b style="font-size:4vw;">Toss로 입금</b> 
+    </button>
+    <button class="fab-btn" style="background-color:yellow;color:#FF5F3A;margin-bottom:2vw;margin-left:5vw;" ion-fab (click)="launchKakaoPlus()" ion-fab color="white"> 
+        <custom-icon set="tabs" name="plus" style="font-size: 6vw !important; padding: 0px;"></custom-icon>
+    </button>        
 </ion-fab>
 </ion-content>
 

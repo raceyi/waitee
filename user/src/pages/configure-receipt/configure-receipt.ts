@@ -46,7 +46,22 @@ export class ConfigureReceiptPage {
             alert.present();
             return;
       }
-      
+      if(this.receiptId.trim().length>0 && this.receiptId.trim().length<10){
+            let alert = this.alertCtrl.create({
+                title: '현금영수증 번호는 10자이상입니다.',
+                buttons: ['OK']
+            });
+            alert.present();
+            return;          
+      }
+      if(this.receiptId.trim().length>20){
+            let alert = this.alertCtrl.create({
+                title: '현금영수증 번호는 19자 이하 입니다.',
+                buttons: ['OK']
+            });
+            alert.present();
+            return;          
+      }
         /////////////////////////////////////////
         //configure payment info
         console.log("configure payment info "+this.receiptId.trim().length);

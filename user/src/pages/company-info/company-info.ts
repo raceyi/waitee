@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams ,Platform} from 'ionic-angular';
+import { WebIntent } from '@ionic-native/web-intent';
 
 /**
  * Generated class for the CompanyInfoPage page.
@@ -15,7 +16,10 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class CompanyInfoPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController,
+                private platform:Platform,
+                private webIntent: WebIntent,       
+              public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
@@ -24,5 +28,18 @@ export class CompanyInfoPage {
 
   back(){
     this.navCtrl.pop();
+  }
+
+  launchKakaoPlus(){
+     console.log("launch KakaoPlus");
+     if(this.platform.is('android')){
+        const options = {
+                        action: this.webIntent.ACTION_VIEW,
+                        url: "kakaoplus://plusfriend/home/@웨이티"
+                    };
+        this.webIntent.startActivity(options);
+     }else if(this.platform.is('ios')){
+        window.open("kakaoplus://plusfriend/home/@웨이티");
+     }
   }
 }

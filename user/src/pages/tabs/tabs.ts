@@ -13,6 +13,8 @@ import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { ErrorPage } from '../error/error';
 import {OrderDetailPage} from '../order-detail/order-detail';
 import {CashConfirmPage} from '../cash-confirm/cash-confirm';
+import {StoreSearchPage} from '../store-search/store-search';
+import { Media, MediaObject } from '@ionic-native/media';
 
 @Component({
   templateUrl: 'tabs.html'
@@ -22,7 +24,8 @@ export class TabsPage {
   pushNotification:PushObject;
 
   tab1Root = HomePage;
-  tab2Root = MyFavoritePage;
+  //tab2Root = MyFavoritePage;
+  tab2Root = StoreSearchPage;
   tab3Root = OrderListPage;
   tab4Root = WalletPage;
   tab5Root = MyInfoPage;
@@ -40,6 +43,7 @@ export class TabsPage {
               private backgroundMode:BackgroundMode,
               public modalCtrl: ModalController,
               private cartProvider:CartProvider,
+              private media: Media,
               public storageProvider:StorageProvider){
   
     if(this.storageProvider.cashId!=undefined && this.storageProvider.cashId.length>=5){
@@ -290,19 +294,19 @@ export class TabsPage {
             });
 
             this.pushNotification.on('notification').subscribe((data:any)=>{
-/*                
-//                  let custom = {"cashTuno":"20170103075617278","cashId":"TAKIT02","transactionType":"deposit","amount":1,"transactionTime":"20170103","confirm":0,"bankName":"농협은행"}
-                  let custom ={"depositMemo":"타킷 주식회사","amount":"100003","depositDate":"2017-01-06","branchName":"본점영업부","cashTuno":"20170106093158510","bankName":"농협"}
-                  let cashConfirmModal = this.modalCtrl.create(CashConfirmPage, { custom: custom });
-                  cashConfirmModal.present();
-*/
-/*                 
-                if(!this.storageProvider.isAndroid){
-                    console.log("ios -- data.sound:"+data.sound);
-                    var snd =  new MediaPlugin(data.sound);
-                    snd.play();
-                }
-*/                
+                // 웨이티 음성파일 재생-begin
+                        let file;
+                        if(this.platform.is('android'))
+                            file = this.media.create('file:///android_asset/www/assets/takit.wav');
+                        else{
+                            file = this.media.create('assets/takit.wav');
+                        }
+                        file.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
+                        file.onSuccess.subscribe(() => {
+                            console.log('Action is successful');
+                        });
+                        file.play();
+                 // 웨이티 음성파일 재생-end
                 console.log("[tabs.ts]pushNotification.on-data:"+JSON.stringify(data));
                 console.log("[tabs.ts]pushNotification.on-data.title:"+JSON.stringify(data.title));
                 
@@ -318,10 +322,17 @@ export class TabsPage {
                     }
                     console.log("orderId:"+orderId);
 
-                    if(typeof additionalData.custom === 'string'){ 
+                    if(typeof additionalData.custom === 'string'){
+                        let orderObj= JSON.parse(additionalData.custom);
                         this.events.publish('orderUpdate',{order:JSON.parse(additionalData.custom)}); 
+                        if(orderObj.orderStatus=="cancelled"){ // 상점주에 의한 주문 취소이다. cash값을 업데이트한다.
+                            this.serverProvider.updateCash();
+                        }
                     }else{ //object
                         this.events.publish('orderUpdate',{order:additionalData.custom});
+                            if(additionalData.custom.orderStatus=="cancelled"){ // 상점주에 의한 주문 취소이다. cash값을 업데이트한다.
+                                this.serverProvider.updateCash();
+                            }
                     }
 
                     if(!this.storageProvider.orderExistInProgress(orderId)){
@@ -330,6 +341,7 @@ export class TabsPage {
                         if(typeof additionalData.custom === 'string'){ 
                             let order = JSON.parse(additionalData.custom);
                             orderDoneModal= this.modalCtrl.create(OrderDetailPage, { order:order, trigger:"gcm" });
+                            console.log("order.orderStatus:"+order.orderStatus);
                         }else{ // object 
                             console.log("obj comes");
                             orderDoneModal= this.modalCtrl.create(OrderDetailPage, {  order:additionalData.custom, trigger:"gcm"});
@@ -382,6 +394,8 @@ export class TabsPage {
             });
 
             this.pushNotification.on('error').subscribe((e:any)=>{
+                
+
                 console.log(e.message);
             });
     }

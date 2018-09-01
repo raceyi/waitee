@@ -26,21 +26,20 @@
   </div>
 </div>
 </ion-content>
-<ion-footer style="border-top: solid 3px #ff7f39;" no-padding no-margin>
-<ion-row style="background-color:#ff7f39;color:white;" *ngIf="cartProvider.orderName.length>0">
-  <ion-col style="font-size:3.5vw;" text-center>
+<ion-footer  no-padding no-margin *ngIf="cartProvider.totalQuantity>0">
+<ion-row class="order-list" style="background-color:#ff7f39;color:white;">
+  <ion-col  style="font-size:3.5vw;" text-center align-self-center>
   {{cartProvider.orderName}}
   </ion-col>
-  <ion-col style="font-size:4.125vw;" text-center>
-    <b>{{cartProvider.totalAmount}}</b>
+  <ion-col style="font-size:4.125vw;" text-center align-self-center>
+    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>원</b>
   </ion-col>
 </ion-row>
 <ion-row  no-padding no-margin>
-  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
-   <ion-icon name="cart"></ion-icon>&nbsp;메뉴 주문서 <span *ngIf="cartProvider.totalQuantity>0" class="cart-quantity">{{cartProvider.totalQuantity}}</span>
-  </ion-col>
-  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
-   <ion-icon name="card"></ion-icon>&nbsp;결제하기 
+  <ion-col class="order-button" no-padding no-margin text-center align-self-center>
+    <button (click)="moveOrderList()" full style="color: #ff7f39;background-color:white;" ion-button no-padding no-margin clear>    
+     결제하기 
+    </button>
   </ion-col>
 </ion-row>
 </ion-footer>

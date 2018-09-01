@@ -80,8 +80,14 @@ export class LoginProvider {
             console.log("EmailServerLogin");
 
             let body = {email:email,password:password,version:this.storageProvider.version};
-
-            this.httpClient.post(this.storageProvider.serverAddress+"/emailLogin",body).subscribe((res:any)=>{ 
+            let request;
+            if(this.storageProvider.device){
+                    request=this.storageProvider.serverAddress+"/emailLogin";
+            }else{
+                    request="http://localhost:8100/emailLogin";
+            }
+            console.log("loginEmail-request:"+request);
+            this.httpClient.post(request,body).subscribe((res:any)=>{ 
                 if(res.result=="success"){
                     this.alertNotice(res.notice);
                 }              
@@ -95,7 +101,7 @@ export class LoginProvider {
 
   fblogin(handler,fbProvider:LoginProvider,params){    
     return new Promise((resolve,reject)=>{
-      if(this.platform.is('cordova')) {
+      if(this.storageProvider.device) {
            fbProvider.fb.getLoginStatus().then((status_response) => { 
            console.log(JSON.stringify(status_response));
            if(status_response.status=='connected'){

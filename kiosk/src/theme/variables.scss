@@ -45,15 +45,18 @@ $colors: (
 // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here
-
-
-
+$alert-ios-title-font-size: 30px;	
+//$alert-button-font-size:35px;
+$alert-ios-button-font-size	:35px;
+$alert-ios-max-width:500px;
+//$checkbox-ios-icon-size: 40px;
+//$checkbox-ios-icon-checkmark-width:2px;
 
 // App Material Design Variables
 // --------------------------------------------------
 // Material Design only Sass variables can go here
 $action-sheet-md-text-align: center;	
-
+$checkbox-md-icon-size	:30px;
 // App Windows Variables
 // --------------------------------------------------
 // Windows only Sass variables can go here

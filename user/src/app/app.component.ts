@@ -8,6 +8,7 @@ import { HomePage } from '../pages/home/home';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { StorageProvider } from '../providers/storage/storage';
 import { ServerProvider } from '../providers/server/server';
+import { IonicPage, NavController, NavParams,AlertController } from 'ionic-angular';
 
 import {SignupPaymentPage} from '../pages/signup-payment/signup-payment';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -29,6 +30,7 @@ export class MyApp {
              public storageProvider:StorageProvider,
              private serverProvider:ServerProvider,
              public loginProvider:LoginProvider,
+             private alertCtrl:AlertController,
              private network: Network) {
     platform.ready().then(() => {
 
@@ -40,8 +42,13 @@ export class MyApp {
                         console.log("value:"+value);
                         if(value==null){
                             this.rootPage=LoginMainPage;
-                        }else{    
+                        }else{
                             console.log("move into ErrorPage");
+                            let alert = this.alertCtrl.create({
+                                        title: "네트웍 상태를 확인해주세요.",
+                                        buttons: ['OK']
+                                    });
+                                    alert.present();
                             this.rootPage=ErrorPage;
                         }
                     },(err)=>{
@@ -94,11 +101,23 @@ export class MyApp {
                                 }else{
                                     console.log("invalid result comes from server-"+JSON.stringify(res));
                                     //this.storageProvider.errorReasonSet('로그인 에러가 발생했습니다');
+                                    let alert = this.alertCtrl.create({
+                                        title: "서버로그인에 실패했습니다.",
+                                        buttons: ['OK']
+                                    });
+                                    alert.present();
                                     this.rootPage=ErrorPage;   
                                 }
                             },login_err =>{
                                 console.log("move into ErrorPage-"+JSON.stringify(login_err));
                                 //this.storageProvider.errorReasonSet('로그인 에러가 발생했습니다'); 
+                                let alert = this.alertCtrl.create({
+                                        title: "서버로그인에 실패했습니다.",
+                                        subTitle: JSON.stringify(login_err),
+                                        buttons: ['OK']
+                                    });
+                                    alert.present();
+                                    this.rootPage=ErrorPage;  
                                 this.rootPage=ErrorPage;
                     });
                 }else{ // email login 
@@ -128,16 +147,57 @@ export class MyApp {
                             },login_err =>{
                                 console.log(JSON.stringify(login_err));
                                 //this.storageProvider.errorReasonSet('로그인 에러가 발생했습니다'); 
+                                 let alert = this.alertCtrl.create({
+                                        title: "이메일 로그인에 실패했습니다.",
+                                        subTitle:JSON.stringify(login_err),
+                                        buttons: ['OK']
+                                    });
+                                    alert.present();
                                 this.rootPage=ErrorPage;
                         });
                         },(error)=>{
                                 console.log("사용자 정보에 문제가 발생했습니다. 로그인 페이지로 이동합니다.");
+                                 let alert = this.alertCtrl.create({
+                                        title: "이메일 로그인에 실패했습니다.",
+                                        subTitle:JSON.stringify(error),
+                                        buttons: ['OK']
+                                    });
+                                    alert.present();
                                 this.rootPage=LoginMainPage;
                         });
                 }
                }
             },(error)=>{
                 console.log("id doesn't exist");
+                
+                if(!this.storageProvider.device){ //ionic-serve
+                        this.loginProvider.loginEmail(this.storageProvider.tourEmail,this.storageProvider.tourPassword).then((res:any)=>{
+                                console.log("MyApp:"+JSON.stringify(res));
+                                if(res.result=="success"){
+                                    if(res.userInfo.hasOwnProperty("shopList")){
+                                        //save shoplist
+                                        this.storageProvider.shoplistSet(JSON.parse(res.userInfo.shopList));
+                                        this.serverProvider.shopListUpdate();
+                                    }
+                                    this.storageProvider.emailLogin=true;
+                                    this.storageProvider.userInfoSetFromServer(res.userInfo);
+                                    if(!res.userInfo.hasOwnProperty("cashId") || res.userInfo.cashId==null || res.userInfo.cashId==undefined){
+                                        console.log("move into signupPaymentPage");
+                                        this.rootPage=SignupPaymentPage;
+                                    }else{
+                                        console.log("move into TabsPage");
+                                        this.rootPage=TabsPage;
+                                    }
+                                }else{ 
+                                    console.log("사용자 정보에 문제가 발생했습니다. 로그인 페이지로 이동합니다.");
+                                    this.rootPage=LoginMainPage;
+                                }
+                            },login_err =>{
+                                console.log(JSON.stringify(login_err));
+                                //this.storageProvider.errorReasonSet('로그인 에러가 발생했습니다'); 
+                                this.rootPage=ErrorPage;
+                        });
+                }else               
                     this.rootPage=LoginMainPage;
             });
 

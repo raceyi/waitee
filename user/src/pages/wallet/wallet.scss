@@ -1,12 +1,13 @@
 page-wallet {
-    .header{
-        height:calc((50/667)*100vh);
-        font-size:4.8vw;
-        background-color:$default-color;
-        color:white;
-        padding-top: calc((15/667)*100vh);
+    ion-header{
+        .header{
+            height:calc((50/667)*100vh);
+            font-size:4.8vw;
+            background-color:$default-color;
+            color:white;
+            padding-top: calc((15/667)*100vh);
+        }
     }
-
     $scroll-H:  calc((180/667)*100vh);
     $latest-H : calc((180/667)*100vh);
     

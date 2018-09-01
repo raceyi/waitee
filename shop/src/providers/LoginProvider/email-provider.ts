@@ -40,10 +40,19 @@ export class EmailProvider{
               let body = JSON.stringify({email:email,password:password,version:this.storageProvider.version});
               let headers = new Headers();
               headers.append('Content-Type', 'application/json');
-              this.http.post(this.storageProvider.serverAddress+"/shop/loginWithEmail",body,{headers: headers}).map(res=>res.json()).subscribe((res)=>{
+
+              let request;
+              if(this.storageProvider.device){
+                        request=this.storageProvider.serverAddress+"/shop/loginWithEmail";
+                }else{
+                        request="http://localhost:8100/shop/loginWithEmail";
+                }
+                console.log("loginEmail-request:"+request);
+
+              this.http.post(request,body,{headers: headers}).map(res=>res.json()).subscribe((res)=>{
                 //console.log("res:"+JSON.stringify(res));
                 //let result={result:res.result,userInfo:res.userInfo};
-                console.log("result:"+JSON.stringify(res));
+                //console.log("result:"+JSON.stringify(res));
                 resolve(res); // 'success'(move into home page) or 'invalidId'(move into signup page)
             },(err)=>{
                  console.log("emailLogin no response");

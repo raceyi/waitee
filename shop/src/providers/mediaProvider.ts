@@ -26,33 +26,34 @@ export class MediaProvider {
               private media: Media,private storageProvider:StorageProvider,) {
     console.log('Hello MediaProvider Provider');
     platform.ready().then(() => {
-      this.volumeControl = cordova.plugins.VolumeControl;
+      if(this.storageProvider.device){
+          this.volumeControl = cordova.plugins.VolumeControl;
 
-      if(this.platform.is('android'))
-        this.file = this.media.create('file:///android_asset/www/assets/ordersound.mp3');
-      else{
-        this.file = this.media.create('assets/ordersound.mp3');
+          if(this.platform.is('android'))
+            this.file = this.media.create('file:///android_asset/www/assets/ordersound.mp3');
+          else{
+            this.file = this.media.create('assets/ordersound.mp3');
+          }
+          this.file.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
+          this.file.onSuccess.subscribe(() => {
+            console.log('Action is successful');
+            if(this.playing)
+              this.file.play();
+            
+          });
+          this.file.onError.subscribe(error => console.log('Error! '+JSON.stringify(error)));
+          /////////////////////////////////////////////////////// 
+          if(this.platform.is('android'))
+              this.warning = this.media.create('file:///android_asset/www/assets/warning.mp3');
+            else{
+              this.warning = this.media.create('assets/warning.mp3');
+            }
+          this.warning.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
+          this.warning.onSuccess.subscribe(() => {
+            console.log('Action is successful');        
+          });
+          this.warning.onError.subscribe(error => console.log('Error! '+JSON.stringify(error)));
       }
-      this.file.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
-      this.file.onSuccess.subscribe(() => {
-        console.log('Action is successful');
-        if(this.playing)
-          this.file.play();
-        
-      });
-      this.file.onError.subscribe(error => console.log('Error! '+JSON.stringify(error)));
-      /////////////////////////////////////////////////////// 
-      if(this.platform.is('android'))
-          this.warning = this.media.create('file:///android_asset/www/assets/warning.mp3');
-        else{
-          this.warning = this.media.create('assets/warning.mp3');
-        }
-      this.warning.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
-      this.warning.onSuccess.subscribe(() => {
-        console.log('Action is successful');        
-      });
-      this.warning.onError.subscribe(error => console.log('Error! '+JSON.stringify(error)));
-
     });
 
   }

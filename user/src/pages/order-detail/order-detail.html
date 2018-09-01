@@ -10,6 +10,11 @@
     주문 취소
     </button>
   </ion-buttons>
+  <ion-buttons *ngIf="order.orderStatus=='pickup' && order.review==null" end>
+    <button style="font-size:4vw;" ion-button (click)="inputReview()">
+    후기작성
+    </button>
+  </ion-buttons>  
   </ion-navbar>
 </ion-header>
 

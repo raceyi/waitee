@@ -38,6 +38,8 @@ export class StorageProvider {
     public authFailReturnUrl=this.configProvider.getAutFailReturnUrl();
     public tossApiKey=this.configProvider.getTossApiKey();
 
+    public device=this.configProvider.device;
+    
     syncTimeout=500; //0.5 second
 
     //public messageEmitter= new EventEmitter();
@@ -50,7 +52,8 @@ export class StorageProvider {
     public emailLogin:boolean=false;
 
     public recommendations=[];
-    
+    public wholeStores=[];
+
     public tabs;
     /////////////////////////////////////
     // cash receipt issue
@@ -248,8 +251,8 @@ defaultCardColor ="#33B9C6";
         console.log("[userInfoSetFromServer]cashId:"+this.cashId);
         this.tourMode=false;
         if(userInfo.hasOwnProperty("recommendShops")){
-            this.recommendations=userInfo.recommendShops;
-            this.recommendations.forEach(element => {
+            this.wholeStores=userInfo.recommendShops;
+            this.wholeStores.forEach(element => {
                 let strs=element.takitId.split("@");
                 element.name_sub = strs[0];
                 element.name_main= strs[1];
@@ -261,6 +264,13 @@ defaultCardColor ="#33B9C6";
                 //console.log("cash:"+element.paymethod.cash);
                 //console.log("card:"+element.paymethod.card);
             });
+            this.recommendations=[];
+            this.wholeStores.forEach(shop=>{
+                console.log(shop.ready);
+                if(shop.ready!=0){
+                    this.recommendations.push(shop);
+                }
+            })
         }
         /*
         if(userInfo.hasOwnProperty("taxIssueEmail")){

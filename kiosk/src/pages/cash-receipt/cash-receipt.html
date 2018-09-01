@@ -1,0 +1,77 @@
+<!--
+  Generated template for the CashReceiptPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header class="title-style">
+  <ion-row style="height:100px;">
+      <ion-col  *ngIf="this.receiptIssue" align-self-center text-center style="font-size:4.5vw;color:#FF5F3A">
+        현금 영수증 발급  
+      </ion-col>
+      <ion-col  *ngIf="!this.receiptIssue" align-self-center text-center style="font-size:4.5vw;color:#FF5F3A">
+        현금 주문  
+      </ion-col>
+  </ion-row>
+</ion-header>
+<ion-content>
+
+<div text-center class="order-no-label">
+  주문번호
+</div>
+<div text-center class="order-no">
+  45
+</div>
+<div text-center class="order-name">
+  {{cartProvider.orderName}}
+</div>
+<div text-center class="order-completed">
+  상점주분께 <amount-display [amount]="cartProvider.totalAmount"></amount-display>원을<br> 전달하시면 주문이 완료됩니다.
+</div>
+
+<div *ngIf="this.receiptIssue" >
+ <ion-row radio-group class="choice" [(ngModel)]="receiptType">
+                      <ion-col>
+                          <ion-item no-lines>
+                              <ion-label>소득공제용(개인)</ion-label>
+                              <ion-radio mode="ios" value="IncomeDeduction"></ion-radio>
+                          </ion-item>
+                      </ion-col>
+                      <ion-col>
+                          <ion-item no-lines>
+                              <ion-label>지출증빙용(사업자)</ion-label>
+                              <ion-radio mode="ios" value="ExpenseProof"></ion-radio>
+                          </ion-item>
+                      </ion-col>
+
+  </ion-row>
+  <ion-row class="receipt-id">
+        <ion-col no-padding text-center>
+            <ion-label>현금영수증 번호</ion-label>
+        </ion-col>
+        <ion-col no-padding>
+            <ion-input type="number" [(ngModel)]="receiptId" placeholder="현금영수증 번호"></ion-input>
+        </ion-col>
+  </ion-row>  
+</div>
+<div *ngIf="!this.receiptIssue" class="confirm-button" text-center>
+  <button outline ion-button (click)="orderDone()" >주문 확인</button>
+</div>
+
+</ion-content>
+<ion-footer *ngIf="this.receiptIssue" style="border-top: solid 3px #ff7f39;" no-padding no-margin>
+<ion-row  no-padding no-margin>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+    <button (click)="orderDone()" clear ion-button no-padding no-margin>
+      현금 영수증 미발급
+    </button>
+  </ion-col>
+  <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
+    <button (click)="issueReceipt()" ion-button no-padding no-margin clear>    
+      현금 영수증 발급 
+    </button>
+  </ion-col>
+</ion-row>
+</ion-footer>
+
+

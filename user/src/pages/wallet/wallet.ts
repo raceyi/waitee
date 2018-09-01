@@ -10,9 +10,11 @@ import {TimeUtil} from '../../classes/TimeUtil';
 import {CashTutorialPage} from '../cash-tutorial/cash-tutorial';
 import {CashConfirmPage} from '../cash-confirm/cash-confirm';
 import {TossTransferPage} from '../toss-transfer/toss-transfer';
+import { WebIntent } from '@ionic-native/web-intent';
 
 import * as moment from 'moment';
 
+declare var window:any;
 /**
  * Generated class for the WalletPage page.
  *
@@ -48,7 +50,8 @@ export class WalletPage {
               public storageProvider:StorageProvider,
               public serverProvider:ServerProvider,
               public modalCtrl: ModalController,
-              private events:Events,              
+              private events:Events,        
+              private webIntent: WebIntent,      
               private cardProvider: CardProvider) {
     var date=new Date();
     var month=date.getMonth()+1;
@@ -341,6 +344,20 @@ export class WalletPage {
           });
           alert.present();        
      })
+ }
+
+ launchKakaoPlus(){
+     console.log("launch KakaoPlus");
+
+     if(this.platform.is('android')){
+        const options = {
+                        action: this.webIntent.ACTION_VIEW,
+                        url: "kakaoplus://plusfriend/home/@웨이티"
+                    };
+        this.webIntent.startActivity(options);
+     }else if(this.platform.is('ios')){
+        window.open("kakaoplus://plusfriend/home/@웨이티");
+     }
  }
   ////////////////////////////////////////////////////////////////
 }

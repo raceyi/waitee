@@ -71,6 +71,14 @@ export class ReviewInputPage {
 
   inputDone(){
     let review:string=this.review;
+    if(this.count==0){
+        let alert = this.alertCtrl.create({
+            subTitle: '별점을 입력해주세요. 별점은 1부터 입력가능합니다.',
+            buttons: ['OK']
+        });
+        alert.present();
+        return;
+    }
     if(!review || review.trim().length==0){
         let alert = this.alertCtrl.create({
             subTitle: '고객님의 평가를 입력해주시기 바랍니다.',

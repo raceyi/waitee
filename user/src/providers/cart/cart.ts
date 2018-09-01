@@ -266,6 +266,7 @@ export class CartProvider {
         cart.takitId=rows[rows.length-1].takitId;
         cart.shopName=rows[rows.length-1].shopName;
         cart.timeConstraints=timeConstraints;
+        cart.payInfo=rows[rows.length-1].paymethod; // 재주문을 위해 추가함.
         //cart.price=this.amount;
 
         cart.orderName=orderName;

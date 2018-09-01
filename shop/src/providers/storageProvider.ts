@@ -61,10 +61,14 @@ export class StorageProvider{
     public accountMaskExceptFront=this.configProvider.getAccountMaskExceptFront();
     public accountMaskExceptEnd=this.configProvider.getAccountMaskExceptEnd();
 
+    public device=this.configProvider.device;
+    
     public bootTime;
     public lastTokenSent;
     public registrationId;
     
+    public kiosk:boolean=false;
+
     constructor(private platform:Platform,private nativeStorage: NativeStorage,
                 public loadingCtrl: LoadingController, 
                 private alertController:AlertController,

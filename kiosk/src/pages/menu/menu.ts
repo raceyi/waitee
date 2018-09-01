@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,AlertController } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import { CartProvider } from '../../providers/cart/cart';
+import {OrderListPage} from '../order-list/order-list';
 
 /**
  * Generated class for the MenuPage page.
@@ -28,7 +29,7 @@ export class MenuPage {
 
   optionAmount:number=0;  // 
 
-  memo;
+  //memo;
 
   timeConstraint;
   timeConstraintString;
@@ -289,10 +290,11 @@ export class MenuPage {
                   amount: this.amount,
                   unitPrice:this.unitPrice,
                   takeout:this.menu.takeout}
-
+       /*           
        if(this.memo!=undefined){
            menu.memo=this.removeSpecialCharacters(this.memo); // 숫자,한글,영문자만 가능합니다. 특수문자 입력 불가.
        }
+       */
        if(this.timeConstraint!=null && this.timeConstraint!=undefined){
             menu.timeConstraints=this.timeConstraint;
        }
@@ -314,5 +316,9 @@ export class MenuPage {
 
   expand(){
     this.ingredientShown=true;
+  }
+
+   moveOrderList(){
+    this.navCtrl.push(OrderListPage,{class:"OrderListPage"});
   }
 }

@@ -68,6 +68,8 @@ import {InputCouponPageModule} from '../pages/input-coupon/input-coupon.module';
 import {ComponentsModule} from '../components/components.module';
 import {TossTransferPageModule} from '../pages/toss-transfer/toss-transfer.module';
 import { WebIntent } from '@ionic-native/web-intent';
+import {StoreSearchPageModule} from '../pages/store-search/store-search.module';
+import { Media, MediaObject } from '@ionic-native/media';
 
 @NgModule({
   declarations: [
@@ -115,6 +117,7 @@ import { WebIntent } from '@ionic-native/web-intent';
     CashCancelChargePageModule,  
     InputCouponPageModule,
     TossTransferPageModule,
+    StoreSearchPageModule,
     IonicModule.forRoot(MyApp,{mode:'ios'})
   ],
   bootstrap: [IonicApp],
@@ -124,6 +127,7 @@ import { WebIntent } from '@ionic-native/web-intent';
     TabsPage    
   ],
   providers: [
+    Media,
     Network, 
     ConfigProvider,
     NativeStorage,

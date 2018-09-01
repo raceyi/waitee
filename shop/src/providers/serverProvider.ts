@@ -36,8 +36,13 @@ export class ServerProvider{
             let headers = new Headers();
             headers.append('Content-Type', 'application/json');
             console.log("bodyIn:"+bodyIn);
+            let url;
+            if(this.storageProvider.device){
+                url=this.storageProvider.serverAddress+request;
+            }else
+                url= "http://localhost:8100"+request;
 
-            this.http.post(this.storageProvider.serverAddress+request,body,{headers: headers}).timeout(this.storageProvider.timeout).subscribe((res)=>{
+            this.http.post(url,body,{headers: headers}).timeout(this.storageProvider.timeout).subscribe((res)=>{
                 resolve(res.json());                   
             },(err)=>{
                 console.log("post-err:"+JSON.stringify(err));

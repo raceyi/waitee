@@ -71,8 +71,8 @@
     <b>결제 금액</b>
     </ion-col>
     <ion-col text-right no-padding no-margin>
-      <b *ngIf="deliveryFee!=undefined"> <amount-display [amount]="payAmount+deliveryFee"></amount-display>원</b>
-      <b *ngIf="deliveryFee==undefined"> <amount-display [amount]="payAmount"></amount-display>원</b>      
+      <b *ngIf="deliveryFee!=undefined"><amount-display [amount]="payAmount+deliveryFee"></amount-display>원</b>
+      <b *ngIf="deliveryFee==undefined"><amount-display [amount]="payAmount"></amount-display>원</b>      
     </ion-col>
   </ion-row>
 </div>

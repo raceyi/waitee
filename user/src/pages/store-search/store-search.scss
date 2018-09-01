@@ -1,0 +1,123 @@
+page-store-search {
+   // $scroll-H:  calc((197/667)*100vh);
+    $latest-W : calc((145/375)*100vw);
+    $latest-H : calc((195/667)*100vh);
+   // $top-scroll-H : calc((197/(667*3))*100vh);
+
+    
+    .searchbar-button{
+        margin-top: calc((24/667)*100vh);
+        padding: 0px;
+        
+        margin-left: calc((20/375)*100vw);
+        width: calc((340/375)*100vw);
+
+        background-color:white;
+        color: #bdbdbd;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 8px;
+
+        font-size:1.4rem;
+
+        span{
+            justify-content: left !important;
+            margin-left:9px;
+        }
+
+        ion-icon{
+            width:14px;
+        }
+
+    }
+
+    .searchbar-ios {
+        background-color: transparent;
+    }
+
+    .searchbar-ios-cancel{
+        color:white !important;
+        background-color:transparent !important;
+    }
+
+    .whole{
+        background-color:#f7f7f9;
+        margin-top: calc((16/667)*100vh);
+        .whole-title{
+            padding-left:calc((17/375)*100vw);
+            padding-top:calc((16/667)*100vh);
+        }
+        .shop-button{
+                width : calc((168/375)*100vw);
+                height: $latest-H;
+                background-color:white;
+                color:white;
+                border: solid 5px white;
+                border-radius: 0px;
+                img{
+                    height: calc((100/667)*100vh);
+                    width: calc((155/375)*100vw);
+                    position: absolute;
+                    left: 0px;
+                    top: 0px;
+                    //apply border
+                    background-color: $default-color;
+                    border: solid 1px #979797;
+                    //border-radius: 5px;
+                }
+                ion-icon{
+                    color:$default-color;
+                }
+                .name-classification{
+                    margin:0px;
+                    position: absolute;
+                    left: 0;
+                    top: calc((135/667)*100vh);
+                    font-size:3.8vw;  
+                    color:#a6a6a6;                
+                }
+                .name-sub{
+                    margin:0px;
+                    position: absolute;
+                    left: 0;
+                    top: calc((168/667)*100vh);
+                    font-size:3.8vw;  
+                    color:#a6a6a6;                
+                }
+                .name-main{
+                    margin:0px;
+                    position: absolute;
+                    left: 0px;
+                    top: calc((116/667)*100vh);
+                    font-size:4.4vw;
+                    color:black;
+                    font-family:NotoSansCJKkr-Bold;
+                }
+                .classification{
+                    margin:0px;
+                    position: absolute;
+                    left: 0px;
+                    top: calc((170/667)*100vh);
+                    font-size:3.8vw;
+                    color:#a6a6a6;  
+                    //color: #bdbdbd;//#4a4a4a;
+                    
+                }
+                .info{
+                    margin:0px;
+                    position: absolute;
+                    left: 0px;
+                    top: calc((152/667)*100vh);
+                    font-size:3.8vw;
+                    color:#ff7f39;  
+                    //color: #bdbdbd;//#4a4a4a;
+                }
+        }      
+    }
+
+
+
+
+
+
+}

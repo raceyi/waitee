@@ -1,0 +1,80 @@
+page-cash-receipt {
+$primary-color:#FF5F3A;
+$secondary-color:#20dba5;
+
+    .title-style{
+        background-color:#505355;
+        color:#ff7f39;
+    }    
+    .choice{
+        padding-left:75px;
+        padding-right:75px;
+        ion-label{
+            font-size:3vw;
+            color:#919191;
+        }
+
+        ion-radio{
+            border-style:solid;
+            border-width:1px;
+            border-color:#919191;
+            color:$primary-color;
+        }
+    }
+
+   .receipt-id{
+       padding-left:75px;
+       padding-right:75px;
+       ion-label{
+            font-size:3.4vw;
+       }
+       ion-input{
+            border-bottom: solid 1px lightgray;
+            font-size:3.4vw;           
+       }
+   }
+
+
+    .order-no-label{
+        font-size:2.75vw;
+        color:#8f8f8f;
+        padding-top:20px;
+    }
+
+    .order-no{
+        font-size:13vw;
+        color:#060606;
+        padding-top:20px;
+    }
+
+    .order-name{
+        font-size:3.5vw;
+        color:black;
+        padding-top:50px;
+    }
+
+    .order-completed{
+        font-size:4.75vw;
+        color:#20dba5;
+        padding-top:100px;
+        padding-bottom:150px;
+    }
+
+    .footer-area{
+        height: calc((100/1280)*100vh);
+        font-size:4.75vw;
+        //padding-top: calc((20/1280)*100vh);
+        button{
+            font-size:4.75vw;
+        }
+    }  
+
+    .confirm-button{
+        button{
+           font-size:4vw;
+           background-color:#505355;
+           color:white; 
+           border:none;
+        }
+    }
+}

@@ -16,8 +16,9 @@ export class HomePage {
   awsS3:string="assets/imgs/";
 
   menus=[];
+  shops=[];
 
-  shopSelected:boolean=false;
+  //shopSelected:boolean=false;
 
   constructor(public navCtrl: NavController,private app: App
               ,public storageProvider:StorageProvider
@@ -64,6 +65,24 @@ export class HomePage {
               alert.present();
           }
       });
+       this.serverProvider.post(this.storageProvider.serverAddress+"/getFavoriteShops",body).then((res:any)=>{
+          console.log("getFavoriteShops res:"+JSON.stringify(res));
+          if(res.result=="success"){
+              this.shops=res.shopInfos;
+              this.shops.forEach(shop=>{
+                let strs=shop.takitId.split("@");
+                shop.name_sub = strs[0];
+                shop.name_main= strs[1];
+                shop.imagePath= this.storageProvider.awsS3+shop.imagePath;
+              })
+          }else{
+              let alert = this.alertController.create({
+                  title: "즐겨 찾는 음식점 정보를 가져오지 못했습니다.",
+                  buttons: ['OK']
+              });
+              alert.present();
+          }
+      });
   }
 
   selectMenu(menu){
@@ -104,29 +123,25 @@ export class HomePage {
   }
 
   enterShop(takitId){
-         if(!this.shopSelected){
-            this.shopSelected=true;
-            console.log("this.shopSelected true");
-            setTimeout(() => {
-                console.log("reset shopSelected:"+this.shopSelected);
-                this.shopSelected=false;
-            }, 1000); //  seconds     
+            let progressBarLoader = this.loadingCtrl.create({
+                content: "진행중입니다.",
+                duration: 30*1000 //30 seconds
+            });
+            progressBarLoader.present();
             this.serverProvider.getShopInfo(takitId).then((res:any)=>{
+                progressBarLoader.dismiss();                        
                 this.storageProvider.shopResponse=res;
                 console.log("this.storageProvider.shopResponse: "+JSON.stringify(this.storageProvider.shopResponse));
                 this.app.getRootNavs()[0].push(ShopPage,{takitId:takitId});
             },(err)=>{
+                progressBarLoader.dismiss();                        
                 console.log("error:"+JSON.stringify(err));
-                 this.shopSelected=false;
                   let alert = this.alertController.create({
                       title: "서버와 통신에 문제가 있습니다.",
                       buttons: ['OK']
                   });
                   alert.present();
             });
-        }else{
-            console.log("this.shopSelected works!");
-        }
   }  
 
   buttonPressed(){

@@ -38,19 +38,6 @@ export class CartPage {
               private cartProvider:CartProvider, 
               private ngZone:NgZone,
               public navParams: NavParams) {
-/*
-    if(navParams.get("cart")!=undefined){            
-      let cart:any=JSON.parse(navParams.get("cart"));
-      //add cart info into DB and then read all from DB;
-      this.cartProvider.addMenuIntoCart(cart).then((res)=>{
-          this.initializeCarts();
-      },err=>{
-          this.initializeCarts();
-      });
-    }else{
-          this.initializeCarts();
-    }
-*/    
     this.initializeCarts();
   }
 

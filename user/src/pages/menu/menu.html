@@ -54,24 +54,25 @@
     <ion-col class="option-price" no-padding no-margin col-5 text-right>
         +<amount-display [amount]="option.price"></amount-display>원
     </ion-col>
-    <ion-col class="col-border" *ngIf="option.default==undefined" no-padding no-margin col-1>
+
+    <ion-col class="col-border" *ngIf="option.price>0" no-padding no-margin col-1>
         <button no-padding ion-button clear (click)="decrease(option)"><ion-icon name="ios-remove"></ion-icon></button>
     </ion-col>
-    <ion-col class="number"  *ngIf="option.default==undefined" text-center no-padding no-margin col-1>
+    <ion-col class="number"  *ngIf="option.price>0" text-center no-padding no-margin col-1>
       {{option.number}}
     </ion-col>
-    <ion-col class="col-border"   *ngIf="option.default==undefined" no-padding no-margin col-1>
+    <ion-col class="col-border"   *ngIf="option.price>0" no-padding no-margin col-1>
         <button no-padding ion-button clear (click)="increase(option)"><ion-icon name="ios-add"></ion-icon></button>
     </ion-col>
-    <ion-col  *ngIf="option.default==undefined" no-padding no-margin col-1>
+    <ion-col  *ngIf="option.price>0" no-padding no-margin col-1>
       &nbsp; 
     </ion-col>
-    <ion-col  *ngIf="option.default!=undefined" no-padding no-margin col-4>
+    <ion-col  *ngIf="option.price==0" no-padding no-margin col-4>
       &nbsp; 
     </ion-col>
   </ion-row>
   <ion-row radio-group class="choice" [(ngModel)]="option.select" *ngIf="option.choice!==undefined">
-                      <ion-col  *ngFor="let choice of option.choice">
+                      <ion-col  col-6 *ngFor="let choice of option.choice">
                           <ion-item class="bg-sub1" no-lines>
                               <ion-label style="font-size:4vw;color:#4a4a4a;">{{choice}}</ion-label>
                               <ion-radio style="border-style:solid;border-width:1px;border-color:#bdbdbd;" color="subColor2" [value]="choice"></ion-radio>

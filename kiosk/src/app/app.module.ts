@@ -25,6 +25,14 @@ import {ComponentsModule} from '../components/components.module';
 import { ConfigProvider } from '../providers/config/config';
 import {OrderListPageModule} from '../pages/order-list/order-list.module';
 import { CartProvider } from '../providers/cart/cart';
+import {CashReceiptPageModule} from '../pages/cash-receipt/cash-receipt.module';
+import {OrderReceiptPageModule} from '../pages/order-receipt/order-receipt.module';
+import {OrderCheckPageModule} from '../pages/order-check/order-check.module';
+import {ConfigurationPageModule} from '../pages/configuration/configuration.module';
+import {CardExplainPageModule} from '../pages/card-explain/card-explain.module';
+import {FilterPageModule} from '../pages/filter/filter.module';
+
+import { WebIntent } from '@ionic-native/web-intent';
 
 @NgModule({
   declarations: [
@@ -32,6 +40,12 @@ import { CartProvider } from '../providers/cart/cart';
     HomePage
   ],
   imports: [
+    FilterPageModule,
+    CardExplainPageModule,
+    ConfigurationPageModule,
+    OrderCheckPageModule,
+    OrderReceiptPageModule,
+    CashReceiptPageModule,
     OrderListPageModule,
     MenuPageModule,
     ComponentsModule,
@@ -51,6 +65,7 @@ import { CartProvider } from '../providers/cart/cart';
     HomePage
   ],
   providers: [
+    WebIntent,
     NativeStorage,
     StatusBar,
     SplashScreen,

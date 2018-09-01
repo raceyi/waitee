@@ -48,7 +48,7 @@
 
 </div>
 <div class="shop-text-info" *ngIf="shop.shopInfo.deliveryArea!=null">
-<label class="label">배달</label>  <span class="value"><amount-display [amount]="shop.shopInfo.freeDelivery"></amount-display>원이상 무료 배송</span>
+<label class="label">배달</label> {{shop.shopInfo.deliveryArea}} <span class="value"><amount-display [amount]="shop.shopInfo.freeDelivery"></amount-display>원이상 무료 배송</span>
 </div>
 <div class="shop-text-info" *ngIf="shop.shopInfo.foodOrigin!=null">
 <label class="label">원산지</label>  <span class="value">{{shop.shopInfo.foodOrigin}}</span>
@@ -79,11 +79,12 @@
                               <label *ngIf="menu[0].soldout==1" class="sold-out"> <b>판매종료</b></label>
                               <label *ngIf="menu[0].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>
-
+                            <h2>{{menu[0].menuName}}</h2> 
+                            <!-- 
                             <h2 *ngIf="menu[0].menuName.length<=12">{{menu[0].menuName}}</h2>
                             <h2 *ngIf="menu[0].menuName.length>12"> {{split1(menu[0].menuName)}}</h2>
                             <h2 *ngIf="menu[0].menuName.length>12"> {{split2(menu[0].menuName)}}</h2>
-
+                            -->
                             <p><amount-display [amount]="menu[0].price"></amount-display>원 <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea==null" >&nbsp;&nbsp;포장&nbsp;&nbsp;</span> 
                                                  <span class="text-border" *ngIf="menu[0].takeout>0 && shop.shopInfo.deliveryArea!=null" >&nbsp;&nbsp;포장/배달&nbsp;&nbsp;</span></p>
                         </ion-item>
@@ -98,12 +99,13 @@
                              <div text-center class="img-shop" [ngStyle]="menu[1].ngStyle">
                               <label *ngIf="menu[1].soldout==1" class="sold-out"> <b>판매종료</b></label>
                               <label *ngIf="menu[1].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
-                             </div>                             
-
+                             </div>   
+                             <h2>{{menu[1].menuName}}</h2>                                                      
+                            <!-- 
                             <h2 *ngIf="menu[1].menuName.length<=12">{{menu[1].menuName}}</h2>
                             <h2 *ngIf="menu[1].menuName.length>12"> {{split1(menu[1].menuName)}}</h2>
                             <h2 *ngIf="menu[1].menuName.length>12"> {{split2(menu[1].menuName)}}</h2>
-
+                            -->
                             <p><amount-display [amount]="menu[1].price"></amount-display>원 <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea==null" >&nbsp;&nbsp;포장&nbsp;&nbsp;</span> 
                                                    <span class="text-border" *ngIf="menu[1].takeout>0 && shop.shopInfo.deliveryArea!=null" >&nbsp;&nbsp;포장/배달&nbsp;&nbsp;</span></p> 
                         </ion-item>

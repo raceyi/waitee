@@ -55,10 +55,17 @@ export class ServerProvider {
        });
     }
 
-  post(request,bodyIn){
+  post(requestIn,bodyIn){
        console.log("!!!!post:"+bodyIn);
        let bodyObj=bodyIn;
        bodyObj.version=this.storageProvider.version;
+
+       let request;
+       if(this.storageProvider.device){
+           request=requestIn;
+       }else{
+            request="http://localhost:8100"+ requestIn.substr(this.storageProvider.serverAddress.length);
+       }
        console.log("request:"+request);
 
        return new Promise((resolve,reject)=>{
@@ -142,29 +149,6 @@ loginAgain(){
         });
   }
 
-/*
-  saveOrder(body){
-      return new Promise((resolve,reject)=>{
-            let headers = new Headers();
-            headers.append('Content-Type', 'application/json');
-            console.log("saveOrder:"+JSON.stringify(body));
-            this.post(encodeURI(this.storageProvider.serverAddress+"/saveOrder"),body).then((res:any)=>{
-                  console.log("res:"+JSON.stringify(res));
-                  console.log("saveOrder-res.result:"+res.result);
-                  if(res.result=="success"){
-                    //resolve(res.orders);
-                    resolve(res);
-                  }else{
-                    reject(res.error);
-                  }
-            },(err)=>{
-                reject(err);  
-            });
-            this.nativeStorage.setItem("orderDoneFlag","true");
-      });
-  }
-*/
-
 saveOrderCart(body){
       return new Promise((resolve,reject)=>{
 
@@ -178,7 +162,7 @@ saveOrderCart(body){
             });
             progressBarLoader.present();
 
-            this.post(encodeURI(this.storageProvider.serverAddress+"/saveOrderCart"),body).then((res:any)=>{
+            this.post(this.storageProvider.serverAddress+"/saveOrderCart",body).then((res:any)=>{
                   progressBarLoader.dismiss();
                   console.log("res:"+JSON.stringify(res));
                   console.log("saveOrder-res.result:"+res.result);
@@ -429,16 +413,16 @@ saveOrderCart(body){
                     console.log("res:"+JSON.stringify(res));  
                     progressBarLoader.dismiss();
                     if(res.resultType=="SUCCESS"){
-                        let link=res.success.link;
-                        console.log("link:"+link);
+                        let scheme=res.success.scheme;
+                        console.log("scheme:"+scheme);
                         if(this.platform.is('ios')){
-                            window.open(link);
+                            window.open(scheme);
                             console.log("launchToss call resolve");
                             resolve();
                         }else{ // android
                             const options = {
                                             action: this.webIntent.ACTION_VIEW,
-                                            url: link
+                                            url: scheme
                                         };
                             this.webIntent.startActivity(options);
                             console.log("webIntent...");

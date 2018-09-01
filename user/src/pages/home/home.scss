@@ -1,13 +1,20 @@
 page-home {
-    $scroll-H:  calc((197/667)*100vh);
+    $scroll-H:  calc((210/667)*100vh);
     $latest-W : calc((145/375)*100vw);
-    $latest-H : calc((181/667)*100vh);
+    $latest-H : calc((190/667)*100vh);
+    $top-scroll-H : calc((210/(667*3))*100vh);
 
     .scroll-latest {
         height: $scroll-H;
         .scroll-content{
             padding: 0;
         }
+        background-image: 
+            linear-gradient(to top, #ffffff, #ffffff), 
+            linear-gradient(to bottom, #FF5F3A, #FF5F3A); 
+        background-repeat : no-repeat;
+        background-position: 0 0, 0px $top-scroll-H;
+        background-size: 100% 30%, 100% 70%;
     }
 
     .scroll-div{
@@ -40,8 +47,10 @@ page-home {
     .shop-button{
             width : $latest-W;
             height: $latest-H;
-            background-color:white;
-            color:$default-color;
+            //background-color:white;
+            //color:$default-color;
+            background-color:$default-color;
+            color:white;
             img{
                 height: calc((96/667)*100vh);
                 width: $latest-W;
@@ -62,7 +71,8 @@ page-home {
                 left: 0;
                 top: calc((106/667)*100vh);
                 font-size:3.8vw;  
-                color: #33b9c6;                  
+                //color: #33b9c6;  
+                color:white;                
             }
             .name-main{
                 margin:0px;
@@ -70,25 +80,48 @@ page-home {
                 left: 0px;
                 top: calc((122/667)*100vh);
                 font-size:4.4vw;
-                color: #4a4a4a;
+                //color: #4a4a4a;
+                color:white;
                 font-family:NotoSansCJKkr-Bold;
             }
+
             .classification{
                 margin:0px;
                 position: absolute;
                 left: 0px;
                 top: calc((142/667)*100vh);
-                font-size:3.8vw;  
-                color: #bdbdbd;//#4a4a4a;
+                font-size:3.8vw;
+                color:white;  
+                //color: #bdbdbd;//#4a4a4a;
+            }
+            .name-classification{
+                margin:0px;
+                position: absolute;
+                left: 0px;
+                top: calc((163/667)*100vh);
+                font-size:3.4vw;
+                color:white;  
+            }
+
+            .info{
+                margin:0px;
+                position: absolute;
+                left: 0px;
+                top: calc((160/667)*100vh);
+                font-size:3.8vw;
+                color:white;  
+                //color: #bdbdbd;//#4a4a4a;
             }
 
             .noti-box{
-                color: #4a4a4a;//#bdbdbd;
+                color:white;
+                //color: #4a4a4a;//#bdbdbd;
                 font-size:3vw;
                 border-radius: 8px;
                 padding-left: 3px;
                 padding-right:3px;
-	            border: solid 1px #4a4a4a;//#bdbdbd;
+	            //border: solid 1px #4a4a4a;//#bdbdbd;
+                border: solid 1px white;
             }
 
             .star_rating{

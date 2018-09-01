@@ -5,7 +5,7 @@ import {OrderDetailPage} from '../order-detail/order-detail';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
 import {TimeUtil} from '../../classes/TimeUtil';
-
+import {CashPasswordPage} from '../cash-password/cash-password';
 /**
  * Generated class for the OrderListPage page.
  *
@@ -212,6 +212,7 @@ export class OrderListPage {
   }
 
   orderDetail(order){  
+      console.log("orderDetail comes");
       this.app.getRootNavs()[0].push(OrderDetailPage,{order:order});
   }
 
@@ -367,4 +368,42 @@ export class OrderListPage {
     this.app.getRootNav().pop();
   }
   
+  orderAgain(order){  // hum... payment에서 보내는 구조로 가야만 한다. 확인이 필요함.
+      //please check the price & discount rate ! server에서 하는것이 맞다. server에서 확인함. 
+     let orderList=[];
+     orderList.push({  
+            payment:'cash',
+            orderList:JSON.parse(order.orderList),
+            timeConstraints:[], // server에서 확인함.
+            deliveryAddress:order.deliveryAddress,
+            paymethod:JSON.parse(order.payInfo),
+            takitId:order.takitId,
+            shopName:order.shopName,
+            orderName:order.orderName,
+            payInfo:order.payInfo,
+            amount:order.total,
+         });
+     if(typeof order.total==='string')    
+         order.total=parseInt(order.total);    
+     let body = {payment:'cash',
+                    orderList:JSON.stringify(orderList),
+                    amount:order.total,
+                    takeout: order.takeout, // takeout:0(inStore) , 1(takeout), 2(delivery) 
+                    orderedTime:new Date().toISOString(),
+                    cashId: this.storageProvider.cashId,
+                    receiptIssue:this.storageProvider.receiptIssue,
+                    receiptId:this.storageProvider.receiptId,
+                    receiptType:this.storageProvider.receiptType,
+                    takitId:order.takitId,
+                    total:order.total,
+                    payInfo:order.payInfo,
+                    deliveryAddress:order.deliveryAddress,
+                    paymethod: JSON.parse(order.payInfo) // 음... payment페이지로 이동해야만 하는가?
+                }
+      console.log("reorder-body:"+JSON.stringify(body));
+      this.app.getRootNavs()[0].push(CashPasswordPage,{body:body,trigger:"orderList",
+                                         title:"결제비밀번호" ,description:"결제 비밀번호를 입력해주세요.",
+                                         class:"CashPasswordPage"});
+
+  }
 }

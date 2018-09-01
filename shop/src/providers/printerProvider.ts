@@ -19,28 +19,29 @@ export class PrinterProvider{
        // this.printer=this.storageProvider.printer;
 
       platform.ready().then(() => {
-        cordova.plugins.BtPrinter.listen((status)=>{
-          console.log("status:"+status);
-          this.printerStatus=status;
-          this.events.publish('printer:status', this.printerStatus);
-        })
+          if(this.storageProvider.device){
+                cordova.plugins.BtPrinter.listen((status)=>{
+                console.log("status:"+status);
+                this.printerStatus=status;
+                this.events.publish('printer:status', this.printerStatus);
+                })
 
-        this.nativeStorage.getItem("printer").then((value:string)=>{
-            console.log("getItem-printer-value:"+value);
-            let printer=JSON.parse(value);
-            this.storageProvider.printerName=printer.name;
-            this.setPrinter(printer);
-            this.nativeStorage.getItem("printOn").then((value:string)=>{
-                console.log("printOn:"+value);
-                this.storageProvider.printOn= JSON.parse(value);
-            },()=>{
-                this.storageProvider.printOn=false;
-            });
-        },()=>{
-            this.storageProvider.printOn=false;
-            console.log("getItem printer returns error");         
-        });
-
+                this.nativeStorage.getItem("printer").then((value:string)=>{
+                    console.log("getItem-printer-value:"+value);
+                    let printer=JSON.parse(value);
+                    this.storageProvider.printerName=printer.name;
+                    this.setPrinter(printer);
+                    this.nativeStorage.getItem("printOn").then((value:string)=>{
+                        console.log("printOn:"+value);
+                        this.storageProvider.printOn= JSON.parse(value);
+                    },()=>{
+                        this.storageProvider.printOn=false;
+                    });
+                },()=>{
+                    this.storageProvider.printOn=false;
+                    console.log("getItem printer returns error");         
+                });
+          }
       })
     }
 

@@ -4,6 +4,7 @@ import {StorageProvider} from '../../providers/storage/storage';
 import {MenuPage} from '../menu/menu';
 import * as hangul from 'hangul-js';
 import { CartProvider } from '../../providers/cart/cart';
+import {OrderListPage} from '../order-list/order-list';
 
 /**
  * Generated class for the SearchPage page.
@@ -78,4 +79,8 @@ checkInclude(menuName,keyword){
   back(){
     this.navCtrl.pop();
   }
+  
+   moveOrderList(){
+    this.navCtrl.push(OrderListPage,{class:"OrderListPage"});
+  }  
 }

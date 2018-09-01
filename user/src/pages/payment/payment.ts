@@ -150,28 +150,27 @@ export class PaymentPage {
                 if(cashRate!=undefined)    
                     cashDiscount=parseFloat(cashRate.substr(0,cashRate.length-1));
                 if(cardRate!=undefined && this.paymentSelection=="card"){
-                    this.cardDiscount+= (this.carts[i].price*cardDiscount)/100;
-                    this.carts[i].amount=this.carts[i].price-((this.carts[i].price*cardDiscount)/100);
+                    this.cardDiscount+= Math.round((this.carts[i].price*cardDiscount)/100);
+                    this.carts[i].amount=this.carts[i].price-Math.round((this.carts[i].price*cardDiscount)/100);
                 }
                 if(cashRate!=undefined && this.paymentSelection=="cash"){
-                    this.cashDiscount+= (this.carts[i].price*cashDiscount)/100;
-                    this.carts[i].amount=this.carts[i].price-((this.carts[i].price*cashDiscount)/100);
+                    this.cashDiscount+= Math.round((this.carts[i].price*cashDiscount)/100);
+                    this.carts[i].amount=this.carts[i].price-Math.round((this.carts[i].price*cashDiscount)/100);
                 }
                 // compute discount of each menu
                 for(var j=0;j<this.carts[i].orderList.menus.length;j++){
                     if(this.paymentSelection=="cash")
-                        this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price-((this.carts[i].orderList.menus[j].price*cashDiscount)/100);
+                        this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price-Math.round((this.carts[i].orderList.menus[j].price*cashDiscount)/100);
                     else // card
-                        this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price-((this.carts[i].orderList.menus[j].price*cardDiscount)/100);                    
+                        this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price-Math.round((this.carts[i].orderList.menus[j].price*cardDiscount)/100);                    
                 }
                 console.log("this.cardDiscount: "+this.cardDiscount+ "this.cashDiscount:"+this.cashDiscount)
     }
-
-    if(this.paymentSelection=="cash")
+    if(this.paymentSelection=="cash"){
         this.payAmount=this.totalAmount-this.cashDiscount;
-    else
+    }else{
         this.payAmount=this.totalAmount-this.cardDiscount;
-
+    }
     if(this.takeout==2 && this.payAmount<this.carts[0].freeDelivery){
         this.deliveryFee=parseInt(this.carts[0].deliveryFee);
     }else
@@ -384,6 +383,7 @@ export class PaymentPage {
 
     let body:any;
     if(this.paymentSelection=="cash"){
+      // Just for test-begin  
       if(this.storageProvider.cashAmount<this.payAmount){
           this.serverProvider.checkTossExistence().then(()=>{
                 let amount=this.payAmount-this.storageProvider.cashAmount;
@@ -392,7 +392,8 @@ export class PaymentPage {
                     subTitle: amount+'원을 토스로 충전합니다.',
                     buttons: [
                                 {
-                                    text: '네',
+                                    text: 'Toss로 입금',
+                                    cssClass: 'toss-alert-button',    
                                     handler: () => {
                                         console.log('launch toss');
                                         this.serverProvider.launchToss(amount);
@@ -416,6 +417,7 @@ export class PaymentPage {
         });
         return;
       }
+      //Just for test-end
       let carts=this.carts;
       this.carts.forEach((order)=>{
         delete order.freeDelivery;

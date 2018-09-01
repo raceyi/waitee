@@ -66,7 +66,7 @@ export class MenuPage {
         }else if(this.timeConstraint.from && this.timeConstraint.from!=null){
             this.timeConstraintString="주문가능시간:"+fromHour+'시'+fromMin+"분 이후";
         }else if(this.timeConstraint.to && this.timeConstraint.to!=null){
-            this.timeConstraintString="주문가능시간"+toHour+'시'+toMin+'분 이전';
+            this.timeConstraintString="주문가능시간:"+toHour+'시'+toMin+'분 이전';
         }
         console.log("timeConstraintString:"+this.timeConstraintString);
     }
@@ -222,7 +222,11 @@ export class MenuPage {
             if(this.options!=undefined && this.options!=null && Array.isArray(this.options)){
                 for(i=0;i<this.options.length;i++){
                         var option=this.options[i];
-                        if(option.number>0 && option.hasOwnProperty("choice")){
+                        if(option.price==0 && option.hasOwnProperty("choice")){
+                            if(option.select === undefined || option.select === null){
+                                reject(option.name);
+                            }
+                        }else if(option.number>0 && option.hasOwnProperty("choice")){
                             console.log("option.selectedChoice:"+option.default);
                             if(option.select === undefined || option.select === null){
                                 reject(option.name);
@@ -285,8 +289,7 @@ export class MenuPage {
 
        console.log("hum..... unitPrice");           
        if(this.memo!=undefined){
-           // menu.memo=this.removeSpecialCharacters(this.memo); // 숫자,한글,영문자만 가능합니다. 특수문자 입력 불가.
-            menu.memo=this.memo;
+           menu.memo=this.removeSpecialCharacters(this.memo); // 숫자,한글,영문자만 가능합니다. 특수문자 입력 불가.
        }
         menus.push(menu);
  
@@ -302,6 +305,7 @@ export class MenuPage {
         cart.deliveryFee=this.shopInfo.deliveryFee;
         cart.address=this.shopInfo.address;
         cart.paymethod=this.shopInfo.paymethod;
+        cart.payInfo=JSON.stringify(this.shopInfo.paymethod); //재주문을 위해 order에 저장함.
         cart.takitId=this.shopInfo.takitId;
         cart.shopName=this.shopInfo.shopName;
         cart.price=this.amount;

@@ -1,0 +1,33 @@
+page-order-receipt {
+ .by-pos{
+    position: absolute;
+    left: 336px;
+    top: 40px;//54px;  
+    color:#FF5F3A;               
+ }
+
+ .logo-img{
+    width:87px;
+    height:29px;
+    position: absolute;
+    left: 368px;
+    top: 30px//49px;         
+ }
+
+ .shop-img{
+    width:185px;
+    height:100px;
+    position: absolute;
+    left: 146px;
+    top: 0px;//15px;    
+ }
+
+.confirm-button{
+    button{
+        font-size:4vw;
+        width: calc((438/800)*100vw);
+        height: calc((100/1280)*100vh); 
+    }
+}
+
+}

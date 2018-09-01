@@ -45,12 +45,6 @@ export class MyApp {
                 private mediaProvider:MediaProvider,private events:Events) {
     
     this.platform=platform;
-    ////////////Test-begin//////////
-    if(!this.platform.is('cordova')){
-        console.log("platform is not cordova");
-        this.rootPage=ShopTablePage;
-    }
-    ////////////Test-end///////////
     
     platform.ready().then(() => {
             console.log("KALEN-platform ready comes");
@@ -100,7 +94,29 @@ export class MyApp {
                     });
             },err=>{
                 console.log("id doesn't exist. move into LoginPage");
-                this.rootPage=LoginPage;
+                if(this.storageProvider.device){
+                    this.rootPage=LoginPage;
+                }else{
+                    this.emailProvider.EmailServerLogin(this.storageProvider.tourEmail,this.storageProvider.tourPassword).then((res:any)=>{
+                            console.log("MyApp:"+JSON.stringify(res));
+                            if(res.result=="success"){
+                                //save shoplist
+                                this.shoplistHandler(res.shopUserInfo);
+                            }else if(res.result=='invalidId'){
+                                //console.log("You have no right to access this app");
+                                console.log("사용자 정보에 문제가 발생했습니다. 로그인 페이지로 이동합니다.");
+                                this.rootPage=LoginPage; 
+                            }else{
+                                //console.log("invalid result comes from server-"+JSON.stringify(res));
+                                //this.storageProvider.errorReasonSet('로그인 에러가 발생했습니다'); 
+                                this.rootPage=ErrorPage;   
+                            }
+                        },login_err =>{
+                            //console.log(JSON.stringify(login_err));
+                            //this.storageProvider.errorReasonSet('로그인 에러가 발생했습니다'); 
+                            this.rootPage=ErrorPage;
+                    });
+                }
             });
         //this.connectSubscription = Network.onConnect().subscribe(() => { 
         //    console.log('network connected!');
@@ -120,6 +136,7 @@ export class MyApp {
         }else{
              this.storageProvider.myshoplist=JSON.parse(userinfo.myShopList);
              this.storageProvider.userInfoSetFromServer(userinfo);
+             console.log("myshoplist num:"+this.storageProvider.myshoplist.length);
              if(this.storageProvider.myshoplist.length==1){
                 console.log("move into ShopTablePage");
                 this.storageProvider.myshop=this.storageProvider.myshoplist[0];
