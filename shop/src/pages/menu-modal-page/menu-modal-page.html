@@ -52,6 +52,14 @@
         </ion-col>
     </ion-row>
     <ion-row>
+        <ion-col>
+            <ion-item>
+                <ion-label stacked>순서</ion-label>
+                <ion-input type="number" [(ngModel)]="menu.menuSeq"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row>
         <ion-item style="width:58%;">
             <ion-label stacked>사진</ion-label>
             <span *ngIf="menu.imagePath">{{menu.imagePath}}</span>
@@ -81,7 +89,14 @@
             </ion-item>
         </ion-col>
     </ion-row>
-
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                <ion-label >비활성화 </ion-label>
+                <ion-checkbox [(ngModel)]="menu.deactive" style="border:0;" ></ion-checkbox>
+            </ion-item>
+            </ion-col>
+        </ion-row> 
         <ion-row>
         <ion-col>
             <ion-item>
@@ -188,6 +203,56 @@
                     <ion-input [(ngModel)]="menu.options[i].price" ></ion-input>
                 </ion-item>
             </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-label stacked>기본값</ion-label>
+                <ion-input [(ngModel)]="menu.options[i].default" ></ion-input>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+                <ion-col>
+                <ion-item>
+                    <ion-label stacked>flag 옵션(숫자가 아닌 선택,비선택만가능)</ion-label>
+                    <ion-checkbox [(ngModel)]="menu.options[i].flagType" style="border:0;" ></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="menu.options[i].flagType">
+            <ion-col>
+                <ion-label stacked> 종속 옵션</ion-label>
+                <ion-checkbox [(ngModel)]="menu.options[i].extendedOptionExist"  (ionChange)="updateFlag(menu.options[i])" style="border:0;" ></ion-checkbox>            
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="menu.options[i].flagType && menu.options[i].extendedOptionExist">
+            <ion-col>
+                <ion-item>
+                    <ion-label stacked> 종속명</ion-label>
+                    <ion-input [(ngModel)]="menu.options[i].extendedOption.name" ></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label stacked>종속 가격</ion-label>
+                    <ion-input [(ngModel)]="menu.options[i].extendedOption.price" ></ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="menu.options[i].flagType && menu.options[i].extendedOptionExist">
+            <ion-col>
+                <ion-item>
+                    <ion-label stacked>종속 flag 옵션</ion-label>
+                    <ion-checkbox [(ngModel)]="menu.options[i].extendedOption.flagType" style="border:0;" ></ion-checkbox>
+                </ion-item>
+            </ion-col>            
+        </ion-row>        
+        <ion-row *ngIf="menu.options[i].flagType  && menu.options[i].extendedOptionExist">
+            <ion-col>
+                <ion-item>
+                    <ion-label stacked>메뉴가격무시</ion-label>
+                    <ion-checkbox [(ngModel)]="menu.options[i].extendedOption.ignoreUnitPrice" style="border:0;" ></ion-checkbox>
+                </ion-item>
+            </ion-col>            
         </ion-row>
         <div *ngIf="option.choice !== undefined">
         <ion-row >

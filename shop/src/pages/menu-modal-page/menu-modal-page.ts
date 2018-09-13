@@ -90,6 +90,10 @@ export class MenuModalPage {
                 this.toMin=timeConstraint.toMins%60;
             }
       }
+      if(params.get('menu').hasOwnProperty('deactive') && params.get('menu').deactive !== null){
+          if(params.get('menu').deactive==1)
+            this.menu.deactive=true;
+      }
       console.log("construct menu:"+JSON.stringify(this.menu));
       console.log("flags"+JSON.stringify(this.flags));
   }
@@ -340,6 +344,10 @@ export class MenuModalPage {
                     delete this.menu.imagePath;
                     console.log("delete this.menu.imagePath");
                 }
+                
+                // 설명필드가 reset될수도 있다.
+                if(!this.menu.explanation || this.menu.explanation.trim().length==0)
+                    this.menu.explanation=null;
 
                 this.serverProvider.modifyMenuInfo(this.menu)
                 .then((res:any)=>{
@@ -653,6 +661,7 @@ export class MenuModalPage {
       console.log(optionIdx);
     if(this.menu.options.length===1){
         delete this.menu.options;
+        this.menu.options=null;
     }else{
         for(let i=optionIdx; i<this.menu.options.length-1; i++){
             this.menu.options[i]=this.menu.options[i+1];          
@@ -803,4 +812,12 @@ export class MenuModalPage {
         alert.present();
   }
 
+
+  updateFlag(option){
+       if(option.extendedOptionExist){
+           option.extendedOption={}
+       }else{
+           delete option.extendedOption;
+       } 
+  }
 }

@@ -25,9 +25,9 @@ export class EditMenuPage {
 
     shop;
 
-    categorySelected:number=1;
+    categorySelected:number=0;
     nowCategory:any={};
-    categories=[];
+    categories:any=[];
 
     menuRows=[];
     categoryRows=[];
@@ -67,7 +67,8 @@ export class EditMenuPage {
 
   }
 
-  categoryChange(categoryNO,/*sequence*/categorySequence){
+  categoryChange(categoryNO,sequence){
+      console.log("sequence");
      if(this.storageProvider.tourMode){
             let alert = this.alertController.create({
                         title: '둘러보기 모드에서는 동작하지 않습니다.',
@@ -76,24 +77,7 @@ export class EditMenuPage {
             alert.present();
         return;
       }
-
-    //kalen.lee@takit.biz 2018-08-22 -begin
-    // category삭제로 sequence값이 항상 +1씩 증가하지는 않음. 빈 sequence가 있을수 있음으로 index를 따로 찾아야한다.
-    // !!! user앱의 shop화면에서 sequence값을 사용하여 sort를 수행하면 카테고리의 순서가 정렬된다. !!!!
-    // seqence 변경시 모든 카테고리의 sequence를 확인해 변경하는 루틴이 있으면 문제가 되지않는다.
-    let sequence=0;
-    console.log("input sequence:"+categorySequence);
-    for(let i=0;i<this.categories.length;i++){
-        console.log("index:"+i+" sequence:"+this.categories[i].sequence);
-        if(this.categories[i].sequence==categorySequence){
-            sequence=i+1;
-            break;
-        }
-    }
-    console.log("sequence:"+sequence);
-    //kalen.lee@takit.biz 2018-08-22 -end
-
-    console.log("[categoryChange] "+JSON.stringify(this.categories));
+    //console.log("[categoryChange] "+JSON.stringify(this.categories));
 
     console.log("[categoryChange] categorySelected:"+sequence+" previous:"+this.categorySelected);
     console.log("this.categoryMenuRows.length:"+this.categoryMenuRows.length);
@@ -106,18 +90,11 @@ export class EditMenuPage {
 
     if(this.categoryMenuRows.length>0 && this.categories.length > 0){
         //console.log("change menus");
-        this.menuRows=this.categoryMenuRows[sequence-1];
+        this.menuRows=this.categoryMenuRows[sequence];
         this.categorySelected=sequence; //Please check if this code is correct.
-        this.nowCategory=this.categories[sequence-1];
-    }else{
-        //kalen.lee@takit.biz 2018-08-22 begin
-        this.menuRows=this.categoryMenuRows[sequence-1];
-        this.categorySelected=sequence; //Please check if this code is correct.
-        this.nowCategory=this.categories[sequence-1];
-        //kalen.lee@takit.biz 2018-08-22 end        
+        this.nowCategory=this.categories[sequence];
     }
     this.addMenuContentRef.resize();
-
   }
 
   loadShopInfo(){
@@ -167,7 +144,7 @@ export class EditMenuPage {
     } /// categoryRows가 있어야 함
 
     this.shop.categories.forEach(category => {
-        let menus=[];
+        let menus:any=[];
         let options;
 
         console.log("[configureShopInfo]this.shop:");
@@ -220,20 +197,45 @@ export class EditMenuPage {
                 }
             });
 
-           
+            menus.sort(function(a:any,b:any){ // -1,0,1
+                    if(a.menuSeq!=null && b.menuSeq!=null){
+                            return (parseInt(a.menuSeq)-parseInt(b.menuSeq));
+                    }else if(a.menuSeq==null && b.menuSeq==null){
+                            return (a.menuName > b.menuName);
+                    }else if(a.menuSeq==null){
+                            return 1;
+                    }else 
+                            return -1;
+                    });     
+
             this.categories.push({categoryNO:parseInt(category.categoryNO), 
                                 categoryName:category.categoryName,
                                 categoryNameEn:category.categoryNameEn,
                                 sequence:parseInt(category.sequence),
                                 menus:menus
                                 });
-            console.log(" ")
-
         //console.log("[categories]:"+JSON.stringify(this.categories));
         //console.log("menus.length:"+menus.length);
         });
+
+        //sequence에 따라 category를 sort한다.
+        this.categories.sort(function(a,b){
+                    if(a.sequence!=null && b.sequence!=null){
+                            return (a.sequence-b.sequence);
+                    }else if(a.menuSeq==null && b.menuSeq==null){
+                            return (a.categoryName > b.categoryName);
+                    }else if(a.menuSeq==null){
+                            return 1;
+                    }else{ 
+                            return -1;
+                    }  
+        });
+        for(let i=0;i<this.categories.length;i++){
+            this.categories[i].index=i;
+        }
         //console.log("categories len:"+JSON.stringify(this.categories));
-        console.log("category:"+this.categories[0].menus.length);
+        //console.log("category:"+this.categories[0].menus.length);
+
         this.categories.forEach(category => {
         
             let menuRows=[];
@@ -264,8 +266,8 @@ export class EditMenuPage {
         }    
         
 
-        this.menuRows=this.categoryMenuRows[this.categorySelected-1];
-        this.nowCategory=this.categories[this.categorySelected-1];
+        this.menuRows=this.categoryMenuRows[this.categorySelected];
+        this.nowCategory=this.categories[this.categorySelected];
 
         console.log(JSON.stringify(this.nowCategory))
 
@@ -411,8 +413,8 @@ export class EditMenuPage {
             alert.present();
             return;
         }
-        this.inputModifyCategory.oldSequence = this.categories[this.categorySelected-1].sequence;
-        this.inputModifyCategory.categoryNO = this.categories[this.categorySelected-1].categoryNO;
+        this.inputModifyCategory.oldSequence = this.categories[this.categorySelected].sequence;
+        this.inputModifyCategory.categoryNO = this.categories[this.categorySelected].categoryNO;
 
         if(this.inputModifyCategory.newSequence){
             this.inputModifyCategory.newSequence = this.inputModifyCategory.oldSequence;
@@ -454,13 +456,13 @@ export class EditMenuPage {
         }
         //excute after when all menu is deleted
 
-        if(this.categories[this.categorySelected-1].menus.length === 0){
+        if(this.categories[this.categorySelected].menus.length === 0){
             let alert = this.alertController.create({
                 title: '해당 카테고리를 삭제 하시겠습니까?',
                 buttons: [{text:"아니오"},
                             {text:"예",
                                 handler:()=>{
-                                    this.serverProvider.removeCategory(this.categories[this.categorySelected-1])
+                                    this.serverProvider.removeCategory(this.categories[this.categorySelected])
                                     .then((res:any)=>{
                                         if(res.result === "success"){
                                         let alert = this.alertController.create({
@@ -554,11 +556,10 @@ export class EditMenuPage {
         }
 
         let menu;
-            for(let i=0;i<this.categories[this.categorySelected-1].menus.length;i++){
-                console.log(this.categories[this.categorySelected-1].menus[i]);
-                //console.log("menu:"+this.categories[category_no-1].menus[i].menuName);
-                if(this.categories[this.categorySelected-1].menus[i].menuName===menuName){
-                    menu=this.categories[this.categorySelected-1].menus[i];
+            for(let i=0;i<this.categories[this.categorySelected].menus.length;i++){
+                console.log(this.categories[this.categorySelected].menus[i]);
+                if(this.categories[this.categorySelected].menus[i].menuName===menuName){
+                    menu=this.categories[this.categorySelected].menus[i];
                     console.log(menu);
                 break;
             }
@@ -574,7 +575,7 @@ export class EditMenuPage {
 
         console.log("menu:"+menu);
 
-        menu.menuNO = this.storageProvider.myshop.takitId+";"+this.categories[this.categorySelected-1].categoryNO;
+        menu.menuNO = this.storageProvider.myshop.takitId+";"+this.categories[this.categorySelected].categoryNO;
         let menuModal = this.modalCtrl.create(MenuModalPage,{menu:menu});
 
         menuModal.onDidDismiss(() => {
@@ -604,7 +605,7 @@ export class EditMenuPage {
             return;
         }
 
-        let menuNO = this.storageProvider.myshop.takitId+";"+this.categories[this.categorySelected-1].categoryNO;
+        let menuNO = this.storageProvider.myshop.takitId+";"+this.categories[this.categorySelected].categoryNO;
         console.log("addMenu menuNO : "+menuNO);
         let menuModal = this.modalCtrl.create(MenuModalPage,{menu:{"menuNO":menuNO}});
         menuModal.onDidDismiss(() => {

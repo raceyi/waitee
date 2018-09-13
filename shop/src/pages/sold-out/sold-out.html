@@ -13,7 +13,9 @@
 <ion-content>
 <ion-row class="row-categories-menus">
              <ion-col col-3 class="col-categories" no-padding>
+                 <!--
                 <ion-scroll scrollY="true" class="scroll-categories">
+                    -->
                     <ion-list>
                         <ion-item *ngFor="let category of categories;let i=index;">
                           <button style="font-size:3.4vw;background-color:white;" value="i" (click)="categoryClick(i+1)" ion-button full  no-padding no-margin>
@@ -21,7 +23,9 @@
                           </button>
                         </ion-item>
                     </ion-list>
+                <!--
                 </ion-scroll>
+                -->
              </ion-col>
             <ion-col  col-9 class="col-menus">
                 <ion-scroll scrollY="true">

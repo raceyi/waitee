@@ -16,6 +16,7 @@ import {SalesPage} from '../pages/sales-page/sales-page';
 import { EditMenuPage } from '../pages/edit-menu-page/edit-menu-page';
 import { SoldOutPage } from '../pages/sold-out/sold-out';
 import {ConfigurePage} from '../pages/configure/configure';
+import {KioskSalesPage} from '../pages/kiosk-sales/kiosk-sales';
 
 import { StatusBar } from '@ionic-native/status-bar';
 //import { Storage } from '@ionic/storage';
@@ -195,6 +196,10 @@ export class MyApp {
 
     openSoldOut(){
         this.app.getRootNav().push(SoldOutPage)
+    }
+
+    openKioskSales(){
+        this.app.getRootNav().push(KioskSalesPage);
     }
 
    openLogout(){

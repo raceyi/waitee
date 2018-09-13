@@ -51,6 +51,7 @@
   </ion-item>    
   </ion-col>
 </ion-row>
+<!--
 <ion-row>
   <ion-col>
   <ion-item>
@@ -61,6 +62,118 @@
   <ion-item>
       <ion-icon class="store-status" [style.color]="notiColor" name="person" (click)="configureGotNoti()" ></ion-icon>
   </ion-item>
+  </ion-col>
+</ion-row>
+-->
+<ion-row>
+  <ion-col>
+  <ion-item>
+    영업시간
+  </ion-item>
+  </ion-col>
+</ion-row>
+<ion-row *ngFor="let day of weeks">
+  <ion-col col-1>
+          {{day.name}}
+  </ion-col>
+  <ion-col>
+        <ion-label>시작시</ion-label>
+        <ion-select [(ngModel)]="day.startHour" placeholder="시작시간">
+          <ion-option value=0> 0</ion-option>
+          <ion-option value=1> 1</ion-option>
+          <ion-option value=2> 2</ion-option>
+          <ion-option value=3> 3</ion-option>
+          <ion-option value=4> 4</ion-option>
+          <ion-option value=5> 5</ion-option>
+          <ion-option value=6> 6</ion-option>
+          <ion-option value=7> 7</ion-option>
+          <ion-option value=8> 8</ion-option>
+          <ion-option value=9> 9</ion-option>
+          <ion-option value=10> 10</ion-option>
+          <ion-option value=11> 11</ion-option>
+          <ion-option value=12> 12</ion-option>
+          <ion-option value=13> 13</ion-option>
+          <ion-option value=14> 14</ion-option>
+          <ion-option value=15> 15</ion-option>
+          <ion-option value=16> 16</ion-option>
+          <ion-option value=17> 17</ion-option>
+          <ion-option value=18> 18</ion-option>
+          <ion-option value=19> 19</ion-option>
+          <ion-option value=20> 20</ion-option>
+          <ion-option value=21> 21</ion-option>
+          <ion-option value=22> 22</ion-option>
+          <ion-option value=23> 23</ion-option>
+          <ion-option value=24> 24</ion-option>
+        </ion-select>
+  </ion-col>
+  <ion-col>
+        <ion-label>시작분</ion-label>
+        <ion-select [(ngModel)]="day.startMin">
+          <ion-option value=0> 0</ion-option>
+          <ion-option value=5> 5</ion-option>
+          <ion-option value=10> 10</ion-option>
+          <ion-option value=15> 15</ion-option>
+          <ion-option value=20> 20</ion-option>
+          <ion-option value=25> 25</ion-option>
+          <ion-option value=30> 30</ion-option>
+          <ion-option value=35> 35</ion-option>
+          <ion-option value=40> 40</ion-option>
+          <ion-option value=45> 45</ion-option>
+          <ion-option value=50> 50</ion-option>
+          <ion-option value=55> 55</ion-option>
+        </ion-select>      
+  </ion-col>
+  <ion-col>
+        <ion-label>종료시</ion-label>
+        <ion-select [(ngModel)]="day.endHour"  placeholder="종료시간">
+          <ion-option value=0> 0</ion-option>
+          <ion-option value=1> 1</ion-option>
+          <ion-option value=2> 2</ion-option>
+          <ion-option value=3> 3</ion-option>
+          <ion-option value=4> 4</ion-option>
+          <ion-option value=5> 5</ion-option>
+          <ion-option value=6> 6</ion-option>
+          <ion-option value=7> 7</ion-option>
+          <ion-option value=8> 8</ion-option>
+          <ion-option value=9> 9</ion-option>
+          <ion-option value=10> 10</ion-option>
+          <ion-option value=11> 11</ion-option>
+          <ion-option value=12> 12</ion-option>
+          <ion-option value=13> 13</ion-option>
+          <ion-option value=14> 14</ion-option>
+          <ion-option value=15> 15</ion-option>
+          <ion-option value=16> 16</ion-option>
+          <ion-option value=17> 17</ion-option>
+          <ion-option value=18> 18</ion-option>
+          <ion-option value=19> 19</ion-option>
+          <ion-option value=20> 20</ion-option>
+          <ion-option value=21> 21</ion-option>
+          <ion-option value=22> 22</ion-option>
+          <ion-option value=23> 23</ion-option>
+          <ion-option value=24> 24</ion-option>          
+        </ion-select>
+  </ion-col>
+  <ion-col>
+        <ion-label>종료분</ion-label>
+        <ion-select [(ngModel)]="day.endMin">
+          <ion-option value=0> 0</ion-option>
+          <ion-option value=5> 5</ion-option>
+          <ion-option value=10> 10</ion-option>
+          <ion-option value=15> 15</ion-option>
+          <ion-option value=20> 20</ion-option>
+          <ion-option value=25> 25</ion-option>
+          <ion-option value=30> 30</ion-option>
+          <ion-option value=35> 35</ion-option>
+          <ion-option value=40> 40</ion-option>
+          <ion-option value=45> 45</ion-option>
+          <ion-option value=50> 50</ion-option>
+          <ion-option value=55> 55</ion-option>        
+        </ion-select>      
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col text-center>
+    <button ion-button (click)="changeBusinessHours()">영업시간 수정</button>
   </ion-col>
 </ion-row>
 </ion-content>

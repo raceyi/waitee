@@ -17,6 +17,10 @@
       취소사유
     </ion-list-header>
     <ion-item *ngIf="order.orderStatus!='completed'">
+      <ion-label>혼잡시간</ion-label>
+      <ion-radio value="혼잡시간" (ionSelect)="changeReasonType('혼잡시간')"></ion-radio>
+    </ion-item>    
+    <ion-item *ngIf="order.orderStatus!='completed'">
       <ion-label>재료소진</ion-label>
       <ion-radio value="재료소진" (ionSelect)="changeReasonType('재료소진')"></ion-radio>
     </ion-item>

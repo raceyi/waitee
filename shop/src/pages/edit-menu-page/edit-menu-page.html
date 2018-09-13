@@ -19,9 +19,9 @@
 
 <div class="selectCategory">
     <ion-row *ngFor="let categories of categoryRows">
-        <ion-col width-33  class="segmentButton" *ngFor="let category of categories" style="max-width: 33.3333%;">
+        <ion-col width-33  class="segmentButton" *ngFor="let category of categories;let i=index;" style="max-width: 33.3333%;">
             <ion-segment #categorySegment [(ngModel)]="categorySelected">
-                    <ion-segment-button [value]="category.sequence" (click)="categoryChange(category.categoryNO,category.sequence)">
+                    <ion-segment-button [value]="category.index" (click)="categoryChange(category.categoryNO,category.index)">
                     {{category.categoryName}}
                     </ion-segment-button>
             </ion-segment>        
@@ -120,6 +120,7 @@
                             <p class="MenuSubject">{{menu.menuName}}</p>
                             <p *ngIf="menu.menuNameEn!==null" class="MenuText">{{"("+menu.menuNameEn+")"}}</p>
                             <p class="MenuText">{{menu.price}}</p>
+                            <p *ngIf="menu.menuSeq!=null" class="MenuText">{{menu.menuSeq}}</p>
                             <p *ngIf="menu.takeout===true || menu.takeout==1" class="MenuText">포장가능</p>
                             <p *ngIf="menu.takeout==2" class="MenuText">배달가능</p>
                             <p *ngIf="menu.explanation!==null" class="MenuText">{{menu.explanation}}</p>

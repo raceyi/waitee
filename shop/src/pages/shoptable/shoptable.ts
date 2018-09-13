@@ -163,6 +163,7 @@ export class ShopTablePage {
                 })
 
                 if(gShopTablePage.storageProvider.kiosk){
+                        
                         gShopTablePage.serverProvider.post("/kiosk/getKioskRecentOrder",body).then((res:any)=>{
                             console.log("res.more:"+res.more);
                             if(res.more){
@@ -170,7 +171,7 @@ export class ShopTablePage {
                                 gShopTablePage.getOrders(-1,-1).then(()=>{
                                     if(gShopTablePage.orders[0].orderStatus=="paid"){
                                             gShopTablePage.printOrder(gShopTablePage.orders[0]);
-                                              gShopTablePage.mediaProvider.play();
+                                            gShopTablePage.mediaProvider.play();
                                     } 
                                 });
                             }
@@ -440,7 +441,7 @@ export class ShopTablePage {
     convertKioskOrderInfo(orderInfo){
         let order:any={};
         order=orderInfo;
-        console.log("!!!kiosk-order:"+JSON.stringify(order));
+        //console.log("!!!kiosk-order:"+JSON.stringify(order));
         order.statusString=this.getStatusString(order.orderStatus);
           if(order.orderStatus=="pickup" || order.orderStatus=="cancelled")
             order.hidden=true;
@@ -492,7 +493,7 @@ export class ShopTablePage {
           if(order.hasOwnProperty('orderedTime') && order.orderedTime!=null){
               order.localOrderedTimeString=this.timeUtil.getlocalTimeStringWithoutDay(order.orderedTime);
           }
-          console.log("kiosk-order result:"+JSON.stringify(order));
+          //console.log("kiosk-order result:"+JSON.stringify(order));
           return order;
     }
 
@@ -502,7 +503,7 @@ export class ShopTablePage {
         }else{
           var order:any={};
           order=orderInfo;
-          console.log("!!!order:"+JSON.stringify(order));
+          //console.log("!!!order:"+JSON.stringify(order));
           //var date=new Date(orderInfo.orderedTime);
 
           //console.log("local ordered time:"+ date.toLocaleString());//date.toLocaleDateString('ko-KR')
@@ -592,7 +593,7 @@ export class ShopTablePage {
         }
         let reqUrl="/shop/getOrders";
 
-        console.log("this.storageProvider.shopInfo:"+JSON.stringify(this.storageProvider.shopInfo));
+        console.log("body:"+JSON.stringify(body));
 
         if(this.storageProvider.kiosk){
             body.lastKioskOrderId=lastKioskOrderId;
@@ -611,7 +612,17 @@ export class ShopTablePage {
               });
               console.log("orders.length:"+this.orders.length);
               //orderedTime으로 소팅은 서버에서 한다. Why app에서 정상으로 안될까? 나중에 검증하자.
-
+              this.orders.sort(function(a, b){
+                  let aDate=new Date(a.orderedTime);
+                  let bDate=new Date(b.orderedTime);
+                  if(aDate>bDate){
+                      return -1;
+                  }else if(aDate<bDate){
+                       return 1;
+                  }
+                  return 0;
+              });
+              
               //console.log("orders:"+JSON.stringify(this.orders))
               resolve(true);
             }else if(res.orders=="0" || result==="failure"){ //Please check if it works or not
@@ -805,9 +816,12 @@ export class ShopTablePage {
     }
 
     printOrder(order){
-      if(this.storageProvider.printOn==false || this.storageProvider.myshop.GCMNoti=="off" )
-        return;
-      
+        console.log("!!! printOrder coming!!!!");
+
+      if(this.storageProvider.printOn==false || this.storageProvider.myshop.GCMNoti=="off" ){
+            console.log("do not print out")
+            //return;
+      }
       var title,message="";
       console.log("order:"+JSON.stringify(order));
       if(order.orderStatus=="paid" ||order.orderStatus=="checked"){
@@ -828,23 +842,42 @@ export class ShopTablePage {
                 message="배달장소:"+order.deliveryAddress+"\n";
               }
           }
-          title+="\n"+this.timeUtil.getlocalTimeStringWithoutYear(order.orderedTime);                
-          order.orderListObj.menus.forEach((menu)=>{
-              message+="-------------\n";
-              message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
-              menu.options.forEach((option)=>{
-                message+=" "+option.name;
-                if(option.select!=undefined){
-                  message+="("+option.select+")";
-                }
-                message+="\n";
-              });
-                if(menu.memo && menu.memo!=null){
-                    message+=menu.memo;
-                    message+="\n";
+          title+="\n"+this.timeUtil.getlocalTimeStringWithoutYear(order.orderedTime);  
+          if(order.orderListObj.menus){              
+                order.orderListObj.menus.forEach((menu)=>{
                     message+="-------------\n";
-                }
-          });
+                    message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
+                    menu.options.forEach((option)=>{
+                        message+=" "+option.name;
+                        if(option.select!=undefined){
+                        message+="("+option.select+")";
+                        }
+                        message+="\n";
+                    });
+                        if(menu.memo && menu.memo!=null){
+                            message+=menu.memo;
+                            message+="\n";
+                            message+="-------------\n";
+                        }
+                });
+          }else if(order.orderListObj){
+                order.orderListObj.forEach((menu)=>{
+                    message+="-------------\n";
+                    message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
+                    menu.options.forEach((option)=>{
+                        message+=" "+option.name;
+                        if(option.select!=undefined){
+                        message+="("+option.select+")";
+                        }
+                        message+="\n";
+                    });
+                        if(menu.memo && menu.memo!=null){
+                            message+=menu.memo;
+                            message+="\n";
+                            message+="-------------\n";
+                        }
+                });
+          }
       }else if(order.orderStatus=="completed" || order.orderStatus=="pickup"){ //print receipt
           if(this.platform.is("android")){
               title="        영수증\n";
@@ -858,18 +891,33 @@ export class ShopTablePage {
           message+="\n";
           message+=order.localOrderedTime;
           message+="\n";
-          order.orderListObj.menus.forEach((menu)=>{
-              message+="-------------\n";
-              message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
-              menu.options.forEach((option)=>{
-                message+=" "+option.name;
-                if(option.select!=undefined){
-                  message+="("+option.select+")";
-                }
-                message+=menu.quantity*option.price+"\n";
-              });
-              message+=" "+menu.amount;
-          });          
+          if(order.orderListObj.menus){
+                order.orderListObj.menus.forEach((menu)=>{
+                    message+="-------------\n";
+                    message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
+                    menu.options.forEach((option)=>{
+                        message+=" "+option.name;
+                        if(option.select!=undefined){
+                        message+="("+option.select+")";
+                        }
+                        message+=menu.quantity*option.price+"\n";
+                    });
+                    message+=" "+menu.amount;
+                });    
+          }else if(order.orderListObj){
+                order.orderListObj.forEach((menu)=>{
+                    message+="-------------\n";
+                    message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
+                    menu.options.forEach((option)=>{
+                        message+=" "+option.name;
+                        if(option.select!=undefined){
+                        message+="("+option.select+")";
+                        }
+                        message+=menu.quantity*option.price+"\n";
+                    });
+                    message+=" "+menu.amount;
+                });    
+          }      
           message+="\n";
           let totalAmount=order.amount;
           let tax=Math.round(totalAmount/11.0);
@@ -890,17 +938,31 @@ export class ShopTablePage {
           message+="\n";
           message+=order.localCancelledTime;
           message+="\n";
-          order.orderListObj.menus.forEach((menu)=>{
-              message+="-------------\n";
-              message+=" "+menu.menuName+"(-"+menu.quantity+")\n"; 
-              menu.options.forEach((option)=>{
-                message+=" "+option.name;
-                if(option.select!=undefined){
-                  message+="("+option.select+")";
-                }
-                message+="\n";
-              });
-          });          
+          if(order.orderListObj.menus){
+            order.orderListObj.menus.forEach((menu)=>{
+                message+="-------------\n";
+                message+=" "+menu.menuName+"(-"+menu.quantity+")\n"; 
+                menu.options.forEach((option)=>{
+                    message+=" "+option.name;
+                    if(option.select!=undefined){
+                    message+="("+option.select+")";
+                    }
+                    message+="\n";
+                });
+            });          
+          }else if(order.orderListObj){
+            order.orderListObj.forEach((menu)=>{
+                message+="-------------\n";
+                message+=" "+menu.menuName+"(-"+menu.quantity+")\n"; 
+                menu.options.forEach((option)=>{
+                    message+=" "+option.name;
+                    if(option.select!=undefined){
+                    message+="("+option.select+")";
+                    }
+                    message+="\n";
+                });
+            });          
+          }
           message+="\n";
           let totalAmount=order.amount;
           let tax=Math.round(totalAmount/11.0);
@@ -1252,7 +1314,8 @@ export class ShopTablePage {
     notifyAudio(order){
         if(this.storageProvider.device && this.storageProvider.kiosk){
             chrome.sockets.tcp.create(function(createInfo) {
-            let addr="192.168.0.7";  //더큰도시락 ip
+            let addr="192.168.0.9";  //더큰도시락 ip
+            //let addr="192.168.0.10"; // 내 삼성폰 
             //let addr="192.168.0.4";
             let port=12345;
             let name=order.orderName;
@@ -1408,6 +1471,7 @@ export class ShopTablePage {
                                   order.orderStatus="completed";
                                   order.statusString="전달"; 
                                   order.completedTime=new Date().toISOString();
+                                  this.notifyAudio(order)
                                   //order.hidden=true;
                                 },()=>{
                                   console.log("주문 완료에 실패했습니다.");
@@ -1632,9 +1696,12 @@ export class ShopTablePage {
 
      findLastOrderId(){
         let lastOrderId=-1;
-        for(let i=this.orders.length-1;i>=0;i++){
+        console.log("findLastOrderId\n");
+
+        for(let i=this.orders.length-1;i>=0;i--){
+            console.log("i:"+i+" type:"+ this.orders[i].type);
             if(!this.orders[i].type){
-                lastOrderId=i;
+                lastOrderId=this.orders[i].orderId;
                 break;
             }
         }
@@ -1643,9 +1710,10 @@ export class ShopTablePage {
 
      findLastKioskId(){
         let lastOrderId=-1;
-        for(let i=this.orders.length-1;i>=0;i++){
+        for(let i=this.orders.length-1;i>=0;i--){
+            console.log("***********i:"+i+ "orderId:"+this.orders[i].orderId+ "type:"+this.orders[i].type);
             if(this.orders[i].type && this.orders[i].type=="kiosk"){
-                lastOrderId=i;
+                lastOrderId=this.orders[i].orderId;
                 break;
             }
         }
@@ -1653,11 +1721,16 @@ export class ShopTablePage {
      }
 
      doInfinite(infiniteScroll){
+        console.log("doInfinite");
+
         let lastOrderId= this.findLastOrderId();
         let lastKioskId=-1;
+
         if(this.storageProvider.kiosk){
              lastKioskId=this.findLastKioskId();
         }
+        console.log("*********lastOrderId:"+lastOrderId);
+        console.log("**********lastKioskId:"+lastKioskId);
         this.getOrders(lastOrderId,lastKioskId).then((more)=>{
           if(more)
               infiniteScroll.complete();
@@ -2012,35 +2085,38 @@ export class ShopTablePage {
     notifyOrder(order){
         console.log("notifyOrder comes");
         return new Promise((resolve,reject)=>{
-        let body= JSON.stringify({ orderId: order.orderId });
-
-        console.log("body:"+JSON.stringify(body));
-        this.serverProvider.post("/shop/notifyOrder",body).then((res:any)=>{   
-            console.log("...res:"+JSON.stringify(res));
-              let alert = this.alertController.create({
-                                    title: '고객님께 알림이 전달되었습니다.',
-                                    buttons: ['OK']
-                                });
-                alert.present();
-                this.notifyAudio(order)
-         },(err)=>{
-           if(err=="NetworkFailure"){
-              console.log("서버와 통신에 문제가 있습니다");
-              let alert = this.alertController.create({
-                                    title: '서버와 통신에 문제가 있습니다',
-                                    subTitle: '네트웍상태를 확인해 주시기바랍니다',
-                                    buttons: ['OK']
-                                });
-                alert.present();
-           }else if(err=="HttpFailure"){
-              let alert = this.alertController.create({
-                                    title: '서버로 부터 정상응답을 받지 못하였습니다.',
-                                    buttons: ['OK']
-                                });
-                alert.present();           
+            this.notifyAudio(order);
+            if(order.type && order.type=='kiosk'){
+                return;
             }
-         });
-         /*
+            let body= JSON.stringify({ orderId: order.orderId });
+
+            console.log("body:"+JSON.stringify(body));
+            this.serverProvider.post("/shop/notifyOrder",body).then((res:any)=>{   
+                console.log("...res:"+JSON.stringify(res));
+                let alert = this.alertController.create({
+                                        title: '고객님께 알림이 전달되었습니다.',
+                                        buttons: ['OK']
+                                    });
+                    alert.present();
+            },(err)=>{
+            if(err=="NetworkFailure"){
+                console.log("서버와 통신에 문제가 있습니다");
+                let alert = this.alertController.create({
+                                        title: '서버와 통신에 문제가 있습니다',
+                                        subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                                        buttons: ['OK']
+                                    });
+                    alert.present();
+            }else if(err=="HttpFailure"){
+                let alert = this.alertController.create({
+                                        title: '서버로 부터 정상응답을 받지 못하였습니다.',
+                                        buttons: ['OK']
+                                    });
+                    alert.present();           
+                }
+            });
+            /*
         let name=order.orderName;
         let options={
             text:order.orderNO+'번'+name+'이 준비되었습니다.',
