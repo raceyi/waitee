@@ -133,6 +133,8 @@ $ionic cordova plugin add phonegap-plugin-push   ===> PushInstanceIDListenerServ
 
 $npm install --save @ionic-native/push
 
+<variable name="SENDER_ID" value="986862676163" />        ===> config.xml에 추가하기 
+
 $ionic cordova plugin add cordova-plugin-media            ===>enforce cordova-plugin-file@6.0.1
 
 $npm install --save @ionic-native/media
@@ -169,8 +171,6 @@ $npm install @types/crypto-js --save
 
 $npm install ng-socket-io --save
 
-$npm install ionic2-custom-icons --save
-
 $npm install moment --save
 
 $npm install --save @ionic-native/file
@@ -185,6 +185,77 @@ $npm install --save @ionic-native/text-to-speech
 
 $ionic cordova plugin add cordova-plugin-volume-control
 
+$ionic cordova plugin add 
+
+$ionic cordova plugin add cordova-plugin-advanced-http
+
+$npm install --save @ionic-native/http
+
+$npm install ionic2-custom-icons --save
+
 platforms/android/app/src/main/res/raw 에 mp3파일 복사
 assets파일 복사
+
+platforms/android/app/libs에 bt.command.sdk.jar	btsdk.jar 복사
+
+/src/pages/home삭제
+
+icons 디렉토리에 복사 
+
+kiosk
+
+
+notifier
+config.xml에 id와 이름 수정
+id:biz.takit.notifier
+name: 소리알림
+
+$ionic start notifier blank 
+
+$ionic cordova platform add android
+
+$ionic cordova plugin add https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-sockets-tcpServer
+
+$ionic cordova plugin add cordova-plugin-networkinterface
+
+$ionic cordova plugin add https://github.com/leecrossley/cordova-plugin-boot-launcher 
+
+BootLauncher.java에 biz.takit.notifier.MainActivity.class 수정
+
+$ionic cordova plugin add cordova-plugin-background-mode
+
+$npm install --save @ionic-native/background-mode
+
+$ionic cordova plugin add cordova-plugin-media
+
+$npm install --save @ionic-native/media
+
+$ionic cordova plugin add cordova-plugin-tts
+
+$npm install --save @ionic-native/text-to-speech
+
+kiosk
+
+$ionic cordova plugin add ../wifiprinterplugin/WifiPrinter/
+
+$ionic cordova plugin add cordova-plugin-nativestorage
+
+$npm install --save @ionic-native/native-storage
+
+$npm install crypto-js
+
+$npm install @types/crypto-js --save
+
+$npm install hangul-js
+
+$ionic cordova plugin add com-darryncampbell-cordova-plugin-intent
+
+$npm install --save @ionic-native/web-intent
+
+$ionic cordova plugin add cordova-plugin-customurlscheme --variable URL_SCHEME=waitee
+
+$ionic cordova plugin add com-darryncampbell-cordova-plugin-intent
+
+$npm install --save @ionic-native/web-intent
+
 

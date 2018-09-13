@@ -36,9 +36,11 @@ export class HomePage {
               private platform:Platform) {
       this.platform.ready().then(() => {
         if(platform.is("cordova")){
+          /*
             cordova.plugins.WifiPrinter.listen((status)=>{
               console.log("status:"+status);
             })
+          */
         }
         this.getShopInfoAll(this.storageProvider.myshop.takitId);
            
@@ -170,6 +172,7 @@ export class HomePage {
     this.getShopInfoAll("TEST2@TAKIT");
   }
 
+/*
   connectPrinter(){
     cordova.plugins.WifiPrinter.connect("192.168.0.105",(result)=>{
 
@@ -185,7 +188,8 @@ export class HomePage {
       
     })
   }
- 
+ */
+
  selectCategory(categoryIndex){
     console.log("category:"+categoryIndex);
     this.navCtrl.push(MenuListPage,{class:"MenuListPage",categoryIndex:categoryIndex});  

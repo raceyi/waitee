@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import {ConfigProvider} from '../config/config';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Platform } from 'ionic-angular';
+import { AlertController} from 'ionic-angular';
 
 import * as CryptoJS from 'crypto-js';
 
@@ -43,12 +44,16 @@ export class StorageProvider {
     constructor(public http: HttpClient,
                 private configProvider:ConfigProvider,
                 private nativeStorage:NativeStorage,
+                private alertCtrl:AlertController,
                 private platform:Platform) {
 
             console.log('Hello StorageProvider Provider');
             this.platform.ready().then(() => {
                 this.nativeStorage.getItem("lastTransNo").then((value:string)=>{
+                    console.log("lastTransNo from storage!!!!"+value);
+                    console.log("parseInt:"+parseInt(value));
                     this.lastTransNo=parseInt(value)%10000;
+                    console.log("this.lastTransNo:"+this.lastTransNo);
                 },err=>{
                     this.lastTransNo=0;
                     this.nativeStorage.setItem('lastTransNo',"0");
@@ -58,15 +63,39 @@ export class StorageProvider {
                 },err=>{
                     this.cancelFailurePayment=[];
                 })
+                this.nativeStorage.getItem('lastRunFailure').then((value:string)=>{
+                    if(value=="payment"){
+                        let alert = this.alertCtrl.create({
+                                        title: '결제오류로 앱이 종료되었습니다. 주문확인->카드 결제 취소에서 마지막 결제정보를 확인하실수 있습니다.',
+                                        subTitle:"주문 오류로 결제취소가 필요하신분은 반듯이 취소를 수행해 해주시기 바랍니다.",
+                                        buttons: ['OK']
+                                    });
+                                    alert.present();
+                    }
+                })
             });
+    }
+
+    setPaymentFailure(){
+        this.nativeStorage.setItem('lastRunFailure',"payment");
+    }
+
+    clearPaymentFailure(){
+        this.nativeStorage.setItem('lastRunFailure',"0");
     }
 
     getTransNo(){
         return new Promise((resolve, reject)=>{
-            let lastTransNo=this.lastTransNo+1;
+            console.log("getTransNo  this.lastTransNo:"+this.lastTransNo);
+            let lastTransNo=this.lastTransNo+3;
+            console.log("getTransNo:"+lastTransNo);
             this.nativeStorage.setItem('lastTransNo',lastTransNo.toString()).then((value)=>{
                 this.lastTransNo=lastTransNo;
-                resolve(this.lastTransNo);
+                let overflow:number=lastTransNo+10000;
+                console.log(overflow.toString());
+                let stringVal=overflow.toString().substr(1,4);
+                console.log("!!!!transNo-stringVal:"+stringVal);
+                resolve(stringVal);
             },err=>{
                 reject("fail to update lastTransNo");
             })

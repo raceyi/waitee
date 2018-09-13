@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component,ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams,Content } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {MenuPage} from '../menu/menu';
 import * as hangul from 'hangul-js';
@@ -19,6 +19,7 @@ import {OrderListPage} from '../order-list/order-list';
   templateUrl: 'search.html',
 })
 export class SearchPage {
+  @ViewChild("homeContent") public contentRef: Content;
 
   menus=[];
   constructor(public navCtrl: NavController,
@@ -83,4 +84,11 @@ checkInclude(menuName,keyword){
    moveOrderList(){
     this.navCtrl.push(OrderListPage,{class:"OrderListPage"});
   }  
+
+  resetCart(){
+    this.cartProvider.resetCart().then(()=>{
+        this.contentRef.resize();
+    });
+  }
+
 }

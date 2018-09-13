@@ -104,8 +104,13 @@ export class ServerProvider {
             let body:any;
             console.log("shop.shopInfo "+JSON.stringify(this.storage.shop.shopInfo));
             let output=this.smartroResultParser(JSON.parse(cardResult));
+            let orderName;
+            if(this.cartProvider.orderList.length==1)
+                orderName=this.cartProvider.orderList[0].menuName+this.cartProvider.orderList[0].quantity+"개";
+            else
+                orderName=this.cartProvider.orderName;    
             body={ takitId: this.storage.takitId,
-                    orderName:this.cartProvider.orderName,
+                    orderName:orderName,
                     amount: this.cartProvider.totalAmount,
                     takeout: takeout,
                     notiPhone:notiPhone,
@@ -163,6 +168,7 @@ export class ServerProvider {
             let catid="7098349001";
              let tmpVal="smartroapp://freepaylink?mode=normal&trantype=card_cancel&amount="+amount+"&totalamount="+amount+"&authedno="+approvalNO+"&autheddate="+approvalDate+"&businessno="+businessno+"&catid="+catid+"&receiptmode=2&dongletype=5";
            // let tmpVal="smartroapp://freepaylink?mode=normal&trantype=card_cancel&amount="+amount+"&totalamount="+amount+"&authedno="+approvalNO+"&autheddate="+approvalDate+"&businessno="+this.storage.shop.shopInfo.businessNumber+"&catid="+this.storage.catid+"&receiptmode=2&dongletype=5";
+             this.storage.getTransNo(); //Just increase transNo 
 
             let loading = this.loadingCtrl.create({
             content: '결제 취소 준비중입니다.'

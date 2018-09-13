@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component,ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams,Content } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {SearchPage} from '../search/search';
 import {MenuPage} from '../menu/menu';
@@ -23,6 +23,7 @@ export class MenuListPage {
   menus;
   categorySelected;
   nowMenus;
+  @ViewChild("homeContent") public contentRef: Content;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -33,6 +34,17 @@ export class MenuListPage {
       //console.log("categories:"+JSON.stringify(this.categories));
 
       this.nowMenus=this.categories[this.categorySelected].menus;
+      this.nowMenus.forEach(menu=>{
+            console.log("menu.menuSeq:"+menu.menuSeq);
+      })
+      console.log("menuSeq:"+this.nowMenus[0].menuSeq);
+
+      this.sortNowMenus();
+
+      for(var j=0;j<this.nowMenus.length;j++)
+            console.log("i:"+j+" "+this.nowMenus[j].menuName+ " "+this.nowMenus[j].menuSeq);
+
+      console.log("this.nowMenus:"+JSON.stringify(this.nowMenus));
       this.menus=[];
         for(var i=0;i<this.nowMenus.length/2;i++){
            let pair=[];
@@ -41,9 +53,24 @@ export class MenuListPage {
            this.menus.push(pair);
            console.log("i:"+i);
         }     
-      console.log("menus:"+JSON.stringify(this.menus[0][0].soldout));
+      console.log("menus:"+JSON.stringify(this.menus));
       //this.menus[0][0].soldout=1; Just for testing
   }
+
+
+  sortNowMenus(){ //Why it doesn't work?
+    this.nowMenus.sort(function(a,b){ // -1,0,1
+      if(a.menuSeq!=null && b.menuSeq!=null){
+            return (parseInt(a.menuSeq)-parseInt(b.menuSeq));
+      }else if(a.menuSeq==null && b.menuSeq==null){
+            return (a.menuName > b.menuName);
+      }else if(a.menuSeq==null){
+            return 1;
+      }else 
+            return -1;
+    })     
+  }
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MenuListPage');
@@ -53,6 +80,7 @@ categoryClick(sequence){
     console.log("[categoryChange] sequence:"+sequence+" previous:"+this.categorySelected);
     console.log("sequence type:"+typeof sequence+"categorySelected type:"+typeof this.categorySelected)
         this.nowMenus=this.categories[sequence].menus;
+        this.sortNowMenus();
         this.menus=[];
         for(var i=0;i<this.nowMenus.length/2;i++){
            let pair=[];
@@ -133,4 +161,11 @@ categoryClick(sequence){
       }
       return lines;
   }
+
+    resetCart(){
+    this.cartProvider.resetCart().then(()=>{
+        this.contentRef.resize();
+    });
+  }
+
 }

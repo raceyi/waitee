@@ -22,13 +22,13 @@
     {{orderNO}}
     </ion-col>
   </ion-row>
-  <ion-row style="padding-top:40px;">
+  <ion-row style="padding-top:20px;">
     <ion-col text-center style="font-size:3.5vw;">
     {{orderName}}
     </ion-col>
   </ion-row>
 
-  <ion-row  style="padding-top:40px;" *ngIf="orderNotify">
+  <ion-row  style="padding-top:30px;" *ngIf="orderNotify">
     <ion-col col-3>
     </ion-col>
     <ion-col text-center style="font-size:3.5vw;color:#20dba5;">
@@ -40,7 +40,20 @@
     </ion-col>
   </ion-row>
 
-  <ion-row *ngIf="orderNotify" style="padding-top:50px;" >
+  <ion-row  style="padding-top:30px;" *ngIf="!orderNotify">
+    <ion-col col-3>
+    </ion-col>
+    <ion-col text-center style="font-size:3.5vw;color:#20dba5;">
+      주문번호를 기억해주세요. <br>
+      첫화면 좌측상단 주문확인에서 <br>
+      주문번호로 주문 내역확인이 <br>
+      가능합니다.                            
+    </ion-col>
+    <ion-col col-3>
+    </ion-col>
+  </ion-row>
+
+  <ion-row style="padding-top:50px;" >
     <ion-col text-center class="confirm-button">
       <button (click)="confirm()" outline color="primary" ion-button>확인</button> 
     </ion-col>

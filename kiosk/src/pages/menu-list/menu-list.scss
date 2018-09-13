@@ -64,7 +64,7 @@ $secondary-color:#20dba5;
             border-bottom: 0px;
         }
         button{
-            height:calc((100/1280)*100vh) !important;
+            height:calc((30/1280)*100vh) !important; //100에서 30으로 줄임. 더큰처럼 메뉴가 많은 경우를 위해서... ts로 height를 dynamic하게 맞추자. !!!!매장마다 카테고리는 한 화면에 나오도록!!!! 
             background-color:white;
             color:black;
             span{

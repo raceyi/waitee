@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,AlertController } from 'ionic-angular';
+import { Component ,ViewChild} from '@angular/core';
+import { IonicPage, NavController, NavParams,AlertController,Content } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import { CartProvider } from '../../providers/cart/cart';
 import {OrderListPage} from '../order-list/order-list';
@@ -18,6 +18,7 @@ import {OrderListPage} from '../order-list/order-list';
 })
 export class MenuPage {
   menu;
+  @ViewChild("homeContent") public contentRef: Content;
 
   options:any;
   choice;   
@@ -321,4 +322,11 @@ export class MenuPage {
    moveOrderList(){
     this.navCtrl.push(OrderListPage,{class:"OrderListPage"});
   }
+
+  resetCart(){
+    this.cartProvider.resetCart().then(()=>{
+        this.contentRef.resize();
+    });
+  }
+
 }

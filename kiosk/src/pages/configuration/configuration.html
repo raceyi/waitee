@@ -14,5 +14,15 @@
 
 
 <ion-content padding>
-
+<ion-row>
+  <ion-col>
+transNo 
+  </ion-col>
+  <ion-col>
+      <ion-input text-center style="font-size:4vw;" type="number" placeholder="transNo"  [(ngModel)]="transNo"> </ion-input>
+  </ion-col>
+  <ion-col>
+          <button ion-button outline (click)="resetTransNo()" style="font-size:3.5vw;">적용</button>
+  </ion-col>
+</ion-row>
 </ion-content>

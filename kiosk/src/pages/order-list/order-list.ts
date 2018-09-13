@@ -30,7 +30,9 @@ export class OrderListPage {
   takeout=0; //매장 
   phoneNumber="";
   orderNotify=true;
-  
+  activityInProgress=false;
+  paymentTimer;
+
   @ViewChild("phoneInput") public phoneInput: TextInput;
 
   constructor(public navCtrl: NavController, 
@@ -78,19 +80,21 @@ export class OrderListPage {
             alert.present();
             return;
     }
-    console.log("moveCardPayment:"+this.phoneNumber.trim().length);
-    if(this.phoneNumber.trim().length==0){
-            console.log("focus on phone number");
-            this.phoneInput.setFocus(); 
-            return;
-    }
-    if(!this.checkPhoneValidity()){
-            let alert = this.alertCtrl.create({
-              title: '주문서가 전달될 휴대폰 번호가 유효하지 않습니다.',
-              buttons: ['OK']
-            });
-            alert.present();
-            return;        
+    if(this.orderNotify){
+        console.log("moveCardPayment:"+this.phoneNumber.trim().length);
+        if(this.phoneNumber.trim().length==0){
+                console.log("focus on phone number");
+                this.phoneInput.setFocus(); 
+                return;
+        }
+        if(!this.checkPhoneValidity()){
+                let alert = this.alertCtrl.create({
+                  title: '주문서가 전달될 휴대폰 번호가 유효하지 않습니다.',
+                  buttons: ['OK']
+                });
+                alert.present();
+                return;        
+        }
     }
     let body={orderList:this.cartProvider.orderList}
     this.serverProvider.post("/kiosk/checkSoldOut",body).then((res:any)=>{  // check sold-out
@@ -116,7 +120,8 @@ export class OrderListPage {
   makePayment(){
     if(this.storageProvider.van=="nice"){
         this.navCtrl.push(CardExplainPage,{class:"CardExplainPage"});
-    }else if(this.storageProvider.van=="smartro"){
+    }else if(this.storageProvider.van=="smartro" && !this.activityInProgress){
+        this.activityInProgress=true;
         let loading = this.loadingCtrl.create({
           content: '결제 준비중입니다.'
         });
@@ -124,20 +129,45 @@ export class OrderListPage {
 
         //let tmpVal="smartroapp://freepaylink?mode=normal&amount=50&trantype=card&amount=100&surtax=0&totalamount=100&tranno=0008&businessno=1428800447&catid=9968333001&receiptmode=2&dongletype=5";
         let totalamount=this.cartProvider.totalAmount;
-        //let totalamount=100;   //just testing
         let surtax=Math.round(totalamount/11);
         let amount=totalamount-surtax;
 
         this.storageProvider.getTransNo().then(tranno=>{
         //let businessno=this.storageProvider.shop.shopInfo.businessNumber;
         //let catid=this.storageProvider.catid; 
-
+        /*
+        let alert = gOrderListPage.alertCtrl.create({
+                  title: 'transno:'+tranno,
+                  buttons: ['OK']
+                });
+        alert.present();
+        */        
         let businessno="7721300255";
         let catid="7098349001";
         let reqVal="smartroapp://freepaylink?mode=normal&amount="+amount+"&trantype=card&surtax="+surtax+"&totalamount="+totalamount+"&tranno="+tranno +"&businessno="+businessno+"&catid="+catid+"&receiptmode=2&dongletype=5";
         console.log("reqVal:"+reqVal);
-
+        // set timer : 3분안에 결제가 끝나지 않으면 종료하고 마지막 결제정보를 저장한다. 사용자가 취소할수 있도록...
+        this.storageProvider.setPaymentFailure();
+        this.paymentTimer=setTimeout(function(){
+          /*  Just reboot.
+              //let trantype= "lastquery";
+              //catid,businessno,tranno,subtran,autheddate
+              this.storageProvider.getTransNo().then(tranno=>{
+                  let reqVal="smartroapp://freepaylink?mode=normal&trantype=lastquery&tranno="+tranno +"&businessno="+businessno+"&catid="+catid+"&receiptmode=2&dongletype=5";
+                  let today=new Date();
+                  let month=(today.getMonth()+1)<10? '0'+(today.getMonth()+1):(today.getMonth()+1);
+                  let date=(today.getDate()<10)?'0'+today.getDate():today.getDate();
+                  let orderDate=today.getFullYear()+ today.getMonth() +today.getDate();
+                  console.log("orderDate:"+orderDate);
+                  //save necessary info for lastquery;
+              })
+           */   
+        }, 3*60*1000); //3분    
+        //
         this.webIntent.startActivityForResult({ action: this.webIntent.ACTION_VIEW, url: reqVal }).then(function(res:any){ 
+          clearTimeout(gOrderListPage.paymentTimer);
+          gOrderListPage.storageProvider.clearPaymentFailure();
+          gOrderListPage.activityInProgress=false;
           loading.dismiss();
          // let res={"extras":{"resultval":"0","servicetip":"0","amount":"91","cardno":"943116******4576","surtax":"9","tranno":"[object Promise]","resultCode":0,"printmessage":"","shopName":"타킷 주식회>사","totalamount":"100","merchantno":"145852535","serverres":"00","outmessage":"정상승인\u001e30000172","shopAddress":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","mode":"normal","catid":"9968333001","approvaldate":"20180825192450","shopOwnerName":"이경주","approvalno":"30000172","acquiercode":"0011","acquiername":"농협중앙회      ","tranuniqe":"900000498433","receipt":"on","requestCode":1,"trantype":"card","issuercode":"0171","issuername":"NH기업체크","dongleInfo":"####SMT-M2410101FC180512701001000000FC01.01.00.10","dongletype":"5","businessno":"1428800447","batteryInfo":"94%","receiptmode":"2","installment":"0"},"flags":0};          
           console.log('★★startActivityForResult '+JSON.stringify(res)); 
@@ -154,8 +184,12 @@ export class OrderListPage {
                                                         null,
                                                         null,
                                                         null).then((response:any)=>{
-                   if(response.result=="success"){                
+                   if(response.result=="success"){   
                           let orderName=gOrderListPage.cartProvider.orderName;                       
+                          if(gOrderListPage.cartProvider.orderList.length==1){
+                              //Please check below code 
+                              orderName=gOrderListPage.cartProvider.orderList[0].menuName+gOrderListPage.cartProvider.orderList[0].quantity+"개";
+                          }
                           gOrderListPage.cartProvider.resetCart();
                           gOrderListPage.navCtrl.setRoot(OrderReceiptPage,{class:"OrderReceiptPage",
                                                                             orderNO:response.orderNO, 
@@ -203,7 +237,10 @@ export class OrderListPage {
                 });
                 alert.present();
           }
-          }, function(err){ 
+        }, function(err){ 
+          clearTimeout(gOrderListPage.paymentTimer);
+          gOrderListPage.storageProvider.clearPaymentFailure();
+          gOrderListPage.activityInProgress=false;
           loading.dismiss();        
             console.log('★★startActivity err'); console.log(err); 
                 let alert = gOrderListPage.alertCtrl.create({
