@@ -23,7 +23,7 @@ export class ShopPage {
   shopName;
   takitId;
   orderPageEntered:boolean=false;
-  nowMenus=[];
+  nowMenus:any=[];
   @ViewChild('shophomeContent') shophomeContentRef:Content;
   takeout;
   shopPhoneHref;
@@ -127,7 +127,7 @@ export class ShopPage {
             //console.log("menu.no:"+menu.menuNO+" index:"+menu.menuNO.indexOf(';'));
             let no:string=menu.menuNO.substr(menu.menuNO.indexOf(';')+1);
             //console.log("category.category_no:"+category.categoryNO+" no:"+no);
-            if(no==category.categoryNO){
+            if(no==category.categoryNO && menu.deactive!=1){ // 비활성화 메뉴는 숨김.
                 menu.filename=encodeURI(this.storageProvider.awsS3+menu.imagePath);
                 menu.categoryNO=no;
                 //console.log("menu.filename:"+menu.filename);
@@ -148,7 +148,8 @@ export class ShopPage {
         //console.log("menus.length:"+menus.length);
     });
         //console.log("categories len:"+this.categories.length);
-     
+        // sort categories. Not yet done.
+        
         this.categorySelected=0; // hum...
         
         if(navigator.language.startsWith("ko") && this.shop.shopInfo.hasOwnProperty("notice") && this.shop.shopInfo.notice!=null){
@@ -161,6 +162,9 @@ export class ShopPage {
 
         console.log("categories!!!!!!!!!!!!!!!!info:"+this.categories[0].menus[0].menuName);
         this.nowMenus=this.categories[0].menus;
+        // sort nowMenus
+        this.sortNowMenus();
+
         for(var i=0;i<this.nowMenus.length/2;i++){
            let pair=[];
            pair.push(this.nowMenus[i*2]);
@@ -170,6 +174,20 @@ export class ShopPage {
         }       
 
   }
+
+  sortNowMenus(){ //Why it doesn't work?
+    this.nowMenus.sort(function(a,b){ // -1,0,1
+      if(a.menuSeq!=null && b.menuSeq!=null){
+            return (parseInt(a.menuSeq)-parseInt(b.menuSeq));
+      }else if(a.menuSeq==null && b.menuSeq==null){
+            return (a.menuName > b.menuName);
+      }else if(a.menuSeq==null){
+            return 1;
+      }else 
+            return -1;
+    })     
+  }
+
 
   loadShopInfo()
   {
@@ -223,6 +241,7 @@ export class ShopPage {
         //why do need this length?
         //console.log("change menus");
         this.nowMenus=this.categories[sequence-1].menus;
+        this.sortNowMenus();
         this.menus=[];
         for(var i=0;i<this.nowMenus.length/2;i++){
            let pair=[];

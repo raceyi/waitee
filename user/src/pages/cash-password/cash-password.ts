@@ -349,6 +349,12 @@ export class CashPasswordPage {
                                     buttons: ['OK']
                                 });
                                 alert.present();                            
+                        }else if(error=="duplicate order"){
+                            let alert = this.alertController.create({
+                                    title: '고객님 5초내의 중복 주문이 존재합니다.',
+                                    buttons: ['OK']
+                                });
+                                alert.present();                            
                         }else{
                             let alert = this.alertController.create({
                                     title: '주문에 실패했습니다.',

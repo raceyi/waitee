@@ -54,20 +54,22 @@
     <ion-col class="option-price" no-padding no-margin col-5 text-right>
         +<amount-display [amount]="option.price"></amount-display>원
     </ion-col>
-
-    <ion-col class="col-border" *ngIf="option.price>0" no-padding no-margin col-1>
+    <ion-col class="number" style="border:none;" text-right col-3 *ngIf="option.flagType"> <!-- 숫자가 아닌 선택옵션임 -->
+       <ion-checkbox [(ngModel)]="option.flagOn" mode="md" (ionChange)="updateFlag(option)" style="border:0;" ></ion-checkbox>
+    </ion-col>
+    <ion-col class="col-border" *ngIf="option.price>0 && (!option.flagType)" no-padding no-margin col-1>
         <button no-padding ion-button clear (click)="decrease(option)"><ion-icon name="ios-remove"></ion-icon></button>
     </ion-col>
-    <ion-col class="number"  *ngIf="option.price>0" text-center no-padding no-margin col-1>
+    <ion-col class="number"  *ngIf="option.price>0 && (!option.flagType)" text-center no-padding no-margin col-1>
       {{option.number}}
     </ion-col>
-    <ion-col class="col-border"   *ngIf="option.price>0" no-padding no-margin col-1>
+    <ion-col class="col-border"   *ngIf="option.price>0 && (!option.flagType)" no-padding no-margin col-1>
         <button no-padding ion-button clear (click)="increase(option)"><ion-icon name="ios-add"></ion-icon></button>
     </ion-col>
     <ion-col  *ngIf="option.price>0" no-padding no-margin col-1>
       &nbsp; 
     </ion-col>
-    <ion-col  *ngIf="option.price==0" no-padding no-margin col-4>
+    <ion-col  *ngIf="option.price==0 && (!option.flagType)" no-padding no-margin col-4>
       &nbsp; 
     </ion-col>
   </ion-row>
@@ -78,6 +80,21 @@
                               <ion-radio style="border-style:solid;border-width:1px;border-color:#bdbdbd;" color="subColor2" [value]="choice"></ion-radio>
                           </ion-item>
                       </ion-col>
+  </ion-row>
+  <ion-row *ngIf="option.flagType && option.flagOn && option.extendedOptionExist">
+    <ion-col no-padding no-margin col-3 class="option-name" text-left>
+       {{option.extendedOption.name}}
+    </ion-col>
+    <ion-col class="option-price" *ngIf="!option.extendedOption.ignoreUnitPrice" no-padding no-margin col-5 text-right>
+        +<amount-display [amount]="option.extendedOption.price"></amount-display>원
+    </ion-col>
+    <ion-col class="option-price" *ngIf="option.extendedOption.ignoreUnitPrice" no-padding no-margin col-5 text-right>
+        <amount-display [amount]="option.extendedOption.price"></amount-display>원
+    </ion-col>
+    <ion-col class="number" style="border:none;" text-right col-3 *ngIf="option.extendedOption.flagType"> <!-- 숫자가 아닌 선택옵션임 -->
+       <ion-checkbox [(ngModel)]="option.extendedOption.flagOn" (click)="updateFlag(option)"  mode="md" style="border:0;" ></ion-checkbox>
+    </ion-col>
+        
   </ion-row>
   </div>
 </div>

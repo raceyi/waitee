@@ -15,7 +15,9 @@ page-shop {
     .toolbar-title-ios {
         color: $default-color;
     }
-
+    .scroll-content{
+        overflow-y: unset;
+    }
     .shop-text-info{
         font-size:3.4vw;
         color: #4a4a4a;
@@ -59,9 +61,13 @@ page-shop {
             padding-left: 0px;
         }
         .item-inner{
+            height: calc((30/667)*100vh); //Does it work?
             background-color:white; 
             border-bottom:0px;
             padding:0px !important;
+            .label-ios {
+                 margin: 0px; 
+            }            
         }
         .list-ios > .item-block:last-child, .list-ios > .item-wrapper:last-child .item-block {
             border-bottom: 0px;

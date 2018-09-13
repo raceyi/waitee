@@ -11,7 +11,7 @@ import { Component,Input } from '@angular/core';
   templateUrl: 'amount-display.html'
 })
 export class AmountDisplayComponent {
-  @Input('amount') amount;
+  @Input('amount') amount:number;
 
   constructor() {
     console.log('Hello AmountDisplayComponent Component '+this.amount);

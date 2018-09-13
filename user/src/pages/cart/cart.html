@@ -77,8 +77,10 @@
     </ion-row>
     <ion-row class="top-padding left-padding gray-color" *ngFor="let option of menu.options">
         <ion-col>{{option.name}}({{option.number}})</ion-col>
+        <ion-col *ngIf="option && option.extendedOption">{{option.extendedOption.name}}</ion-col>
+
         <ion-col text-center *ngIf="option.select!==undefined">{{option.select}}</ion-col> 
-        <ion-col text-right>{{option.number}}개</ion-col>
+        <ion-col *ngIf="!option.flagType" text-right>{{option.number}}개</ion-col>
         <!--  
         <ion-col text-right>{{option.price}}</ion-col>
         -->

@@ -37,7 +37,7 @@ export class StoreSearchPage {
   }
 
 enterShop(shop){
-  if(shop.ready!=0){
+  //if(shop.ready!=0){
             let progressBarLoader = this.loadingCtrl.create({
                 content: "진행중입니다.",
                 duration: 30*1000 //30 seconds
@@ -57,7 +57,7 @@ enterShop(shop){
                   });
                   alert.present();
             });
-  }
+  //}
 }
 
 }

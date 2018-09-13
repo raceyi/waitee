@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams ,AlertController} from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import {PaymentPage} from '../payment/payment';
@@ -35,10 +35,13 @@ export class MenuPage {
 
   timeConstraint;
   timeConstraintString;
+  ignoreUnitPrice:boolean=false;
+  ignoreUnitPriceOption:string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
               public alertController:AlertController,
               public cartProvider:CartProvider,
+              private ngZone:NgZone,
               public storageProvider:StorageProvider) {
     this.menu=JSON.parse(navParams.get('menu'));
     this.shopInfo=JSON.parse(navParams.get('shopInfo'));
@@ -70,6 +73,8 @@ export class MenuPage {
         }
         console.log("timeConstraintString:"+this.timeConstraintString);
     }
+    console.log("menu.options:"+this.menu.options);
+
     if(this.menu.options && this.menu.options!='null'){
           if(typeof this.menu.options ==="string"){
             this.options=JSON.parse(this.menu.options);
@@ -81,11 +86,12 @@ export class MenuPage {
               option.number=0;
           });          
           this.options.forEach((option)=>{
-              option.flag=false;
-              if(option.hasOwnProperty("choice") && Array.isArray(option.choice)){
-                  if(option.hasOwnProperty("default")){
+              option.flag=false;   // 왜 넣었을까? flagOn이 따로 있는데 ㅜㅜ 삭제해보자. 
+              if(option.hasOwnProperty("choice") && Array.isArray(option.choice)){ 
+                  if(option.hasOwnProperty("default")){ 
                         console.log("default:"+option.default);
-                        option.number=1;
+                        if(option.price==0)
+                            option.number=1; // 무조건 선택되어야 하는 옵션이다. 
                         option.select=option.default;      
                   }else
                         option.select=undefined;
@@ -127,8 +133,11 @@ export class MenuPage {
 
     console.log("total amount:"+this.amount);
     this.optionAmount=0;
+    this.ignoreUnitPrice=false;
+    let ignorePrice=0;
+
     this.options.forEach(option => {
-        if(option.number>0){
+        if(option.number && option.number>0){
             console.log(option.name+":"+option.price*option.number*this.menu.quantity);
             let price:number;
             if( typeof option.price ==='string')
@@ -154,9 +163,30 @@ export class MenuPage {
             console.log(price*option_number);
             console.log("..unitPrice:"+this.unitPrice);            
   
+       }else if(option.flagType && option.flagOn){
+            let price:number;
+            if( typeof option.price ==='string')
+                 price=parseInt(option.price);
+            else  
+                 price=option.price;     
+           this.optionAmount+=price*this.menu.quantity;
+           this.unitPrice=this.unitPrice+price;
+           if(option.extendedOption && option.extendedOption.ignoreUnitPrice && option.extendedOption.flagOn){  
+               this.ignoreUnitPrice=true;
+               this.ignoreUnitPriceOption=option.extendedOption.name;
+               ignorePrice=option.extendedOption.price;
+           }
        }
     });
-    this.amount+=this.optionAmount;
+    
+    console.log("this.optionAmount:"+this.optionAmount);
+
+    if(!this.ignoreUnitPrice)
+        this.amount+=this.optionAmount;
+    else /*if(this.ignoreUnitPrice)*/{
+        this.amount=ignorePrice; 
+        this.unitPrice=ignorePrice;   
+    }
  }
 
  increase(option){
@@ -189,7 +219,14 @@ export class MenuPage {
 
   getQuantity(quantity){
       console.log("quantity change:"+quantity);
-      
+      if(this.ignoreUnitPrice && quantity!=1){
+          let alert = this.alertController.create({
+                      title:  this.ignoreUnitPriceOption+'선택시 수량은 반드시 1이어야 합니다.',
+                      buttons: ['OK']
+                    });
+                    alert.present();
+                    return;
+      }
       if(this.quantityInputType=="input")
               return;
       if(quantity==6){ // show text input box 
@@ -224,15 +261,22 @@ export class MenuPage {
                         var option=this.options[i];
                         if(option.price==0 && option.hasOwnProperty("choice")){
                             if(option.select === undefined || option.select === null){
-                                reject(option.name);
+                                reject(option.name+'을 선택해주시기 바랍니다.');
                             }
                         }else if(option.number>0 && option.hasOwnProperty("choice")){
                             console.log("option.selectedChoice:"+option.default);
                             if(option.select === undefined || option.select === null){
-                                reject(option.name);
+                                reject(option.name+'을 선택해주시기 바랍니다.');
                             }
+                        }else if(option.flagType && option.flagOn && option.hasOwnProperty("choice")){
+                            if(option.select === undefined || option.select === null){
+                                reject(option.name+'을 선택해주시기 바랍니다.');  
+                            }                          
                         }
                 }
+            }
+            if(this.ignoreUnitPrice && this.menu.quantity!=1){
+                    reject(this.ignoreUnitPriceOption+'선택시 수량은 반드시 1이어야 합니다.');
             }
             resolve();
      });
@@ -272,6 +316,18 @@ export class MenuPage {
                         options.push({name:option.name,price:option.price,number:option.number,select:option.select});
                     else
                         options.push({name:option.name,price:option.price,number:option.number});
+                }else if(option.flagType && option.flagOn){
+                    if(option.extendedOption && option.extendedOption.ignoreUnitPrice && option.extendedOption.flagOn){
+                        if(option.select!=undefined) 
+                            options.push({name:option.name,price:option.price,number:1,select:option.select, extendedOption:option.extendedOption });
+                        else
+                            options.push({name:option.name,price:option.price,number:1,extendedOption:option.extendedOption });
+                    }else{
+                        if(option.select!=undefined) 
+                            options.push({name:option.name,price:option.price,number:1,select:option.select});
+                        else
+                            options.push({name:option.name,price:option.price,number:1});                        
+                    }
                 }    
             });
         }
@@ -346,13 +402,17 @@ export class MenuPage {
                         alert.present();
             })
         }
-    },(name)=>{
+    },(error)=>{
           let alert = this.alertController.create({
-                      title: name+'을 선택해주시기 바랍니다.',
+                      title: error,
                       buttons: ['OK']
                     });
                     alert.present();
     });
+  }
+
+  updateFlag(option){
+    this.computeAmount();   
   }
 
   collapse(){

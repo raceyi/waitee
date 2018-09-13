@@ -56,7 +56,13 @@
 </div>
 <ion-row class="row-categories-menus">
              <ion-col col-3 class="col-categories" no-padding>
-                <ion-scroll scrollY="true" class="scroll-categories">
+                        <div *ngFor="let category of categories;let i=index;">
+                          <button style="font-size:3.4vw" value="i" (click)="categoryClick(i+1)" color="white" ion-button full  no-padding no-margin>
+                           <p style="font-size:4vw;" text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
+                          </button>
+                        </div>
+                <!-- 
+                <ion-scroll scrollY="true" class="scroll-categories">                    
                     <ion-list>
                         <ion-item *ngFor="let category of categories;let i=index;">
                           <button style="font-size:3.4vw" value="i" (click)="categoryClick(i+1)" color="white" ion-button full  no-padding no-margin>
@@ -65,6 +71,7 @@
                         </ion-item>
                     </ion-list>
                 </ion-scroll>
+                -->
              </ion-col>
             <ion-col  col-9 class="col-menus">
                 <ion-scroll scrollY="true">
@@ -116,10 +123,11 @@
                     </button>
                     </ion-col>
                 </ion-row>
+                <ion-row class="dummy" style="height:50vh;">  <!-- 보정이 될까? col의 크기를 가져와 맞추는것이 맞다 ㅜㅜ -->
+                </ion-row>   
                 </ion-scroll>
             </ion-col>
 </ion-row>
-
 <ion-fab bottom right>
     <button class="fab-btn" (click)="openCart()" ion-fab color="white">
       <custom-icon set="tabs" name="cart"></custom-icon>

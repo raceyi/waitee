@@ -1,8 +1,6 @@
 page-store-search {
-   // $scroll-H:  calc((197/667)*100vh);
     $latest-W : calc((145/375)*100vw);
     $latest-H : calc((195/667)*100vh);
-   // $top-scroll-H : calc((197/(667*3))*100vh);
 
     
     .searchbar-button{
@@ -91,7 +89,7 @@ page-store-search {
                     top: calc((116/667)*100vh);
                     font-size:4.4vw;
                     color:black;
-                    font-family:NotoSansCJKkr-Bold;
+                    //font-family:NotoSansCJKkr-Bold;
                 }
                 .classification{
                     margin:0px;

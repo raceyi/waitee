@@ -266,8 +266,8 @@ defaultCardColor ="#33B9C6";
             });
             this.recommendations=[];
             this.wholeStores.forEach(shop=>{
-                console.log(shop.ready);
-                if(shop.ready!=0){
+                console.log("shop.ready:"+shop.ready);
+                if(shop.ready==1){
                     this.recommendations.push(shop);
                 }
             })
