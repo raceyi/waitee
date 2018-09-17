@@ -45,6 +45,8 @@
 
   <div padding>
     <label>총매출: {{sales}}</label>
+    <label *ngIf="storageProvider.shopInfo.stamp!=null && storageProvider.shopInfo.stamp">발행 스탬프:{{issueStampCount}}</label>
+    <label *ngIf="storageProvider.shopInfo.stamp!=null && storageProvider.shopInfo.stamp">사용 쿠폰 금액:{{couponAmount}}</label>
   </div>  
   <ion-list  *ngFor="let menu of statistics" >
   <ion-item>

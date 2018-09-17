@@ -58,6 +58,12 @@
                 <ion-input type="number" [(ngModel)]="menu.menuSeq"></ion-input>
             </ion-item>
         </ion-col>
+        <ion-col *ngIf="storageProvider.shopInfo.stamp!=null &&  storageProvider.shopInfo.stamp">
+            <ion-item>
+                <ion-label stacked>제공스탬프수</ion-label>
+                <ion-input type="number" [(ngModel)]="menu.stampCount"></ion-input>
+            </ion-item>            
+        </ion-col>
     </ion-row>
     <ion-row>
         <ion-item style="width:58%;">
@@ -293,6 +299,24 @@
             <button *ngIf="option.choice[3] !== undefined" style="float:right;" (click)="removeSelectMenu(i,3)" ion-button icon-only color="white">
                 <ion-icon name="md-trash"></ion-icon></button>
         </ion-row>
+        <ion-row>
+            <ion-col >
+                <ion-item *ngIf="option.choice[4] !== undefined">
+                    <ion-label stacked>선택항목5</ion-label>
+                    <ion-input [(ngModel)]="menu.options[i].choice[4]" ></ion-input>
+                </ion-item>
+            </ion-col>
+            <button *ngIf="option.choice[4] !== undefined" style="float:right;" (click)="removeSelectMenu(i,4)" ion-button icon-only color="white">
+                    <ion-icon name="md-trash"></ion-icon></button>
+            <ion-col>
+                <ion-item *ngIf="option.choice[5] !== undefined">
+                    <ion-label stacked>선택항목6</ion-label>
+                    <ion-input [(ngModel)]="menu.options[i].choice[5]" ></ion-input>
+                </ion-item>
+            </ion-col>
+            <button *ngIf="option.choice[5] !== undefined" style="float:right;" (click)="removeSelectMenu(i,5)" ion-button icon-only color="white">
+                <ion-icon name="md-trash"></ion-icon></button>
+        </ion-row>        
         </div>
 
         <ion-row >

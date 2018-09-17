@@ -163,7 +163,7 @@ export class ShopTablePage {
                 })
 
                 if(gShopTablePage.storageProvider.kiosk){
-                        
+
                         gShopTablePage.serverProvider.post("/kiosk/getKioskRecentOrder",body).then((res:any)=>{
                             console.log("res.more:"+res.more);
                             if(res.more){
@@ -820,7 +820,7 @@ export class ShopTablePage {
 
       if(this.storageProvider.printOn==false || this.storageProvider.myshop.GCMNoti=="off" ){
             console.log("do not print out")
-            //return;
+            return;
       }
       var title,message="";
       console.log("order:"+JSON.stringify(order));
@@ -1343,6 +1343,38 @@ export class ShopTablePage {
         }
     }
 
+    notifyCancelAudio(order){
+        if(this.storageProvider.device && this.storageProvider.kiosk){
+            chrome.sockets.tcp.create(function(createInfo) {
+            let addr="192.168.0.9";  //더큰도시락 ip
+            //let addr="192.168.0.10"; // 내 삼성폰 
+            //let addr="192.168.0.4";
+            let port=12345;
+            let name=order.orderName;
+            let options={
+                text:'웨이티 '+order.orderNO+'번'+' '+name+'이 취소되었습니다. 고객님께서는 키오스크로 오셔서 주문번호로 카드결제취소를 해주시기바랍니다.' +' 웨이티 '+order.orderNO+'번'+' '+name+'이 취소되었습니다 '+'고객님께서는 키오스크로 오셔서 주문번호로 카드결제취소를 해주시기바랍니다.',
+                locale:'ko-KR',
+                rate:0.8
+            }
+            chrome.sockets.tcp.connect(createInfo.socketId, addr, port, function(result) {
+                console.log("connect-result:"+result);
+                if (result === 0) {
+                    let message=gShopTablePage.stringToArrayBuffer(encodeURI(JSON.stringify(options)));
+                    //let message=gShopTablePage.stringToArrayBuffer("connected...");
+                    chrome.sockets.tcp.send(createInfo.socketId, message, function(result) {
+                        console.log("send-result:"+result);    
+                        if (result.resultCode === 0) {
+                            console.log('connectAndSend: success');     
+                            chrome.sockets.tcp.disconnect(createInfo.socketId);
+                            chrome.sockets.tcp.close(createInfo.socketId);
+                        }
+                    });
+                }
+            });
+        });
+        }
+    }
+
     updateKioskOrder(order){
         if(this.storageProvider.tourMode){
               let alert = this.alertController.create({
@@ -1532,6 +1564,8 @@ export class ShopTablePage {
                  order.cancelledTime=new Date().toISOString();
                  order.localCancelledTime=new Date().toString(); // Temporary code. Please set this value with the response value of server.
                  order.hidden=true;
+                 // 주문 취소를 고객에게 알리자.
+                 this.notifyCancelAudio(order);
                 resolve();
             }else{
                 reject();

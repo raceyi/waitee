@@ -416,9 +416,9 @@ export class EditMenuPage {
         this.inputModifyCategory.oldSequence = this.categories[this.categorySelected].sequence;
         this.inputModifyCategory.categoryNO = this.categories[this.categorySelected].categoryNO;
 
-        if(this.inputModifyCategory.newSequence){
-            this.inputModifyCategory.newSequence = this.inputModifyCategory.oldSequence;
-        }
+        //if(this.inputModifyCategory.newSequence){ //????
+        //    this.inputModifyCategory.newSequence = this.inputModifyCategory.oldSequence;
+        //}
 
         this.serverProvider.modifyCategory(this.inputModifyCategory)
         .then(()=>{

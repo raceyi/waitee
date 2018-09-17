@@ -18,6 +18,8 @@ export class SalesPage {
   endDate;
   statistics=[];
   sales=0;
+  issueStampCount=0;
+  couponAmount=0;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,private alertController:AlertController,
         private serverProvider:ServerProvider,public storageProvider:StorageProvider) {
@@ -91,9 +93,14 @@ export class SalesPage {
          // 종료일은 현재시점보다 늦을수 없습니다.
     }
     // send getOrders request and update orders
+    let stamp:boolean=false;
+    if(this.storageProvider.shopInfo.stamp!=null && this.storageProvider.shopInfo.stamp){
+        stamp=true;
+    }
      let body  = JSON.stringify({  takitId:this.storageProvider.myshop.takitId,option:"period",
                                    startTime:startDate.toISOString(), 
-                                   endTime:endDate.toISOString()
+                                   endTime:endDate.toISOString(),
+                                   stamp:stamp
                               });
       this.serverProvider.post("/shop/getSalesAndSatas",body).then((res:any)=>{
             if(res.result=="success"){
@@ -103,6 +110,10 @@ export class SalesPage {
                   //      this.statistics=[];
                   //}else{
                         this.sales=res.sales;
+                        if(stamp){
+                            this.issueStampCount=res.issueStampCount;
+                            this.couponAmount=res.couponAmount;
+                        }
                         let stats=[];
                         for(var i=0;i<res.stats.length;i++)
                                 if(res.stats[i].menuSales!=undefined && res.stats[i].menuSales!=null && res.stats[i].menuSales!='0'){
@@ -142,12 +153,20 @@ export class SalesPage {
     console.log("changeValue:"+option);
     if(option!="period"){
         //request getSalesAndSatas
-        let body=JSON.stringify({takitId:this.storageProvider.myshop.takitId,option:option});
+        let stamp:boolean=false;
+        if(this.storageProvider.shopInfo.stamp!=null && this.storageProvider.shopInfo.stamp){
+            stamp=true;
+        }
+        let body=JSON.stringify({takitId:this.storageProvider.myshop.takitId,option:option,stamp:stamp});
         this.serverProvider.post("/shop/getSalesAndSatas",body).then((res:any)=>{
             console.log("getSalesAndSatas:"+JSON.stringify(res));
             if(res.result=="success"){
                   // show sales info
                    this.sales=res.sales;
+                   if(stamp){
+                        this.issueStampCount=res.issueStampCount;
+                        this.couponAmount=res.couponAmount;
+                   }
                    if(this.sales==0){
                         this.statistics=[];
                    }else{

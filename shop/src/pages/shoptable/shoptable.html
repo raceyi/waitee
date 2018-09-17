@@ -132,8 +132,8 @@
                               </ion-row>
                               <ion-row *ngIf="menu.options!=undefined && menu.options.length>0">
                                         <ion-col col-1 > </ion-col>
-                                        <ion-col col-11 > 
-                                          <p style="font-size:4vw;color:black;" *ngFor="let option of menu.options">{{option.name}}({{option.number}}) &nbsp;<span style="font-size:4vw;color:black;" *ngIf="option.select!=undefined">{{option.select}}</span> </p>
+                                        <ion-col col-11>                                           
+                                          <p style="font-size:4vw;color:black;" *ngFor="let option of menu.options">{{option.name}}<span *ngIf="!option.flagType">({{option.number}})</span> &nbsp;<span style="font-size:4vw;color:black;" *ngIf="option.select!=undefined">{{option.select}}</span> </p>
                                         </ion-col>
                               </ion-row>
                         </div>
@@ -166,7 +166,7 @@
                           <ion-col  text-right>
                                   결제금액:{{order.amount}}원
                           </ion-col>
-                        </ion-row>                        
+                        </ion-row>         
                    </div>
                    <div *ngIf="order.orderStatus!='cancelled'">
                      <ion-row>
@@ -319,7 +319,14 @@
                           <ion-col *ngIf="order.total" text-right>
                                   결제금액:{{order.total}}원
                           </ion-col>
-                        </ion-row>                        
+                        </ion-row>    
+                        <ion-row *ngIf="order.couponDiscountAmount && order.couponDiscountAmount!=null && order.couponDiscountAmount>0"> 
+                          <ion-col text-left>
+                          </ion-col>
+                          <ion-col text-right>
+                                  쿠폰할인:{{order.couponDiscountAmount}}원
+                          </ion-col>
+                        </ion-row>
                    </div>
                    <div class="review-section" *ngIf="order.review!=null || order.review!=undefined">
                         <ion-row>

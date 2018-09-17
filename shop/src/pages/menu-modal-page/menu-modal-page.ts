@@ -707,9 +707,9 @@ export class MenuModalPage {
         this.menu.options[optionIdx].choice =[];
         this.menu.options[optionIdx].choice.push(null);
     }else{
-        if(this.menu.options[optionIdx].choice.length === 4){
+        if(this.menu.options[optionIdx].choice.length === 6){
             let alert = this.alertController.create({
-                        title: "선택항목은 4개까지만 추가 가능합니다.",
+                        title: "선택항목은 6개까지만 추가 가능합니다.",
                         buttons: ['확인']
                 });
             alert.present();
@@ -725,9 +725,9 @@ export class MenuModalPage {
         optionEn.choice =[];
         optionEn.choice.push(null);
     }else{
-        if(optionEn.choice.length === 4){
+        if(optionEn.choice.length === 6){
             let alert = this.alertController.create({
-                        title: "선택항목은 4개까지만 추가 가능합니다.",
+                        title: "선택항목은 6개까지만 추가 가능합니다.",
                         buttons: ['확인']
                 });
             alert.present();

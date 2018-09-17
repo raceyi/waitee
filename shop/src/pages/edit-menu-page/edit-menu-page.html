@@ -120,6 +120,7 @@
                             <p class="MenuSubject">{{menu.menuName}}</p>
                             <p *ngIf="menu.menuNameEn!==null" class="MenuText">{{"("+menu.menuNameEn+")"}}</p>
                             <p class="MenuText">{{menu.price}}</p>
+                            <p *ngIf="menu.stampCount!=null && menu.stampCount>0">스탬프 제공:{{menu.stampCount}}</p>
                             <p *ngIf="menu.menuSeq!=null" class="MenuText">{{menu.menuSeq}}</p>
                             <p *ngIf="menu.takeout===true || menu.takeout==1" class="MenuText">포장가능</p>
                             <p *ngIf="menu.takeout==2" class="MenuText">배달가능</p>
