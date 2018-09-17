@@ -97,11 +97,13 @@ export class CartProvider {
                         cart.orderList.menus[0].memo,
                         cart.orderList.menus[0].menuNO, 
                         cart.orderList.menus[0].menuName,
-                        JSON.stringify(cart.timeConstraints[0])];
+                        JSON.stringify(cart.timeConstraints[0]),
+                        cart.orderList.menus[0].menuDiscount,
+                        cart.orderList.menus[0].menuDiscountOption];
 
             console.log("!!!!params:"+JSON.stringify(params));
 
-            queryString="INSERT INTO carts(takitId, address, deliveryArea, freeDelivery, deliveryFee,paymethod, shopName, options,unitPrice, quantity,takeout,memo, menuNO, menuName,timeConstraints) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            queryString="INSERT INTO carts(takitId, address, deliveryArea, freeDelivery, deliveryFee,paymethod, shopName, options,unitPrice, quantity,takeout,memo, menuNO, menuName,timeConstraints,menuDiscount,menuDiscountOption) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             console.log("query:"+queryString);
             this.db.executeSql(queryString,params).then((resp)=>{
                 console.log("[saveCartInfo]resp:"+JSON.stringify(resp));
@@ -189,21 +191,29 @@ export class CartProvider {
                  memo varchar(400),\
                  menuNO VARCHAR(100),\
                  timeConstraints VARCHAR(128),\
+                 menuDiscount int,\
+                 menuDiscountOption VARCHAR(128),\
                  menuName VARCHAR(100));",[]).then(()=>{
                     console.log("success to create cart table");
                       this.db.executeSql("PRAGMA table_info('carts')",[]).then((table_info)=>{
                             console.log("!!!table_info:"+JSON.stringify(table_info.rows));
                             for(var i=0;i<table_info.rows.length;i++){
                                 console.log("item:"+JSON.stringify(table_info.rows.item(i)));
-                                if(table_info.rows.item(i).name=="timeConstraints"){
+                                if(table_info.rows.item(i).name=="menuDiscount"){  // menuDiscount in percentage
                                     resolve();
                                     return;
                                 }
                             } 
-                            this.db.executeSql("alter table carts add column timeConstraints VARCHAR(128)",[]).then((alter)=>{
+
+                            this.db.executeSql("alter table carts add column menuDiscount int",[]).then((alter)=>{
+                                this.db.executeSql("alter table carts add column menuDiscountOption VARCHAR(128)",[]).then((alter)=>{
                                             resolve();
+                                }).catch(e=>{
+                                        console.log("fail to add menuDiscountOption int cart "+JSON.stringify(e));
+                                        reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
+                                })
                             }).catch(e=>{
-                                        console.log("fail to add timeConstraints int cart "+JSON.stringify(e));
+                                        console.log("fail to add menuDiscount int cart "+JSON.stringify(e));
                                         reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
                             });                             
                       }).catch(e=>{
@@ -239,7 +249,9 @@ export class CartProvider {
                   //price: row.unitPrice*row.quantity,
                   unitPrice:row.unitPrice,
                   takeout:row.takeout,
-                  memo:row.memo}
+                  memo:row.memo,
+                  menuDiscount:row.menuDiscount,
+                  menuDiscountOption:row.menuDiscountOption}
               menus.push(menu);
               if(row.timeConstraints!=null && row.timeConstraints!=undefined){
                     let rowTimeConstraints=JSON.parse(row.timeConstraints);

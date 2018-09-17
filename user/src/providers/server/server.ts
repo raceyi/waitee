@@ -21,6 +21,7 @@ export class ServerProvider {
   timeUtil= new TimeUtil(); 
   browserRef;
   timeout=30; // 30 seconds
+//  stampCount=[];
 
     constructor(public http: HttpClient
                 ,private storageProvider:StorageProvider
@@ -260,12 +261,40 @@ saveOrderCart(body){
         return new Promise((resolve,reject)=>{
             console.log("takitId:"+takitId);
             this.post(this.storageProvider.serverAddress+"/cafe/shopHome",{takitId:takitId}).then((res)=>{
-                //console.log("res:"+JSON.stringify(res));
+                console.log("getShopInfo-res:"+JSON.stringify(res));
                 resolve(res);
             },(err)=>{
                 reject("http error");  
             });
         });   
+    }
+
+    getCurrentShopStampInfo(){
+    if(this.storageProvider.shopInfo.stamp!=null && this.storageProvider.shopInfo.stamp){
+            let body={takitId:this.storageProvider.shopResponse.shopInfo.takitId}
+            this.post(this.storageProvider.serverAddress+"/getStampCount",body).then((res:any)=>{
+                if(res.result=="success"){
+                    console.log("stampCount:"+res.stampCount);
+                    this.storageProvider.stampCount=[];
+                    //just testing
+                    for(let i=0;i<res.stampCount;i++)
+                        this.storageProvider.stampCount.push({});
+                }else{
+                    let alert = this.alertCtrl.create({
+                                title: '스탬프 정보를 읽어 오는데 실패했습니다.',
+                                buttons: ['OK']
+                            });
+                            alert.present();
+                }
+            },err=>{
+                    let alert = this.alertCtrl.create({
+                                title: '서버와 통신에 문제가 있습니다',
+                                subTitle: '네트웍상태를 확인해 주시기바랍니다',
+                                buttons: ['OK']
+                            });
+                            alert.present();
+            });
+        }
     }
 
     mobileAuth(){

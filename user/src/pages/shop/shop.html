@@ -13,16 +13,18 @@
               <a *ngIf="storageProvider.shopResponse.shopInfo.contactPhone" [href]="shopPhoneHref"><ion-icon color="black" name="call"></ion-icon></a>
   </ion-title>
   <ion-buttons end>
+        <button ion-button (click)="search()" style="background-color:white;color:#FF5F3A;">
+             <ion-icon  class="store-information-button"name="ios-search"></ion-icon>
+        </button>
+      
         <button *ngIf="storeInfoHide" ion-button (click)="showInfoDisplay()" style="background-color:white;color:#FF5F3A;">
-            <!-- <ion-icon  class="store-information-button"name="ios-information-circle-outline"></ion-icon> -->
-            상점정보
+             <ion-icon  class="store-information-button"name="ios-information-circle-outline"></ion-icon>
         </button>
         <button *ngIf="!storeInfoHide" ion-button (click)="hideInfoDisplay()" style="background-color:white;color:#FF5F3A;">        
             <ion-icon  class="store-information-button"name="ios-arrow-up"></ion-icon>
         </button>
   </ion-buttons>
   </ion-navbar>
-  
 </ion-header>
 
 <ion-content #shophomeContent>
@@ -37,7 +39,7 @@
 </ion-row>
 <ion-row>
 <ion-col no-padding div class="shop-text-info" *ngIf="storageProvider.shopResponse.shopInfo.shopPhone!=null && storageProvider.shopResponse.shopInfo.shopPhone!=undefined">
-<label class="label">전화번호</label>  <span class="value">{{storageProvider.shopResponse.shopInfo.shopPhone}} </span>
+<label class="label">전화번호</label>  <span class="value">{{shopPhone}} </span>
 </ion-col>
 <ion-col no-padding  class="shop-text-info" *ngIf="regularOff!=undefined && regularOff.length>0">
 <label class="label">휴무요일</label>  <span class="value"> {{regularOff}} </span>
@@ -53,30 +55,39 @@
 <div class="shop-text-info" *ngIf="shop.shopInfo.foodOrigin!=null">
 <label class="label">원산지</label>  <span class="value">{{shop.shopInfo.foodOrigin}}</span>
 </div>
+
+<div class="shop-text-info" *ngIf="shop.shopInfo.stamp!=null && shop.shopInfo.stamp && shop.shopInfo.stampFreeMenu!=null">
+<label class="label">스탬프</label>  스탬프 <span class="value">{{shop.shopInfo.stampUsageCount}}개에 {{freeMenu}} 1개 (자동 적용) </span>
 </div>
+
+<div class="shop-text-info" *ngIf="shop.shopInfo.stamp!=null && shop.shopInfo.stamp && shop.shopInfo.stampFreeAmount!=null">
+<label class="label">스탬프</label> <span class="value">{{shop.shopInfo.stampUsageCount}}개에 {{shop.shopInfo.stampFreeAmount}}원 차감</span>
+</div>
+<ion-row class="stamp"  *ngIf="shop.shopInfo.stamp!=null && shop.shopInfo.stamp && storageProvider.stampCount.length>0">
+    <ion-col no-padding no-margin *ngFor="let stamp of storageProvider.stampCount" col-1>
+    <ion-icon name="ios-heart-outline" style="color:#FF5F3A;"  ></ion-icon>
+    </ion-col>
+</ion-row>
+<div class="shop-text-info" *ngIf="shop.shopInfo.stamp!=null && shop.shopInfo.stamp">
+<span class="noti">*스탬프는 주문준비 시점에 추가됩니다.</span>
+</div>
+</div>
+<!--
+<ion-row>
+    <ion-col text-center>
+    <ion-select text-center [(ngModel)]="categorySelected" multiple=false interface="popover" (ionChange)="change()">
+        <ion-option class="category-name"  text-center [value]="i" *ngFor="let category of categories;let i=index;">
+            <ion-label text-center style="width:90vw;text-align:center;">{{category.categoryName}}</ion-label>
+        </ion-option>
+    </ion-select>
+    </ion-col>
+</ion-row>
+-->
 <ion-row class="row-categories-menus">
-             <ion-col col-3 class="col-categories" no-padding>
-                        <div *ngFor="let category of categories;let i=index;">
-                          <button style="font-size:3.4vw" value="i" (click)="categoryClick(i+1)" color="white" ion-button full  no-padding no-margin>
-                           <p style="font-size:4vw;" text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
-                          </button>
-                        </div>
-                <!-- 
-                <ion-scroll scrollY="true" class="scroll-categories">                    
-                    <ion-list>
-                        <ion-item *ngFor="let category of categories;let i=index;">
-                          <button style="font-size:3.4vw" value="i" (click)="categoryClick(i+1)" color="white" ion-button full  no-padding no-margin>
-                           <p style="font-size:4vw;" text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
-                          </button>
-                        </ion-item>
-                    </ion-list>
-                </ion-scroll>
-                -->
-             </ion-col>
-            <ion-col  col-9 class="col-menus">
+            <ion-col class="col-menus">
                 <ion-scroll scrollY="true">
                 <ion-row *ngFor="let menu of menus" no-padding no-margin>
-                    <ion-col no-padding>
+                    <ion-col no-padding text-center>
                     <button color="white" (click)="selectMenu(menu[0])"ion-button full no-padding no-margin>
                         <ion-item class="left" no-padding>
                             <!--
@@ -86,7 +97,7 @@
                               <label *ngIf="menu[0].soldout==1" class="sold-out"> <b>판매종료</b></label>
                               <label *ngIf="menu[0].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>
-                            <h2>{{menu[0].menuName}}</h2> 
+                            <h2>{{menu[0].menuName}}<span *ngIf="menu[0].menuDiscount && menu[0].menuDiscount!=null && menu[0].menuDiscount>0">&nbsp;{{menu[0].menuDiscount}}%할인</span></h2> 
                             <!-- 
                             <h2 *ngIf="menu[0].menuName.length<=12">{{menu[0].menuName}}</h2>
                             <h2 *ngIf="menu[0].menuName.length>12"> {{split1(menu[0].menuName)}}</h2>
@@ -97,7 +108,7 @@
                         </ion-item>
                     </button>
                     </ion-col>
-                    <ion-col no-padding>
+                    <ion-col no-padding text-center>
                     <button *ngIf="menu[1]" (click)="selectMenu(menu[1])" color="white" ion-button full no-padding no-margin>
                         <ion-item no-padding>
                             <!--
@@ -107,7 +118,7 @@
                               <label *ngIf="menu[1].soldout==1" class="sold-out"> <b>판매종료</b></label>
                               <label *ngIf="menu[1].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>   
-                             <h2>{{menu[1].menuName}}</h2>                                                      
+                             <h2>{{menu[1].menuName}}<span *ngIf="menu[1].menuDiscount && menu[1].menuDiscount!=null && menu[1].menuDiscount>0">&nbsp;{{menu[1].menuDiscount}}%할인</span></h2>                                                      
                             <!-- 
                             <h2 *ngIf="menu[1].menuName.length<=12">{{menu[1].menuName}}</h2>
                             <h2 *ngIf="menu[1].menuName.length>12"> {{split1(menu[1].menuName)}}</h2>
@@ -135,3 +146,15 @@
 </ion-fab>
 
 </ion-content>
+
+<ion-footer>
+    <ion-row>
+    <ion-col text-center>
+    <ion-select text-center [(ngModel)]="categorySelected" multiple=false interface="action-sheet" (ionChange)="change()">
+        <ion-option class="category-name"  text-center [value]="i" *ngFor="let category of categories;let i=index;">
+            <ion-label text-center style="width:90vw;text-align:center;">{{category.categoryName}}</ion-label>
+        </ion-option>
+    </ion-select>
+    </ion-col>
+</ion-row>
+</ion-footer>

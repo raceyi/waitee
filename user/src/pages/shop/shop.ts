@@ -5,7 +5,7 @@ import {MenuPage} from '../menu/menu';
 import {TabsPage} from '../tabs/tabs';
 import {ServerProvider} from '../../providers/server/server';
 import {CartPage} from '../cart/cart';
-
+import {MenuSearchPage} from '../menu-search/menu-search';
 /**
  * Generated class for the ShopPage page.
  *
@@ -33,8 +33,10 @@ export class ShopPage {
   shopInfo:any;
   regularOff;
   ngStyle;
-  storeInfoHide:boolean=true;
-
+  storeInfoHide:boolean=false;
+  shopPhone;
+  freeMenu;
+  //stampCount=[]; move into storageProvider
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
               public serverProvider:ServerProvider,private app:App,
@@ -63,7 +65,60 @@ export class ShopPage {
       console.log("paymethod:"+ storageProvider.shopResponse.shopInfo.paymethod.card);
       console.log("paymethod:"+ storageProvider.shopResponse.shopInfo.paymethod.cash);
       this.ngStyle={'background-image': 'url('+ storageProvider.awsS3+storageProvider.shopResponse.shopInfo.imagePath + ')'};
+
+      console.log("phone:"+this.storageProvider.shopResponse.shopInfo.shopPhone);
+      if(this.storageProvider.shopResponse.shopInfo.shopPhone && this.storageProvider.shopResponse.shopInfo.shopPhone!=null){
+          this.shopPhone=this.autoHypenPhone(this.storageProvider.shopResponse.shopInfo.shopPhone);
+      }
+
+      if(this.shop.shopInfo.stamp!=null && this.shop.shopInfo.stampFreeMenu!=null){
+            let freeMenu=JSON.parse(this.shop.shopInfo.stampFreeMenu);
+            this.freeMenu=freeMenu.menuName;
+      }
   }
+
+ autoHypenPhone(str) {
+        str = str.replace(/[^0-9]/g, '');
+        var tmp = '';
+        if (str.length >= 2 && str.startsWith('02')) {
+            tmp += str.substr(0, 2);
+            tmp += '-';
+            if (str.length < 7) {
+                tmp += str.substr(2);
+            }
+            else {
+                tmp += str.substr(2, 3);
+                tmp += '-';
+                tmp += str.substr(5);
+            }
+            return tmp;
+        }
+        else if (str.length < 4) {
+            return str;
+        }
+        else if (str.length < 7) {
+            tmp += str.substr(0, 3);
+            tmp += '-';
+            tmp += str.substr(3);
+            return tmp;
+        }
+        else if (str.length < 11) {
+            tmp += str.substr(0, 3);
+            tmp += '-';
+            tmp += str.substr(3, 3);
+            tmp += '-';
+            tmp += str.substr(6);
+            return tmp;
+        }
+        else {
+            tmp += str.substr(0, 3);
+            tmp += '-';
+            tmp += str.substr(3, 4);
+            tmp += '-';
+            tmp += str.substr(7);
+            return tmp;
+        }
+    };
 
   getDayString(i){
     if(i==0){
@@ -97,7 +152,8 @@ export class ShopPage {
             this.takeout=parseInt(this.storageProvider.shopInfo.takeout);
 
         }
-
+        //고객의 stamp정보를 가져온다.
+        this.serverProvider.getCurrentShopStampInfo();
   }
 
   ionViewDidLoad() {
@@ -122,7 +178,7 @@ export class ShopPage {
     // hum=> construct this.categoryRows
     this.shop.categories.forEach(category => {
         let menus=[];
-        console.log("[configureShopInfo]this.shop:"+this.shop);
+        //console.log("[configureShopInfo]this.shop:"+this.shop);
         this.shop.menus.forEach(menu=>{
             //console.log("menu.no:"+menu.menuNO+" index:"+menu.menuNO.indexOf(';'));
             let no:string=menu.menuNO.substr(menu.menuNO.indexOf(';')+1);
@@ -133,7 +189,7 @@ export class ShopPage {
                 //console.log("menu.filename:"+menu.filename);
                 menu.ngStyle={'background-image': 'url('+ menu.filename + ')'};
                 let menu_name=menu.menuName.toString();
-                console.log("menu:"+JSON.stringify(menu));
+                //console.log("menu:"+JSON.stringify(menu));
                 menus.push(menu);
             }
         });
@@ -144,12 +200,12 @@ export class ShopPage {
         }else // Korean
             this.categories.push({sequence:parseInt(category.sequence),categoryNO:parseInt(category.categoryNO),categoryName:category.categoryName,menus:menus});
 
-        console.log("[categories]:"+JSON.stringify(this.categories));
+        //console.log("[categories]:"+JSON.stringify(this.categories));
         //console.log("menus.length:"+menus.length);
     });
         //console.log("categories len:"+this.categories.length);
         // sort categories. Not yet done.
-        
+
         this.categorySelected=0; // hum...
         
         if(navigator.language.startsWith("ko") && this.shop.shopInfo.hasOwnProperty("notice") && this.shop.shopInfo.notice!=null){
@@ -172,7 +228,6 @@ export class ShopPage {
            this.menus.push(pair);
            console.log("i:"+i);
         }       
-
   }
 
   sortNowMenus(){ //Why it doesn't work?
@@ -327,5 +382,31 @@ export class ShopPage {
       return lines;
   }
 
+    change(){
+        this.nowMenus=this.categories[this.categorySelected].menus;
+        this.sortNowMenus();
+        this.menus=[];
+        for(var i=0;i<this.nowMenus.length/2;i++){
+           let pair=[];
+           pair.push(this.nowMenus[i*2]);
+           pair.push(this.nowMenus[i*2+1]);
+           this.menus.push(pair);
+           console.log("i:"+i);
+        }       
+        this.shophomeContentRef.resize();
+    }
 
+    search(){
+            let shopInfo={takitId:this.takitId, 
+                address:this.shop.shopInfo.address, 
+                shopName:this.shop.shopInfo.shopName,
+                deliveryArea:this.shop.shopInfo.deliveryArea,
+                freeDelivery:this.shop.shopInfo.freeDelivery,
+                paymethod:this.shop.shopInfo.paymethod,
+                deliveryFee:this.shop.shopInfo.deliveryFee};
+
+        //console.log("menus:"+JSON.stringify(this.storageProvider.shopResponse.shopInfo.menus));
+
+        this.navCtrl.push(MenuSearchPage,{shopInfo:shopInfo, menus: this.shop.menus,class:"MenuSearchPage"} );    
+    }
 }

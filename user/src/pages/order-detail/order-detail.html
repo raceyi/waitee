@@ -201,6 +201,14 @@
     <b *ngIf="order.total!=null && order.total!=undefined"><amount-display [amount]="order.total"></amount-display>원</b>
   </ion-col>
 </ion-row>
+<ion-row *ngIf="order.stampIssueCount!=null && order.stampIssueCount>0" class="receipt-amount">
+  <ion-col text-left>
+    <b>스탬프</b>  
+  </ion-col>
+  <ion-col text-right>
+  <b>{{order.stampIssueCount}}</b>
+  </ion-col>
+</ion-row>
 </div>
 
 <div *ngIf="order.orderStatus=='cancelled'" [ngClass]="refundClasses">

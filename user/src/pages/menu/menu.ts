@@ -115,7 +115,7 @@ export class MenuPage {
   }
 
  computeAmount(){
-    let menu_price:number
+    let menu_price:number;
     if( typeof this.menu.price==='string')
         menu_price=parseInt(this.menu.price);
     else
@@ -261,16 +261,16 @@ export class MenuPage {
                         var option=this.options[i];
                         if(option.price==0 && option.hasOwnProperty("choice")){
                             if(option.select === undefined || option.select === null){
-                                reject(option.name+'을 선택해주시기 바랍니다.');
+                                reject(option.name+'의 옵션을 선택해주시기 바랍니다.');
                             }
-                        }else if(option.number>0 && option.hasOwnProperty("choice")){
+                        }else if(option.number>0 && option.hasOwnProperty("choice") && option.choice.length>1){
                             console.log("option.selectedChoice:"+option.default);
                             if(option.select === undefined || option.select === null){
-                                reject(option.name+'을 선택해주시기 바랍니다.');
+                                reject(option.name+'의 옵션을 선택해주시기 바랍니다.');
                             }
-                        }else if(option.flagType && option.flagOn && option.hasOwnProperty("choice")){
+                        }else if(option.flagType && option.flagOn && option.hasOwnProperty("choice") && option.choice.length>1){
                             if(option.select === undefined || option.select === null){
-                                reject(option.name+'을 선택해주시기 바랍니다.');  
+                                reject(option.name+'의 옵션을 선택해주시기 바랍니다.');  
                             }                          
                         }
                 }
@@ -337,6 +337,8 @@ export class MenuPage {
         let menus=[];
         let menu:any={menuNO:this.menu.menuNO,
                   menuName:this.menu.menuName,
+                  menuDiscount:this.menu.menuDiscount,
+                  menuDiscountOption:this.menu.menuDiscountOption,
                   quantity:this.menu.quantity,
                   options: options, 
                   price: this.amount,
@@ -421,5 +423,14 @@ export class MenuPage {
 
   expand(){
     this.ingredientShown=true;
+  }
+
+  selectChoice(option){
+      if(option.choiceFlag)
+          option.select=option.choice[0];
+      else
+          option.select=undefined;  
+      console.log("option.select:"+option.select);    
+
   }
 }

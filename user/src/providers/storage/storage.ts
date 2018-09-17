@@ -83,6 +83,8 @@ export class StorageProvider {
     public cashInProgress=[];
     public orderInProgress=[];
 
+    stampCount=[];
+
     banklist=[  {name:"국민",value:"004"},
                 {name:"기업",value:"003"},
                 {name:"농협",value:"011"},

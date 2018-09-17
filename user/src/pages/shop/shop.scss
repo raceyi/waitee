@@ -27,7 +27,15 @@ page-shop {
            margin-left: calc((20/376)*100vw);
            width: calc((60/376)*100vw);
            display: inline-block
-       }   
+       }  
+       .noti{
+           margin-left: calc((20/376)*100vw);           
+       } 
+    }
+
+    .stamp{
+        margin-left: calc((20/376)*100vw);           
+        margin-right: calc((20/376)*100vw);           
     }
 
     .shop-img{
@@ -124,7 +132,8 @@ page-shop {
                 }
                 */
                 .img-shop{
-                    margin-left:1.25vw;
+                    //margin-left:1.25vw;
+                    margin-left:8vw;
                     width:  calc((120/376)*100vw);
                     height: calc((120/376)*100vw);
                     background-size: calc((120/376)*100vw) calc((120/376)*100vw);                 
@@ -141,6 +150,12 @@ page-shop {
 
                 ion-label{
                     margin: 1.25vw 1.25vw 1.25vw 1.25vw;
+                    h2{
+                        margin-left:10vw;
+                    }
+                    p{
+                        margin-left:10vw;
+                    }
                 }
                 ion-item.left{
                     .item-inner{
@@ -176,4 +191,22 @@ page-shop {
         width:calc((23/376)*100vw); 
     }
     
+    ion-select{
+        max-width: 100%;
+        width: 100%;
+        background-color:$default-color;
+        color:white;
+        .select-icon{
+            color:white;
+        }
+    }
+    //////////////////////////////////
+    .item-radio.item-ios ion-label { // It doesn't work.
+        margin-left: 0;
+        text-align: center !important;
+    }
+    
+     .popover-content {
+        width: 100%;
+     }
 }

@@ -135,7 +135,7 @@ export class CashPasswordPage {
             this.body.password=cashPassword;
             this.body.orderedTime=new Date().toISOString();
             this.body.cashId= this.storageProvider.cashId;
-
+            
             console.log("body:"+JSON.stringify(this.body));
             this.serverProvider.saveOrderCart(this.body).then((res:any)=>{    
                         //console.log(JSON.stringify(res)); 
@@ -154,6 +154,11 @@ export class CashPasswordPage {
                                                 });
                                                 alert.present();
                                     });
+                            }else{  //trigger from shop page
+                                if(res.order.stampUsageCount!=null && res.order.stampUsageCount>0){
+                                    //update shop coupon stamp coupon Count
+                                    this.serverProvider.getCurrentShopStampInfo();
+                                }
                             }
                             console.log("send orderUpdate");
                             this.events.publish('orderUpdate',{order:res.order});

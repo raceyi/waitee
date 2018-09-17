@@ -70,6 +70,7 @@ import {TossTransferPageModule} from '../pages/toss-transfer/toss-transfer.modul
 import { WebIntent } from '@ionic-native/web-intent';
 import {StoreSearchPageModule} from '../pages/store-search/store-search.module';
 import { Media, MediaObject } from '@ionic-native/media';
+import {MenuSearchPageModule} from '../pages/menu-search/menu-search.module';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { Media, MediaObject } from '@ionic-native/media';
   ],
   imports: [
     ComponentsModule,
+    MenuSearchPageModule,
     LoginMainPageModule,
     LoginEmailPageModule,
     SignupPageModule,
