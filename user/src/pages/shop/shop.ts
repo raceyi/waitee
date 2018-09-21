@@ -190,6 +190,12 @@ export class ShopPage {
                 menu.ngStyle={'background-image': 'url('+ menu.filename + ')'};
                 let menu_name=menu.menuName.toString();
                 //console.log("menu:"+JSON.stringify(menu));
+                /*
+                if(menu.menuDiscountOption && menu.menuDiscountOption!=null){
+                    console.log("discountOptions:..."+menu.menuDiscountOption);
+                    menu.discountOptions=JSON.parse(menu.menuDiscountOption);
+                }
+                */
                 menus.push(menu);
             }
         });

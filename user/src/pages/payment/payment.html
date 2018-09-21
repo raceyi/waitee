@@ -49,7 +49,24 @@
 </ion-col>
 </ion-row>
   
-<ion-row *ngIf="this.paymentSelection=='cash' && cashDiscound>0" class="coupon-button" no-padding no-margin>
+<ion-row *ngIf="menuDiscountAmount>0" class="coupon-button" no-padding no-margin>
+<ion-col class="coupon-label" no-padding no-margin>
+메뉴 할인금액
+</ion-col>
+<ion-col no-padding no-margin text-right>
+ -<amount-display [amount]="menuDiscountAmount"></amount-display>원
+</ion-col>
+</ion-row>
+<ion-row *ngIf="menuDiscountAmount>0 && cashDiscountAmount>0" class="coupon-button" no-padding no-margin>
+<ion-col class="coupon-label" no-padding no-margin>
+캐시 할인금액
+</ion-col>
+<ion-col no-padding no-margin text-right>
+ -<amount-display [amount]="cashDiscountAmount"></amount-display>원
+</ion-col>
+</ion-row>
+
+<ion-row *ngIf="paymentSelection=='cash' && menuDiscountAmount==0 && cashDiscount>0" class="coupon-button" no-padding no-margin>
 <ion-col class="coupon-label" no-padding no-margin>
 캐시결제 할인금액
 </ion-col>
@@ -58,7 +75,7 @@
 </ion-col>
 </ion-row>
 
-<ion-row *ngIf="couponDiscountAmount && this.couponDiscountAmount>0" class="coupon-button" no-padding no-margin>
+<ion-row *ngIf="couponDiscountAmount && couponDiscountAmount>0" class="coupon-button" no-padding no-margin>
 <ion-col class="coupon-label" no-padding no-margin>
 쿠폰 결제 할인금액
 </ion-col>
@@ -67,7 +84,7 @@
 </ion-col>
 </ion-row>
 
-<ion-row *ngIf="this.paymentSelection=='card'" class="coupon-button" no-padding no-margin>
+<ion-row *ngIf="paymentSelection=='card'" class="coupon-button" no-padding no-margin>
 <ion-col class="coupon-label" no-padding no-margin>
 카드결제 할인금액
 </ion-col>

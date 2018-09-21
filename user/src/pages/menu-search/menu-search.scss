@@ -15,7 +15,7 @@ page-menu-search {
 
     .explain{
         color:white;
-        font-size:3vw;
+        font-size:4vw;
         padding-bottom: 20px;
     }
 
@@ -49,27 +49,8 @@ page-menu-search {
     }
 
     .searchbar-div{
-        padding-left:100px;
-        padding-right:100px;    
+        padding-left:calc((50/375)*100vw);;
+        padding-right:calc((50/375)*100vw);;    
     }
-
-   .order-button{
-    height: calc((100/1280)*100vh);
-    button{
-        font-size:4.75vw;
-    }
- }
-
- .order-list{
-    height: calc((100/1280)*100vh);
- }
- 
- .cart-quantity{
-    font-size:4.5vw;
-    background-color:#20dba5;
-    border-radius:50%;
-    color:white;
-    padding-left:10px;
-    padding-right:10px;
- }     
+  
 }

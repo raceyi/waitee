@@ -30,6 +30,21 @@
 <pre [hidden]="!ingredientShown" class="ingredients" style="font-size:3.4vw;">{{menu.ingrediant}}
 </pre>
 </div>
+
+<ion-row *ngIf="menu.menuDiscount && menu.menuDiscount!=null && menu.menuDiscount>0">
+  <ion-col class="menu-text-info" text-center>
+   {{menu.menuDiscount}}%할인
+  </ion-col>
+</ion-row>
+<ion-row *ngIf="menu.menuDiscount && menu.menuDiscount!=null && menu.menuDiscount>0">
+  <ion-col no-padding no-margin text-center>
+  <span style="font-size:3.5vw;" *ngFor="let option of menu.discountOptions;let i=index;" >
+    <b *ngIf="i>0">또는</b>
+    {{option}}&nbsp;
+  </span><span style="font-size:3.5vw;"> 선택시</span> 
+  </ion-col>
+</ion-row>
+                             
 <ion-row>
   <ion-col class="menu-text-info" text-left>
    가격

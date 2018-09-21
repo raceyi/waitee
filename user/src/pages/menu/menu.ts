@@ -47,6 +47,12 @@ export class MenuPage {
     this.shopInfo=JSON.parse(navParams.get('shopInfo'));
     console.log("this.menu.timeConstraint:"+this.menu.timeConstraint);
 
+    console.log(".....discountOptions:..."+this.menu.menuDiscountOption);
+    if(this.menu.menuDiscountOption && this.menu.menuDiscountOption!=null){
+        console.log("discountOptions:..."+this.menu.menuDiscountOption);
+        this.menu.discountOptions=JSON.parse(this.menu.menuDiscountOption);
+    }
+
     if(this.menu.timeConstraint!=undefined && this.menu.timeConstraint!=null){
         this.timeConstraint=JSON.parse(this.menu.timeConstraint);
         let fromHour,toHour,fromMin,toMin;

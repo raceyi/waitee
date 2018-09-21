@@ -86,6 +86,6 @@ checkInclude(menuName,keyword){
   }
 
   back(){
-    this.navCtrl.pop();
+    this.navCtrl.pop( { animate: false });
   }
 }

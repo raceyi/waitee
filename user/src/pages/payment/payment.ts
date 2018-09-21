@@ -64,6 +64,12 @@ export class PaymentPage {
   deliveryAddress;
 
   trigger;
+
+  //menu-discount begin
+  menuDiscountAmount=0;
+  cashDiscountAmount=0;
+  //menu-discount end
+
   constructor(public navCtrl: NavController, 
               private ngZone:NgZone,
               public navParams: NavParams,
@@ -235,7 +241,8 @@ export class PaymentPage {
  computePayAmount(){ //현재 carts는 1나만 들어온다. 동일주소에 대해서만 주문 가능함으로. 
     this.cardDiscount=0;
     this.cashDiscount=0;
-    let specialDiscountMenu=false;
+    this.menuDiscountAmount=0;
+    this.cashDiscountAmount=0;
     for(var i=0;i<this.carts.length;i++){ 
                 let cardRate:string=this.carts[i].paymethod.card;
                 let cashRate:string=this.carts[i].paymethod.cash;
@@ -264,25 +271,37 @@ export class PaymentPage {
                     this.carts[i].couponDiscount=this.couponDiscount;
                 }
                 // compute discount of each menu  // 각 메뉴의 할인을 계산할 이유가 있을까???? 메뉴별로 discount가 틀릴수도 있다 ㅜㅜ . 현재 사용안함.
-                for(var j=0;j<this.carts[i].orderList.menus.length;j++){
+                let menuDiscountExist=false;
+                for(let j=0;j<this.carts[i].orderList.menus.length;j++){
                     if(this.paymentSelection=="cash"){
-                        //if(){ //menu discount 적용시 
-
-                        //}else
-                        if(cashDiscount){
+                        if(this.checkMenuDiscount(this.carts[i].orderList.menus[j])){ //menu discount 적용시 
+                            menuDiscountExist=true;
+                            let menuDiscount:number;
+                            if(typeof this.carts[i].orderList.menus[j].menuDiscount ==="string"){
+                                menuDiscount=parseInt(this.carts[i].orderList.menus[j].menuDiscount);
+                            }else 
+                                menuDiscount=this.carts[i].orderList.menus[j].menuDiscount;
+                            menuDiscount=menuDiscount/100;
+                            this.menuDiscountAmount+=Math.round(this.carts[i].orderList.menus[j].price*(menuDiscount));
+                            this.carts[i].orderList.menus[j].amount= this.carts[i].orderList.menus[j].price-Math.round(this.carts[i].orderList.menus[j].price*(menuDiscount));
+                        }else if(cashDiscount){
                             this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price-Math.round((this.carts[i].orderList.menus[j].price*cashDiscount)/100);
+                            this.cashDiscountAmount+=Math.round((this.carts[i].orderList.menus[j].price*cashDiscount)/100);
                         }else{
                             this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price; 
                         }                           
                     }else // card
                         this.carts[i].orderList.menus[j].amount=this.carts[i].orderList.menus[j].price-Math.round((this.carts[i].orderList.menus[j].price*cardDiscount)/100);                    
                 }
+                if(menuDiscountExist){ //compute carts[i].amoun again. cart는 1만 있다. 
+                    this.carts[i].amount=this.carts[i].price -(this.menuDiscountAmount+this.cashDiscountAmount);
+                }
                 console.log("this.cardDiscount: "+this.cardDiscount+ "this.cashDiscount:"+this.cashDiscount)
     }
     if(this.paymentSelection=="cash"){
-        if(specialDiscountMenu){
+        if(this.menuDiscountAmount>0){
             //menuDiscount와 다른 부분을 분리하고 나머지 가격에 대해 할인을 적용한다. 
-            //this.payAmount= ;
+            this.payAmount=this.totalAmount-(this.menuDiscountAmount+this.cashDiscountAmount)-this.couponDiscountAmount;
         }else
             this.payAmount=this.totalAmount-this.cashDiscount-this.couponDiscountAmount;
     }else{
@@ -296,6 +315,34 @@ export class PaymentPage {
     console.log("payAmount:"+this.payAmount);
   }
 
+  checkMenuDiscount(menu){
+      console.log("checkMenuDiscount:"+JSON.stringify(menu));
+      if( menu.menuDiscount && menu.menuDiscount!=null && menu.menuDiscount>0){
+          if(menu.menuDiscountOption && menu.menuDiscountOption==null){
+              return true;    
+          }
+          if(menu.menuDiscountOption && menu.menuDiscountOption!=null){
+              if(menu.menuDiscountOption){ // menu가 menuDiscountOption중 하나를 가지고 있다면 
+                  let menuDiscountOptions=JSON.parse(menu.menuDiscountOption);
+                  let options=menu.options;
+                  if(typeof options ==="string"){
+                      options=JSON.parse(options);
+                  }
+                  let index=options.findIndex(function(element){
+                         for(let i=0;i<menuDiscountOptions.length;i++)
+                            if(element.name==menuDiscountOptions[i])
+                                return true;
+                         return false;       
+                  })
+                  if(index>=0){  // 할인 조건을 충족함.
+                      console.log("checkMenuDiscount return true");
+                      return true;
+                  }
+              } 
+          }
+          return false;
+      }  
+  }
   pickupChange(takeout){
     this.takeout=takeout;
     this.computePayAmount();
@@ -541,6 +588,7 @@ export class PaymentPage {
         delete order.deliveryFee;
         delete order.address; 
       });
+
       body = {      payment:this.paymentSelection,
                     orderList:JSON.stringify(this.carts), 
                     //orderName:this.orderName, each cart has own orderName.

@@ -97,7 +97,14 @@
                               <label *ngIf="menu[0].soldout==1" class="sold-out"> <b>판매종료</b></label>
                               <label *ngIf="menu[0].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>
-                            <h2>{{menu[0].menuName}}<span *ngIf="menu[0].menuDiscount && menu[0].menuDiscount!=null && menu[0].menuDiscount>0">&nbsp;{{menu[0].menuDiscount}}%할인</span></h2> 
+                            <h2>{{menu[0].menuName}}</h2> 
+                            <!--
+                            <h2 *ngIf="menu[0].menuDiscount && menu[0].menuDiscount!=null && menu[0].menuDiscount>0">{{menu[0].menuDiscount}}%할인 
+                                <span *ngFor="let option of menu[0].discountOptions;let i=index;" >
+                                    &nbsp;{{option}}
+                                </span>
+                            </h2>
+                            -->
                             <!-- 
                             <h2 *ngIf="menu[0].menuName.length<=12">{{menu[0].menuName}}</h2>
                             <h2 *ngIf="menu[0].menuName.length>12"> {{split1(menu[0].menuName)}}</h2>
@@ -118,7 +125,14 @@
                               <label *ngIf="menu[1].soldout==1" class="sold-out"> <b>판매종료</b></label>
                               <label *ngIf="menu[1].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
                              </div>   
-                             <h2>{{menu[1].menuName}}<span *ngIf="menu[1].menuDiscount && menu[1].menuDiscount!=null && menu[1].menuDiscount>0">&nbsp;{{menu[1].menuDiscount}}%할인</span></h2>                                                      
+                             <h2>{{menu[1].menuName}}</h2>
+                             <!--
+                             <h2 *ngIf="menu[1].menuDiscount && menu[1].menuDiscount!=null && menu[1].menuDiscount>0">{{menu[1].menuDiscount}}%할인
+                                 <span *ngFor="let option of menu[1].discountOptions;let i=index;" >
+                                    &nbsp;{{option}}
+                                 </span>
+                             </h2>
+                             -->                                                      
                             <!-- 
                             <h2 *ngIf="menu[1].menuName.length<=12">{{menu[1].menuName}}</h2>
                             <h2 *ngIf="menu[1].menuName.length>12"> {{split1(menu[1].menuName)}}</h2>
