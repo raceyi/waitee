@@ -118,6 +118,7 @@ export class StorageProvider {
     manualbanklist=[
                 {name:"토스", value:"-1"},
                 {name:"카카오페이", value:"-2"},  
+                {name:"페이코", value:"-3"},   
                 {name:"국민",value:"004"},
                 {name:"기업",value:"003"},
                 {name:"농협",value:"011"},

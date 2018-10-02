@@ -144,7 +144,7 @@ export class OrderListPage {
         */        
         let businessno="7721300255";
         let catid="7098349001";
-        let reqVal="smartroapp://freepaylink?mode=normal&amount="+amount+"&trantype=card&surtax="+surtax+"&totalamount="+totalamount+"&tranno="+tranno +"&businessno="+businessno+"&catid="+catid+"&receiptmode=2&dongletype=5";
+        let reqVal="smartroapp://freepaylink?mode=normal&amount="+amount+"&trantype=card&surtax="+surtax+"&totalamount="+totalamount+"&tranno="+tranno +"&businessno="+businessno+"&catid="+catid+"&installment=0&receiptmode=2&dongletype=5";
         console.log("reqVal:"+reqVal);
         // set timer : 3분안에 결제가 끝나지 않으면 종료하고 마지막 결제정보를 저장한다. 사용자가 취소할수 있도록...
         this.storageProvider.setPaymentFailure();

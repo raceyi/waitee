@@ -4,7 +4,7 @@ page-menu-search {
         padding-right: 150px;
         padding-bottom: 30px;
         padding-top: 0px;
-        background-color:#ff7f39;
+        background-color:$default-color;
     }
     .toolbar-ios {
         padding:0px;
@@ -28,7 +28,7 @@ page-menu-search {
     }
 
     .toolbar-content-ios{
-        background-color:#ff7f39;        
+        background-color:$default-color;        
     }
     .search-menus-div{
         .search-menus{

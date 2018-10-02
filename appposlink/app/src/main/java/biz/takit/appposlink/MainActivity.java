@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
             Uri uri = getIntent().getData();
 
-            Log.d("parseIntent", getIntent().getData().toString());
+            //Log.d("parseIntent", getIntent().getData().toString());
 
             if (uri != null) {
                 price = uri.getQueryParameter("price");
@@ -55,6 +55,25 @@ public class MainActivity extends AppCompatActivity {
                             + "appposlink:"
                             + "/" + "/result";
                 }
+                Log.d("param:", param);
+                intent.setData(Uri.parse(param));
+                startActivity(intent);
+            }else{ // test purpose
+                price="100";
+                businessNumber="148800447";
+                catid="2028214001";
+                String param = "apppos://pay?gubun=0100&price=" + price
+                        + "&bizno=" + businessNumber
+                        + "&catid=" + catid
+                        + "&intMon=00&finishActivity=true"
+                        + "&returnURI="
+                        + "appposlink:"
+                        + "/" + "/result";
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+
                 Log.d("param:", param);
                 intent.setData(Uri.parse(param));
                 startActivity(intent);

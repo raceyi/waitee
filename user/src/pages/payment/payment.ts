@@ -54,7 +54,7 @@ export class PaymentPage {
   availableCounponCount=0;
   couponDiscount=0;
   stampUsage=0;
-  couponDiscountAmount=0;
+  couponDiscountAmount=0; //constructor의 checkStamp에서 계산됨으로 reset해서는 안된다!!!
   freeMenu;
   //stamp-end
   totalAmount:number=0;
@@ -69,6 +69,7 @@ export class PaymentPage {
   menuDiscountAmount=0;
   cashDiscountAmount=0;
   //menu-discount end
+  computePayAmountDone:boolean=false;
 
   constructor(public navCtrl: NavController, 
               private ngZone:NgZone,
@@ -116,12 +117,7 @@ export class PaymentPage {
 
     this.checkStamp().then(()=>{
         console.log("checkStamp success");
-        this.computePayAmount();
-    },err=>{
-        console.log("checkStamp error:"+err);
-    });
-
-    let body = {shops:JSON.stringify(shops)};
+        let body = {shops:JSON.stringify(shops)};
         this.serverProvider.post(this.storageProvider.serverAddress+"/getPayMethod",body).then((res:any)=>{
             console.log("getPayMethod-res:"+JSON.stringify(res));
             if(res.result=="success"){
@@ -156,7 +152,20 @@ export class PaymentPage {
                  }else{
                      console.log("Hum...getPayMethod-HttpError");
                  }
-        })        
+        })    
+    },err=>{
+         if(err=="NetworkFailure"){
+                            this.navCtrl.pop();
+                            let alert = this.alertController.create({
+                                title: "서버와 통신에 문제가 있습니다.",
+                                subTitle:"상점의 결제정보를 가져오는데 실패했습니다.",
+                                buttons: ['OK']
+                            });
+                            alert.present();
+                 }else{
+                     console.log("Hum...getPayMethod-HttpError");
+                 }
+    });    
   }
 
 
@@ -171,10 +180,13 @@ export class PaymentPage {
             let stampCount=res.stampCount;
             if(res.result=="success"){
                 // 각 상점별 정보 stamp정보를 가져와야만 한다. 우선 하나의 상점임으로 carts[0]에 대해서만 확인한다. ㅜㅜ  
-                    this.serverProvider.getShopInfo(this.carts[0].takitId).then((res:any)=>{
-                        let shopInfo=res.shopInfo;
+                this.serverProvider.getShopInfo(this.carts[0].takitId).then((res:any)=>{
+                let shopInfo=res.shopInfo;
                 if(shopInfo.stamp!=null && shopInfo.stamp){
                         this.carts[0].stampIssueCount=0; // 주문 준비완료시 서버에서 계산되어 진다. 
+                }else{
+                    resolve();
+                    return;
                 }        
                 let stampUsageCount:number;
                 if(typeof shopInfo.stampUsageCount === "string")
@@ -183,17 +195,20 @@ export class PaymentPage {
                     stampUsageCount=shopInfo.stampUsageCount;    
                 if(stampCount>=stampUsageCount){
                     if(shopInfo.stampFreeAmount!=null && shopInfo.stampFreeMenu==null ){ //가격을 차감한다.
+                        let stampFreeAmount=shopInfo.stampFreeAmount;
+                        if(typeof stampFreeAmount ==="string")
+                            stampFreeAmount=parseInt(stampFreeAmount);
                         this.availableCounponCount=(stampCount- (stampCount%stampUsageCount))/stampUsageCount;
-                        this.availableCouponDiscount= this.availableCounponCount*shopInfo.stampFreeAmount;
+                        this.availableCouponDiscount= this.availableCounponCount*stampFreeAmount;
                         if(this.carts[0].price>this.availableCouponDiscount){ //현재 하나의 매장에서만 주문가능하다.
                                 this.couponDiscount=this.availableCounponCount; //쿠폰 사용 갯수
                                 this.stampUsage=this.availableCounponCount*stampUsageCount;// stamp사용수
                                 this.couponDiscountAmount=this.availableCouponDiscount; //쿠폰 사용 금액
                         }else{ //쿠폰을 남겨놔야한다.
-                               let number= Math.round(this.carts[0].price/shopInfo.stampFreeAmount);
+                               let number= Math.round(this.carts[0].price/stampFreeAmount);
                                this.couponDiscount=number;
                                this.stampUsage=number*stampUsageCount;
-                               this.couponDiscountAmount=number*shopInfo.stampFreeAmount;
+                               this.couponDiscountAmount=number*stampFreeAmount;
                         }
                     }else if(shopInfo.stampFreeAmount==null && shopInfo.stampFreeMenu!=null ){
                         // 주문목록에 메뉴가 있다면 할인을 적용한다. 주문 목록에 쿠폰 적용 메뉴를 카운트 한다. 
@@ -243,6 +258,7 @@ export class PaymentPage {
     this.cashDiscount=0;
     this.menuDiscountAmount=0;
     this.cashDiscountAmount=0;
+
     for(var i=0;i<this.carts.length;i++){ 
                 let cardRate:string=this.carts[i].paymethod.card;
                 let cashRate:string=this.carts[i].paymethod.cash;
@@ -313,6 +329,7 @@ export class PaymentPage {
         this.deliveryFee=undefined;
 
     console.log("payAmount:"+this.payAmount);
+    this.computePayAmountDone=true;
   }
 
   checkMenuDiscount(menu){
@@ -497,7 +514,15 @@ export class PaymentPage {
 
   pay(){
     console.log("carts:"+JSON.stringify(this.carts));
-
+    if(!this.computePayAmountDone){
+            let alert = this.alertController.create({
+                title: '결제 금액 계산이 완료되지 않았습니다.',
+                subTitle:'잠시 기다려 주십시요.',
+                buttons: ['OK']
+            });
+            alert.present();
+            return;
+    }
     if(this.storageProvider.tourMode){
             let alert = this.alertController.create({
                 title: '둘러보기모드입니다.',
