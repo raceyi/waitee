@@ -11,7 +11,7 @@ import { LoginPage } from '../pages/login/login';
 import { ErrorPage } from '../pages/error/error';
 import { HomePage } from '../pages/home/home';
 import {SelectorPage} from '../pages/selector/selector';
-
+import {OrderReceiptPage} from '../pages/order-receipt/order-receipt';
 
 @Component({
   templateUrl: 'app.html'

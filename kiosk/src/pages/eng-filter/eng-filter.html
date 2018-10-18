@@ -1,0 +1,70 @@
+<!--
+  Generated template for the EngFilterPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-content>
+<div class="header">
+    <ion-row>
+    <ion-col col-2 text-center>
+      <button round class="english-button" (click)="pop()" ion-button icon-only>
+        &nbsp;&nbsp;&nbsp;KOREAN&nbsp;&nbsp;&nbsp;&nbsp;
+      </button>
+    </ion-col>
+    <ion-col col-2 text-left>
+       <button round class="english-button" (click)="orderCheck()" ion-button icon-only>
+        &nbsp;ORDER INFO&nbsp;
+      </button>
+    </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center class="meal-type">
+        Choose your meal type
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center class="not-eating">
+      I am not eating
+      </ion-col> 
+    </ion-row>
+</div>
+<ion-row>
+  <ion-col col-6 text-center>
+      <button *ngIf="storage.filter.beef" class="filter" (click)="unselect('beef')" outine ion-button>&nbsp;BEEF&nbsp;</button>
+      <button *ngIf="!storage.filter.beef" class="no-filter" (click)="select('beef')" outine ion-button>&nbsp;BEEF&nbsp;</button>
+  </ion-col>
+  <ion-col col-6 text-center>
+      <button *ngIf="storage.filter.pork" class="filter" (click)="unselect('pork')" outline ion-button>&nbsp;PORK&nbsp;</button> 
+      <button *ngIf="!storage.filter.pork" class="no-filter" (click)="select('pork')" outline ion-button>&nbsp;PORK&nbsp;</button> 
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col col-6 text-center>
+      <button *ngIf="storage.filter.fish" class="filter" (click)="unselect('fish')" outline ion-button>&nbsp;FISH&nbsp;</button>
+       <button *ngIf="!storage.filter.fish" class="no-filter" (click)="select('fish')" outline ion-button>&nbsp;FISH&nbsp;</button>
+  </ion-col>
+  <ion-col col-6 text-center>
+      <button *ngIf="storage.filter.chicken" class="filter" (click)="unselect('chicken')" outline ion-button>CHICKEN</button> 
+      <button *ngIf="!storage.filter.chicken" class="no-filter" (click)="select('chicken')" outline ion-button>CHICKEN</button> 
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col col-6 text-center>
+      <button *ngIf="storage.filter.egg" class="filter" (click)="unselect('egg')" outline ion-button>&nbsp;EGG&nbsp;</button>
+      <button *ngIf="!storage.filter.egg" class="no-filter" (click)="select('egg')" outline ion-button>&nbsp;EGG&nbsp;</button>
+  </ion-col>
+  <ion-col>
+  </ion-col>
+</ion-row>
+
+</ion-content>
+<ion-footer>
+<ion-row  no-padding no-margin>
+  <ion-col class="order-button" no-padding no-margin text-center align-self-center>
+    <button (click)="moveNextStep()" full style="color: white;background-color:#ff7f39;" ion-button no-padding no-margin clear>    
+     NEXT 
+    </button>
+  </ion-col>
+</ion-row>  
+</ion-footer>

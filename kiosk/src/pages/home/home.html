@@ -1,13 +1,11 @@
 <ion-header>
   <ion-navbar>
     <ion-buttons left>
-      <!--
-      <button round class="english-button" ion-button icon-only>
-        &nbsp;ENGLISH&nbsp;
-      </button>
-      -->
       <button round class="english-button" (click)="orderCheck()" ion-button icon-only>
         &nbsp;주문확인&nbsp;
+      </button>
+      <button round class="english-button" (click)="english()" ion-button icon-only>
+        &nbsp;ENGLISH&nbsp;
       </button>
     </ion-buttons>
      <img *ngIf="shop.shopInfo && shop.shopInfo.imagePath" class="shop-img" [src]="shop.shopInfo.imagePath"> 

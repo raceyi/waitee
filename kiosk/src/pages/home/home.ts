@@ -10,6 +10,7 @@ import {MenuPage} from '../menu/menu';
 import { CartProvider } from '../../providers/cart/cart';
 import {OrderCheckPage} from '../order-check/order-check';
 import {ConfigurationPage} from '../configuration/configuration';
+import {EngFilterPage} from '../eng-filter/eng-filter';
 
 declare var cordova:any;
 
@@ -258,5 +259,9 @@ let alert = this.alertCtrl.create({
     this.cartProvider.resetCart().then(()=>{
         this.contentRef.resize();
     });
+  }
+
+  english(){
+    this.navCtrl.push(EngFilterPage);
   }
 }

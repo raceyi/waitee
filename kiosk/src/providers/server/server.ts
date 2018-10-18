@@ -98,12 +98,10 @@ export class ServerProvider {
         });
   }
 
-  saveOrder(takeout,notiPhone,paymentType,cardResult,
-            receitIssue,receiptId,receiptType){
+  saveOrder(takeout,paymentType,cardResult,english,receiptIssue,receiptMode,receiptNumber){
       return new Promise((resolve,reject)=>{
             let body:any;
-            console.log("shop.shopInfo "+JSON.stringify(this.storage.shop.shopInfo));
-            let output=this.smartroResultParser(JSON.parse(cardResult));
+            //console.log("shop.shopInfo "+JSON.stringify(this.storage.shop.shopInfo));
             let orderName;
             if(this.cartProvider.orderList.length==1)
                 orderName=this.cartProvider.orderList[0].menuName+this.cartProvider.orderList[0].quantity+"개";
@@ -113,28 +111,31 @@ export class ServerProvider {
                     orderName:orderName,
                     amount: this.cartProvider.totalAmount,
                     takeout: takeout,
-                    notiPhone:notiPhone,
                     orderList:this.cartProvider.orderList,
                     paymentType:paymentType,
                     shopName:this.storage.shop.shopInfo.shopName,
                     address:this.storage.shop.shopInfo.address,
-                    businessNumber:this.storage.shop.shopInfo.businessNumber
+                    businessNumber:this.storage.shop.shopInfo.businessNumber,
+                    orderNameEn:this.cartProvider.orderNameEn,
+                    english:english
                 };
 
-            if(paymentType=="cash"){
-                body.receiptIssue=receitIssue;
-                body.receiptId=receiptId;
-                body.receiptType=receiptType;
-            }else if(paymentType="card"){
+            if(paymentType=="card"){
+                let output=this.smartroResultParser(JSON.parse(cardResult));
                 body.cardPayment=cardResult;
                 body.approvalNO=output.approvalNO;
                 body.approvalDate=output.approvalTime.substr(0,8);
                 body.catid=this.storage.catid;
                 body.cardNO=output.cardNO;
                 body.cardName=output.cardName;
+            }else{ //cash. 현금 영수증 정보를 추가해야만 한다. ㅜㅜ 
+                body.receiptIssue= receiptIssue;
+                body.receiptType = receiptMode;
+                body.receiptId   = receiptNumber;
             }
             console.log("saveOrder body:"+JSON.stringify(body));
             this.post("/kiosk/saveOrder",body).then(res=>{
+                console.log("res:"+JSON.stringify(res));
                 resolve(res); //orderNO를 받아 보여준다.
             },err=>{
                 reject(err);

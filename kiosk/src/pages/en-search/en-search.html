@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+    <button class="close-button" clear ion-button (click)="back()"><ion-icon style="font-size:6vw;" name="md-close"></ion-icon>
+    </button>
+    <div class="searchbar-div">
+    <ion-searchbar  mode="md" class="keyword-input" 
+                  placeholder="menu name"
+                  [(ngModel)]="myInput"  
+                  (ionInput)="onInput($event)">
+    </ion-searchbar>
+    </div>
+  </ion-navbar>
+</ion-header>
+<ion-content #searchContent>
+<div class="search-menus-div">
+  <div [hidden]="myInput==undefined || myInput.length==0"  *ngFor="let menu of menus">
+    <button ion-button class="search-menus" clear (click)="goToMenu(menu)">{{menu.menuNameEn}}</button>    
+  </div>
+</div>
+</ion-content>
+<ion-footer  no-padding no-margin *ngIf="cartProvider.totalQuantity>0">
+
+<ion-row class="order-list" style="background-color:#ff7f39;color:white;">
+  <ion-col col-7 style="font-size:3.5vw;" text-center align-self-center>
+  {{cartProvider.orderName}}
+  </ion-col>
+  <ion-col style="font-size:4.125vw;" text-center align-self-center>
+    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>won</b>
+  </ion-col>
+  <ion-col col-2 text-center align-self-center>
+    <button ion-button (click)="resetCart()" no-padding style="background-color:transparent;font-size:3.5vw;">delete all</button>
+  </ion-col>
+</ion-row>
+<ion-row  no-padding no-margin>
+  <ion-col class="order-button" no-padding no-margin text-center align-self-center>
+    <button (click)="moveOrderList()" full style="color: #ff7f39;background-color:white;" ion-button no-padding no-margin clear>    
+     결제하기 
+    </button>
+  </ion-col>
+</ion-row>
+
+</ion-footer>

@@ -1,4 +1,4 @@
-page-menu {
+page-en-menu {
 $primary-color:#FF5F3A;
 $secondary-color:#20dba5;
     .close-button{
@@ -193,7 +193,7 @@ $secondary-color:#20dba5;
  }
  
   .order-list{
-    height: calc((100/1280)*100vh);
+    min-height: calc((100/1280)*100vh);
  }
  
  .cart-quantity{
@@ -209,5 +209,4 @@ $secondary-color:#20dba5;
     border-color: #bdbdbd;
     background-color: #bdbdbd;
 }
-
 }

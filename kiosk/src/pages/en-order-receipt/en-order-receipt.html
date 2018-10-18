@@ -1,5 +1,5 @@
 <!--
-  Generated template for the OrderReceiptPage page.
+  Generated template for the EnOrderReceiptPage page.
 
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
@@ -9,17 +9,17 @@
     <ion-col>
      <img *ngIf="storageProvider.shop.shopInfo && storageProvider.shop.shopInfo.imagePath" class="shop-img" [src]="storageProvider.shop.shopInfo.imagePath"> 
      <span class="by-pos"> by</span> 
-     <img class="logo-img" src="assets/imgs/waitee.png">
+     <img class="logo-img" src="assets/imgs/waitee-logo.png">
     </ion-col>
   </ion-row>
   <ion-row style="padding-top:80px;">
     <ion-col text-center  style="font-size:4.5vw;">
-    주문서 발송
+    Delivery Order Information
     </ion-col>
   </ion-row>
   <ion-row style="padding-top:10px;">
     <ion-col text-center  style="font-size:3vw;">
-    주문번호
+    Order number
     </ion-col>
   </ion-row>
   <ion-row style="padding-top:5px;">
@@ -29,7 +29,7 @@
   </ion-row>
   <ion-row style="padding-top:10px;">
     <ion-col text-center style="font-size:3.5vw;">
-    {{order.orderName}}
+    {{order.orderNameEn}}
     </ion-col>
   </ion-row>
 
@@ -44,14 +44,14 @@
       </ion-icon>
     </ion-col>
     <ion-col text-left>
-        <ion-label>웨이티 등록번호 발송</ion-label>
+        <ion-label>WAITEE registration number</ion-label>
     </ion-col>
   </ion-row>
   <ion-row [hidden]="notifyMethodWaitee">
     <ion-col col-4></ion-col>
     <ion-col text-center style="font-size:3vw;">
       <ion-item>
-      <ion-input text-center #phoneInput style="font-size:4vw;" type="tel" placeholder="주문서 발송 번호" (keyup)="inputPhoneNumber($event)" [(ngModel)]="phoneNumber"> </ion-input>
+      <ion-input text-center #phoneInput style="font-size:4vw;" type="tel" placeholder="Phone number" (keyup)="inputPhoneNumber($event)" [(ngModel)]="phoneNumber"> </ion-input>
       </ion-item>
     </ion-col>
     <ion-col col-3></ion-col>
@@ -61,44 +61,26 @@
     <ion-col col-4></ion-col>
     <ion-col text-center style="font-size:3vw;">
       <ion-item>
-      <ion-input text-center #phoneInput style="font-size:4vw;" type="number" placeholder="휴대폰 뒷자리" (keyup)="inputWaiteeNumber($event)" [(ngModel)]="waiteeNumber"> </ion-input>
+      <ion-input text-center #phoneInput style="font-size:4vw;" type="number" placeholder="last digits of phone number" (keyup)="inputWaiteeNumber($event)" [(ngModel)]="waiteeNumber"> </ion-input>
       </ion-item>
     </ion-col>
     <ion-col col-3></ion-col>
    </ion-row>
   <ion-row [hidden]="!notifyMethodWaitee">
     <ion-col text-center style="font-size:3vw;">
-     휴대폰 번호로 전송후 <br>웨이티 번호 등록 가능합니다.
+     After deliverying to mobile number<br>
+     You can register your WAITEE number.
     </ion-col>
   </ion-row>
 
 <div *ngIf="order.paymentType=='cash'" text-center class="order-completed">
-  상점주분께 <amount-display [amount]="order.amount"></amount-display>원을 전달하시면 <br>주문서가 발송됩니다.
+  If you pass <amount-display [amount]="order.amount"></amount-display> won to the shop owner, an order information will be sent to your phone.
 </div>
-
-  <!--
-  <ion-row [hidden]="!orderNotify">
-     <ion-col col-4></ion-col>
-    <ion-col text-center no-padding no-margin>
-      주문서 전달을 원하시지 않을 경우<br> 주문서 휴대폰 발송을 해제해주세요. 
-    </ion-col>
-    <ion-col col-3></ion-col>
-  </ion-row>
-  <ion-row text-center *ngIf="!orderNotify">
-    <ion-col col-3>
-    </ion-col>
-    <ion-col text-center>
-     영수증/주문서가 필요하신 분은 <br>주문서 휴대폰 발송을 선택해 주세요.<br>환경을 위해 문자로 전달됩니다. <br>출력된 주문서는 카운터에서 수령가능합니다
-    </ion-col>
-    <ion-col col-3>
-    </ion-col>
-  </ion-row>
-  -->  
 </div>
   <ion-row>
     <ion-col text-center style="padding-top:20px;font-size:3.8vw;">
-   모발앱 웨이티를 사용하시면 <br>전 메뉴 3%할인됩니다.<br>
-                  지금 다운로드하세요 !
+     3% off all menus if you use WAITEE<br>
+                  Download now!
     </ion-col>
   </ion-row>
   <ion-row>
@@ -122,16 +104,15 @@
 </ion-content>
 <ion-footer no-padding no-margin>
     <div class="balloon"  style="font-size:3vw;">
-       주문번호를 기억해주세요. <br>
-      첫화면 좌측상단 주문확인에서 <br>
-      주문 내역확인이 가능합니다.                            
+      Please remember your order number. <br>
+      You can view order details at order information page.
     </div>
   <ion-row style="background-color:#ff7f39;color:white;height:60px;">
     <ion-col style="border-right:solid 2px white;" text-center align-self-center no-padding no-margin >
-      <button no-padding no-margin clear color="white" style="font-size:4.75vw;" (click)="goHome()" ion-button> 주문 완료</button>      
+      <button no-padding no-margin clear color="white" style="font-size:4.75vw;" (click)="goHome()" ion-button>Complete order</button>      
     </ion-col>
     <ion-col align-self-center no-padding no-margin text-center>
-      <button no-padding no-margin clear color="white" style="font-size:4.75vw;" (click)="sendReceipt()" ion-button> 주문서 발송</button>
+      <button no-padding no-margin clear color="white" style="font-size:4.75vw;" (click)="sendReceipt()" ion-button> Deliver order info</button>
     </ion-col>
   </ion-row>
 </ion-footer>

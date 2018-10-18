@@ -1,11 +1,11 @@
-import { Component ,ViewChild} from '@angular/core';
-import { IonicPage, NavController, NavParams,AlertController,Content } from 'ionic-angular';
+import { Component,ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams,Content,AlertController } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
 import { CartProvider } from '../../providers/cart/cart';
-import {OrderListPage} from '../order-list/order-list';
+import {EnOrderListPage} from '../en-order-list/en-order-list';
 
 /**
- * Generated class for the MenuPage page.
+ * Generated class for the EnMenuPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -13,14 +13,14 @@ import {OrderListPage} from '../order-list/order-list';
 
 @IonicPage()
 @Component({
-  selector: 'page-menu',
-  templateUrl: 'menu.html',
+  selector: 'page-en-menu',
+  templateUrl: 'en-menu.html',
 })
-export class MenuPage {
-  menu;
-  @ViewChild("homeContent") public contentRef: Content;
+export class EnMenuPage {
 
-  options:any;
+ menu;
+  @ViewChild("menuContent") public contentRef: Content;
+  options:any=[];
   choice;   
   amount:number;
   unitPrice:number;
@@ -41,7 +41,7 @@ export class MenuPage {
               public alertController:AlertController,
               public navParams: NavParams) {
     this.menu=navParams.get('menu');
-    console.log("menu:")
+    console.log("menu:"+JSON.stringify(this.menu));
     console.log("this.menu.timeConstraint:"+this.menu.timeConstraint);
 
     if(this.menu.timeConstraint!=undefined && this.menu.timeConstraint!=null){
@@ -59,22 +59,22 @@ export class MenuPage {
         if(this.timeConstraint.from && this.timeConstraint.from!=null 
             && this.timeConstraint.to && this.timeConstraint.to!=null){
             if(this.timeConstraint.condition=="XOR"){
-                this.timeConstraintString="주문가능시간:"+toHour+'시'+toMin+'분 이전',fromHour+'시'+fromMin+'분 이후';
+                this.timeConstraintString="Available time: "+"to "+toHour+':'+toMin+",from"+fromHour+':'+fromMin;
             }else if(this.timeConstraint.condition=="AND"){
-                this.timeConstraintString="주문가능시간:"+fromHour+'시'+fromMin+'분-'+toHour+'시'+toMin+'분';            
+                this.timeConstraintString="Available time:"+fromHour+':'+fromMin+'-'+toHour+':'+toMin;            
             }
         }else if(this.timeConstraint.from && this.timeConstraint.from!=null){
-            this.timeConstraintString="주문가능시간:"+fromHour+'시'+fromMin+"분 이후";
+            this.timeConstraintString="Available time: from "+fromHour+':'+fromMin+"~";
         }else if(this.timeConstraint.to && this.timeConstraint.to!=null){
-            this.timeConstraintString="주문가능시간:"+toHour+'시'+toMin+'분 이전';
+            this.timeConstraintString="Available time:"+'to '+toHour+':'+toMin;
         }
         console.log("timeConstraintString:"+this.timeConstraintString);
     }
-    if(this.menu.options && this.menu.options!='null'){
-          if(typeof this.menu.options ==="string"){
-            this.options=JSON.parse(this.menu.options);
+    if(this.menu.validOptions && this.menu.validOptions!='null'){
+          if(typeof this.menu.validOptions ==="string"){
+            this.options=JSON.parse(this.menu.validOptions);
           }else{
-            this.options=this.menu.options;
+            this.options=this.menu.validOptions;
           }
 
           this.options.forEach(option => {
@@ -101,7 +101,7 @@ export class MenuPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad MenuPage');
+    console.log('ionViewDidLoad EnMenuPage');
   }
 
   back(){
@@ -206,7 +206,7 @@ export class MenuPage {
       console.log("onBlur this.quantity:"+this.menu.quantity);
     if(this.menu.quantity==undefined || this.menu.quantity==0 || this.menu.quantity.toString().length==0){
           let alert = this.alertController.create({
-                      title: '수량을 입력해주시기바랍니다.',
+                      title: 'Please input quantity',
                       buttons: ['OK']
                     });
                     alert.present();
@@ -251,7 +251,7 @@ export class MenuPage {
   addOrder(){
     if(this.menu.quantity==undefined || this.menu.quantity==0 || this.menu.quantity.toString().length==0){
           let alert = this.alertController.create({
-                      title: '수량을 입력해주시기바랍니다.',
+                      title: 'Please input quantity',
                       buttons: ['OK']
                     });
                     alert.present();
@@ -262,17 +262,29 @@ export class MenuPage {
 
         var cart:any={amount:0};
         var options=[];
+        var optionsEn=[];
         if(this.options!=undefined){
             this.options.forEach((option)=>{
                 if (option.number && option.number>0){
-                    if(option.select!=undefined)
-                        options.push({name:option.name,price:option.price,number:option.number,select:option.select});
-                    else
-                        options.push({name:option.name,price:option.price,number:option.number});
-                }else if(option.flagType && option.flagOn){
-                        options.push({name:option.name,price:option.price,number:option.number});
+                    if(option.select!=undefined){ //추가구현과 검증이 필요하다 ㅜㅜ 
+                        options.push({name:option['korean'],price:option.price,number:option.number,select:option.select});
+                        optionsEn.push({name:option.name,price:option.price,number:option.number,select:option.select});
+                    }else{
+                        options.push({name:option['korean'],price:option.price,number:option.number});
+                        optionsEn.push({name:option.name,price:option.price,number:option.number});
+                    }
+                }else if(option.flagType && option.flagOn){ //추가구현과 검증이 필요하다 ㅜㅜ 
+                        options.push({name:option['korean'],price:option.price,number:option.number});
+                        optionsEn.push({name:option.name,price:option.price,number:option.number});
                 } 
             });
+        }
+        if(this.menu.filterOptions!=undefined){
+                this.menu.filterOptions.forEach(filterOption=>{
+                    console.log("!!! filterOption:"+JSON.stringify(filterOption));
+                    options.push({name:filterOption['freeKor'],price:0,number:1,filterOption:true});
+                    optionsEn.push({name:filterOption['freeEn'],price:0,number:1,filterOption:true});
+                })
         }
         this.computeAmount();
 
@@ -284,8 +296,10 @@ export class MenuPage {
 
         let menu:any={menuNO:this.menu.menuNO,
                   menuName:this.menu.menuName,
+                  menuNameEn:this.menu.menuNameEn,
                   quantity:menu_quantity,
                   options: options, 
+                  optionsEn:optionsEn,
                   amount: this.amount,
                   unitPrice:this.unitPrice,
                   takeout:this.menu.takeout}
@@ -302,7 +316,7 @@ export class MenuPage {
        this.navCtrl.pop();
     },(name)=>{
           let alert = this.alertController.create({
-                      title: name+'을 선택해주시기 바랍니다.',
+                      title: 'Please select '+name,
                       buttons: ['OK']
                     });
                     alert.present();
@@ -318,7 +332,7 @@ export class MenuPage {
   }
 
    moveOrderList(){
-    this.navCtrl.push(OrderListPage,{class:"OrderListPage"});
+    this.navCtrl.push(EnOrderListPage,{class:"enOrderListPage"});
   }
 
   resetCart(){
@@ -326,5 +340,4 @@ export class MenuPage {
         this.contentRef.resize();
     });
   }
-
 }

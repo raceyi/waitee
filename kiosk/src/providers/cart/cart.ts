@@ -10,6 +10,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class CartProvider {
   orderName="";
+  orderNameEn="";
   orderList=[];
   totalAmount=0;
   totalQuantity=0;
@@ -39,6 +40,15 @@ export class CartProvider {
     console.log("addCart:"+JSON.stringify(menu));
     this.orderList.push(menu);
     this.orderName=this.orderList[0].menuName+"외"+this.countQuantity()+'개';
+    if(menu.menuNameEn){ //영문 주문이면 목록을   모두 나열 하자.
+        this.orderNameEn="";
+        for(let i=0;i<this.orderList.length;i++){
+          if(i+1<this.orderList.length)
+            this.orderNameEn+=this.orderList[i].quantity + ' '+this.orderList[i].menuNameEn+",";
+          else
+            this.orderNameEn+=this.orderList[i].quantity + ' '+this.orderList[i].menuNameEn;            
+        }
+    }
     this.totalAmount=this.computeAmount();
     this.totalQuantity=this.countQuantity();
     this.checkTakeoutAvailable();
@@ -50,6 +60,7 @@ export class CartProvider {
         this.totalAmount=0;
         this.orderList=[];
         this.orderName="";
+        this.orderNameEn="";
         this.takeoutAvailable=false;
         resolve();
     });
@@ -69,7 +80,7 @@ export class CartProvider {
             this.orderName=this.orderList[0].menuName+" 외 "+this.countQuantity()+'개';
             this.totalAmount=this.computeAmount();
             this.totalQuantity=this.countQuantity(); 
-            this.takeoutAvailable=false;
+            this.checkTakeoutAvailable();
         }    
         console.log("removeMenu resolve"); 
         resolve();

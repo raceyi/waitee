@@ -5,7 +5,7 @@ import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
 
 /**
- * Generated class for the OrderCheckPage page.
+ * Generated class for the EnOrderCheckPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -13,11 +13,12 @@ import {ServerProvider} from '../../providers/server/server';
 
 @IonicPage()
 @Component({
-  selector: 'page-order-check',
-  templateUrl: 'order-check.html',
+  selector: 'page-en-order-check',
+  templateUrl: 'en-order-check.html',
 })
-export class OrderCheckPage {
-  orderDate;
+export class EnOrderCheckPage {
+
+   orderDate;
   searchMode=true;
   cancelFailurePayment=[];
   orderNO;
@@ -34,7 +35,7 @@ export class OrderCheckPage {
       this.orderDate=this.getTodayString(); 
 
       //Just for testing
-      this.storageProvider.cancelFailurePayment.push({"shopName":"타킷 주식회사","address":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","approvalTime":"20180826192450","cardName":"NH기업체크","approvalNO":"30000172","amount":"100"});
+      //this.storageProvider.cancelFailurePayment.push({"shopName":"타킷 주식회사","address":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","approvalTime":"20180826192450","cardName":"NH기업체크","approvalNO":"30000172","amount":"100"});
       
       this.storageProvider.cancelFailurePayment.forEach((payment)=>{
           //check year, month,date
@@ -47,7 +48,6 @@ export class OrderCheckPage {
 }
 
 changeOrderDate(){
-    //this.orderDate
 }
 
 configureMode(){
@@ -72,7 +72,7 @@ configureMode(){
 
       if(!this.orderNO){
               let alert = this.alertController.create({
-                title: '주문번호를 입력해주세요.',
+                title: 'Please input your order number',
                 buttons: ['OK']
               });
               alert.present();
@@ -103,8 +103,8 @@ configureMode(){
                 }
             }else{
                       let alert = this.alertController.create({
-                        title: '주문 내역이 존재하지 않습니다.',
-                        subTitle:'날짜와 주문번호를 확인해주세요',
+                        title: 'The order doesn\'t exist.',
+                        subTitle:'Please check if date and order number are correct.',
                         buttons: ['OK']
                       });
                       alert.present();
@@ -129,7 +129,7 @@ configureMode(){
                       }
 
                       let alert = this.alertController.create({
-                        title: '카드 결제 취소에 성공했습니다.',
+                        title: 'The card payment is cancelled.',
                          buttons: ['OK']                       
                         /*
                         subTitle:'취소 영수증을 출력하시겠습니까?',
@@ -153,7 +153,7 @@ configureMode(){
                       alert.present();
       },err=>{
             let alert = this.alertController.create({
-              title: '카드 결제  취소에 실패했습니다.',
+              title: 'Failed to cancel card payment.',
               buttons: ['OK']
             });
             alert.present();
@@ -174,8 +174,8 @@ configureMode(){
           if(!(res.order.orderStatus=='cancelled' && res.order.cardCancel==null)){
               if(res.order.orderStatus!='cancelled'){
                       let alert = this.alertController.create({
-                        title: '취소되지 않은 주문입니다.',
-                        subTitle:'주문상태를 확인해주세요.',
+                        title: 'This order has not been canceled.',
+                        subTitle:'Please check the order status.',
                         buttons: ['OK']
                       });
                       alert.present();
@@ -183,8 +183,8 @@ configureMode(){
               }
               if( res.order.cardCancel!=null){
                       let alert = this.alertController.create({
-                        title: '카드 결제가 이미 취소되었습니다.',
-                        subTitle:'카드사에 확인해주세요.',
+                        title: 'Your card payment has already been canceled.',
+                        subTitle:'Please check with the card company',
                         buttons: ['OK']
                       });
                       alert.present();
@@ -197,29 +197,29 @@ configureMode(){
                                                 this.cancelApprovalNO,
                                                 orderDate).then((res:any)=>{
                       let alert = this.alertController.create({
-                        title: '카드 결제 취소에 성공했습니다.',
-                        subTitle:'취소 승인 번호: ',
+                        title: 'Successful cancellation of card payment',
+                        //subTitle:'취소 승인 번호', => 구현이 필요하다.
                         buttons: ['OK']
                       });
                       alert.present();
             },err=>{
                   //!!!!server 에 결제 취소를 저장한다.!!!!
                   let alert = this.alertController.create({
-                    title: '카드 결제  내역 취소에 실패했습니다.',
+                    title: 'Failed to cancel card payment.',
                     buttons: ['OK']
                   });
                   alert.present();
             })  
         }else{ //res.result=="failure"
                   let alert = this.alertController.create({
-                    title: '서버로 부터 카드 결제 내역 확인에 실패했습니다.',
+                    title: 'Failed to check card payment history from server.',
                     buttons: ['OK']
                   });
                   alert.present();
         }
    },err=>{
                   let alert = this.alertController.create({
-                    title: '서버로 부터 카드 결제 내역 확인에 실패했습니다.',
+                    title: 'Failed to check card payment history from server.',
                     buttons: ['OK']
                   });
                   alert.present();
@@ -235,14 +235,14 @@ configureMode(){
                                                 orderDate).then((res:any)=>{
                       //!!!!server 에 결제 취소를 저장한다.!!!!
                       let alert = this.alertController.create({
-                        title: '카드 결제 취소에 성공했습니다.',
-                        subTitle:'취소 승인 번호: ',
+                        title: 'Successful cancellation of card payment.',
+                        //subTitle:'취소 승인 번호: ',
                         buttons: ['OK']
                       });
                       alert.present();
       },err=>{
             let alert = this.alertController.create({
-              title: '카드 결제  내역 취소에 실패했습니다.',
+              title: 'Failed to cancel card payment',
               buttons: ['OK']
             });
             alert.present();

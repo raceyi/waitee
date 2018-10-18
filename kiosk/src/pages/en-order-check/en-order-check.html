@@ -1,5 +1,5 @@
 <!--
-  Generated template for the OrderCheckPage page.
+  Generated template for the EnOrderCheckPage page.
 
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
@@ -12,7 +12,7 @@
       </button>
   </ion-col>
   <ion-col align-self-center outline text-left style="font-size:4.5vw;color:#FF5F3A">
-    주문확인  
+    Order details  
   </ion-col>
   </ion-row>
 </ion-header>
@@ -22,7 +22,7 @@
   <ion-col col-2>
   </ion-col>
   <ion-col col-4 text-right align-self-center style="font-size:4vw;">
-    날짜선택
+    Date
   </ion-col>
   <ion-col text-center style="font-size:4vw;">
   <ion-datetime displayFormat="YYYY M DD" min="2018" style="border-bottom:solid 1px lightgray;" (ionChange)="changeOrderDate()" [(ngModel)]="orderDate"></ion-datetime>
@@ -32,12 +32,12 @@
 </ion-row>
 <ion-row>
   <ion-col no-padding no-margin>
-    <button ion-button *ngIf="searchMode"  style="color:white;background-color:#FF5F3A;" full >주문 검색</button>
-    <button ion-button *ngIf="!searchMode" (click)="configureMode()" style="color:#FF5F3A;background-color:white;border:solid 1px #FF5F3A;"  full >주문 검색</button>
+    <button ion-button *ngIf="searchMode"  style="color:white;background-color:#FF5F3A;" full >Search</button>
+    <button ion-button *ngIf="!searchMode" (click)="configureMode()" style="color:#FF5F3A;background-color:white;border:solid 1px #FF5F3A;"  full >Search</button>
   </ion-col>
   <ion-col no-padding no-margin>
-    <button ion-button *ngIf="!searchMode"  full style="color:white;background-color:#FF5F3A;" >카드 결제 취소</button>
-    <button ion-button *ngIf="searchMode" (click)="configureMode()" style="color:#FF5F3A;background-color:white;border:solid 1px #FF5F3A;"  full >카드 결제 취소</button>
+    <button ion-button *ngIf="!searchMode"  full style="color:white;background-color:#FF5F3A;" >Cancel the card payment</button>
+    <button ion-button *ngIf="searchMode" (click)="configureMode()" style="color:#FF5F3A;background-color:white;border:solid 1px #FF5F3A;"  full>Cancel the card payment</button>
   </ion-col>
 </ion-row>
 
@@ -45,34 +45,37 @@
   <ion-col col-4>
   </ion-col>
   <ion-col col-3 text-right align-self-center>
-    <ion-input text-center type="number" style="font-size:3.5vw;border-bottom:solid 1px lightgray;" [(ngModel)]="orderNO" placeholder="주문번호"></ion-input>  
+    <ion-input text-center type="number" style="font-size:3.5vw;border-bottom:solid 1px lightgray;" [(ngModel)]="orderNO" placeholder="order number"></ion-input>  
   </ion-col>
   <ion-col text-left align-self-center>
-    <button ion-button (click)="searchOrder()" style="font-size:3vw;color:white;background-color:#20dba5;" >검색</button>
+    <button ion-button (click)="searchOrder()" style="font-size:3vw;color:white;background-color:#20dba5;" >Search</button>
   </ion-col>
 </ion-row>
 
 <div *ngIf="searchMode && orderInfo && orderInfo.orderList">
-    <ion-row *ngIf="orderInfo.cardPayment && orderInfo.cardPayment!=null" padding>
+    <ion-row *ngIf="(orderInfo.cardPayment && orderInfo.cardPayment!=null) || (orderInfo.paymentType=='cash')" padding>
         <ion-col col-3 text-center align-self-center>
         </ion-col>
         <ion-col col-3 style="font-size:4vw;" text-center align-self-center>
-          주문상태
+          Order status 
         </ion-col>
+      <ion-col *ngIf="orderInfo.orderStatus=='unpaid'" col-3 align-self-center style="font-size:4vw;">
+          unpaid
+      </ion-col>
       <ion-col *ngIf="orderInfo.orderStatus=='paid'" col-3 align-self-center style="font-size:4vw;">
-          주문
+          paid
       </ion-col>
       <ion-col *ngIf="orderInfo.orderStatus=='checked'" col-3 align-self-center style="font-size:4vw;">
-          접수
+          accepted
       </ion-col>
       <ion-col *ngIf="orderInfo.orderStatus=='completed'" col-3 align-self-center style="font-size:4vw;">
-          준비완료
+          completed
       </ion-col>
       <ion-col *ngIf="orderInfo.orderStatus=='pickup'" col-3 align-self-center style="font-size:4vw;">
-          전달완료
+          pickup
       </ion-col>      
       <ion-col *ngIf="orderInfo.orderStatus=='cancelled'" col-3 align-self-center style="font-size:4vw;">
-          취소
+          cancelled
       </ion-col>
       <ion-col align-self-center>
         <button ion-button *ngIf="orderInfo.orderStatus=='cancelled' && orderInfo.cardCancel==null" (click)="cancelCardPayment(orderInfo)"> <b>카드취소</b></button>
@@ -85,43 +88,47 @@
         <ion-col col-5>
             <ion-row>
               <ion-col>
-                {{menu.menuName}}
+                {{menu.menuNameEn}}
               </ion-col>
             </ion-row>
-            <ion-row  class="gray-small" *ngFor="let option of menu.options">
+            <div *ngIf="menu.optionsEn">
+            <ion-row  class="gray-small" *ngFor="let option of menu.optionsEn">
               <ion-col>
                 {{option.name}} x {{option.number}} &nbsp; <span *ngIf="option.select!==undefined">{{option.select}}</span> 
               </ion-col>
             </ion-row>
             <ion-row class="gray-small">
               <ion-col>
-                수량
+                quantity
               </ion-col>
-            </ion-row>  
+            </ion-row> 
+            </div> 
         </ion-col>
         <ion-col col-4>
           <ion-row>
             <ion-col>
-                <amount-display [amount]="menu.amount"></amount-display>원
+                <amount-display [amount]="menu.amount"></amount-display>won
             </ion-col>
           </ion-row>
-          <ion-row  class="gray-small" *ngFor="let option of menu.options">
+          <div *ngIf="menu.optionsEn">
+          <ion-row  class="gray-small" *ngFor="let option of menu.optionsEn">
               <ion-col>
                 +{{option.price*option.number}}
               </ion-col>
           </ion-row>
           <ion-row class="gray-small">
             <ion-col>
-                {{menu.quantity}}개
+                {{menu.quantity}} unit
             </ion-col>
           </ion-row>
+          </div>
         </ion-col>
     </ion-row>
     <ion-row *ngIf="orderInfo.cardPayment && orderInfo.cardPayment!=null" padding>
         <ion-col col-3 text-center>
         </ion-col>
         <ion-col col-3 text-center>
-          결제시간
+          ordered time
         </ion-col>
         <ion-col col- align-self-center style="font-size:3vw;">
         {{orderInfo.cardPayment.approvalTime.substr(8,2)}}:
@@ -134,17 +141,17 @@
         <ion-col col-3 text-center>
         </ion-col>
         <ion-col col-3 text-center>
-          결제금액
+          amount
         </ion-col>
       <ion-col col-2 align-self-center style="font-size:3vw;">
-        <amount-display [amount]="orderInfo.cardPayment.amount"></amount-display>원
+        <amount-display [amount]="orderInfo.cardPayment.amount"></amount-display>won
       </ion-col>
     </ion-row>    
     <ion-row *ngIf="orderInfo.cardPayment && orderInfo.cardPayment!=null" padding>
         <ion-col col-3 text-center>
         </ion-col>
         <ion-col col-3 text-center>
-          결제카드
+          card name
         </ion-col>
         <ion-col  align-self-center style="font-size:3vw;">
           {{orderInfo.cardPayment.cardName}} 
@@ -154,15 +161,15 @@
 <div *ngIf="!searchMode">
  <ion-row>
     <ion-col text-center>
-      주문번호가 있을 경우 주문 검색에서 카드 결제 취소가 가능합니다.<br>
-      오류로 주문번호가 발급되지 않은 경우 카드결제 취소시 사용해주세요.
+      If you have an order number, you can cancel your card payment in search<br>
+      If the order number is not issued due to an error, please use canceling the card payment.
     </ion-col>
   </ion-row>
   <ion-row>
-    <ion-col col-3>
+    <ion-col col-1>
     </ion-col>
     <ion-col text-left style="font-size:3vw;" align-self-center>
-      카드 승인번호
+      card approval number
     </ion-col>
     <ion-col text-left align-self-center>
       <ion-input text-left type="number" style="font-size:3.5vw;border-bottom:solid 1px lightgray;" [(ngModel)]="cancelApprovalNO" ></ion-input>
@@ -171,16 +178,16 @@
     </ion-col>    
   </ion-row>
   <ion-row>
-    <ion-col col-3>
+    <ion-col col-1>
     </ion-col>
-    <ion-col text-left style="font-size:3vw;" align-self-center>
-      결제 금액
+    <ion-col text-right style="font-size:3vw;" align-self-center>
+      amount
     </ion-col>
     <ion-col text-left align-self-center>
       <ion-input text-left type="number" style="font-size:3.5vw;border-bottom:solid 1px lightgray;" [(ngModel)]="cancelAmount" ></ion-input>
     </ion-col>
     <ion-col col-3 text-left align-self-center>
-      <button ion-button (click)="cancelApprovalNOPayment()">카드 취소</button>
+      <button *ngIf="orderInfo.paymentType=='card'" ion-button (click)="cancelApprovalNOPayment()">Cancel</button>
     </ion-col>
   </ion-row>
 </div>
@@ -193,16 +200,16 @@
       {{payment.approvalTime.substr(12,2)}} 
       </ion-col>
       <ion-col col-3 align-self-center style="font-size:3vw;">
-      주문번호 미발급 
+      Order number is not issued
       </ion-col>
       <ion-col col-2 align-self-center style="font-size:3vw;">
-      <amount-display [amount]="payment.amount"></amount-display>원
+      <amount-display [amount]="payment.amount"></amount-display>won
       </ion-col>
       <ion-col  align-self-center style="font-size:3vw;">
         {{payment.cardName}} 
       </ion-col>
       <ion-col col-2 align-self-center style="font-size:3vw;">
-        <button ion-button (click)="cancelPayment(payment,i)"> 결제 취소</button>
+        <button ion-button (click)="cancelPayment(payment,i)"> Cancel</button>
       </ion-col>
     </ion-row>
   </div>

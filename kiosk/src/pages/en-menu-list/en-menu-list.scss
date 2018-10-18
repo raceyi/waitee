@@ -1,4 +1,4 @@
-page-menu-list {
+page-en-menu-list {
 $primary-color:#FF5F3A;
 $secondary-color:#20dba5;
 
@@ -98,7 +98,7 @@ $secondary-color:#20dba5;
             button{
                 border: solid 1px lightgray;
                 background-color:white;
-                height: calc((220/1280)*100vh);
+                height: calc((240/1280)*100vh);
                 h2{
                     font-size:2.6vw;
                     color:#4a4a4a;
@@ -160,7 +160,7 @@ $secondary-color:#20dba5;
  }
  
   .order-list{
-    height: calc((100/1280)*100vh);
+    min-height: calc((100/1280)*100vh);
  }
  
  .cart-quantity{

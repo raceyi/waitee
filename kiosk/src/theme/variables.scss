@@ -38,7 +38,8 @@ $colors: (
   secondary:  #32db64,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222
+  dark:       #222,
+  white:     #ffffff
 );
 
 
@@ -46,6 +47,7 @@ $colors: (
 // --------------------------------------------------
 // iOS only Sass variables can go here
 $alert-ios-title-font-size: 30px;	
+$alert-ios-sub-title-font-size :30px;	
 //$alert-button-font-size:35px;
 $alert-ios-button-font-size	:35px;
 $alert-ios-max-width:500px;

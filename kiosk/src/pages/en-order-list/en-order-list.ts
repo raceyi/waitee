@@ -2,17 +2,16 @@ import { Component ,ViewChild,ElementRef} from '@angular/core';
 import { IonicPage, NavController, NavParams ,AlertController,TextInput,LoadingController} from 'ionic-angular';
 import { CartProvider } from '../../providers/cart/cart';
 import {CashReceiptPage} from '../cash-receipt/cash-receipt';
-import {OrderReceiptPage} from '../order-receipt/order-receipt';
 import {CardExplainPage} from '../card-explain/card-explain';
 import {ServerProvider} from '../../providers/server/server';
 import { WebIntent } from '@ionic-native/web-intent';
 import {StorageProvider} from '../../providers/storage/storage';
+import {EnOrderReceiptPage} from '../en-order-receipt/en-order-receipt';
 
 declare var window:any;
 var gOrderListPage;
-
 /**
- * Generated class for the OrderListPage page.
+ * Generated class for the EnOrderListPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -20,10 +19,11 @@ var gOrderListPage;
 
 @IonicPage()
 @Component({
-  selector: 'page-order-list',
-  templateUrl: 'order-list.html',
+  selector: 'page-en-order-list',
+  templateUrl: 'en-order-list.html',
 })
-export class OrderListPage {
+export class EnOrderListPage {
+
   //takeoutAvailable:boolean=false;   ////// 일부 메뉴 포장시 따로 주문결제를 수행해 주시기 바랍니다. 
   inStoreColor="#FF5F3A";
   takeoutColor="#bdbdbd";
@@ -78,17 +78,17 @@ export class OrderListPage {
   moveCardPayment(){
     if(!this.checkTimeConstraint()){
             let alert = this.alertCtrl.create({
-              title: '현재 시간 주문 불가능 메뉴가 포함되어 있습니다.',
+              title: 'Some menus are not available now.',// 현재 시간 주문 불가능 메뉴가 포함되어 있습니다.',
               buttons: ['OK']
             });
             alert.present();
             return;
     }
     let body={orderList:this.cartProvider.orderList}
-    this.serverProvider.post("/kiosk/checkSoldOut",body).then((res:any)=>{  // check sold-out
+    this.serverProvider.post("/kiosk/checkSoldOutEn",body).then((res:any)=>{  // check sold-out
         if(res.result=="success" && res.soldout==true){ 
             let alert = this.alertCtrl.create({
-              title: '구매 불가능한 포함되어 메뉴가 있습니다.',
+              title: 'Some menus are not available.',//구매 불가능한 포함되어 메뉴가 있습니다.',
               buttons: ['OK']
             });
             alert.present();
@@ -97,16 +97,16 @@ export class OrderListPage {
               this.makePayment();
         }else if(res.result=="failure" && res.error=="invalidOption"){
             let alert = this.alertCtrl.create({
-              title: '메뉴 정보가 서버 정보와 틀립니다.',
-              subTitle: '키오스크를 다시 시작해 주시기 바랍니다.',
+              title: 'Menu information is invalid.',//'메뉴 정보가 서버 정보와 틀립니다. 키오스크를 다시 시작해 주시기 바랍니다.',
+              subTitle:'Please restart kiosk application',
               buttons: ['OK']
             });
             alert.present();
             return;
-        }       
+        }      
     },err=>{
             let alert = this.alertCtrl.create({
-              title: '서버와 통신에 문제가 있습니다..',
+              title: 'Network has problem',// 서버와 통신에 문제가 있습니다..',
               buttons: ['OK']
             });
             alert.present();      
@@ -119,7 +119,7 @@ export class OrderListPage {
     }else if(this.storageProvider.van=="smartro" && !this.activityInProgress){
         this.activityInProgress=true;
         let loading = this.loadingCtrl.create({
-          content: '결제 준비중입니다.'
+          content: 'Payment is in progress ',//결제 준비중입니다.'
         });
         loading.present();
 
@@ -176,8 +176,7 @@ export class OrderListPage {
                 let output=gOrderListPage.serverProvider.smartroResultParser(res);
                 gOrderListPage.serverProvider.saveOrder(gOrderListPage.takeout,
                                                         "card",
-                                                        JSON.stringify(res),false
-                                                        ,this.receiptIssue,this.receiptType,this.receiptId).then((response:any)=>{
+                                                        JSON.stringify(res),true,undefined,undefined,undefined).then((response:any)=>{
                    if(response.result=="success"){   
                           let orderName=gOrderListPage.cartProvider.orderName;                       
                           if(gOrderListPage.cartProvider.orderList.length==1){
@@ -185,18 +184,18 @@ export class OrderListPage {
                               orderName=gOrderListPage.cartProvider.orderList[0].menuName+gOrderListPage.cartProvider.orderList[0].quantity+"개";
                           }
                           gOrderListPage.cartProvider.resetCart();
-                          gOrderListPage.navCtrl.setRoot(OrderReceiptPage,{class:"OrderReceiptPage",order:response.order});
+                          gOrderListPage.navCtrl.setRoot(EnOrderReceiptPage,{class:"enOrderReceiptPage",order:response.order});
                    }else{
                         let alert = gOrderListPage.alertCtrl.create({
-                          title: '주문 등록에 실패했습니다.',
-                          subTitle: "카드 결제를 취소하시기 바랍니다.",
+                          title: 'Order registration failed.',//주문 등록에 실패했습니다.',
+                          subTitle:  'Please cancel your card payment.',//"카드 결제를 취소하시기 바랍니다.",
                           buttons:  [
                             {
                               text: 'OK',
                               handler: () => {
                                   gOrderListPage.serverProvider.smartroCancelPayment(amount,output.approvalNO,output.approvalTime).then(()=>{
                                         let alert = gOrderListPage.alertCtrl.create({
-                                          title: '카드결제를 취소하였습니다.',
+                                          title: 'Card payment canceled',//카드결제를 취소하였습니다.',
                                           buttons: ['OK']
                                         });
                                         alert.present();
@@ -206,8 +205,9 @@ export class OrderListPage {
                                         // save it into storage.
                                         gOrderListPage.storageProvider.saveCancelFailure(output);
                                         let alert = gOrderListPage.alertCtrl.create({
-                                          title: '카드결제 취소에 실패하였습니다.',
-                                          subTitle:'홈->주문확인에서 주문 시간으로 카드 결제 취소가 가능합니다.',
+                                          title: 'Card payment cancellation failed',//카드결제 취소에 실패하였습니다.',
+                                          //subTitle:'주문확인에서 주문 시간으로 카드 결제 취소가 가능합니다.',
+                                          subTitle:'You can cancel your payment by the order time at ORDER INFO.',
                                           buttons: ['OK']
                                         });
                                         alert.present();
@@ -221,7 +221,7 @@ export class OrderListPage {
                 })
           }else{
                 let alert = gOrderListPage.alertCtrl.create({
-                  title: '카드결제에 실패했습니다.',
+                  title: 'Card payment failed',//카드결제에 실패했습니다.',
                   buttons: ['OK']
                 });
                 alert.present();
@@ -234,7 +234,7 @@ export class OrderListPage {
           loading.dismiss();        
             console.log('★★startActivity err'); console.log(err); 
                 let alert = gOrderListPage.alertCtrl.create({
-                  title: '카드결제에 실패했습니다.',
+                  title: 'Card payment failed',
                   buttons: ['OK']
                 });
                 alert.present();
@@ -245,111 +245,35 @@ export class OrderListPage {
     }
   }
 
-  checkCashReceipt(){
-       return new Promise((resolve,reject)=>{
-        console.log("receiptIssue:"+this.receiptIssue+" receiptId:"+this.receiptId +" this.receiptId.trim().length:"+this.receiptId.trim().length);
-        console.log( this.receiptIssue>0);
-        console.log(this.receiptId);
-        console.log(this.receiptId.trim().length<10);
-
-      if(this.receiptIssue>0 && this.receiptId!=undefined && this.receiptId.trim().length<10){
-            let alert = this.alertCtrl.create({
-                    title: '현금영수증 번호는 10자이상입니다.',
-                    subTitle: '현금 영수증 발급 없이 <br>주문하시겠습니까?',
-                    buttons: [
-                      {
-                        text: '아니오',
-                        handler: () => {
-                          console.log('Disagree clicked');
-                          reject();
-                          return;
-                        }
-                      },
-                      {
-                        text: '네',
-                        handler: () => {
-                            resolve();
-                        }
-                    }]});
-            alert.present();
-            return;          
-      }else if(this.receiptIssue>0 && this.receiptId!=undefined && this.receiptId.trim().length>20){
-            let alert = this.alertCtrl.create({
-                title: '현금영수증 번호는 19자 이하 입니다.',
-                    subTitle: '현금 영수증 발급 없이 <br>주문하시겠습니까?',
-                    buttons: [
-                      {
-                        text: '아니오',
-                        handler: () => {
-                          console.log('Disagree clicked');
-                          reject();
-                          return;
-                        }
-                      },
-                      {
-                        text: '네',
-                        handler: () => {
-                            resolve();
-                        }
-                    }]});
-              alert.present();
-            return;          
-      }else if(this.receiptIssue==0){
-            let confirm = this.alertCtrl.create({
-            title: '현금 영수증 발급 없이 <br>주문하시겠습니까?',
-            buttons: [
-              {
-                text: '아니오',
-                handler: () => {
-                  console.log('Disagree clicked');
-                  reject();
-                  return;
-                }
-              },
-              {
-                text: '네',
-                handler: () => {
-                    resolve();
-                }
-             }]});
-      }else{
-        resolve();
-      }
-       });
-  }
-
   moveCashPayment(){
     console.log("moveCashPayment comes");
     if(!this.checkTimeConstraint()){
                 let alert = this.alertCtrl.create({
-                  title: '현재 시간 주문 불가능 메뉴가 포함되어 있습니다.',
+                  title: 'Some menus are not available now.',//'현재 시간 주문 불가능 메뉴가 포함되어 있습니다.',
                   buttons: ['OK']
                 });
                 alert.present();
                 return;
         }
-
-          // 현금 영수증 발급 없이 주문을 진행하시겠습니까?
-    this.checkCashReceipt().then(()=>{      
         let body={orderList:this.cartProvider.orderList}
-        this.serverProvider.post("/kiosk/checkSoldOut",body).then((res:any)=>{  // check sold-out
-            console.log("checkSoldout-returns "+JSON.stringify(res));
+        this.serverProvider.post("/kiosk/checkSoldOutEn",body).then((res:any)=>{  // check sold-out
+            console.log("checkSoldoutEn-returns "+JSON.stringify(res));
             if(res.result=="success" && res.soldout==true){ 
                 let alert = this.alertCtrl.create({
-                  title: '구매 불가능한 포함되어 메뉴가 있습니다.',
+                  title: 'Some menus are not available.',//'구매 불가능한 포함되어 메뉴가 있습니다.',
                   buttons: ['OK']
                 });
                 alert.present();
                 return;  
             }else if(res.result=="success" && res.soldout==false){
                   // cash일경우 현금 영수증 정보가 추가되어야만 한다.
-                  this.serverProvider.saveOrder(this.takeout,"cash",undefined,false,this.receiptIssue,this.receiptType,this.receiptId).then((response:any)=>{
+                  this.serverProvider.saveOrder(this.takeout,"cash",undefined,true,undefined,undefined,undefined).then((response:any)=>{
                               if(response.result=="success"){   
                                       gOrderListPage.cartProvider.resetCart();
-                                      gOrderListPage.navCtrl.setRoot(OrderReceiptPage,{class:"OrderReceiptPage",order:response.order});
+                                      gOrderListPage.navCtrl.setRoot(EnOrderReceiptPage,{class:"enOrderReceiptPage",order:response.order});
                               }else{
                                     let alert = gOrderListPage.alertCtrl.create({
-                                      title: '주문 등록에 실패했습니다.',
+                                      title: 'Order registration failed.',//'주문 등록에 실패했습니다.',
                                       buttons: ['OK']
                                     });
                                     alert.present();
@@ -357,13 +281,13 @@ export class OrderListPage {
                     },err=>{
                         if(err=="NetworkFailure"){
                         let alert = this.alertCtrl.create({
-                            title:'서버와 통신에 실패했습니다.',
+                            title: 'Fail to connect server',//'서버와 통신에 실패했습니다.',
                             buttons: ['OK']
                           });
                           alert.present();
                       }else{
                         let alert = this.alertCtrl.create({
-                            title:'주문 등록에 실패했습니다.',
+                            title: 'Order registration failed.',//'주문 등록에 실패했습니다.',
                             buttons: ['OK']
                           });
                           alert.present();
@@ -371,23 +295,20 @@ export class OrderListPage {
                   });
             }else if(res.result=="failure" && res.error=="invalidOption"){
                 let alert = this.alertCtrl.create({
-                  title: '메뉴 정보가 서버 정보와 틀립니다.',
-                  subTitle: '키오스크를 다시 시작해 주시기 바랍니다.',
+                  title: 'Menu information is invalid.',//'메뉴 정보가 서버 정보와 틀립니다. 키오스크를 다시 시작해 주시기 바랍니다.',
+                  subTitle:'Please restart kiosk application',
                   buttons: ['OK']
                 });
                 alert.present();
                 return;
-            }            
+            }         
         },err=>{
                 let alert = this.alertCtrl.create({
-                  title: '서버와 통신에 문제가 있습니다..',
+                  title:  'Network has problem',//'서버와 통신에 문제가 있습니다..',
                   buttons: ['OK']
                 });
                 alert.present();      
         })
-    },()=>{
-
-    });
   }
 
   resetCart(){
@@ -525,4 +446,5 @@ export class OrderListPage {
     else
       this.receiptIssue=0;  
   }
+
 }

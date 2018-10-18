@@ -30,9 +30,15 @@ import {OrderReceiptPageModule} from '../pages/order-receipt/order-receipt.modul
 import {OrderCheckPageModule} from '../pages/order-check/order-check.module';
 import {ConfigurationPageModule} from '../pages/configuration/configuration.module';
 import {CardExplainPageModule} from '../pages/card-explain/card-explain.module';
-import {FilterPageModule} from '../pages/filter/filter.module';
-
+import {EngFilterPageModule} from '../pages/eng-filter/eng-filter.module';
+import {EnMenuListPageModule} from '../pages/en-menu-list/en-menu-list.module';
+import {EnMenuPageModule} from '../pages/en-menu/en-menu.module';
 import { WebIntent } from '@ionic-native/web-intent';
+import {EnSearchPageModule} from '../pages/en-search/en-search.module';
+import {EnOrderListPageModule} from '../pages/en-order-list/en-order-list.module';
+import {EnOrderReceiptPageModule} from '../pages/en-order-receipt/en-order-receipt.module';
+import {EnOrderCheckPageModule} from '../pages/en-order-check/en-order-check.module';
+import { Keyboard } from '@ionic-native/keyboard';
 
 @NgModule({
   declarations: [
@@ -40,7 +46,13 @@ import { WebIntent } from '@ionic-native/web-intent';
     HomePage
   ],
   imports: [
-    FilterPageModule,
+    EnOrderCheckPageModule,
+    EnOrderReceiptPageModule,
+    EnOrderListPageModule,
+    EnSearchPageModule,
+    EnMenuPageModule,
+    EnMenuListPageModule,
+    EngFilterPageModule,
     CardExplainPageModule,
     ConfigurationPageModule,
     OrderCheckPageModule,
@@ -65,6 +77,7 @@ import { WebIntent } from '@ionic-native/web-intent';
     HomePage
   ],
   providers: [
+    Keyboard,
     WebIntent,
     NativeStorage,
     StatusBar,

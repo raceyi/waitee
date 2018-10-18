@@ -1,14 +1,14 @@
 import { Component,ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams,Content } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,Content,App } from 'ionic-angular';
 import {StorageProvider} from '../../providers/storage/storage';
-import {MenuPage} from '../menu/menu';
+import {EnMenuPage} from '../en-menu/en-menu';
 import * as hangul from 'hangul-js';
 import { CartProvider } from '../../providers/cart/cart';
 import {OrderListPage} from '../order-list/order-list';
 import { Keyboard } from '@ionic-native/keyboard';
 
 /**
- * Generated class for the SearchPage page.
+ * Generated class for the EnSearchPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -16,18 +16,22 @@ import { Keyboard } from '@ionic-native/keyboard';
 
 @IonicPage()
 @Component({
-  selector: 'page-search',
-  templateUrl: 'search.html',
+  selector: 'page-en-search',
+  templateUrl: 'en-search.html',
 })
-export class SearchPage {
-  @ViewChild("homeContent") public contentRef: Content;
+export class EnSearchPage {
+
+ @ViewChild("searchContent") public contentRef: Content;
 
   menus=[];
+  categories:any=[];
   constructor(public navCtrl: NavController,
               public cartProvider:CartProvider,
-              public storageProvider:StorageProvider,
-              private keyboard: Keyboard, 
+              private app:App,
+              private keyboard: Keyboard,
+              //public storageProvider:StorageProvider, 
               public navParams: NavParams) {
+        this.categories=this.navParams.get("categories");
   }
 
   ionViewDidLoad() {
@@ -41,12 +45,15 @@ export class SearchPage {
     if(val!=undefined && val.length>=1){
         let body = {keyword:val}
         console.log("searchMenu");
-        for(let i=0;i<this.storageProvider.shop.menus.length;i++){
-            if(this.checkInclude(this.storageProvider.shop.menus[i].menuName,val)){
-                this.menus.push(this.storageProvider.shop.menus[i]);
+        for(let i=0;i<this.categories.length;i++){
+          for(let j=0;j<this.categories[i].menus.length;j++){
+            if(this.categories[i].menus[j].menuNameEn && this.checkInclude(this.categories[i].menus[j].menuNameEn.toUpperCase(),val.toUpperCase())){
+                this.menus.push(this.categories[i].menus[j]);
             }
+          }
         }
     }
+     this.contentRef.resize();
   }
 
 checkInclude(menuName,keyword){
@@ -76,11 +83,16 @@ checkInclude(menuName,keyword){
   }   
 
   goToMenu(menu){
-    this.navCtrl.push(MenuPage,{menu:menu,class:"MenuPage"});
+    this.navCtrl.push(EnMenuPage,{menu:menu,class:"enMenuPage"});
+  }
+
+  ionViewWillLeave(){
+    console.log("keyboard hide");
+    this.keyboard.hide(); // 이전화면으로 돌아갈때 keyboard가 show인경우 문제가 된다. 
   }
 
   back(){
-    this.keyboard.hide(); // keyboard가 열려있는 상태에서 pop을 수행하면 이전페이지로 돌아갈때 문제가 발생한다. 
+    this.keyboard.hide();
     this.navCtrl.pop();
   }
   
@@ -93,5 +105,4 @@ checkInclude(menuName,keyword){
         this.contentRef.resize();
     });
   }
-
 }

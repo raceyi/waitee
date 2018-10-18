@@ -8,17 +8,17 @@
     <ion-col col-8 style="padding-right:75px;" align-self-center>
         <ion-row>
             <ion-col style="font-size:4vw;" text-right>
-                  <b>{{menu.menuName}}</b>
+                  <b>{{menu.menuNameEn}}</b>
             </ion-col>
         </ion-row>
         <ion-row class="menu-price">
           <ion-col text-right>
-              <amount-display [amount]="menu.price"></amount-display>원
+              <amount-display [amount]="menu.price"></amount-display>won
           </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col *ngIf="menu.explanation!=undefined && menu.explanation!=null" text-wrap text-right style="font-size:3vw;">
-                {{menu.explanation}}
+            <ion-col *ngIf="menu.explanationEn!=undefined && menu.explanationEn!=null" text-wrap text-right style="font-size:3vw;">
+                {{menu.explanationEn}}
             </ion-col>
         </ion-row>
         <ion-row>
@@ -31,7 +31,15 @@
 
 </ion-header>
 
-<ion-content #homeContent>
+<ion-content #menuContent>
+  <div class="option-section" *ngIf="menu.filterOptions.length>0">
+  <ion-row *ngFor="let filterOption of menu.filterOptions" no-padding no-margin>
+    <ion-col text-center no-padding no-margin  style="font-size:3.4vw;color:red;"  text-center>
+        {{filterOption.freeEn}}
+    </ion-col>  
+  </ion-row>
+  </div>
+
 <div class="option-section" *ngIf="options.length>0" >
   <div class="options" no-padding no-margin *ngFor="let option of options;let i=index;">
   <ion-row no-padding no-margin>
@@ -39,7 +47,7 @@
         {{option.name}}
     </ion-col>
     <ion-col class="option-price" no-padding no-margin col-4 text-right>
-        +<amount-display [amount]="option.price"></amount-display>원
+        +<amount-display [amount]="option.price"></amount-display>won
     </ion-col>
     <ion-col class="number" style="border:none;font-size:4vw;" text-center align-self-center col-3 *ngIf="option.flagType"> <!-- 숫자가 아닌 선택옵션임 -->
        <ion-checkbox [(ngModel)]="option.flagOn" mode="md" style="border:0;" ></ion-checkbox>
@@ -77,31 +85,31 @@
       <ion-row [hidden]="quantityInput(true)">
         <ion-col col-11>
         <ion-item  class="orderSelect">
-          <ion-label class="orderQuantity">총 수량</ion-label>
+          <ion-label class="orderQuantity">Quantity</ion-label>
             <ion-select  mode="ios" class="orderSelect0" interface="action-sheet" [(ngModel)]="menu.quantity"  (ionChange)="getQuantity(menu.quantity)">
               <ion-option value=1>1</ion-option>
               <ion-option value=2>2</ion-option>
               <ion-option value=3>3</ion-option>
               <ion-option value=4>4</ion-option>
               <ion-option value=5>5</ion-option>
-              <ion-option value=6>직접입력</ion-option>
+              <ion-option value=6>Input number</ion-option>
             </ion-select>
         </ion-item>
         </ion-col>
       </ion-row>
        <ion-row style="font-size:3.3vw;" [hidden]="quantityInput(false)">
-         <ion-col col-8 class="input-label">총 수량</ion-col>
+         <ion-col col-8 class="input-label">Quantity</ion-col>
          <ion-col col-3><ion-input #quantityNum (ionBlur)="onBlur($event)" type="number"  min="1" [(ngModel)]= "menu.quantity"></ion-input></ion-col>
        </ion-row>
 </div>
 <div class="price">
 <ion-row>
-  <ion-col class="left-col" text-left>결제금액</ion-col>
-  <ion-col class="right-col" text-right> <amount-display [amount]="amount" ></amount-display>원</ion-col>
+  <ion-col class="left-col" text-left>Amount</ion-col>
+  <ion-col class="right-col" text-right> <amount-display [amount]="amount" ></amount-display>won</ion-col>
 </ion-row>
 </div>
 <div class="add-order-list">
-  <button ion-button full (click)="addOrder()"> +&nbsp;주문서에 추가하기 </button>
+  <button ion-button full (click)="addOrder()"> +&nbsp;Add to cart </button>
 </div>
 <!--
 <div class="request">
@@ -118,7 +126,7 @@
   {{cartProvider.orderName}}
   </ion-col>
   <ion-col style="font-size:4.125vw;" text-center align-self-center>
-    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>원</b>
+    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>won</b>
   </ion-col>
 </ion-row>
 <ion-row  no-padding no-margin>
@@ -129,23 +137,24 @@
   </ion-col>
 </ion-row>
 -->
-
 <ion-row class="order-list" style="background-color:#ff7f39;color:white;">
   <ion-col col-7 style="font-size:3.5vw;" text-center align-self-center>
-  {{cartProvider.orderName}}
+  {{cartProvider.orderNameEn}}
   </ion-col>
   <ion-col style="font-size:4.125vw;" text-center align-self-center>
-    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>원</b>
+    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>won</b>
   </ion-col>
   <ion-col col-2 text-center align-self-center>
-    <button ion-button (click)="resetCart()" no-padding style="background-color:transparent;font-size:3.5vw;">전체삭제</button>
+    <button ion-button (click)="resetCart()" no-padding style="background-color:transparent;font-size:3.5vw;">Delete all</button>
   </ion-col>
 </ion-row>
 <ion-row  no-padding no-margin>
   <ion-col class="order-button" no-padding no-margin text-center align-self-center>
     <button (click)="moveOrderList()" full style="color: #ff7f39;background-color:white;" ion-button no-padding no-margin clear>    
-     결제하기 
+     Pay now  
     </button>
   </ion-col>
 </ion-row>
+
+
 </ion-footer>

@@ -1,0 +1,84 @@
+page-en-order-list {
+    $primary-color:#FF5F3A;
+    $secondary-color:#20dba5;
+
+
+    .order-list-title{
+        background-color:#505355;
+        color:#ff7f39;
+    }
+
+    .pickup-area{
+        background-color:white;
+        padding-bottom: calc((10/667)*100vh);  
+    }
+
+   .pickup-method{
+        .circle{
+            background-color: $default-color;
+            width: calc((47/376)*100vw);
+            height: calc((47/376)*100vw);  
+            border-radius: 50%;
+        }
+        padding-left:calc((40/376)*100vw);
+        padding-right:calc((40/376)*100vw);
+        font-size:4.5vw;
+        color:$default-color;
+
+   }
+
+   .menu{
+       font-size:3.6vw;
+
+       button{
+           font-size:3vw;
+       }
+
+       .gray-small{
+           color:#949494;
+           font-size:3.3vw;
+       }
+   }
+/////////////////////////////////////////////////////////
+.footer-area{
+    height: 100px;
+    font-size:4.75vw;
+    //padding-top: calc((20/1280)*100vh);
+    button{
+        font-size:4.75vw;
+    }
+ }
+ .cart-quantity{
+    font-size:4.5vw;
+    background-color:#20dba5;
+    border-radius:50%;
+    color:white;
+    padding-left:10px;
+    padding-right:10px;
+ }     
+/////////////////////////////////////////////////////////
+    .choice{
+        padding-left:75px;
+        padding-right:75px;
+        ion-label{
+            font-size:3vw;
+            color:#919191;
+        }
+
+        ion-radio{
+            border-style:solid;
+            border-width:1px;
+            border-color:#919191;
+            color:$primary-color;
+        }
+    }
+
+    .notify-check{
+        font-size:3vw;
+        color: black;
+        .checkbox-md .checkbox-checked {
+            border-color: black !important;
+            background-color: black !important;
+        }
+    }
+}

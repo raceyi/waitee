@@ -41,6 +41,14 @@ export class StorageProvider {
 
   lastTransNo:number; // 카드결제 마지막 tranno
 
+  //device=false;
+  device=true;
+
+  filter={  beef:false,  pork:false,
+            fish:false,  chicken:false,
+            egg:false
+         }
+
     constructor(public http: HttpClient,
                 private configProvider:ConfigProvider,
                 private nativeStorage:NativeStorage,
@@ -89,16 +97,20 @@ export class StorageProvider {
             console.log("getTransNo  this.lastTransNo:"+this.lastTransNo);
             let lastTransNo=this.lastTransNo+3;
             console.log("getTransNo:"+lastTransNo);
-            this.nativeStorage.setItem('lastTransNo',lastTransNo.toString()).then((value)=>{
-                this.lastTransNo=lastTransNo;
-                let overflow:number=lastTransNo+10000;
-                console.log(overflow.toString());
-                let stringVal=overflow.toString().substr(1,4);
-                console.log("!!!!transNo-stringVal:"+stringVal);
-                resolve(stringVal);
-            },err=>{
-                reject("fail to update lastTransNo");
-            })
+            if(this.device){
+                this.nativeStorage.setItem('lastTransNo',lastTransNo.toString()).then((value)=>{
+                    this.lastTransNo=lastTransNo;
+                    let overflow:number=lastTransNo+10000;
+                    console.log(overflow.toString());
+                    let stringVal=overflow.toString().substr(1,4);
+                    console.log("!!!!transNo-stringVal:"+stringVal);
+                    resolve(stringVal);
+                },err=>{
+                    reject("fail to update lastTransNo");
+                })
+            }else{
+                resolve(lastTransNo);
+            }
         });
     }
 
@@ -146,4 +158,10 @@ export class StorageProvider {
          this.nativeStorage.setItem('cancelFailurePayment',encodeURI(value));
     }
     
+    resetFilter(){
+          this.filter={  beef:false,  pork:false,
+            fish:false,  chicken:false,
+            egg:false
+         };
+    }
 }

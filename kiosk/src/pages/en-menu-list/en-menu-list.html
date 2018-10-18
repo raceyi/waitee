@@ -3,11 +3,11 @@
     <ion-buttons left>
       <button ion-button icon-only (click)="back()" style="font-size:4.5vw;color:#FF5F3A">
         <ion-icon name="home"></ion-icon>
-      </button>
+      </button>  
     </ion-buttons>
      <img *ngIf="storageProvider.shop.shopInfo && storageProvider.shop.shopInfo.imagePath" class="shop-img" [src]="storageProvider.shop.shopInfo.imagePath"> 
      <span class="by-pos"> by</span> 
-     <img class="logo-img" src="assets/imgs/waitee.png">
+     <img class="logo-img" src="assets/imgs/waitee-logo.png">
     <ion-buttons end>
       <button ion-button icon-only (click)="search()" style="font-size:4.5vw;color:#FF5F3A">
         <ion-icon name="search"></ion-icon>
@@ -15,7 +15,7 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content #homeContent style="border-bottom:solid 1px lightgray;">
+<ion-content #menuList style="border-bottom:solid 1px lightgray;">
 
 <ion-row class="row-categories-menus">
              <ion-col col-3 class="col-categories" no-padding>
@@ -41,13 +41,14 @@
                              <div *ngIf="menu[0].soldout==1" class="sold-out" text-center align-self-center>
                               <p><b>판매종료</b></p>
                              </div>
-                             <h2>{{menu[0].menuName}}</h2>
+                             <h2>{{menu[0].menuNameEn}}</h2>
                              <!--
-                            <h2 *ngIf="menu[0].menuName.length<=12">{{menu[0].menuName}}</h2>
-                            <h2 *ngIf="menu[0].menuName.length>12"> {{split1(menu[0].menuName)}}</h2>
-                            <h2 *ngIf="menu[0].menuName.length>12"> {{split2(menu[0].menuName)}}</h2>
+                            <h2 *ngIf="menu[0].menuNameEn.length<=12">{{menu[0].menuNameEn}}</h2>
+                            <h2 *ngIf="menu[0].menuNameEn.length>12"> {{split1(menu[0].menuNameEn)}}</h2>
+                            <h2 *ngIf="menu[0].menuNameEn.length>12"> {{split2(menu[0].menuNameEn)}}</h2>
                             -->
-                            <p><b><amount-display [amount]="menu[0].price"></amount-display>원 </b><span class="text-border" *ngIf="menu[0].takeout>0">&nbsp;포장가능&nbsp;</span> </p>
+                            <p><b><amount-display [amount]="menu[0].price"></amount-display>won </b></p>
+                            <p><span class="text-border" style="font-size:2vw;" *ngIf="menu[0].takeout>0">Take-Out Available</span> </p>
                         </ion-item>
                     </button>
                     </ion-col>
@@ -60,13 +61,9 @@
                              <div  class="img-shop" *ngIf="menu[1].soldout==1">
                               <label  class="sold-out"> <b>판매종료</b></label>
                              </div> 
-                             <h2>{{menu[1].menuName}}</h2>                            
-                             <!--
-                            <h2 *ngIf="menu[1].menuName.length<=12">{{menu[1].menuName}}</h2>
-                            <h2 *ngIf="menu[1].menuName.length>12"> {{split1(menu[1].menuName)}}</h2>
-                            <h2 *ngIf="menu[1].menuName.length>12"> {{split2(menu[1].menuName)}}</h2>
-                            -->
-                            <p><amount-display [amount]="menu[1].price"></amount-display>원 <span class="text-border" *ngIf="menu[1].takeout>0">&nbsp;포장가능&nbsp;</span> 
+                             <h2>{{menu[1].menuNameEn}}</h2>                            
+                            <p><b><amount-display [amount]="menu[1].price"></amount-display>won </b></p>
+                            <p><span class="text-border" style="font-size:2vw;" *ngIf="menu[1].takeout>0">Take-Out Available</span></p> 
                         </ion-item>
                     </button>
                     <button *ngIf="!menu[1]" color="white" ion-button full no-padding no-margin>
@@ -87,7 +84,7 @@
   {{cartProvider.orderName}}
   </ion-col>
   <ion-col style="font-size:4.125vw;" text-center align-self-center>
-    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>원</b>
+    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>won</b>
   </ion-col>
 </ion-row>
 <ion-row  no-padding no-margin>
@@ -101,19 +98,19 @@
 
 <ion-row class="order-list" style="background-color:#ff7f39;color:white;">
   <ion-col col-7 style="font-size:3.5vw;" text-center align-self-center>
-  {{cartProvider.orderName}}
+  {{cartProvider.orderNameEn}}
   </ion-col>
   <ion-col style="font-size:4.125vw;" text-center align-self-center>
-    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>원</b>
+    <b><amount-display [amount]="cartProvider.totalAmount"></amount-display>won</b>
   </ion-col>
   <ion-col col-2 text-center align-self-center>
-    <button ion-button (click)="resetCart()" no-padding style="background-color:transparent;font-size:3.5vw;">전체삭제</button>
+    <button ion-button (click)="resetCart()" no-padding style="background-color:transparent;font-size:3.5vw;">Delete all</button>
   </ion-col>
 </ion-row>
 <ion-row  no-padding no-margin>
   <ion-col class="order-button" no-padding no-margin text-center align-self-center>
     <button (click)="moveOrderList()" full style="color: #ff7f39;background-color:white;" ion-button no-padding no-margin clear>    
-     결제하기 
+     Pay now 
     </button>
   </ion-col>
 </ion-row>

@@ -1,0 +1,29 @@
+page-en-order-check {
+    .order-check-title{
+        background-color:#505355;
+        color:#ff7f39;
+    }
+
+    .notify-check{
+        font-size:3vw;
+        color: black;
+        .checkbox-md .checkbox-checked {
+            border-color: black !important;
+            background-color: black !important;
+        }
+    }
+
+   .menu{
+       font-size:3.6vw;
+
+       button{
+           font-size:3vw;
+       }
+
+       .gray-small{
+           color:#949494;
+           font-size:3.3vw;
+       }
+   }
+
+}

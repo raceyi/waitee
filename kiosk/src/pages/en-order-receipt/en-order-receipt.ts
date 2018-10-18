@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,AlertController,LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,AlertController,LoadingController,App,ViewController } from 'ionic-angular';
 import {HomePage} from '../home/home';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
@@ -7,7 +7,7 @@ import {ServerProvider} from '../../providers/server/server';
 declare var window:any;
 
 /**
- * Generated class for the OrderReceiptPage page.
+ * Generated class for the EnOrderReceiptPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -15,11 +15,12 @@ declare var window:any;
 
 @IonicPage()
 @Component({
-  selector: 'page-order-receipt',
-  templateUrl: 'order-receipt.html',
+  selector: 'page-en-order-receipt',
+  templateUrl: 'en-order-receipt.html',
 })
-export class OrderReceiptPage {
-  //cardInfo;
+export class EnOrderReceiptPage {
+
+//cardInfo;
 
   phoneNumber="";
   waiteeNumber="";
@@ -30,6 +31,7 @@ export class OrderReceiptPage {
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
+              private app:App,
               private alertCtrl:AlertController,
               public serverProvider:ServerProvider,
               public loadingCtrl: LoadingController,
@@ -50,10 +52,6 @@ export class OrderReceiptPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad OrderReceiptPage');
-  }
-
-  confirm(){
-      this.navCtrl.setRoot(HomePage);  
   }
 
   configureNotifyMethod(){
@@ -141,16 +139,16 @@ inputWaiteeNumber(event){
     if(!this.notifyMethodWaitee){
      if(!this.checkPhoneValidity()){
               let alert = this.alertCtrl.create({
-                subTitle: '주문이 전달될 휴대폰 번호가 유효하지 않습니다.',
+                subTitle: 'The phone number is invalid',//주문이 전달될 휴대폰 번호가 유효하지 않습니다.',
                 buttons: ['OK']
               });
               alert.present();
               return;        
       }
 
-      let body={phone:this.phoneNumber.replace(/-/g, ""), orderId:this.order.orderId,english:false};
+      let body={phone:this.phoneNumber.replace(/-/g, ""), orderId:this.order.orderId,english:true};
       let loading = this.loadingCtrl.create({
-            content: '주문서를 발송중입니다.'
+            content: 'Order information is being sent out.'
             });
             loading.present();
       this.serverProvider.post("/kiosk/sendOrderInfoWithPhone",body).then((response:any)=>{
@@ -158,22 +156,22 @@ inputWaiteeNumber(event){
           if(response.result=="success"){
               // 웨이티에 번호를 등록하시겠습니까? 주문전달이외의 목적으로 사용되지 않습니다. 
              let alert = this.alertCtrl.create({
-                              title: '웨이티에 번호를 등록하시겠습니까?',
-                              message: '주문전달이외의 목적으로 사용되지 않습니다.',
+                              title: 'Do you want to register WAITEE number?',//웨이티에 번호를 등록하시겠습니까?',
+                              message: 'It is not used for purposes other than order information delivery.' ,//'주문전달이외의 목적으로 사용되지 않습니다.',
                               buttons: [
                                 {
-                                  text: '아니오',
+                                  text: 'No',//'아니오',
                                   handler: () => {
                                     console.log('Disagree clicked');
-                                    this.navCtrl.setRoot(HomePage);
+                                    this.moveHome();
                                   }
                                 },
                                 {
-                                  text: '네',
+                                  text: 'Yes',//'네',
                                   handler: () => {
                                     console.log('Agree clicked');
                                      let loading = this.loadingCtrl.create({
-                                      content: '번호를 등록중입니다.'
+                                      content:  'WAITEE number is being registered.',//'번호를 등록중입니다.'
                                       });
                                       loading.present();
                                     this.serverProvider.post("/kiosk/registerPhone",body).then((response:any)=>{
@@ -183,57 +181,57 @@ inputWaiteeNumber(event){
                                           let number=response.digitsNumber;
                                           let digits=response.digitsMask;
                                           let alert = this.alertCtrl.create({
-                                                title:'고객님의 웨이티 등록번호는 <br>휴대폰 뒷자리 '+number+'개입니다.',
+                                                title:'Your WAITEE number is last'+ number +'digits of your phone.',
                                                 subTitle: digits,
                                                 buttons:[
                                                     {
-                                                      text: '네',
+                                                      text: 'Yes',//'네',
                                                       handler: () => {
-                                                                this.navCtrl.setRoot(HomePage);
+                                                                this.moveHome();
                                                               }
                                                     }]});
                                               alert.present();
                                       }else if(response.error.startsWith("alreadyRegistered")){
                                             let waiteeNumber=response.error.substr("alreadyRegistered:".length);
                                             let alert = this.alertCtrl.create({
-                                                title:'이미등록된 번호입니다.',
-                                                subTitle: "웨이디 등록번호:"+ waiteeNumber,
+                                                title:'Your phone is already registered.',
+                                                subTitle: "WAITEE number:"+ waiteeNumber,
                                                 buttons: [
                                                     {
-                                                      text: '네',
+                                                      text: 'Yes',//'네',
                                                       handler: () => {
-                                                                this.navCtrl.setRoot(HomePage);
+                                                                this.moveHome();
                                                               }
                                                     }]});
                                               alert.present();
                                       }else{
                                           let alert = this.alertCtrl.create({
-                                                title:'서버와 통신에 실패했습니다.',
-                                                subTitle: '다음기회에 등록해주시기 바랍니다.',
+                                                title:'Fail to connect the server',//'서버와 통신에 실패했습니다.',
+                                                subTitle: 'Please register it later.',
                                                 buttons: ['OK']
                                               });
                                               alert.present();
-                                              this.navCtrl.setRoot(HomePage);                                      
+                                              this.moveHome();
                                       }
                                     },err=>{
                                       loading.dismiss();
                                       //console.log("..."+err.startsWith("alreadyRegistered"))
                                         if(err=="NetworkFailure"){
                                           let alert = this.alertCtrl.create({
-                                                title:'서버와 통신에 실패했습니다.',
-                                                subTitle: '다음기회에 등록해주시기 바랍니다.',
+                                                title:'The network has problem',
+                                                subTitle: 'Please register it later',
                                                 buttons: ['OK']
                                               });
                                               alert.present();
                                           }else{
                                             let alert = this.alertCtrl.create({
-                                                title:'웨이티 번호 등록에 실패하였습니다.',
-                                                subTitle: '다음기회에 등록해주시기 바랍니다.',
+                                                title:'Fail to register your number',
+                                                subTitle: 'Please register it later',
                                                 buttons: ['OK']
                                               });
                                               alert.present();
-                                          }     
-                                          this.navCtrl.setRoot(HomePage);
+                                          }   
+                                          this.moveHome();  
                                     })
                                   }
                                 }
@@ -242,8 +240,8 @@ inputWaiteeNumber(event){
                             alert.present();
           }else{
             let alert = this.alertCtrl.create({
-                title:'주문정보 전달에 실패했습니다.',
-                subTitle: '주문 번호를 기억해주세요.',
+                title:'Fail to deliver order information.',
+                subTitle: 'Please remember your order number.',
                 buttons: ['OK']
               });
               alert.present();
@@ -252,15 +250,15 @@ inputWaiteeNumber(event){
        loading.dismiss(); 
           if(err=="NetworkFailure"){
             let alert = this.alertCtrl.create({
-                title:'서버와 통신에 실패했습니다.',
-                subTitle: '주문 번호를 기억해주세요.',
+                title:'The network has problem',
+                subTitle: 'Please remember your order number.',
                 buttons: ['OK']
               });
               alert.present();
           }else{
             let alert = this.alertCtrl.create({
-                title:'주문정보 전달에 실패했습니다.',
-                subTitle: '주문 번호를 기억해주세요.',
+                title:'Fail to deliver order information.',
+                subTitle: 'Please remember your order number.',
                 buttons: ['OK']
               });
               alert.present();
@@ -269,25 +267,25 @@ inputWaiteeNumber(event){
     }else{  // waitee등록번호로 발송
       let body={waiteeNumber:this.waiteeNumber,orderId:this.order.orderId}
       let loading = this.loadingCtrl.create({
-            content: '주문서를 발송중입니다.'
+            content: 'We are sending order information.'
             });
             loading.present();      
       this.serverProvider.post("/kiosk/sendOrderInfoWithWaitee",body).then((response:any)=>{
         loading.dismiss();
           if(response.result=="success"){
               // 웨이티에 번호를 등록하시겠습니까? 주문전달이외의 목적으로 사용되지 않습니다. 
-              this.navCtrl.setRoot(HomePage);                                      
+              this.moveHome();                                   
           }else if(response.error=="waiteeNumberInvald"){
             let alert = this.alertCtrl.create({
-                title:'미등록 번호입니다.',
-                subTitle: '등록후 사용해 주시기 바랍니다.',
+                title:'WAITEE number is invalid',
+                subTitle: 'Please register WAITEE number',
                 buttons: ['OK']
               });
               alert.present();
           }else{
             let alert = this.alertCtrl.create({
-                title:'주문정보 전달에 실패했습니다.',
-                subTitle: '주문 번호를 기억해주세요.',
+                title:'Delivery of order information failed.',
+                subTitle: 'Please register WAITEE number',
                 buttons: ['OK']
               });
               alert.present();
@@ -296,15 +294,15 @@ inputWaiteeNumber(event){
         loading.dismiss();
           if(err=="NetworkFailure"){
             let alert = this.alertCtrl.create({
-                title:'서버와 통신에 실패했습니다.',
-                subTitle: '주문 번호를 기억해주세요.',
+                title:'The network has problem.',
+                subTitle: 'Please register WAITEE number',
                 buttons: ['OK']
               });
               alert.present();
           }else{
             let alert = this.alertCtrl.create({
-                title:'주문정보 전달에 실패했습니다.',
-                subTitle: '주문 번호를 기억해주세요.',
+                title:'Delivery of order information failed.',
+                subTitle: 'Please register WAITEE number',
                 buttons: ['OK']
               });
               alert.present();
@@ -314,6 +312,17 @@ inputWaiteeNumber(event){
   }
 
   goHome(){
-    this.navCtrl.setRoot(HomePage);
+    this.moveHome();
+  }
+
+  moveHome(){
+    /*
+     //remove all other english pages
+    let  views:ViewController[]; 
+    views=this.navCtrl.getViews();
+    this.navCtrl.remove(1,views.length-2);
+    this.navCtrl.pop();
+    */
+    this.app.getActiveNavs()[0].setRoot(HomePage);
   }
 }

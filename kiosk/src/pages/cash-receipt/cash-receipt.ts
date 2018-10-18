@@ -19,6 +19,7 @@ export class CashReceiptPage {
   receiptType="IncomeDeduction";
   receiptId="";
   receiptIssue;
+  amount="";
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -27,6 +28,9 @@ export class CashReceiptPage {
       this.receiptIssue=this.navParams.get("receipt");
       if(this.navParams.get("phone"))
           this.receiptId=this.navParams.get("phone");
+      if(this.navParams.get("amount")){
+          this.amount=this.navParams.get("amount");
+      }    
   }
 
   ionViewDidLoad() {

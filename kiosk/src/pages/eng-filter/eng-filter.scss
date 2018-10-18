@@ -1,0 +1,94 @@
+page-eng-filter {
+ .english-button{
+   font-size:2vw;
+   background-color:#d4d1d1;
+   color:#787676;
+   width:calc(200/800)vw;
+   height:calc(48/1280)vh;
+   border-radius: 24px;
+   border:solid 1px #787676;
+ }
+
+ .header {
+     height:327px;
+     background-color: #ff7f39;
+     color:white;
+ }
+
+ .meal-type{
+  width: 318px;
+  height: 38px;
+  font-family: Barlow;
+  font-size: 32px;
+  font-weight: 300;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.4px;
+  text-align: center;
+  color: #ffffff;
+
+ }
+
+ .not-eating{
+  padding-top:100px;
+  width: 264px;
+  height: 64px;
+  font-family: Barlow;
+  font-size: 53px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.6px;
+  text-align: center;
+  color: #ffffff;
+ }
+
+.filter{
+  width: 40vw;
+  //width: 313px;
+  height: 105px;
+  border-radius: 71px;
+  background-color: rgba(216, 216, 216, 0);
+  border: solid 4px #ff7f39;
+  span{
+    font-family: Barlow;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: normal;
+    //font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.4px;
+    //text-align: center;
+    color: #ff7f39;
+    //color: var(--orangish);
+  }
+}
+
+.no-filter{
+    width: 40vw;
+    //width:  313px;
+    height: 105px;
+    border-radius: 71px;
+    background-color: rgba(216, 216, 216, 0);
+    border: solid 2px #ece7e7;
+    span{
+        font-family: AppleSDGothicNeo;
+        font-size: 30px;
+        font-weight: 500;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: 0.4px;
+        text-align: center;
+        color: #aaaaaa;
+    }
+}
+  .order-button{
+    height: calc((100/1280)*100vh);
+    button{
+        font-size:4.75vw;
+    }
+ }
+}

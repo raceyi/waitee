@@ -26,34 +26,10 @@
   {{cartProvider.orderName}}
 </div>
 <div text-center class="order-completed">
-  상점주분께 <amount-display [amount]="cartProvider.totalAmount"></amount-display>원을<br> 전달하시면 주문이 완료됩니다.
+  상점주분께 <amount-display [amount]="amount"></amount-display>원을<br> 전달하시면 주문이 완료됩니다.
 </div>
 
-<div *ngIf="this.receiptIssue" >
- <ion-row radio-group class="choice" [(ngModel)]="receiptType">
-                      <ion-col>
-                          <ion-item no-lines>
-                              <ion-label>소득공제용(개인)</ion-label>
-                              <ion-radio mode="ios" value="IncomeDeduction"></ion-radio>
-                          </ion-item>
-                      </ion-col>
-                      <ion-col>
-                          <ion-item no-lines>
-                              <ion-label>지출증빙용(사업자)</ion-label>
-                              <ion-radio mode="ios" value="ExpenseProof"></ion-radio>
-                          </ion-item>
-                      </ion-col>
 
-  </ion-row>
-  <ion-row class="receipt-id">
-        <ion-col no-padding text-center>
-            <ion-label>현금영수증 번호</ion-label>
-        </ion-col>
-        <ion-col no-padding>
-            <ion-input type="number" [(ngModel)]="receiptId" placeholder="현금영수증 번호"></ion-input>
-        </ion-col>
-  </ion-row>  
-</div>
 <div *ngIf="!this.receiptIssue" class="confirm-button" text-center>
   <button outline ion-button (click)="orderDone()" >주문 확인</button>
 </div>
