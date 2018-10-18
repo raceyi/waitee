@@ -1,5 +1,5 @@
 import {Component,EventEmitter,NgZone} from '@angular/core';
-import {NavController,App,AlertController,Platform,MenuController,IonicApp,ViewController,Events} from 'ionic-angular';
+import {NavController,App,AlertController,Platform, LoadingController,MenuController,IonicApp,ViewController,Events} from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import {StorageProvider} from '../../providers/storageProvider';
@@ -48,6 +48,8 @@ export class ShopTablePage {
   pollingAlert=false;
   //disconnectAlert=false;
 
+  waiteeBackgroundColor={};
+
   getTodayString(){
     var d = new Date();
     var mm = d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1); // getMonth() is zero-based
@@ -63,6 +65,7 @@ export class ShopTablePage {
       private printerProvider:PrinterProvider,private platform:Platform,private menuCtrl: MenuController,
       public viewCtrl: ViewController,private serverProvider:ServerProvider,private push: Push,
       private mediaProvider:MediaProvider,private events:Events,private iosPrinterProvider:IosPrinterProvider,
+      public loadingCtrl: LoadingController, 
       private socket: Socket,private tts: TextToSpeech,private nativeStorage: NativeStorage) {
     console.log("ShopTablePage constructor");
       gShopTablePage=this;
@@ -77,6 +80,7 @@ export class ShopTablePage {
                 // display one columns
                 this.column=1;
             }
+            this.column=1;// do not display column as 2
             /////////////////////////////////////////////////
             // console.log("!!!call socket.connect!!!");
             // this.socket.connect();
@@ -142,20 +146,27 @@ export class ShopTablePage {
                     let oneHourAgo=new Date(now.getTime()-60*60*1000) ;// one hour ago? today's open hour? 오늘 local time을 구해서 gmt시간으로 변경하자.
                     body=JSON.stringify({takitId: gShopTablePage.storageProvider.myshop.takitId, orderNO: 0,time: oneHourAgo.toISOString() }); // humm... less than one hours?
                 }
-                
+
+                let bodyObj=JSON.parse(body);
+                let prevOrderNO=bodyObj.orderNO;
+
                 var d = new Date();
                 console.log("getRecentOrder: "+d.toLocaleTimeString());
 
                 gShopTablePage.serverProvider.post("/shop/getRecentOrder",body).then((res:any)=>{
                     console.log("res.more:"+res.more);
                     if(res.more){
-                        gShopTablePage.orders=[];
-                        gShopTablePage.getOrders(-1,-1).then(()=>{
-                            if(gShopTablePage.orders[0].orderStatus=="paid"){  // 잘못된 코드다. 기존에 출력이 되었는지 확인이 필요하다. 마지막 출력된 orderNO의 저장이 필요하다. ㅜㅜ 
-                                      gShopTablePage.printOrder(gShopTablePage.orders[0]);
-                                      gShopTablePage.mediaProvider.play();
-                            } 
-                        });
+                        //Please check if order is alreay printed or not.
+                        // 여러개가 출력되지 않았다며 여러개의 출력이 필요하다. 보강 코드가 필요함.
+                            gShopTablePage.orders=[];
+                            gShopTablePage.getOrders(-1,-1).then(()=>{
+                                for(let j=0;gShopTablePage.orders[j].orderNO>prevOrderNO;j++){
+                                    if(gShopTablePage.orders[j].orderStatus=="paid"){  // 기존에 출력이 되었는지 확인이 필요하다. 마지막 출력된 orderNO의 저장이 필요하다. 
+                                          gShopTablePage.printOrder(gShopTablePage.orders[j],true);
+                                          gShopTablePage.mediaProvider.play();
+                                    } 
+                                }
+                            });
                     }
                 },err=>{
                     console.log("fail to check recent order");
@@ -163,16 +174,19 @@ export class ShopTablePage {
                 })
 
                 if(gShopTablePage.storageProvider.kiosk){
-
                         gShopTablePage.serverProvider.post("/kiosk/getKioskRecentOrder",body).then((res:any)=>{
                             console.log("res.more:"+res.more);
                             if(res.more){
                                 gShopTablePage.orders=[];
                                 gShopTablePage.getOrders(-1,-1).then(()=>{
-                                    if(gShopTablePage.orders[0].orderStatus=="paid"){
-                                            gShopTablePage.printOrder(gShopTablePage.orders[0]);
+                                    for(let j=0;gShopTablePage.orders[j].orderNO>prevOrderNO;j++){
+                                        if(gShopTablePage.orders[j].orderStatus=="paid"){  // 기존에 출력이 되었는지 확인이 필요하다. 마지막 출력된 orderNO의 저장이 필요하다. 
+                                            gShopTablePage.printOrder(gShopTablePage.orders[j],true);
                                             gShopTablePage.mediaProvider.play();
-                                    } 
+                                        }else if(gShopTablePage.orders[j].orderStatus=="unpaid"){
+                                            gShopTablePage.speakCash(gShopTablePage.orders[j]);
+                                        } 
+                                    }
                                 });
                             }
                         },err=>{
@@ -248,6 +262,10 @@ export class ShopTablePage {
               if(res.shopInfo.kiosk!=null){
                     console.log("kiosk exists in shop");
                     this.storageProvider.kiosk=true;
+                    this.waiteeBackgroundColor={waiteeBackgroundColor:true};
+              }
+              if(res.shopInfo.storeType && res.shopInfo.storeType!=null){
+                    this.storageProvider.storeType=res.shopInfo.storeType;
               }
               console.log("call getOrders");
               this.getOrders(-1,-1); 
@@ -815,13 +833,24 @@ export class ShopTablePage {
       }
     }
 
-    printOrder(order){
+    printOrder(order,auto){
         console.log("!!! printOrder coming!!!!");
-
       if(this.storageProvider.printOn==false || this.storageProvider.myshop.GCMNoti=="off" ){
             console.log("do not print out")
             return;
       }
+      if(auto){ //이미 출력한 번호인지 확인한다. 세개가 한꺼번에 오는경우가 있다.
+              this.storageProvider.checkPrinted(order.orderStatus,order.orderNO).then(()=>{
+                    this.printOrderJob(order);
+              },err=>{ // 이미 출력한 경우로 아무작업도 수행하지 않는다.
+
+              })
+      }else{
+          this.printOrderJob(order);
+      }
+    }
+
+    printOrderJob(order){  
       var title,message="";
       console.log("order:"+JSON.stringify(order));
       if(order.orderStatus=="paid" ||order.orderStatus=="checked"){
@@ -1056,8 +1085,10 @@ export class ShopTablePage {
                             this.orders=[];
                             this.getOrders(-1,-1);
                             if(newOrder.orderStatus=="paid"){
-                                  this.printOrder(newOrder);
+                                  this.printOrder(newOrder,true);
                                   playback=true;
+                            }else if(newOrder.orderStatus=="unpaid"){
+                                  this.speakCash(newOrder);
                             }
                         }else{
                            if(incommingOrder.orderStatus=="cancelled" &&  this.orders[i].orderStatus=="paid"){
@@ -1196,8 +1227,10 @@ export class ShopTablePage {
                             this.orders=[];
                             this.getOrders(-1,-1);
                             if(incommingOrder.orderStatus=="paid"){
-                                  this.printOrder(newOrder);
+                                  this.printOrder(newOrder,true);
                                   playback=true;
+                            }else if(newOrder.orderStatus=="unpaid"){
+                                  this.speakCash(newOrder);
                             }
                         }else{
                             console.log("this.orders[i].orderStatus:"+this.orders[i].orderStatus);
@@ -1314,15 +1347,26 @@ export class ShopTablePage {
     notifyAudio(order){
         if(this.storageProvider.device && this.storageProvider.kiosk){
             chrome.sockets.tcp.create(function(createInfo) {
-            let addr="192.168.0.9";  //더큰도시락 ip
-            //let addr="192.168.0.10"; // 내 삼성폰 
-            //let addr="192.168.0.4";
+            //let addr="192.168.0.9";  //더큰도시락 ip
+            let addr="192.168.0.12";  //더큰도시락 ip
+
             let port=12345;
+
             let name=order.orderName;
             let options={
                 text:'웨이티 '+order.orderNO+'번'+' '+name+' 웨이티 '+order.orderNO+'번'+' '+name,
                 locale:'ko-KR',
                 rate:0.8
+            }
+            console.log("order.orderNameEn:"+order.orderNameEn);
+            if(order.orderNameEn!=null && order.orderNameEn && order.orderNameEn.length>0){
+                name=order.orderNameEn;
+                options={
+                    text:'waitee number '+order.orderNO+'    '+name+' waitee number '+order.orderNO+'     '+name,
+                    locale:'en-US',
+                    rate:0.8
+                }
+                console.log("notify-text:"+options.text);
             }
             chrome.sockets.tcp.connect(createInfo.socketId, addr, port, function(result) {
                 console.log("connect-result:"+result);
@@ -1386,7 +1430,35 @@ export class ShopTablePage {
           return;
         }
         this.mediaProvider.stop();
-        if(order.orderStatus=="paid"){
+        if(order.orderStatus=="unpaid"){
+               let confirm = this.alertController.create({
+                title: '고객님으로 부터 현금 '+order.amount+'원을 받으셨나요?',
+                buttons: [{
+                            text: '아니오',
+                            handler: () => {
+                              console.log('Disagree clicked');
+                            }
+                          },
+                          {
+                            text: '네',
+                            handler: () => {
+                                this.updateKioskStatus(order,"paidCheckOrder").then(()=>{
+                                  order.orderStatus="checked";
+                                  order.statusString="준비"; 
+                                  order.checkedTime=new Date().toISOString();
+                                  this.printOrder(order,false);
+                                },()=>{
+                                  console.log("주문 접수에 실패했습니다.");
+                                  let alert = this.alertController.create({
+                                                  title: '주문 접수에 실패했습니다.',
+                                                  buttons: ['OK']
+                                              });
+                                    alert.present();
+                                });;
+                            }
+                      }]});
+              confirm.present();
+        }else if(order.orderStatus=="paid"){
                this.updateKioskStatus(order,"checkOrder").then(()=>{
                  order.orderStatus="checked";
                  order.statusString="준비"; 
@@ -1555,8 +1627,16 @@ export class ShopTablePage {
         let body= JSON.stringify({ orderId: order.orderId,cancelReason:cancelReason});
 
         console.log("body:"+JSON.stringify(body));
+
+        let progressBarLoader = this.loadingCtrl.create({
+            content: "진행중입니다.",
+            duration: 30*1000
+        });
+        progressBarLoader.present();
+
         this.serverProvider.post("/kiosk/cancelOrder",body).then((res:any)=>{ 
             console.log("res:"+JSON.stringify(res));
+            progressBarLoader.dismiss();
             if(res.result=="success"){
                  order.orderStatus="cancelled";
                  order.statusString="취소"; 
@@ -1571,6 +1651,7 @@ export class ShopTablePage {
                 reject();
             }
          },(err)=>{
+             progressBarLoader.dismiss();
            if(err=="NetworkFailure"){
               console.log("서버와 통신에 문제가 있습니다");
               let alert = this.alertController.create({
@@ -1594,7 +1675,14 @@ export class ShopTablePage {
         let body= JSON.stringify({ orderId: order.orderId,cancelReason:cancelReason});
 
         console.log("body:"+JSON.stringify(body));
+        let progressBarLoader = this.loadingCtrl.create({
+            content: "진행중입니다.",
+            duration: 30*1000
+        });
+        progressBarLoader.present();
+
         this.serverProvider.post("/shop/cancelOrderWithEmail",body).then((res:any)=>{ 
+            progressBarLoader.dismiss();
             console.log("res:"+JSON.stringify(res));
             if(res.result=="success"){
                  order.orderStatus="cancelled";
@@ -1608,6 +1696,7 @@ export class ShopTablePage {
                 reject();
             }
          },(err)=>{
+             progressBarLoader.dismiss();
            if(err=="NetworkFailure"){
               console.log("서버와 통신에 문제가 있습니다");
               let alert = this.alertController.create({
@@ -1669,6 +1758,14 @@ export class ShopTablePage {
             console.log(request+"-res:"+JSON.stringify(res));
             if(res.result=="success"){
                 resolve("주문상태변경에 성공했습니다");
+                if(res.msgSentFail && res.msgSentFail==true){
+                    let alert = this.alertController.create({
+                                title: '주문상태는 변경되었으나 고객에게 주문서가 전달되지 않았습니다.',
+                                subTitle:'고객님이 입력하신 스마트폰 정보가 잘못되었을수 있습니다. 고객문의시 알려주세요.',
+                                buttons: ['OK']
+                            });
+                    alert.present();
+                }
             }else{
                 resolve("주문상태변경에 실패했습니다");
                 let alert = this.alertController.create({
@@ -2175,7 +2272,16 @@ export class ShopTablePage {
         return buf;
     }
 
-
-
+    speakCash(order){
+        let options={
+            text:order.amount+'원 '+order.amount+'원을 받아주세요',
+            locale:'ko-KR',
+            rate:0.8
+        }
+        //https://stackoverflow.com/questions/40894457/difference-between-android-speech-to-text-api-recognizer-intent-and-google-clo
+        this.tts.speak( options)
+        .then(() => console.log('Success'))
+        .catch((reason: any) => console.log(reason))
+    }
 
 }

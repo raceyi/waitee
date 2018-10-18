@@ -96,6 +96,25 @@ export class MenuModalPage {
       }
       console.log("construct menu:"+JSON.stringify(this.menu));
       console.log("flags"+JSON.stringify(this.flags));
+
+      if(this.isNull(this.menu.filter) /* !this.menu.filter || this.menu=='null' */){
+          this.menu.filter={beef:{include:false, freeKor:undefined, freeEn:undefined},
+                            pork:{include:false, freeKor:undefined, freeEn:undefined},
+                            chicken:{include:false, freeKor:undefined, freeEn:undefined},
+                            fish:{include:false, freeKor:undefined, freeEn:undefined},
+                            egg:{include:false, freeKor:undefined, freeEn:undefined}};
+      }else if(typeof this.menu.filter ==='string'){
+          console.log("filter:"+this.menu.filter);
+          let filter=JSON.parse(this.menu.filter);
+          if(typeof filter ==='string'){
+              console.log("invalid filter type!!");
+              filter=JSON.parse(filter);
+              if(typeof filter==='string'){
+                  console.log("invalid type2");
+              }
+          }
+          this.menu.filter=filter;
+      }
   }
 
   ionViewDidEnter(){
@@ -348,6 +367,15 @@ export class MenuModalPage {
                 // 설명필드가 reset될수도 있다.
                 if(!this.menu.explanation || this.menu.explanation.trim().length==0)
                     this.menu.explanation=null;
+
+                if(!this.menu.explanationEn || this.menu.explanationEn.trim().length==0)
+                    this.menu.explanation=null;
+                
+                //filter 정보를 추가한다. storeType=='restaurant'이라면 영문정보를 위해
+                if(this.storageProvider.storeType=='restaurant'){
+                    console.log("this.menu.filter:"+JSON.stringify(this.menu.filter))
+                    this.menu.filter=JSON.stringify(this.menu.filter);
+                }
 
                 this.serverProvider.modifyMenuInfo(this.menu)
                 .then((res:any)=>{

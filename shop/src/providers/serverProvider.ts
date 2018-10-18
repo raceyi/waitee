@@ -261,9 +261,8 @@ export class ServerProvider{
   }
 
     modifyMenuInfo(menu){
-        
         return new Promise((resolve,reject)=>{
-            console.log("menu:"+JSON.stringify(menu));
+            console.log("modifyMenuInfo-menu:"+JSON.stringify(menu));
             console.log("menu.imagePath:"+menu.imagePath);
             if(menu.imagePath && menu.imagePath.includes("?")){
                let substrs=menu.imagePath.split("?");

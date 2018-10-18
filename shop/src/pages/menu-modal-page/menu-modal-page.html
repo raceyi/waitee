@@ -42,7 +42,133 @@
             </ion-item>
         </ion-col>
     </ion-row>
+    <!--  filter-begin  -->
+    <div *ngIf="storageProvider.storeType=='restaurant'">
+    <ion-row [hidden]="!flags.segment">
+          <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >소고기포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.filter.beef.include" style="border:0;" ></ion-checkbox>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+     <ion-row [hidden]="!flags.segment || !menu.filter.beef.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(한글)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.beef.freeKor"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment || !menu.filter.beef.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(영문)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.beef.freeEn"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >돼지고기포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.filter.pork.include" style="border:0;" ></ion-checkbox>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment || !menu.filter.pork.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(한글)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.pork.freeKor"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment || !menu.filter.pork.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(영문)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.pork.freeEn"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
 
+    <ion-row [hidden]="!flags.segment">
+          <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >닭고기포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.filter.chicken.include" style="border:0;" ></ion-checkbox>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment || !menu.filter.chicken.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(한글)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.chicken.freeKor"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment || !menu.filter.chicken.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(영문)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.chicken.freeEn"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+
+    <ion-row [hidden]="!flags.segment">
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label>생선포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.filter.fish.include" style="border:0;" ></ion-checkbox>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment || !menu.filter.fish.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(한글)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.fish.freeKor"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment || !menu.filter.fish.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(영문)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.fish.freeEn"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment">
+          <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >계란포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.filter.egg.include" style="border:0;" ></ion-checkbox>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+
+    <ion-row [hidden]="!flags.segment || !menu.filter.egg.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(한글)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.egg.freeKor"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row [hidden]="!flags.segment || !menu.filter.egg.include">     
+        <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >제외옵션(영문)</ion-label>
+                <ion-input [(ngModel)]="menu.filter.egg.freeEn"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    </div>
+    <!--  filter-end  -->
     <ion-row>
         <ion-col>
             <ion-item>
@@ -344,12 +470,65 @@
             </ion-col>
             <ion-col>
                 <ion-item>
+                    <ion-label stacked>옵션명(한글)</ion-label>
+                    <ion-input [(ngModel)]="menu.optionsEn[i].korean" ></ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+                <ion-col>
+                <ion-item>
+                    <ion-label stacked>flag 옵션(숫자가 아닌 선택,비선택만가능)</ion-label>
+                    <ion-checkbox [(ngModel)]="menu.optionsEn[i].flagType" style="border:0;" ></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>        
+        <ion-row>
+            <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >소고기포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.optionsEn[i].beef" style="border:0;" ></ion-checkbox>
+            </ion-item>
+            </ion-col>
+            <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >돼지고기포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.optionsEn[i].pork" style="border:0;" ></ion-checkbox>
+            </ion-item>
+            </ion-col>            
+        </ion-row>
+        <ion-row>
+            <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >닭고기포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.optionsEn[i].chicken" style="border:0;" ></ion-checkbox>
+            </ion-item>
+            </ion-col>
+            <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >생선포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.optionsEn[i].fish" style="border:0;" ></ion-checkbox>
+            </ion-item>
+            </ion-col>            
+        </ion-row>
+        <ion-row>
+            <ion-col>
+            <ion-item no-ilnes>
+                <ion-label >계란포함</ion-label>
+                <ion-checkbox [(ngModel)]="menu.optionsEn[i].egg" style="border:0;" ></ion-checkbox>
+            </ion-item>
+            </ion-col>         
+        </ion-row>       
+        <ion-row>
+            <ion-col>
+                <ion-item>
                     <ion-label stacked>가격</ion-label>
                     <ion-input [(ngModel)]="menu.optionsEn[i].price" ></ion-input>
                 </ion-item>
             </ion-col>
+            <ion-col>
+            </ion-col>
         </ion-row>
-
         <div *ngIf="optionEn.choice !== undefined">
         <ion-row >
             <ion-col>

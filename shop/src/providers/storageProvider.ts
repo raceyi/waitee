@@ -68,7 +68,11 @@ export class StorageProvider{
     public registrationId;
     
     public kiosk:boolean=false;
-
+    public lastAutoPrintedPaidOrderNO;
+    public lastAutoPrintedcancelOrderNO;
+    
+    public storeType;
+    
     constructor(private platform:Platform,private nativeStorage: NativeStorage,
                 public loadingCtrl: LoadingController, 
                 private alertController:AlertController,
@@ -214,6 +218,42 @@ export class StorageProvider{
              confirm.present();
         }
     }
+
+    checkPrinted(status,orderNO){ // 마지막으로 출력한 가장 큰숫자인가? 출력이 안될수도 있는가? 
+               return new Promise((resolve,reject)=>{
+                    let loading = this.loadingCtrl.create({
+                            content: "진행중입니다.",
+                            duration: this.timeout*1000
+                    });                    
+                    if(this.lastAutoPrintedPaidOrderNO){ 
+                        if(this.lastAutoPrintedPaidOrderNO>=orderNO && status=="paid"){
+                            loading.dismiss();
+                            reject();
+                            return;
+                        }else if(this.lastAutoPrintedcancelOrderNO>=orderNO && status=="cancelled"){
+                            loading.dismiss();
+                            reject();
+                            return;
+                        }
+                    }
+                    if(status=="cancelled"){
+                        if(!this.lastAutoPrintedcancelOrderNO){
+                            this.lastAutoPrintedcancelOrderNO=orderNO;
+                        }else if(this.lastAutoPrintedcancelOrderNO<orderNO)
+                            this.lastAutoPrintedcancelOrderNO=orderNO;
+                    }
+                    if(status=="paid"){
+                        if(!this.lastAutoPrintedPaidOrderNO)
+                            this.lastAutoPrintedPaidOrderNO=orderNO;
+                        else if(this.lastAutoPrintedPaidOrderNO<orderNO){
+                            this.lastAutoPrintedPaidOrderNO=orderNO;
+                        }
+                    }
+                    loading.dismiss();                    
+                    resolve();
+               });
+    }
+
 }
 
 
