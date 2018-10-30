@@ -20,7 +20,10 @@
 
 <ion-content>
 <div class="order-no" text-center>
-  <p no-margin class="order-value">{{order.orderNO}}</p>
+  <p no-margin class="order-value">{{order.orderNO}}
+    <span *ngIf="order.takeout==1">(포장)</span>
+    <span *ngIf="order.takeout==2">(배달)</span>
+  </p>
   <p no-margin class="order-label">주문번호</p>
 </div>
 <ion-row  class="order-status" *ngIf="order.orderStatus!='pickup' && order.orderStatus!='cancelled'">

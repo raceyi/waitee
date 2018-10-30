@@ -270,6 +270,7 @@ saveOrderCart(body){
     }
 
     getCurrentShopStampInfo(){
+        console.log("stamp:"+this.storageProvider.shopInfo.stamp);
     if(this.storageProvider.shopInfo.stamp!=null && this.storageProvider.shopInfo.stamp){
             let body={takitId:this.storageProvider.shopResponse.shopInfo.takitId}
             this.post(this.storageProvider.serverAddress+"/getStampCount",body).then((res:any)=>{

@@ -74,7 +74,6 @@ export class MyInfoPage {
   }
 
   modifyPhone(){
-    
       if(this.storageProvider.tourMode){
             let alert = this.alertCtrl.create({
                 title: '둘러보기모드입니다.',

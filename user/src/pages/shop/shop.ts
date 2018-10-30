@@ -139,7 +139,7 @@ export class ShopPage {
   }
 
   ionViewWillEnter(){ 
-        console.log("ionViewWillEnter");
+        console.log("ionViewWillEnter "+this.takitId);
         if(this.takitId==undefined){
           this.takitId=this.storageProvider.takitId;
           this.loadShopInfo();
@@ -413,6 +413,6 @@ export class ShopPage {
 
         //console.log("menus:"+JSON.stringify(this.storageProvider.shopResponse.shopInfo.menus));
 
-        this.navCtrl.push(MenuSearchPage,{shopInfo:shopInfo, menus: this.shop.menus,class:"MenuSearchPage"} );    
+        this.navCtrl.push(MenuSearchPage,{shopInfo:shopInfo, menus: this.shop.menus,class:"MenuSearchPage" }, { animate: false });    
     }
 }

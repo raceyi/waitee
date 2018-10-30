@@ -16,9 +16,13 @@
         <button ion-button (click)="search()" style="background-color:white;color:#FF5F3A;">
              <ion-icon  class="store-information-button"name="ios-search"></ion-icon>
         </button>
-      
+<!--        
+        <button ion-button (click)="openCart()" style="background-color:white;color:#FF5F3A;font-size:10vw;">
+            <custom-icon set="tabs" name="cart"></custom-icon>
+        </button>
+-->        
         <button *ngIf="storeInfoHide" ion-button (click)="showInfoDisplay()" style="background-color:white;color:#FF5F3A;">
-             <ion-icon  class="store-information-button"name="ios-information-circle-outline"></ion-icon>
+             <ion-icon  class="store-information-button" name="ios-information-circle-outline"></ion-icon>
         </button>
         <button *ngIf="!storeInfoHide" ion-button (click)="hideInfoDisplay()" style="background-color:white;color:#FF5F3A;">        
             <ion-icon  class="store-information-button"name="ios-arrow-up"></ion-icon>
@@ -153,6 +157,7 @@
                 </ion-scroll>
             </ion-col>
 </ion-row>
+
 <ion-fab bottom right>
     <button class="fab-btn" (click)="openCart()" ion-fab color="white">
       <custom-icon set="tabs" name="cart"></custom-icon>
@@ -164,7 +169,7 @@
 <ion-footer>
     <ion-row>
     <ion-col text-center>
-    <ion-select text-center [(ngModel)]="categorySelected" multiple=false interface="action-sheet" (ionChange)="change()">
+    <ion-select text-center [(ngModel)]="categorySelected" multiple="false" interface="action-sheet" (ionChange)="change()">
         <ion-option class="category-name"  text-center [value]="i" *ngFor="let category of categories;let i=index;">
             <ion-label text-center style="width:90vw;text-align:center;">{{category.categoryName}}</ion-label>
         </ion-option>

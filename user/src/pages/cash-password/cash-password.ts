@@ -264,7 +264,7 @@ export class CashPasswordPage {
                                     buttons: ['OK']
                                 });
                                 alert.present();
-                        }else if(error=="invalidPrice" || error=="invalidTimeContraint"){
+                        }else if(error=="invalidPrice"|| error=="invalidOption" || error=="invalidTimeContraint"){
                             let alert = this.alertController.create({
                                     title: '메뉴정보가 변경되었습니다.',
                                     subTitle:'상점에 다시 입장하여 새로운 메뉴정보로 주문해주세요',
