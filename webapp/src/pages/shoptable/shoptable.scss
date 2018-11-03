@@ -1,0 +1,272 @@
+page-shoptable {
+ion-header {
+         .title{
+            margin-top: auto !important;
+            margin-bottom: auto !important;
+            font-size: 3vw !important;
+            color:white;
+            background-color: transparent;
+         }
+         .toolbar-ios ion-title {
+            position:relative !important;
+         }
+        .toolbar-background{
+            background-color: #6441a5;
+        }
+        .ion-ios-menu{
+            color:white;
+        }
+        .store-status{
+            font-size:8vw;
+        }
+     }
+
+    .content-ios {
+        background-color: #e8e8e8;
+    }
+
+    ion-content{
+        .segment-ios .segment-button {
+            border-radius: 0px !important; 
+        }
+
+        .segment-ios>.segment-button {
+                border-width: 1px !important;
+                border-style: solid !important;
+                border-color: #6441a5 !important;
+                background-color:white !important;
+        }
+
+        .segment-ios>.segment-activated {
+            background-color: #33b9c6 !important;
+            color: white !important;
+        }
+        
+        .list-ios.phone{
+            margin-top:calc((12/667)*100vh);
+            margin-left:calc((11/375)*100vw);
+            margin-right:calc((11/375)*100vw); 
+            ion-item{
+                margin-bottom:calc((4/667)*100vh);
+                border: solid 1px #bdbdbd;
+            }    
+            .item-ios.item-block .item-inner {
+                border-bottom: 0px;
+            }            
+            .checked-button{
+                font-size:4vw;  
+                color:white;
+                background-color: #33b9c6;
+                border: solid 2px #33b9c6;
+                border-radius: 10%;
+            }  
+            .completed-button{
+                font-size:4vw;  
+                color:#33b9c6;
+                background-color: rgba(51, 185, 198, 0.2);
+                border: solid 2px #33b9c6;
+                border-radius: 10%;
+            }  
+            .pickup-button{
+                font-size:4vw;  
+                color:white;
+                background-color: #6441a5;
+                border: solid 2px #6441a5;
+                border-radius: 10%;
+            }
+
+            .cancelled-button{
+                padding-top:calc((8/375)*100vw);
+                margin-left:calc((10/375)*100vw);                
+                width:calc((33/375)*100vw);   
+                height:calc((33/375)*100vw);
+                font-size:3.4vw;  
+                background-color: #ffffff;
+           }
+
+           .done-button{
+                padding-top:calc((8/375)*100vw);
+                margin-left:calc((10/375)*100vw);                
+                width:calc((33/375)*100vw);   
+                height:calc((33/375)*100vw);
+                font-size:3.4vw;  
+                color:#6441a5;
+                background-color: #ffffff;
+           }
+           .notify-button{
+                font-size:3.4vw;  
+                color:#6441a5;
+                background-color: rgba(100, 65, 165, 0.2);
+                //border: solid 2px #6441a5;
+                border: solid 2px #ff0000;
+                border-radius: 10%;               
+           }
+
+           .custom-printer-button{
+                height:calc((20/375)*100vw);
+                font-size:3.4vw;  
+                color: #979797;
+                background-color: #ffffff;
+           }
+
+           .order-no{
+               font-size:4vw;
+               .outline{
+                    font-size:3.7vw;
+                    margin-left:5px;
+                    border: solid 1px #4a4a4a;
+               }
+           }
+           .order-number{
+               font-size:6vw;
+           }
+
+           .display-time{
+               font-size:3.4vw;
+               color:#9B9B9B;
+           }
+
+           .cancel-button{
+               height:calc((19/375)*100vw);
+           }
+
+           .menu-detail{
+               border-top: solid 1px #d8d8d8;
+               border-bottom: solid 1px #d8d8d8;
+               font-size:3.4vw;
+           }
+
+           .time-section{
+               font-size:3.4vw;
+               padding-top:calc((4/667)*100vh); 
+               color:lightgray;                              
+               .col{
+                   padding-top:0px;
+                   padding-bottom:0px;
+               }               
+           }
+
+           .review-section{
+                border-top: solid 1px #d8d8d8;               
+                font-size:3.4vw;
+                padding-top:calc((4/667)*100vh);                
+               .col{
+                   padding-top:0px;
+                   padding-bottom:0px;
+               }                
+           }
+        }
+
+        .list-ios.tablet{
+            margin-top:calc((12/667)*100vh);
+            margin-left:calc((11/(375*2))*100vw);
+            margin-right:calc((11/(375*2))*100vw); 
+            .order-background{
+                border: solid 5px #e8e8e8;
+            }
+            ion-item{
+                margin-bottom:calc((4/667)*100vh);
+                border: solid 1px #bdbdbd;
+            }    
+            .checked-button{
+                font-size:1.7vw;  
+                color:white;
+                background-color: #33b9c6;
+                border: solid 2px #33b9c6;
+                border-radius: 10%;
+            }  
+            .completed-button{
+                font-size:1.7vw;  
+                color:#33b9c6;
+                background-color: rgba(51, 185, 198, 0.2);
+                border: solid 2px #33b9c6;
+                border-radius: 10%;
+            }  
+            .pickup-button{
+                font-size:1.7vw;  
+                color:white;
+                background-color: #6441a5;
+                border: solid 2px #6441a5;
+                border-radius: 10%;
+            }
+
+            .cancelled-button{
+                font-size:1.7vw;  
+                background-color: #ffffff;
+           }
+
+           .done-button{
+                font-size:1.7vw;  
+                color:#6441a5;
+                background-color: #ffffff;
+           }
+           .notify-button{
+                font-size:1.7vw;  
+                color:#6441a5;
+                background-color: rgba(100, 65, 165, 0.2);
+                border: solid 2px #6441a5;
+                border-radius: 10%;               
+           }
+
+           .custom-printer-button{
+                height:calc((20/(375*2))*100vw);
+                font-size:1.7vw;  
+                color:#9b9b9b;
+                background-color: #ffffff;
+           }
+            
+           .order-no{
+               font-size:2vw;
+               .outline{
+                    font-size:1.9vw;
+                    margin-left:5px;
+                    border: solid 1px #4a4a4a;
+               }
+           }
+           .order-number{
+               font-size:3.4vw;
+           }
+
+           .display-time{
+               font-size:1.7vw;
+               color:#9B9B9B;
+           }
+
+           .cancel-button{
+               height:calc((19/(375*2))*100vw);
+           }
+
+           .menu-detail{
+               border-top: solid 1px #d8d8d8;
+               border-bottom: solid 1px #d8d8d8;
+               font-size:1.7vw;
+           }
+
+           .time-section{
+               font-size:1.7vw;
+               padding-top:calc((4/667)*100vh); 
+               color:lightgray;                              
+               .col{
+                   padding-top:0px;
+                   padding-bottom:0px;
+               }               
+           }
+
+           .review-section{
+                border-top: solid 1px #d8d8d8;               
+                font-size:1.7vw;
+                padding-top:calc((4/667)*100vh);                
+               .col{
+                   padding-top:0px;
+                   padding-bottom:0px;
+               }                
+           }
+        }
+    }
+
+    .waiteeBackgroundColor{
+        ion-col{
+            background-color:lightyellow; 
+        }
+    }
+}

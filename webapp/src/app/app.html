@@ -1,0 +1,51 @@
+<ion-menu [content]="content" class="menuList">
+<ion-content>
+      <button class="menu" color="white" ion-button full menuClose>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X  
+      </button>
+      <!--
+      <button class="menu" clear ion-button icon-left full  menuClose (click)="openPrint()" >
+        <ion-icon name="print"></ion-icon>&nbsp;&nbsp;프린터설정
+      </button>
+      <button class="menu" clear ion-button icon-left full  menuClose [hidden]="storageProvider.id==undefined || storageProvider.tourMode==true" (click)="openSoldOut()">
+        <ion-icon name="person"></ion-icon>&nbsp;&nbsp;판매종료
+      </button>
+      <button class="menu" clear ion-button icon-left full menuClose [hidden]="storageProvider.myshop.manager==undefined || !storageProvider.myshop.manager" (click)="openCash()">
+        <ion-icon name="cash"></ion-icon>&nbsp;&nbsp;캐쉬인출   
+      </button>
+      <button class="menu" clear ion-button icon-left full menuClose [hidden]="storageProvider.myshop.manager==undefined || !storageProvider.myshop.manager" (click)="openSales()">
+        <ion-icon name="cash"></ion-icon>&nbsp;&nbsp;매출보기  
+      </button>
+      <button class="menu" clear ion-button icon-left full menuClose [hidden]="storageProvider.myshop.manager==undefined || !storageProvider.myshop.manager" (click)="openKioskSales()">
+        <ion-icon name="cash"></ion-icon>&nbsp;&nbsp;키오스크 매출보기   
+      </button>
+      -->
+      <button class="menu" clear ion-button icon-left full  menuClose [hidden]="storageProvider.myshop.takitId==undefined" (click)="openEditMenu()">
+        <ion-icon name="create"></ion-icon>&nbsp;&nbsp;상점메뉴
+      </button>
+      <!--
+      <button class="menu" clear ion-button icon-left full  menuClose [hidden]="storageProvider.id==undefined || storageProvider.tourMode==true" (click)="openUserInfo()">
+        <ion-icon name="person"></ion-icon>&nbsp;&nbsp;회원정보
+      </button>
+      -->
+      <button class="menu" clear ion-button icon-left full  menuClose (click)="openConfigure()" >
+        <ion-icon name="md-settings"></ion-icon>&nbsp;&nbsp;환경설정
+      </button>
+      <!--
+      <button class="menu" clear ion-button icon-left full menuClose (click)="openServiceInfo()">
+        <ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;서비스정보 
+      </button>
+      <button class="menu" clear *ngIf="storageProvider.tourMode==true" ion-button icon-left full menuClose (click)="exitTourMode()">
+        <ion-icon name="log-out"></ion-icon>둘러보기 나가기  
+      </button>
+      -->
+      <button class="menu" clear *ngIf="storageProvider.tourMode==false" ion-button icon-left full menuClose (click)="openLogout()">
+        <ion-icon name="log-out"></ion-icon>&nbsp;&nbsp;로그아웃 
+      </button>
+  </ion-content>
+</ion-menu>
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

@@ -1,0 +1,20 @@
+<ion-content>
+
+<div text-center class="icon-img">
+<img  src="assets/imgs/icon.jpg"/> 
+</div>
+<div text-center class="logo-img">
+<img  src="assets/imgs/waitee-logo.png"/> 
+</div>
+
+<div text-center>
+  <button ion-button class="action-button" (click)="retry()">다시요청</button>
+  <p class="detail" text-center style="font-size:3.2vw;">데이터를 가져오지 못했습니다. 잠시후에 다시 시도해 주세요.</p>
+</div>
+<div text-center *ngIf="isAndroid">
+<button ion-button  class="action-button" (click)="exit()">종료</button>
+</div>
+</ion-content>
+<ion-footer text-center>
+  <img src="assets/imgs/waitee-inc-2017-al.png"/>
+</ion-footer>

@@ -1,0 +1,179 @@
+<!--
+  Generated template for the ConfigurePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>환경설정</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+<ion-item *ngIf="storageProvider.bootTime!=undefined">
+ 앱실행시간: {{storageProvider.bootTime}}
+</ion-item>   
+<ion-item *ngIf="storageProvider.lastTokenSent!=undefined">
+ token전송시간: {{storageProvider.lastTokenSent}}
+</ion-item>   
+<ion-item> 소리 조절</ion-item>
+<ion-item>
+    <ion-range  (ionBlur)='updateVolume()' no-padding no-margin style="padding-top:0px;" [(ngModel)]="volumeValue" color="danger" pin="true">
+      <ion-icon small range-left name="ios-volume-down-outline"></ion-icon>
+      <ion-icon range-right name="ios-volume-up-outline"></ion-icon>
+     </ion-range>
+</ion-item>
+<ion-row>
+  <ion-col>
+  <ion-item>
+  상점 열고 닫기
+  </ion-item>
+  </ion-col>
+  <ion-col>
+  <ion-item>
+      <ion-icon class="store-status" [style.color]="storeColor" name="bulb" (click)="configureStore()" ></ion-icon>
+  </ion-item>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col>
+  <ion-item>
+    <ion-label>주문정보 요청기간</ion-label>
+    <ion-select [(ngModel)]="pollingInterval">
+      <ion-option value='1'> 1분</ion-option>
+      <ion-option value='2'> 2분</ion-option>
+      <ion-option value='3'> 3분</ion-option>
+    </ion-select>
+  </ion-item>    
+  </ion-col>
+</ion-row>
+<!--
+<ion-row>
+  <ion-col>
+  <ion-item>
+  주문 알림 문자 수신
+  </ion-item>
+  </ion-col>
+  <ion-col>
+  <ion-item>
+      <ion-icon class="store-status" [style.color]="notiColor" name="person" (click)="configureGotNoti()" ></ion-icon>
+  </ion-item>
+  </ion-col>
+</ion-row>
+-->
+<ion-row>
+  <ion-col>
+  <ion-item>
+    영업시간
+  </ion-item>
+  </ion-col>
+</ion-row>
+<ion-row *ngFor="let day of weeks">
+  <ion-col col-1>
+          {{day.name}}
+  </ion-col>
+  <ion-col>
+        <ion-label>시작시</ion-label>
+        <ion-select [(ngModel)]="day.startHour" placeholder="시작시간">
+          <ion-option value=0> 0</ion-option>
+          <ion-option value=1> 1</ion-option>
+          <ion-option value=2> 2</ion-option>
+          <ion-option value=3> 3</ion-option>
+          <ion-option value=4> 4</ion-option>
+          <ion-option value=5> 5</ion-option>
+          <ion-option value=6> 6</ion-option>
+          <ion-option value=7> 7</ion-option>
+          <ion-option value=8> 8</ion-option>
+          <ion-option value=9> 9</ion-option>
+          <ion-option value=10> 10</ion-option>
+          <ion-option value=11> 11</ion-option>
+          <ion-option value=12> 12</ion-option>
+          <ion-option value=13> 13</ion-option>
+          <ion-option value=14> 14</ion-option>
+          <ion-option value=15> 15</ion-option>
+          <ion-option value=16> 16</ion-option>
+          <ion-option value=17> 17</ion-option>
+          <ion-option value=18> 18</ion-option>
+          <ion-option value=19> 19</ion-option>
+          <ion-option value=20> 20</ion-option>
+          <ion-option value=21> 21</ion-option>
+          <ion-option value=22> 22</ion-option>
+          <ion-option value=23> 23</ion-option>
+          <ion-option value=24> 24</ion-option>
+        </ion-select>
+  </ion-col>
+  <ion-col>
+        <ion-label>시작분</ion-label>
+        <ion-select [(ngModel)]="day.startMin">
+          <ion-option value=0> 0</ion-option>
+          <ion-option value=5> 5</ion-option>
+          <ion-option value=10> 10</ion-option>
+          <ion-option value=15> 15</ion-option>
+          <ion-option value=20> 20</ion-option>
+          <ion-option value=25> 25</ion-option>
+          <ion-option value=30> 30</ion-option>
+          <ion-option value=35> 35</ion-option>
+          <ion-option value=40> 40</ion-option>
+          <ion-option value=45> 45</ion-option>
+          <ion-option value=50> 50</ion-option>
+          <ion-option value=55> 55</ion-option>
+        </ion-select>      
+  </ion-col>
+  <ion-col>
+        <ion-label>종료시</ion-label>
+        <ion-select [(ngModel)]="day.endHour"  placeholder="종료시간">
+          <ion-option value=0> 0</ion-option>
+          <ion-option value=1> 1</ion-option>
+          <ion-option value=2> 2</ion-option>
+          <ion-option value=3> 3</ion-option>
+          <ion-option value=4> 4</ion-option>
+          <ion-option value=5> 5</ion-option>
+          <ion-option value=6> 6</ion-option>
+          <ion-option value=7> 7</ion-option>
+          <ion-option value=8> 8</ion-option>
+          <ion-option value=9> 9</ion-option>
+          <ion-option value=10> 10</ion-option>
+          <ion-option value=11> 11</ion-option>
+          <ion-option value=12> 12</ion-option>
+          <ion-option value=13> 13</ion-option>
+          <ion-option value=14> 14</ion-option>
+          <ion-option value=15> 15</ion-option>
+          <ion-option value=16> 16</ion-option>
+          <ion-option value=17> 17</ion-option>
+          <ion-option value=18> 18</ion-option>
+          <ion-option value=19> 19</ion-option>
+          <ion-option value=20> 20</ion-option>
+          <ion-option value=21> 21</ion-option>
+          <ion-option value=22> 22</ion-option>
+          <ion-option value=23> 23</ion-option>
+          <ion-option value=24> 24</ion-option>          
+        </ion-select>
+  </ion-col>
+  <ion-col>
+        <ion-label>종료분</ion-label>
+        <ion-select [(ngModel)]="day.endMin">
+          <ion-option value=0> 0</ion-option>
+          <ion-option value=5> 5</ion-option>
+          <ion-option value=10> 10</ion-option>
+          <ion-option value=15> 15</ion-option>
+          <ion-option value=20> 20</ion-option>
+          <ion-option value=25> 25</ion-option>
+          <ion-option value=30> 30</ion-option>
+          <ion-option value=35> 35</ion-option>
+          <ion-option value=40> 40</ion-option>
+          <ion-option value=45> 45</ion-option>
+          <ion-option value=50> 50</ion-option>
+          <ion-option value=55> 55</ion-option>        
+        </ion-select>      
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col text-center>
+    <button ion-button (click)="changeBusinessHours()">영업시간 수정</button>
+  </ion-col>
+</ion-row>
+</ion-content>

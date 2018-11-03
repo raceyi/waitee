@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>나의 정보</ion-title>
+  </ion-navbar>
+  
+</ion-header>
+
+<ion-content padding >
+<ion-item>
+    <ion-label>이메일 </ion-label>
+    <ion-input  disabled [(ngModel)]="storageProvider.email" type="email"></ion-input> 
+</ion-item>
+<!--
+<ion-item>
+    <ion-label>이름</ion-label>
+    <ion-input  [(ngModel)]="storageProvider.name"  type="text" disabled></ion-input>  
+</ion-item>
+-->
+<ion-row>
+      <ion-col col-4>
+    <ion-item>
+        <ion-label>휴대폰</ion-label>
+    </ion-item>
+      </ion-col>
+      <ion-col col-8>
+    <ion-item>
+        <ion-input type="tel" [(ngModel)]="storageProvider.phone"></ion-input> 
+    </ion-item>
+      </ion-col>
+<!--      
+  <ion-col col-3>
+    <ion-item>
+      <button full ion-button>수정</button>
+    </ion-item>
+  </ion-col>
+-->
+</ion-row>
+<ion-row>
+      <ion-col col-4>
+      <ion-item>
+        <ion-label>비밀번호</ion-label>
+      </ion-item>
+      </ion-col>
+      <ion-col col-8>
+        <ion-item>
+        <button full ion-button (click)="modifyPassword()">수정</button>
+        </ion-item>
+      </ion-col>
+</ion-row>
+
+</ion-content>
+
+

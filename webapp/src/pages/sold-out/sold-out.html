@@ -1,0 +1,65 @@
+<!--
+  Generated template for the SoldOutPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>판매종료</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+<ion-row class="row-categories-menus">
+             <ion-col col-3 class="col-categories" no-padding>
+                 <!--
+                <ion-scroll scrollY="true" class="scroll-categories">
+                    -->
+                    <ion-list>
+                        <ion-item *ngFor="let category of categories;let i=index;">
+                          <button style="font-size:3.4vw;background-color:white;" value="i" (click)="categoryClick(i+1)" ion-button full  no-padding no-margin>
+                           <p style="font-size:4vw;" text-left [style.color]="configureButtonColor(i)" text-wrap> {{category.categoryName}} </p>
+                          </button>
+                        </ion-item>
+                    </ion-list>
+                <!--
+                </ion-scroll>
+                -->
+             </ion-col>
+            <ion-col  col-9 class="col-menus">
+                <ion-scroll scrollY="true">
+                <ion-row *ngFor="let menu of menus" no-padding no-margin>
+                    <ion-col no-padding>
+                    <button color="white" (click)="selectMenu(menu[0])"  ion-button full no-padding no-margin>
+                        <ion-item class="left" no-padding [style.background-color]="configureMenuColor(menu[0])">
+                             <div text-center class="img-shop" [ngStyle]="menu[0].ngStyle">
+                              <label *ngIf="menu[0].soldout==1"> <b>판매종료</b></label>
+                              <label *ngIf="menu[0].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
+                             </div>
+                            <h2>{{menu[0].menuName}}</h2>
+                            <p>{{menu[0].price}}</p>
+                        </ion-item>
+                    </button>
+                    </ion-col>
+                    <ion-col no-padding>
+                    <button *ngIf="menu[1]" (click)="selectMenu(menu[1])" ion-button full no-padding no-margin>
+                        <ion-item class="left" no-padding [style.background-color]="configureMenuColor(menu[1])">
+                             <div text-center class="img-shop" [ngStyle]="menu[1].ngStyle">
+                              <label *ngIf="menu[1].soldout==1"> <b>판매종료</b></label>
+                              <label *ngIf="menu[1].soldout==0"> &nbsp;&nbsp;&nbsp;&nbsp;</label>
+                             </div>
+                            <h2>{{menu[1].menuName}}</h2>
+                            <p>{{menu[1].price}}</p>
+                        </ion-item>
+                    </button>
+                    <button *ngIf="!menu[1]" style="background-color:white;" ion-button full no-padding no-margin>
+                        <ion-item no-padding>
+                        </ion-item>
+                    </button>
+                    </ion-col>
+                </ion-row>
+                </ion-scroll>
+            </ion-col>
+</ion-row>
+</ion-content>
