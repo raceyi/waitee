@@ -22,6 +22,9 @@ export class MediaProvider {
 
    warning:MediaObject;
 
+  cancel:MediaObject;
+  cancelCount=0;
+
   constructor(public http: Http,private platform:Platform,
               private media: Media,private storageProvider:StorageProvider,) {
     console.log('Hello MediaProvider Provider');
@@ -53,6 +56,22 @@ export class MediaProvider {
             console.log('Action is successful');        
           });
           this.warning.onError.subscribe(error => console.log('Error! '+JSON.stringify(error)));
+          ////////////////////////////////////////////////////////
+          if(this.platform.is('android'))
+              this.cancel = this.media.create('file:///android_asset/www/assets/cancelorder.mp3');
+            else{
+              this.cancel = this.media.create('assets/cancel.mp3');
+            }
+          this.cancel.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
+          this.cancel.onSuccess.subscribe(() => {
+            console.log('Action is successful'); 
+            if(this.cancelCount>0){
+              this.cancelCount=0;
+              this.cancel.play();
+            }
+          });
+          this.cancel.onError.subscribe(error => console.log('Error! '+JSON.stringify(error)));
+          ////////////////////////////////////////////////////////
       }
     });
 
@@ -71,6 +90,14 @@ export class MediaProvider {
           this.file.play();
           console.log("play ordersound.mp3");
           //file.release(); hum... where should I call this function?
+  }
+
+  playCancel(){
+          this.volumeControl.setVolume(this.storageProvider.volume/100);
+          // play the file
+          this.cancelCount=1;
+          this.cancel.play();
+          console.log("play cancelsound.mp3");
   }
 
   stop(){

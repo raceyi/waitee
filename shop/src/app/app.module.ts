@@ -47,6 +47,7 @@ import {ConfigurePageModule} from '../pages/configure/configure.module';
 import {KioskSalesPageModule} from '../pages/kiosk-sales/kiosk-sales.module';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 //const config: SocketIoConfig = { url: 'http://211.253.18.79:8501', options: {} };
 const config: SocketIoConfig = { url: 'http://211.253.18.79:8500', options: {} };
@@ -69,7 +70,7 @@ const config: SocketIoConfig = { url: 'http://211.253.18.79:8500', options: {} }
   imports: [
     BrowserModule,
     HttpModule,
-    SocketIoModule.forRoot(config),    
+    SocketIoModule.forRoot(config),     // hum... 
     IonicModule.forRoot(MyApp,{mode:'ios'}),
     IonicStorageModule.forRoot(),
     CancelConfirmPageModule,
@@ -97,6 +98,7 @@ const config: SocketIoConfig = { url: 'http://211.253.18.79:8500', options: {} }
     MenuModalPage
   ],
   providers: [{provide: ErrorHandler, useClass: MyErrorHandler},
+    SQLite,
     Network, 
     Push,
     SplashScreen,

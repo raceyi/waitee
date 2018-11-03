@@ -8,7 +8,6 @@ import{ShopTablePage} from '../shoptable/shoptable';
 import{SelectorPage} from '../selector/selector';
 import {UserSecretPage} from '../usersecret/usersecret';
 import {StorageProvider} from '../../providers/storageProvider';
-//import { Storage } from '@ionic/storage';
 import { NativeStorage } from '@ionic-native/native-storage';
 
 @Component({
@@ -27,12 +26,12 @@ export class LoginPage {
   constructor(private navController: NavController, private navParams: NavParams,
                 private emailProvider:EmailProvider,
                 private storageProvider:StorageProvider,
-                private nativeStorage: NativeStorage,private platform:Platform,
+                private nativeStorage: NativeStorage,
+                private platform:Platform,
                 private alertController:AlertController){
-      console.log("LoginPage construtor");
+
   }
  
-   //ionViewDidEnter() {
   ionViewDidLoad(){
         console.log("Login page did enter");
         let dimensions = this.loginPageRef.getContentDimensions();
@@ -78,7 +77,7 @@ export class LoginPage {
   }
 
   emailLogin(event){
-      if(this.email.length==0){
+      if(!this.email && this.email.length==0){
           
               let alert = this.alertController.create({
                         title: '이메일을 입력해주시기 바랍니다.',
@@ -87,7 +86,7 @@ export class LoginPage {
                     alert.present();
           return;
       }
-      if(this.password.length==0){
+      if(!this.password || this.password.length==0){
                 let alert = this.alertController.create({
                         title: '비밀번호를 입력해주시기 바랍니다.',
                         buttons: ['OK']
@@ -144,15 +143,7 @@ export class LoginPage {
   emailReset(event){
       console.log("Please send an email with reset password");
   }
-/*
-  scrollUpForKeypad(event){
-        console.log("onFocusPassword");
-        let dimensions = this.loginPageRef.getContentDimensions();
-        console.log("dimensions:"+JSON.stringify(dimensions));
-        if(this.scrollTop>= dimensions.scrollTop)
-            this.loginPageRef.scrollTo(0, dimensions.contentHeight);
-  }
-*/
+
   emailLoginSelect(event){
       this.emailHide=!this.emailHide;      
   }

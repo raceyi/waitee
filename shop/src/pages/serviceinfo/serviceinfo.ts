@@ -21,6 +21,13 @@ export class ServiceInfoPage{
         console.log("ionViewWillUnload-ServiceInfoPage");
      }
 
+     printOutLog(){
+        this.storageProvider.printOutLogs();
+     }
+
+     deleteLog(){
+        this.storageProvider.deleteLog();
+     }
 }
 
 

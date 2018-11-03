@@ -3,10 +3,14 @@ import {Platform ,NavController,LoadingController,AlertController} from 'ionic-a
 import { NativeStorage } from '@ionic-native/native-storage';
 import * as CryptoJS from 'crypto-js';
 import {ConfigProvider} from './configProvider';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+
 declare var cordova:any;
 
 @Injectable()
 export class StorageProvider{
+    public db:SQLiteObject;
+
     public myshoplist=[];
     public myshop:any={}; // manager, takitId, ???
     public shopInfo:any;   // current shopInfo. shopname:shopInfo.shopName
@@ -72,10 +76,11 @@ export class StorageProvider{
     public lastAutoPrintedcancelOrderNO;
     
     public storeType;
-    
+
     constructor(private platform:Platform,private nativeStorage: NativeStorage,
                 public loadingCtrl: LoadingController, 
                 private alertController:AlertController,
+                 private sqlite: SQLite,
                 private configProvider:ConfigProvider){
         console.log("StorageProvider constructor");  
         if(this.serverAddress.endsWith('8000')){
@@ -219,39 +224,110 @@ export class StorageProvider{
         }
     }
 
+    openLogDB(){
+        return new Promise((resolve,reject)=>{
+            var options={
+                    name: "takitLog.db",
+                    location:'default'
+            };
+            console.log("call create function")            
+            this.sqlite.create(options)
+            .then((db: SQLiteObject) => {  //DB 버전을 넣어서 해결하자. 앱을 다시 설치할 경우 user version은 변경되지 않는다. 사용할수 없는 방법임!
+                this.db=db;
+                this.db.executeSql("create table if not exists logs(time integer primary key, \
+                 lastAutoPrintedPaidOrderNO int,\
+                 lastAutoPrintedcancelOrderNO int,\
+                 status VARCHAR(16), \
+                 orderNumber int);",[]).then(()=>{
+                    console.log("success to create cart table");
+                }).catch(e => {
+                    console.log("fail to create table"+JSON.stringify(e));
+                    reject(e); // just ignore it if it exists. hum.. How can I know the difference between error and no change?
+                });
+            }).catch(e =>{
+                console.log("fail to open database"+JSON.stringify(e));
+                reject(e);
+            });
+        });
+
+    }
+
+    printOutLogs(){
+            var queryString='SELECT * FROM logs order by time';
+                                this.db.executeSql(queryString,[]).then((resp)=>{ // What is the type of resp? 
+            console.log("query result:"+JSON.stringify(resp));
+            var output=[];
+            if(resp.rows.length>=1){
+                for(var i=0;i<resp.rows.length;i++){
+                    console.log("item("+i+")"+JSON.stringify(resp.rows.item(i)));
+                    //"time":1540501974370,"status":"paid","orderNumber":1
+                    let time=new Date(resp.rows.item(i).time);
+                    if(resp.rows.item(i).status=='paid'){
+                        console.log(time.toString()+ "orderNO:"+resp.rows.item(i).orderNumber);
+                    }else{
+                        console.log(time.toString()+ "orderNO:"+resp.rows.item(i).orderNumber);                                
+                    }
+                } 
+            }else if(resp.rows.length==0){
+                console.log("!!!! no log info !!!");
+            }   
+        },(e) => { 
+                console.log("DB error "+JSON.stringify(e));
+        });
+
+    }
+    
+    saveLog(status,orderNO){
+            let queryString:string;
+            let time= new Date();
+
+            let params=[time.getTime(),
+                        status,
+                        orderNO,
+                        this.lastAutoPrintedPaidOrderNO,
+                        this.lastAutoPrintedcancelOrderNO];
+
+            console.log("!!!!params:"+JSON.stringify(params));
+
+            queryString="INSERT INTO logs(time, status, orderNumber, lastAutoPrintedPaidOrderNO, lastAutoPrintedcancelOrderNO) VALUES(?,?,?,?,?)";
+            console.log("query:"+queryString);
+            this.db.executeSql(queryString,params).then((resp)=>{
+                console.log("[saveLog]resp:"+JSON.stringify(resp));
+            },(e) => {
+                console.log("saveLog error:"+JSON.stringify(e));
+            });
+    }
+
+    deleteLog(){
+            console.log("deleteLog");
+            let queryString:string;
+            queryString="DELETE FROM logs";
+            console.log("query:"+queryString);
+            this.db.executeSql(queryString).then((resp)=>{
+                console.log("[deleteLog]resp:"+JSON.stringify(resp));
+            }).catch(e => {
+                console.log("deleteLog error:"+JSON.stringify(e));
+            });
+    }
+
     checkPrinted(status,orderNO){ // 마지막으로 출력한 가장 큰숫자인가? 출력이 안될수도 있는가? 
-               return new Promise((resolve,reject)=>{
-                    let loading = this.loadingCtrl.create({
-                            content: "진행중입니다.",
-                            duration: this.timeout*1000
-                    });                    
-                    if(this.lastAutoPrintedPaidOrderNO){ 
-                        if(this.lastAutoPrintedPaidOrderNO>=orderNO && status=="paid"){
-                            loading.dismiss();
+          //DB에 함수 요청 시간을 기록한다.
+          //동일 상태에 주문번호가 있는지 확인한다.
+               return new Promise((resolve,reject)=>{                    
+                   let queryString="SELECT * FROM logs where orderNumber=? AND status=?";
+                   console.log("query:"+queryString);
+                   let params=[orderNO,status];
+                    this.db.executeSql(queryString,params).then((resp)=>{    
+                        console.log("[checkPrinted]resp:"+JSON.stringify(resp));
+                        if(resp.rows.length==0){
+                            resolve();
+                        }else{
                             reject();
-                            return;
-                        }else if(this.lastAutoPrintedcancelOrderNO>=orderNO && status=="cancelled"){
-                            loading.dismiss();
-                            reject();
-                            return;
                         }
-                    }
-                    if(status=="cancelled"){
-                        if(!this.lastAutoPrintedcancelOrderNO){
-                            this.lastAutoPrintedcancelOrderNO=orderNO;
-                        }else if(this.lastAutoPrintedcancelOrderNO<orderNO)
-                            this.lastAutoPrintedcancelOrderNO=orderNO;
-                    }
-                    if(status=="paid"){
-                        if(!this.lastAutoPrintedPaidOrderNO)
-                            this.lastAutoPrintedPaidOrderNO=orderNO;
-                        else if(this.lastAutoPrintedPaidOrderNO<orderNO){
-                            this.lastAutoPrintedPaidOrderNO=orderNO;
-                        }
-                    }
-                    loading.dismiss();                    
-                    resolve();
-               });
+                    }).catch(e => {
+                        console.log("checkPrinted error:"+JSON.stringify(e));
+                    });
+               });               
     }
 
 }

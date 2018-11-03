@@ -82,42 +82,20 @@ export class ShopTablePage {
             }
             this.column=1;// do not display column as 2
             /////////////////////////////////////////////////
-            // console.log("!!!call socket.connect!!!");
-            // this.socket.connect();
-            // this.socket.emit('takitId',{takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
+            if(this.storageProvider.isMobile){
+                this.socket.on('order', (data) => {
+                console.log("data:"+JSON.stringify(data));
+                this.orderNotificationSocket(data.order);
+                });
 
-            this.socket.on('order', (data) => {
-            console.log("data:"+JSON.stringify(data));
-            this.orderNotificationSocket(data.order);
-            });
-
-            this.socket.on('disconnect', (reason) => {
-                    console.log("reason:"+reason);  
-                    /*
-                    if(!this.disconnectAlert){
-                        this.disconnectAlert=true;
-                        let confirm = this.alertController.create({
-                            title: '서버와 연결을 다시 시도합니다.',
-                            message: '실패시 연결을 위해 업데이트 버튼을클릭해주세요.',
-                            buttons: [{
-                                text: '네',
-                                handler: () => {
-                                    this.disconnectAlert=false;
-                                }
-                            }]
-                        });
-                        confirm.present();
-                    }
-                    */
-                    this.socket.connect();
-                    this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
-                /*
-                if(!this.socket.ioSocket.connected){
+                this.socket.on('disconnect', (reason) => {
+                        console.log("reason:"+reason);  
                         this.socket.connect();
-                }
-                */
-                ////////////////////////////////////////////
-            });
+                        this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
+                    
+                    ////////////////////////////////////////////
+                });
+            }
             if(this.storageProvider.device)
                 this.registerPushService();
 
@@ -195,8 +173,10 @@ export class ShopTablePage {
                         })
                         }
             }
-            if(!this.socket.ioSocket.connected){
-                        this.socket.connect();
+            if(this.storageProvider.isMobile){
+                if(!this.socket.ioSocket.connected){
+                            this.socket.connect();
+                }
             }
         }, gShopTablePage.storageProvider.pollingInterval*60*1000); //every 3 minutes 
 
@@ -293,11 +273,23 @@ export class ShopTablePage {
               console.log("restart time:"+restart.toLocaleString()+" diff:"+(restart.getTime()-today.getTime()));
               if(restart.getTime()-today.getTime()>60*60*1000){
                     setTimeout(function(){
-                        cordova.plugins.restart.restart();
+                        //remove logs in DB
+                        // 나중에 적용하자 우선은 버튼으로 수동으로 삭제하기.
+                        gShopTablePage.storageProvider.deleteLog().then(()=>{
+                            cordova.plugins.restart.restart();    
+                        },err=>{
+                            cordova.plugins.restart.restart();
+                        });
                     },restart.getTime()-today.getTime());
               }else{
                     setTimeout(function(){
-                        cordova.plugins.restart.restart();
+                        //remove logs in DB
+                         // 나중에 적용하자 우선은 버튼으로 수동으로 삭제하기.
+                        gShopTablePage.storageProvider.deleteLog().then(()=>{
+                            cordova.plugins.restart.restart();    
+                        },err=>{
+                            cordova.plugins.restart.restart();  
+                        });
                     },restart.getTime()-today.getTime()+24*60*60*1000);
               }
               
@@ -834,16 +826,45 @@ export class ShopTablePage {
     }
 
     printOrder(order,auto){
-        console.log("!!! printOrder coming!!!!");
-      if(this.storageProvider.printOn==false || this.storageProvider.myshop.GCMNoti=="off" ){
+        console.log("!!! printOrder coming!!!! auto:"+auto);
+        let loading = this.loadingCtrl.create({
+                            content: "프린트 진행중입니다.",
+                            duration: 5 * 1000 //milliseconds
+                    });   
+        loading.present();  
+      if(this.storageProvider.printOn==false /*|| this.storageProvider.myshop.GCMNoti=="off"*/){
             console.log("do not print out")
+            loading.dismiss();
             return;
       }
       if(auto){ //이미 출력한 번호인지 확인한다. 세개가 한꺼번에 오는경우가 있다.
+              //just for testing
               this.storageProvider.checkPrinted(order.orderStatus,order.orderNO).then(()=>{
-                    this.printOrderJob(order);
-              },err=>{ // 이미 출력한 경우로 아무작업도 수행하지 않는다.
+                    this.printOrderJob(order).then(()=>{
+                        // db에 작업을 기록한다.
+                        this.storageProvider.saveLog(order.orderStatus,order.orderNO);
+                        loading.dismiss();
+                    },err=>{
+                        loading.dismiss();
+                        if(err=="printerUndefined"){
+                            let alert = this.alertController.create({
+                                title: '앱에서 프린터 설정을 수행해 주시기 바랍니다.',
+                                buttons: ['OK']
+                            });
+                            alert.present();
+                        }else{
+                            let alert = this.alertController.create({
+                                title: '주문출력에 실패했습니다.',
+                                subTitle: '프린터상태를 확인해주시기바랍니다.',
+                                buttons: ['OK']
+                            });
+                            alert.present();
+                        }
 
+                    });
+              },err=>{ // 이미 출력한 경우로 아무작업도 수행하지 않는다.
+                   console.log("This ordr is already printed. ");
+                   loading.dismiss();
               })
       }else{
           this.printOrderJob(order);
@@ -851,33 +872,39 @@ export class ShopTablePage {
     }
 
     printOrderJob(order){  
-      var title,message="";
+      return new Promise((resolve,reject)=>{
+
+      var title="",message="";
       console.log("order:"+JSON.stringify(order));
       if(order.orderStatus=="paid" ||order.orderStatus=="checked"){
+          title+="\n"+this.timeUtil.getlocalTimeStringWithoutYear(order.orderedTime); 
           if(this.platform.is('android')){
-              title="웨이티["+order.orderNO+"]";
+              title+="웨이티["+order.orderNO+"]";
               if(order.takeout=='1'){          
-                title+="포장";
+                title+="\n\n\n포장";
               }else if(order.takeout=='2'){
-                title+="배달"; 
+                title+="\n\n\n배달"; 
                 message=order.deliveryAddress+"\n";
               }
           }else if(this.platform.is('ios')){
-              title="ORDER["+order.orderNO+"]";
+              title+="ORDER["+order.orderNO+"]";
               if(order.takeout=='1')          
-                title+="Takeout";
+                title+="\nTakeout";
               else if(order.takeout=='2'){
-                title+="Delivery"; 
+                title+="\nDelivery"; 
                 message="배달장소:"+order.deliveryAddress+"\n";
               }
           }
-          title+="\n"+this.timeUtil.getlocalTimeStringWithoutYear(order.orderedTime);  
+
           if(order.orderListObj.menus){              
                 order.orderListObj.menus.forEach((menu)=>{
                     message+="-------------\n";
                     message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
                     menu.options.forEach((option)=>{
                         message+=" "+option.name;
+                        if(option.number!=undefined && option.number>1){
+                           message+=" "+option.number;    
+                        }
                         if(option.select!=undefined){
                         message+="("+option.select+")";
                         }
@@ -895,6 +922,9 @@ export class ShopTablePage {
                     message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
                     menu.options.forEach((option)=>{
                         message+=" "+option.name;
+                        if(option.number!=undefined  && option.number>1){
+                           message+=" "+option.number;    
+                        }
                         if(option.select!=undefined){
                         message+="("+option.select+")";
                         }
@@ -926,6 +956,9 @@ export class ShopTablePage {
                     message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
                     menu.options.forEach((option)=>{
                         message+=" "+option.name;
+                        if(option.number!=undefined  && option.number>1){
+                           message+=" "+option.number;    
+                        }
                         if(option.select!=undefined){
                         message+="("+option.select+")";
                         }
@@ -939,6 +972,9 @@ export class ShopTablePage {
                     message+=" "+menu.menuName+"("+menu.quantity+")\n"; 
                     menu.options.forEach((option)=>{
                         message+=" "+option.name;
+                        if(option.number!=undefined  && option.number>1){
+                           message+=" "+option.number;    
+                        }
                         if(option.select!=undefined){
                         message+="("+option.select+")";
                         }
@@ -973,6 +1009,9 @@ export class ShopTablePage {
                 message+=" "+menu.menuName+"(-"+menu.quantity+")\n"; 
                 menu.options.forEach((option)=>{
                     message+=" "+option.name;
+                    if(option.number!=undefined  && option.number>1){
+                           message+=" "+option.number;    
+                    }
                     if(option.select!=undefined){
                     message+="("+option.select+")";
                     }
@@ -985,6 +1024,9 @@ export class ShopTablePage {
                 message+=" "+menu.menuName+"(-"+menu.quantity+")\n"; 
                 menu.options.forEach((option)=>{
                     message+=" "+option.name;
+                    if(option.number!=undefined  && option.number>1){
+                           message+=" "+option.number;    
+                    }
                     if(option.select!=undefined){
                     message+="("+option.select+")";
                     }
@@ -1003,42 +1045,19 @@ export class ShopTablePage {
       if(this.platform.is('android')){
             this.printerProvider.print(title,message).then(()=>{
                   console.log("print successfully");
+                  resolve();
             },(err)=>{
-                  if(err=="printerUndefined"){
-                    let alert = this.alertController.create({
-                        title: '앱에서 프린터 설정을 수행해 주시기 바랍니다.',
-                        buttons: ['OK']
-                    });
-                    alert.present();
-                  }else{
-                    let alert = this.alertController.create({
-                        title: '주문출력에 실패했습니다.',
-                        subTitle: '프린터상태를 확인해주시기바랍니다.',
-                        buttons: ['OK']
-                    });
-                    alert.present();
-                  }
+                reject(err);
             });
       }else if(this.platform.is('ios')){
             this.iosPrinterProvider.print(title,message).then(()=>{
                   console.log("print successfully");
+                  resolve();
             },(err)=>{
-                  if(err=="printerUndefined"){
-                    let alert = this.alertController.create({
-                        title: '앱에서 프린터 설정을 수행해 주시기 바랍니다.',
-                        buttons: ['OK']
-                    });
-                    alert.present();
-                  }else{
-                    let alert = this.alertController.create({
-                        title: '주문출력에 실패했습니다.',
-                        subTitle: '프린터상태를 확인해주시기바랍니다.',
-                        buttons: ['OK']
-                    });
-                    alert.present();
-                  }
+                 reject(err);
             });
       }
+      });
     }
 
       hasItToday(){
@@ -1096,7 +1115,8 @@ export class ShopTablePage {
                                         this.printCancel(this.orders[i]);
                                         if(!this.paidOrdersExist()){
                                             this.mediaProvider.stop();
-                                            playback=false;
+                                            playback=false;       
+                                            this.mediaProvider.playCancel();
                                         }
                            }else{
                                 this.orders[i]=this.convertOrderInfo(incommingOrder);
@@ -1146,7 +1166,6 @@ export class ShopTablePage {
              this.registrationId=response.registrationId;
              this.socket.connect();
              this.socket.emit('takitId',{takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
-
               if(this.platform.is("android")){
                   this.platformName="android";
               }else if(this.platform.is("ios")){
@@ -1244,6 +1263,7 @@ export class ShopTablePage {
                                             console.log("stop");
                                             this.mediaProvider.stop();
                                             playback=false;
+                                            this.mediaProvider.playCancel();
                                         }
                                 }
                            }else{
@@ -1347,8 +1367,8 @@ export class ShopTablePage {
     notifyAudio(order){
         if(this.storageProvider.device && this.storageProvider.kiosk){
             chrome.sockets.tcp.create(function(createInfo) {
-            //let addr="192.168.0.9";  //더큰도시락 ip
-            let addr="192.168.0.12";  //더큰도시락 ip
+            let addr="192.168.0.9";  //더큰도시락 ip
+            //let addr="192.168.0.5";  
 
             let port=12345;
 
@@ -1391,14 +1411,16 @@ export class ShopTablePage {
         if(this.storageProvider.device && this.storageProvider.kiosk){
             chrome.sockets.tcp.create(function(createInfo) {
             let addr="192.168.0.9";  //더큰도시락 ip
-            //let addr="192.168.0.10"; // 내 삼성폰 
-            //let addr="192.168.0.4";
+            //let addr="192.168.0.5"; // 우리집
             let port=12345;
             let name=order.orderName;
             let options={
                 text:'웨이티 '+order.orderNO+'번'+' '+name+'이 취소되었습니다. 고객님께서는 키오스크로 오셔서 주문번호로 카드결제취소를 해주시기바랍니다.' +' 웨이티 '+order.orderNO+'번'+' '+name+'이 취소되었습니다 '+'고객님께서는 키오스크로 오셔서 주문번호로 카드결제취소를 해주시기바랍니다.',
                 locale:'ko-KR',
                 rate:0.8
+            }
+            if(order.paymentType=="cash"){
+                options.text='웨이티 '+order.orderNO+'번'+' '+name+'이 취소되었습니다. 고객님께서는 환불을 받아주시기 바랍니다.' +' 웨이티 '+order.orderNO+'번'+' '+name+'이 취소되었습니다 '+'고객님께서는 환불을 받아주시기 바랍니다.';
             }
             chrome.sockets.tcp.connect(createInfo.socketId, addr, port, function(result) {
                 console.log("connect-result:"+result);
@@ -1968,7 +1990,7 @@ export class ShopTablePage {
 */
   update(){
     ///////////////////////////////////////////////////////////
-    if(!this.socket.ioSocket.connected){
+    if( !this.socket.ioSocket.connected){
              this.socket.connect();
              this.socket.emit('takitId', {takitId:this.storageProvider.myshop.takitId,registrationId:this.registrationId});
     }

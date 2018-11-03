@@ -49,7 +49,9 @@ export class MyApp {
     
     platform.ready().then(() => {
             console.log("KALEN-platform ready comes");
-            //this.storageProvider.open(); So far, DB is not necessary.
+
+            if(this.storageProvider.device)
+                this.storageProvider.openLogDB();
 
             this.disconnectSubscription = this.network.onDisconnect().subscribe(() => { // Why it doesn't work?
                 console.log('network was disconnected :-(');
