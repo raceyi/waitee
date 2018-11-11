@@ -7,6 +7,7 @@ import {CardExplainPage} from '../card-explain/card-explain';
 import {ServerProvider} from '../../providers/server/server';
 import { WebIntent } from '@ionic-native/web-intent';
 import {StorageProvider} from '../../providers/storage/storage';
+import {HomePage} from '../home/home';
 
 declare var window:any;
 var gOrderListPage;
@@ -76,6 +77,15 @@ export class OrderListPage {
   }
 
   moveCardPayment(){
+    if(this.cartProvider.orderList.length==0){
+            let alert = this.alertCtrl.create({
+              title: '주문목록이 존재하지 않습니다.',
+              subTitle: '메뉴를 추가하신 이후 주문해 주시기 바랍니다.',
+              buttons: ['OK']
+            });
+            alert.present();      
+            return;
+    }    
     if(!this.checkTimeConstraint()){
             let alert = this.alertCtrl.create({
               title: '현재 시간 주문 불가능 메뉴가 포함되어 있습니다.',
@@ -119,7 +129,8 @@ export class OrderListPage {
     }else if(this.storageProvider.van=="smartro" && !this.activityInProgress){
         this.activityInProgress=true;
         let loading = this.loadingCtrl.create({
-          content: '결제 준비중입니다.'
+          content: '결제 준비중입니다.',
+          duration: 10000
         });
         loading.present();
 
@@ -161,7 +172,7 @@ export class OrderListPage {
         }, 3*60*1000); //3분    
         //
 
-       // this.webIntent.startActivityForResult({ action: this.webIntent.ACTION_VIEW, url: reqVal }).then(function(res:any){ 
+        //this.webIntent.startActivityForResult({ action: this.webIntent.ACTION_VIEW, url: reqVal }).then(function(res:any){ 
           clearTimeout(gOrderListPage.paymentTimer);
           gOrderListPage.storageProvider.clearPaymentFailure();
           gOrderListPage.activityInProgress=false;
@@ -174,18 +185,44 @@ export class OrderListPage {
           if(res.extras && res.extras.resultval=="0"){ 
                 let phoneNumber=gOrderListPage.phoneNumber.replace(/-/g, "");
                 let output=gOrderListPage.serverProvider.smartroResultParser(res);
+                let loading = this.loadingCtrl.create({
+                  content: '결제에 성공했습니다. 서버에 주문 정보를 등록합니다.',
+                  duration: 10000
+                });
+                loading.present();
+        
                 gOrderListPage.serverProvider.saveOrder(gOrderListPage.takeout,
                                                         "card",
                                                         JSON.stringify(res),false
-                                                        ,this.receiptIssue,this.receiptType,this.receiptId).then((response:any)=>{
+                                                        ,undefined,undefined,undefined).then((response:any)=>{
+                   loading.dismiss();                                       
                    if(response.result=="success"){   
+                          let loadingPage = this.loadingCtrl.create({
+                            content: '주문번호['+ response.order.orderNO+'] 주문완료 화면으로 전환중입니다. \n 오류 발생시 홈->주문확인에서 주문번호로 주문내역 확인이 가능합니다.',
+                            duration: 10000
+                          });
+                          loadingPage.present();
+                          let timer=setTimeout(function(){
+                            gOrderListPage.navCtrl.setRoot(HomePage);
+                            let alert = gOrderListPage.alertCtrl.create({
+                                  title: '주문 완료 화면 전환에 실패했습니다.불편을 드려 죄송합니다 ',
+                                  subTitle: '주문번호 ['+ response.order.orderNO +']를 기억해주세요.',
+                                  buttons:  [
+                                    {
+                                      text: 'OK',
+                                      handler: () => {
+                                      }
+                                    }]
+                                });
+                                alert.present(); 
+                          },10000);
                           let orderName=gOrderListPage.cartProvider.orderName;                       
                           if(gOrderListPage.cartProvider.orderList.length==1){
                               //Please check below code 
                               orderName=gOrderListPage.cartProvider.orderList[0].menuName+gOrderListPage.cartProvider.orderList[0].quantity+"개";
                           }
                           gOrderListPage.cartProvider.resetCart();
-                          gOrderListPage.navCtrl.setRoot(OrderReceiptPage,{class:"OrderReceiptPage",order:response.order});
+                          gOrderListPage.navCtrl.setRoot(OrderReceiptPage,{class:"OrderReceiptPage",order:response.order,loadingCtrl:loadingPage,timer:timer});
                    }else{
                         let alert = gOrderListPage.alertCtrl.create({
                           title: '주문 등록에 실패했습니다.',
@@ -218,6 +255,20 @@ export class OrderListPage {
                         alert.present(); 
                         // 카드 취소하기 
                    }
+                },err=>{
+                        loading.dismiss();
+                        let alert = gOrderListPage.alertCtrl.create({
+                          title: '주문 등록 확인에 실패했습니다.',
+                          subTitle: "홈->주문확인에서 주문목록을 확인하시고 등록이 되어 있지 않을 경우 다시 주문해 주시기 바랍니다.",
+                          buttons:  [
+                            {
+                              text: 'OK',
+                              handler: () => {
+
+                              }
+                            }]
+                        });
+                        alert.present(); 
                 })
           }else{
                 let alert = gOrderListPage.alertCtrl.create({
@@ -226,7 +277,7 @@ export class OrderListPage {
                 });
                 alert.present();
           }
-       /*            
+        /*           
         }, function(err){ 
           clearTimeout(gOrderListPage.paymentTimer);
           gOrderListPage.storageProvider.clearPaymentFailure();
@@ -239,9 +290,9 @@ export class OrderListPage {
                 });
                 alert.present();
           })
-        //});       
-        */ 
-    });
+          */
+        //});        
+    }); 
     }
   }
 
@@ -320,6 +371,15 @@ export class OrderListPage {
 
   moveCashPayment(){
     console.log("moveCashPayment comes");
+    if(this.cartProvider.orderList.length==0){
+            let alert = this.alertCtrl.create({
+              title: '주문목록이 존재하지 않습니다.',
+              subTitle: '메뉴를 추가하신 이후 주문해 주시기 바랍니다.',
+              buttons: ['OK']
+            });
+            alert.present();      
+            return;
+    }
     if(!this.checkTimeConstraint()){
                 let alert = this.alertCtrl.create({
                   title: '현재 시간 주문 불가능 메뉴가 포함되어 있습니다.',
@@ -343,10 +403,29 @@ export class OrderListPage {
                 return;  
             }else if(res.result=="success" && res.soldout==false){
                   // cash일경우 현금 영수증 정보가 추가되어야만 한다.
-                  this.serverProvider.saveOrder(this.takeout,"cash",undefined,false,this.receiptIssue,this.receiptType,this.receiptId).then((response:any)=>{
+                  this.serverProvider.saveOrder(this.takeout,"cash",undefined,false,undefined,undefined,undefined).then((response:any)=>{
                               if(response.result=="success"){   
+                                      let loadingPage = this.loadingCtrl.create({
+                                        content: '주문번호['+ response.order.orderNO+'] 주문완료 화면으로 전환중입니다. \n 오류 발생시 홈->주문확인에서 주문내역 확인이 가능합니다.',
+                                        duration: 10000
+                                      });
+                                      loadingPage.present();                    
+                                      let timer=setTimeout(function(){
+                                        gOrderListPage.navCtrl.setRoot(HomePage);
+                                        let alert = gOrderListPage.alertCtrl.create({
+                                              title: '주문 완료 화면 전환에 실패했습니다.불편을 드려 죄송합니다 ',
+                                              subTitle: '주문번호 ['+ response.order.orderNO +']를 기억해주세요.',
+                                              buttons:  [
+                                                {
+                                                  text: 'OK',
+                                                  handler: () => {
+                                                  }
+                                                }]
+                                            });
+                                            alert.present(); 
+                                      },10000);
                                       gOrderListPage.cartProvider.resetCart();
-                                      gOrderListPage.navCtrl.setRoot(OrderReceiptPage,{class:"OrderReceiptPage",order:response.order});
+                                      gOrderListPage.navCtrl.setRoot(OrderReceiptPage,{class:"OrderReceiptPage",order:response.order,loadingCtrl:loadingPage,timer:timer});
                               }else{
                                     let alert = gOrderListPage.alertCtrl.create({
                                       title: '주문 등록에 실패했습니다.',

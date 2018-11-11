@@ -7,6 +7,7 @@ import {ServerProvider} from '../../providers/server/server';
 import { WebIntent } from '@ionic-native/web-intent';
 import {StorageProvider} from '../../providers/storage/storage';
 import {EnOrderReceiptPage} from '../en-order-receipt/en-order-receipt';
+import {HomePage} from '../home/home';
 
 declare var window:any;
 var gOrderListPage;
@@ -178,13 +179,33 @@ export class EnOrderListPage {
                                                         "card",
                                                         JSON.stringify(res),true,undefined,undefined,undefined).then((response:any)=>{
                    if(response.result=="success"){   
+                        let loadingPage = this.loadingCtrl.create({
+                            content: 'Order Number['+ response.order.orderNO+'] Moving into order information page. \n You can check order information Upper Left at Main Page.',
+                            duration: 10000
+                            });
+                            loadingPage.present();                    
+                            let timer=setTimeout(function(){
+                            gOrderListPage.navCtrl.setRoot(HomePage);
+                            let alert = gOrderListPage.alertCtrl.create({
+                                    title: 'Sorry. We failed to move into ordr information page',
+                                    subTitle: 'Please remember your order number ['+ response.order.orderNO +']',
+                                    buttons:  [
+                                    {
+                                        text: 'OK',
+                                        handler: () => {
+                                        }
+                                    }]
+                                });
+                                alert.present(); 
+                            },10000);
+
                           let orderName=gOrderListPage.cartProvider.orderName;                       
                           if(gOrderListPage.cartProvider.orderList.length==1){
                               //Please check below code 
                               orderName=gOrderListPage.cartProvider.orderList[0].menuName+gOrderListPage.cartProvider.orderList[0].quantity+"개";
                           }
                           gOrderListPage.cartProvider.resetCart();
-                          gOrderListPage.navCtrl.setRoot(EnOrderReceiptPage,{class:"enOrderReceiptPage",order:response.order});
+                          gOrderListPage.navCtrl.setRoot(EnOrderReceiptPage,{class:"enOrderReceiptPage",order:response.order,loadingCtrl:loadingPage,timer:timer});
                    }else{
                         let alert = gOrderListPage.alertCtrl.create({
                           title: 'Order registration failed.',//주문 등록에 실패했습니다.',
@@ -226,7 +247,7 @@ export class EnOrderListPage {
                 });
                 alert.present();
           }
-       /*            
+/*                  
         }, function(err){ 
           clearTimeout(gOrderListPage.paymentTimer);
           gOrderListPage.storageProvider.clearPaymentFailure();
@@ -240,7 +261,7 @@ export class EnOrderListPage {
                 alert.present();
           })
         //});       
-        */ 
+*/      
     });
     }
   }
@@ -269,8 +290,28 @@ export class EnOrderListPage {
                   // cash일경우 현금 영수증 정보가 추가되어야만 한다.
                   this.serverProvider.saveOrder(this.takeout,"cash",undefined,true,undefined,undefined,undefined).then((response:any)=>{
                               if(response.result=="success"){   
+                                    let loadingPage = this.loadingCtrl.create({
+                                        content: 'Order Number['+ response.order.orderNO+'] Moving into order information page. \n You can check order information Upper Left at Main Page.',
+                                        duration: 10000
+                                      });
+                                      loadingPage.present();                    
+                                      let timer=setTimeout(function(){
+                                        gOrderListPage.navCtrl.setRoot(HomePage);
+                                        let alert = gOrderListPage.alertCtrl.create({
+                                              title: 'Sorry. We failed to move into ordr information page',
+                                              subTitle: 'Please remember your order number ['+ response.order.orderNO +']',
+                                              buttons:  [
+                                                {
+                                                  text: 'OK',
+                                                  handler: () => {
+                                                  }
+                                                }]
+                                            });
+                                            alert.present(); 
+                                      },10000);
+
                                       gOrderListPage.cartProvider.resetCart();
-                                      gOrderListPage.navCtrl.setRoot(EnOrderReceiptPage,{class:"enOrderReceiptPage",order:response.order});
+                                      gOrderListPage.navCtrl.setRoot(EnOrderReceiptPage,{class:"enOrderReceiptPage",order:response.order,loadingCtrl:loadingPage,timer:timer});
                               }else{
                                     let alert = gOrderListPage.alertCtrl.create({
                                       title: 'Order registration failed.',//'주문 등록에 실패했습니다.',

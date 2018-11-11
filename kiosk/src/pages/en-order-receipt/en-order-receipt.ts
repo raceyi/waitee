@@ -3,8 +3,10 @@ import { IonicPage, NavController, NavParams,AlertController,LoadingController,A
 import {HomePage} from '../home/home';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import { Keyboard } from '@ionic-native/keyboard';
 
 declare var window:any;
+var gOrderReceiptPage:any;
 
 /**
  * Generated class for the EnOrderReceiptPage page.
@@ -21,47 +23,65 @@ declare var window:any;
 export class EnOrderReceiptPage {
 
 //cardInfo;
-
+/*
   phoneNumber="";
   waiteeNumber="";
   orderNotify:boolean=true;
   notifyMethodWaitee:boolean=false; // 웨이티 번호 
 
   order;
+  timerId;
+*/
+  phoneNumber="";
+  waiteeNumber="";
+  orderNotifyDone:boolean=false;
+  notifyMethodWaitee; // 웨이티 번호 
 
+  order;
+  timerId;
+   
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private app:App,
               private alertCtrl:AlertController,
               public serverProvider:ServerProvider,
               public loadingCtrl: LoadingController,
+              private keyboard: Keyboard,              
               public storageProvider:StorageProvider) {
-
-   // console.log("storageProvider.shop:"+JSON.stringify(storageProvider.shop));
     this.order=this.navParams.get("order");
     console.log("order:"+JSON.stringify(this.order));
-/*
-    this.cardInfo=this.navParams.get("cardInfo");
-
-    //this.orderNO=3;
-    this.cardInfo={"shopName":"타킷 주식회사","address":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","approvalTime":"20180825192450","cardNO":"943116******4576","cardName":"NH기업체크","approvalNO":"30000172","amount":"100"};
-    this.orderName="바닐라라떼1개";
-   // this.phone="";
-*/   
+    gOrderReceiptPage=this;
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad OrderReceiptPage');
+    console.log("setTimeout");
+
+     let loadingCtrl= this.navParams.get('loadingCtrl');
+     loadingCtrl.dismiss();
+     let timer = this.navParams.get('timer');
+     clearTimeout(timer);
+     this.timerId = setTimeout(function(){
+      // 3분후면 home으로 이동함. 
+      gOrderReceiptPage.goHome();
+    },this.storageProvider.resetTimeout*60*1000); //3분 
+
   }
 
-  configureNotifyMethod(){
-    console.log("notifyMethodWaitee:"+this.notifyMethodWaitee);
-    this.notifyMethodWaitee=!this.notifyMethodWaitee;
+  configureNotifyMethod(notifyMethodWaitee){
+    console.log("notifyMethodWaitee:"+notifyMethodWaitee);
+    this.notifyMethodWaitee=notifyMethodWaitee;
+      //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     console.log("setTimeout");      
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderReceiptPage.goHome();
+      },this.storageProvider.resetTimeout*60*1000); //3분 
   }
 
  checkPhoneValidity(){
-      if(!this.orderNotify)  return true;
-
       var phonenum = this.phoneNumber.trim();
       var regPhone = /(01[0|1|6|9|7])[-](\d{3}|\d{4})[-](\d{4}$)/g;
       if(!regPhone.test(phonenum)){
@@ -79,6 +99,14 @@ export class EnOrderReceiptPage {
       }
       let phoneNumber=this.phoneNumber.trim();
       this.phoneNumber=this.autoHypenPhone(phoneNumber); // look for phone number
+      //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     console.log("setTimeout");      
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderReceiptPage.goHome();
+      },this.storageProvider.resetTimeout*60*1000); //3분       
   }
 
 
@@ -90,6 +118,14 @@ inputWaiteeNumber(event){
           window.Keyboard.hide();
       }
       let waiteeNumber=this.waiteeNumber.trim();
+      //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     console.log("setTimeout");      
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderReceiptPage.goHome();
+      },this.storageProvider.resetTimeout*60*1000); //3분 
 }
 
     autoHypenPhone(str) {
@@ -136,42 +172,50 @@ inputWaiteeNumber(event){
     };
 
   sendReceipt(){
+     //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     console.log("setTimeout");      
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderReceiptPage.goHome();
+      },this.storageProvider.resetTimeout*60*1000); //3분     
     if(!this.notifyMethodWaitee){
      if(!this.checkPhoneValidity()){
               let alert = this.alertCtrl.create({
-                subTitle: 'The phone number is invalid',//주문이 전달될 휴대폰 번호가 유효하지 않습니다.',
+                subTitle: 'The phone number is invalid',
                 buttons: ['OK']
               });
               alert.present();
               return;        
       }
 
-      let body={phone:this.phoneNumber.replace(/-/g, ""), orderId:this.order.orderId,english:true};
+      let body={phone:this.phoneNumber.replace(/-/g, ""), orderId:this.order.orderId,english:false};
       let loading = this.loadingCtrl.create({
-            content: 'Order information is being sent out.'
+            content: 'We are sending your order information.'
             });
             loading.present();
       this.serverProvider.post("/kiosk/sendOrderInfoWithPhone",body).then((response:any)=>{
         loading.dismiss();
           if(response.result=="success"){
+              this.orderNotifyDone=true;            
               // 웨이티에 번호를 등록하시겠습니까? 주문전달이외의 목적으로 사용되지 않습니다. 
              let alert = this.alertCtrl.create({
                               title: 'Do you want to register WAITEE number?',//웨이티에 번호를 등록하시겠습니까?',
                               message: 'It is not used for purposes other than order information delivery.' ,//'주문전달이외의 목적으로 사용되지 않습니다.',
                               buttons: [
                                 {
-                                  text: 'No',//'아니오',
+                                  text: 'No',
                                   handler: () => {
                                     console.log('Disagree clicked');
-                                    this.moveHome();
                                   }
                                 },
                                 {
-                                  text: 'Yes',//'네',
+                                  text: 'Yes',
                                   handler: () => {
                                     console.log('Agree clicked');
                                      let loading = this.loadingCtrl.create({
-                                      content:  'WAITEE number is being registered.',//'번호를 등록중입니다.'
+                                      content: 'WAITEE number is being registered.'
                                       });
                                       loading.present();
                                     this.serverProvider.post("/kiosk/registerPhone",body).then((response:any)=>{
@@ -185,9 +229,8 @@ inputWaiteeNumber(event){
                                                 subTitle: digits,
                                                 buttons:[
                                                     {
-                                                      text: 'Yes',//'네',
+                                                      text: 'OK',
                                                       handler: () => {
-                                                                this.moveHome();
                                                               }
                                                     }]});
                                               alert.present();
@@ -198,9 +241,8 @@ inputWaiteeNumber(event){
                                                 subTitle: "WAITEE number:"+ waiteeNumber,
                                                 buttons: [
                                                     {
-                                                      text: 'Yes',//'네',
+                                                      text: 'OK',
                                                       handler: () => {
-                                                                this.moveHome();
                                                               }
                                                     }]});
                                               alert.present();
@@ -211,27 +253,25 @@ inputWaiteeNumber(event){
                                                 buttons: ['OK']
                                               });
                                               alert.present();
-                                              this.moveHome();
                                       }
                                     },err=>{
                                       loading.dismiss();
                                       //console.log("..."+err.startsWith("alreadyRegistered"))
                                         if(err=="NetworkFailure"){
                                           let alert = this.alertCtrl.create({
-                                                title:'The network has problem',
-                                                subTitle: 'Please register it later',
+                                                title:'Fail to connect the server',//'서버와 통신에 실패했습니다.',
+                                                subTitle: 'Please register it later.',
                                                 buttons: ['OK']
                                               });
                                               alert.present();
                                           }else{
                                             let alert = this.alertCtrl.create({
-                                                title:'Fail to register your number',
-                                                subTitle: 'Please register it later',
+                                                title:'웨이티 번호 등록에 실패하였습니다.',
+                                                subTitle: '다음기회에 등록해주시기 바랍니다.',
                                                 buttons: ['OK']
                                               });
                                               alert.present();
-                                          }   
-                                          this.moveHome();  
+                                          }     
                                     })
                                   }
                                 }
@@ -240,8 +280,8 @@ inputWaiteeNumber(event){
                             alert.present();
           }else{
             let alert = this.alertCtrl.create({
-                title:'Fail to deliver order information.',
-                subTitle: 'Please remember your order number.',
+                title:'주문정보 전달에 실패했습니다.',
+                subTitle: '주문 번호를 기억해주세요.',
                 buttons: ['OK']
               });
               alert.present();
@@ -265,16 +305,23 @@ inputWaiteeNumber(event){
           }
       });
     }else{  // waitee등록번호로 발송
+      if(!this.waiteeNumber || this.waiteeNumber.length<4){
+              let alert = this.alertCtrl.create({
+                subTitle: '웨이티 번호가 유효하지 않습니다.',
+                buttons: ['OK']
+              });
+              alert.present();        
+          return;
+      }
       let body={waiteeNumber:this.waiteeNumber,orderId:this.order.orderId}
       let loading = this.loadingCtrl.create({
-            content: 'We are sending order information.'
+            content: 'We are sending your order information.'
             });
             loading.present();      
       this.serverProvider.post("/kiosk/sendOrderInfoWithWaitee",body).then((response:any)=>{
         loading.dismiss();
           if(response.result=="success"){
-              // 웨이티에 번호를 등록하시겠습니까? 주문전달이외의 목적으로 사용되지 않습니다. 
-              this.moveHome();                                   
+              this.orderNotifyDone=true;
           }else if(response.error=="waiteeNumberInvald"){
             let alert = this.alertCtrl.create({
                 title:'WAITEE number is invalid',
@@ -312,17 +359,13 @@ inputWaiteeNumber(event){
   }
 
   goHome(){
-    this.moveHome();
+    clearTimeout(this.timerId);
+    this.keyboard.hide();
+    this.navCtrl.setRoot(HomePage);
   }
 
-  moveHome(){
-    /*
-     //remove all other english pages
-    let  views:ViewController[]; 
-    views=this.navCtrl.getViews();
-    this.navCtrl.remove(1,views.length-2);
-    this.navCtrl.pop();
-    */
-    this.app.getActiveNavs()[0].setRoot(HomePage);
+  cancelNotify(){
+    console.log("cancelNotify");
+    this.notifyMethodWaitee=undefined;
   }
 }

@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams ,AlertController} from 'ionic-angul
 import { WebIntent } from '@ionic-native/web-intent';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import { Keyboard } from '@ionic-native/keyboard';
+var gEnOrderCheckPage:any;
 
 /**
  * Generated class for the EnOrderCheckPage page.
@@ -18,20 +20,24 @@ import {ServerProvider} from '../../providers/server/server';
 })
 export class EnOrderCheckPage {
 
-   orderDate;
+  orderDate;
   searchMode=true;
   cancelFailurePayment=[];
   orderNO;
   orderInfo;
   cancelAmount;
   cancelApprovalNO;
+  timerId;
 
   constructor(public navCtrl: NavController,
               public alertController:AlertController,
               private storageProvider:StorageProvider,
               private serverProvider:ServerProvider,
               private webIntent: WebIntent, 
+              private keyboard: Keyboard,
               public navParams: NavParams) {
+      gEnOrderCheckPage=this;
+
       this.orderDate=this.getTodayString(); 
 
       //Just for testing
@@ -65,9 +71,22 @@ configureMode(){
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad OrderCheckPage');
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gEnOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+
   }
   
   searchOrder(){
+    //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gEnOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+    
       this.orderInfo=undefined;
 
       if(!this.orderNO){
@@ -115,6 +134,14 @@ configureMode(){
   }
 
   cancelPayment(payment,i){
+    //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gEnOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+    
       console.log("cancel:"+i);
       this.serverProvider.smartroCancelPayment(payment.amount,
                                                 payment.approvalNO,
@@ -161,6 +188,14 @@ configureMode(){
   }
 
   cancelApprovalNOPayment(){
+    //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gEnOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+    
    // server에서 order의 상태를 확인한다. cancel이거나 아예 주문 정보가 저장안되었을 경우만 취소가능하다.
    let orderDate=this.orderDate.slice(0,4)+ this.orderDate.slice(5,7)+this.orderDate.slice(8,10);
    let body={approvalNO: this.cancelApprovalNO,
@@ -227,6 +262,14 @@ configureMode(){
   }
 
   cancelCardPayment(orderInfo){
+    //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gEnOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+    
     if(orderInfo.orderStatus=='cancelled' && orderInfo.paymentType=="card" && orderInfo.cardCancel==null){
           let orderDate=this.orderDate.slice(0,4)+ this.orderDate.slice(5,7)+this.orderDate.slice(8,10);
             console.log("orderDate:"+orderDate);
@@ -252,4 +295,10 @@ configureMode(){
   back(){
     this.navCtrl.pop();
   }
+
+   goHome(){
+    this.keyboard.hide();
+    this.navCtrl.pop();
+  }
+
 }

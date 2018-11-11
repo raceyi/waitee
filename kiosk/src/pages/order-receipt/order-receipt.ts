@@ -3,8 +3,10 @@ import { IonicPage, NavController, NavParams,AlertController,LoadingController }
 import {HomePage} from '../home/home';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import { Keyboard } from '@ionic-native/keyboard';
 
 declare var window:any;
+var gOrderReceiptPage:any;
 
 /**
  * Generated class for the OrderReceiptPage page.
@@ -23,47 +25,55 @@ export class OrderReceiptPage {
 
   phoneNumber="";
   waiteeNumber="";
-  orderNotify:boolean=true;
-  notifyMethodWaitee:boolean=false; // 웨이티 번호 
+  orderNotifyDone:boolean=false;
+  notifyMethodWaitee; // 웨이티 번호 
 
   order;
+  timerId;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private alertCtrl:AlertController,
               public serverProvider:ServerProvider,
               public loadingCtrl: LoadingController,
+              private keyboard: Keyboard,
               public storageProvider:StorageProvider) {
 
    // console.log("storageProvider.shop:"+JSON.stringify(storageProvider.shop));
     this.order=this.navParams.get("order");
     console.log("order:"+JSON.stringify(this.order));
-/*
-    this.cardInfo=this.navParams.get("cardInfo");
-
-    //this.orderNO=3;
-    this.cardInfo={"shopName":"타킷 주식회사","address":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","approvalTime":"20180825192450","cardNO":"943116******4576","cardName":"NH기업체크","approvalNO":"30000172","amount":"100"};
-    this.orderName="바닐라라떼1개";
-   // this.phone="";
-*/   
+    gOrderReceiptPage=this;
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad OrderReceiptPage');
+    console.log("setTimeout");
+
+     let loadingCtrl= this.navParams.get('loadingCtrl');
+     loadingCtrl.dismiss();
+     let timer = this.navParams.get('timer');
+     clearTimeout(timer);
+     this.timerId = setTimeout(function(){
+      // 3분후면 home으로 이동함. 
+      gOrderReceiptPage.goHome();
+    },this.storageProvider.resetTimeout*60*1000); //3분 
+
   }
 
-  confirm(){
-      this.navCtrl.setRoot(HomePage);  
-  }
-
-  configureNotifyMethod(){
-    console.log("notifyMethodWaitee:"+this.notifyMethodWaitee);
-    this.notifyMethodWaitee=!this.notifyMethodWaitee;
+  configureNotifyMethod(notifyMethodWaitee){
+    console.log("notifyMethodWaitee:"+notifyMethodWaitee);
+    this.notifyMethodWaitee=notifyMethodWaitee;
+      //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     console.log("setTimeout");      
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderReceiptPage.goHome();
+      },this.storageProvider.resetTimeout*60*1000); //3분 
   }
 
  checkPhoneValidity(){
-      if(!this.orderNotify)  return true;
-
       var phonenum = this.phoneNumber.trim();
       var regPhone = /(01[0|1|6|9|7])[-](\d{3}|\d{4})[-](\d{4}$)/g;
       if(!regPhone.test(phonenum)){
@@ -81,6 +91,14 @@ export class OrderReceiptPage {
       }
       let phoneNumber=this.phoneNumber.trim();
       this.phoneNumber=this.autoHypenPhone(phoneNumber); // look for phone number
+      //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     console.log("setTimeout");      
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderReceiptPage.goHome();
+      },this.storageProvider.resetTimeout*60*1000); //3분       
   }
 
 
@@ -92,6 +110,14 @@ inputWaiteeNumber(event){
           window.Keyboard.hide();
       }
       let waiteeNumber=this.waiteeNumber.trim();
+      //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     console.log("setTimeout");      
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderReceiptPage.goHome();
+      },this.storageProvider.resetTimeout*60*1000); //3분 
 }
 
     autoHypenPhone(str) {
@@ -138,6 +164,14 @@ inputWaiteeNumber(event){
     };
 
   sendReceipt(){
+     //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     console.log("setTimeout");      
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderReceiptPage.goHome();
+      },this.storageProvider.resetTimeout*60*1000); //3분     
     if(!this.notifyMethodWaitee){
      if(!this.checkPhoneValidity()){
               let alert = this.alertCtrl.create({
@@ -156,6 +190,7 @@ inputWaiteeNumber(event){
       this.serverProvider.post("/kiosk/sendOrderInfoWithPhone",body).then((response:any)=>{
         loading.dismiss();
           if(response.result=="success"){
+              this.orderNotifyDone=true;            
               // 웨이티에 번호를 등록하시겠습니까? 주문전달이외의 목적으로 사용되지 않습니다. 
              let alert = this.alertCtrl.create({
                               title: '웨이티에 번호를 등록하시겠습니까?',
@@ -165,7 +200,6 @@ inputWaiteeNumber(event){
                                   text: '아니오',
                                   handler: () => {
                                     console.log('Disagree clicked');
-                                    this.navCtrl.setRoot(HomePage);
                                   }
                                 },
                                 {
@@ -189,7 +223,6 @@ inputWaiteeNumber(event){
                                                     {
                                                       text: '네',
                                                       handler: () => {
-                                                                this.navCtrl.setRoot(HomePage);
                                                               }
                                                     }]});
                                               alert.present();
@@ -202,7 +235,6 @@ inputWaiteeNumber(event){
                                                     {
                                                       text: '네',
                                                       handler: () => {
-                                                                this.navCtrl.setRoot(HomePage);
                                                               }
                                                     }]});
                                               alert.present();
@@ -213,7 +245,6 @@ inputWaiteeNumber(event){
                                                 buttons: ['OK']
                                               });
                                               alert.present();
-                                              this.navCtrl.setRoot(HomePage);                                      
                                       }
                                     },err=>{
                                       loading.dismiss();
@@ -233,7 +264,6 @@ inputWaiteeNumber(event){
                                               });
                                               alert.present();
                                           }     
-                                          this.navCtrl.setRoot(HomePage);
                                     })
                                   }
                                 }
@@ -267,6 +297,14 @@ inputWaiteeNumber(event){
           }
       });
     }else{  // waitee등록번호로 발송
+      if(!this.waiteeNumber || this.waiteeNumber.length<4){
+              let alert = this.alertCtrl.create({
+                subTitle: '웨이티 번호가 유효하지 않습니다.',
+                buttons: ['OK']
+              });
+              alert.present();        
+          return;
+      }
       let body={waiteeNumber:this.waiteeNumber,orderId:this.order.orderId}
       let loading = this.loadingCtrl.create({
             content: '주문서를 발송중입니다.'
@@ -276,7 +314,7 @@ inputWaiteeNumber(event){
         loading.dismiss();
           if(response.result=="success"){
               // 웨이티에 번호를 등록하시겠습니까? 주문전달이외의 목적으로 사용되지 않습니다. 
-              this.navCtrl.setRoot(HomePage);                                      
+              this.orderNotifyDone=true;
           }else if(response.error=="waiteeNumberInvald"){
             let alert = this.alertCtrl.create({
                 title:'미등록 번호입니다.',
@@ -314,6 +352,14 @@ inputWaiteeNumber(event){
   }
 
   goHome(){
+    clearTimeout(this.timerId);
+    this.keyboard.hide();
     this.navCtrl.setRoot(HomePage);
   }
+
+  cancelNotify(){
+    console.log("cancelNotify");
+    this.notifyMethodWaitee=undefined;
+  }
+
 }

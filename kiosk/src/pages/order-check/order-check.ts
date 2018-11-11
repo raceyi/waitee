@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams ,AlertController} from 'ionic-angul
 import { WebIntent } from '@ionic-native/web-intent';
 import {StorageProvider} from '../../providers/storage/storage';
 import {ServerProvider} from '../../providers/server/server';
+import { Keyboard } from '@ionic-native/keyboard';
+var gOrderCheckPage:any;
 
 /**
  * Generated class for the OrderCheckPage page.
@@ -24,14 +26,18 @@ export class OrderCheckPage {
   orderInfo;
   cancelAmount;
   cancelApprovalNO;
-
+  timerId;
+  
   constructor(public navCtrl: NavController,
               public alertController:AlertController,
               private storageProvider:StorageProvider,
               private serverProvider:ServerProvider,
               private webIntent: WebIntent, 
+               private keyboard: Keyboard,
               public navParams: NavParams) {
+
       this.orderDate=this.getTodayString(); 
+      gOrderCheckPage=this;
 
       //Just for testing
       this.storageProvider.cancelFailurePayment.push({"shopName":"타킷 주식회사","address":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","approvalTime":"20180826192450","cardName":"NH기업체크","approvalNO":"30000172","amount":"100"});
@@ -48,11 +54,25 @@ export class OrderCheckPage {
 
 changeOrderDate(){
     //this.orderDate
+    //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderCheckPage.goHome();
+      },3*60*1000); //3분   
 }
 
 configureMode(){
   console.log("searchMode:"+this.searchMode);
   this.searchMode=!this.searchMode;
+  //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderCheckPage.goHome();
+      },3*60*1000); //3분   
 }
 
   getTodayString(){
@@ -65,9 +85,21 @@ configureMode(){
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad OrderCheckPage');
+     this.timerId = setTimeout(function(){
+      // 3분후면 home으로 이동함. 
+      gOrderCheckPage.goHome();
+    },3*60*1000); //3분 
   }
   
   searchOrder(){
+    //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+
       this.orderInfo=undefined;
 
       if(!this.orderNO){
@@ -115,6 +147,14 @@ configureMode(){
   }
 
   cancelPayment(payment,i){
+    //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+
       console.log("cancel:"+i);
       this.serverProvider.smartroCancelPayment(payment.amount,
                                                 payment.approvalNO,
@@ -159,8 +199,16 @@ configureMode(){
             alert.present();
       })
   }
-
   cancelApprovalNOPayment(){
+      //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+
+
    // server에서 order의 상태를 확인한다. cancel이거나 아예 주문 정보가 저장안되었을 경우만 취소가능하다.
    let orderDate=this.orderDate.slice(0,4)+ this.orderDate.slice(5,7)+this.orderDate.slice(8,10);
    let body={approvalNO: this.cancelApprovalNO,
@@ -193,6 +241,7 @@ configureMode(){
               return;
           }
         }else if(res.result=="success"){
+            console.log("cancelAmount:"+this.cancelAmount+ " cancelApprovalNO:"+this.cancelApprovalNO);
             this.serverProvider.smartroCancelPayment(this.cancelAmount,
                                                 this.cancelApprovalNO,
                                                 orderDate).then((res:any)=>{
@@ -227,11 +276,19 @@ configureMode(){
   }
 
   cancelCardPayment(orderInfo){
+    //timer 해제하기 
+      clearTimeout(this.timerId);
+      //timer 설정하기 
+     this.timerId = setTimeout(function(){
+        // 3분후면 home으로 이동함. 
+        gOrderCheckPage.goHome();
+      },3*60*1000); //3분   
+
     if(orderInfo.orderStatus=='cancelled' && orderInfo.paymentType=="card" && orderInfo.cardCancel==null){
           let orderDate=this.orderDate.slice(0,4)+ this.orderDate.slice(5,7)+this.orderDate.slice(8,10);
             console.log("orderDate:"+orderDate);
-            this.serverProvider.smartroCancelPayment(orderInfo.amount,
-                                                orderInfo.cardApprovalNO,
+            this.serverProvider.smartroCancelPayment( orderInfo.cardPayment.amount, //orderInfo.amount,
+                                                orderInfo.cardPayment.approvalNO,//orderInfo.cardApprovalNO,
                                                 orderDate).then((res:any)=>{
                       //!!!!server 에 결제 취소를 저장한다.!!!!
                       let alert = this.alertController.create({
@@ -249,7 +306,14 @@ configureMode(){
       })
     }  
   }
+
+  goHome(){
+    this.keyboard.hide();
+    this.navCtrl.pop();
+  }
+
   back(){
+    this.keyboard.hide();
     this.navCtrl.pop();
   }
 }

@@ -41,6 +41,9 @@ export class StorageProvider {
 
   lastTransNo:number; // 카드결제 마지막 tranno
 
+  bootTime;
+  resetTimeout=1; // one minutes
+
   //device=false;
   device=true;
 

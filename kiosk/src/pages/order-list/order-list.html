@@ -85,7 +85,7 @@
 </ion-content>
 
 <ion-footer no-padding no-margin> 
-  
+<!--  
 <ion-row style="font-size:3.5vw;">
     <ion-col col-4>
     </ion-col>
@@ -127,7 +127,7 @@
         </ion-col>
   </ion-row>  
 </div> 
-
+-->
 <ion-row style="background-color:#ff7f39;color:white;height:124px;" *ngIf="cartProvider.orderName.length>0">
   <ion-col style="font-size:3.5vw;" text-center align-self-center>
   결제금액
@@ -137,13 +137,13 @@
   </ion-col>
 </ion-row>
 <ion-row  no-padding no-margin>
-  
+  <!--
   <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
     <button (click)="moveCashPayment()" clear ion-button no-padding no-margin>
       <ion-icon name="ios-cash-outline"></ion-icon>&nbsp;현금 결제 
     </button>
   </ion-col>
- 
+ -->
   <ion-col class="footer-area" no-padding no-margin text-center align-self-center>
     <button (click)="moveCardPayment()" ion-button no-padding no-margin clear>    
       <ion-icon name="card"></ion-icon>&nbsp;카드 결제 

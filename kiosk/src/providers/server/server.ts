@@ -162,6 +162,7 @@ export class ServerProvider {
 
   smartroCancelPayment(amount,approvalNO,approvalTime){
       return new Promise((resolve,reject)=>{
+           
             let approvalDate=approvalTime.substr(0,8);
             console.log("approvalDate:"+approvalDate);
 
@@ -170,7 +171,7 @@ export class ServerProvider {
              let tmpVal="smartroapp://freepaylink?mode=normal&trantype=card_cancel&amount="+amount+"&totalamount="+amount+"&authedno="+approvalNO+"&autheddate="+approvalDate+"&businessno="+businessno+"&catid="+catid+"&receiptmode=2&dongletype=5";
            // let tmpVal="smartroapp://freepaylink?mode=normal&trantype=card_cancel&amount="+amount+"&totalamount="+amount+"&authedno="+approvalNO+"&autheddate="+approvalDate+"&businessno="+this.storage.shop.shopInfo.businessNumber+"&catid="+this.storage.catid+"&receiptmode=2&dongletype=5";
              this.storage.getTransNo(); //Just increase transNo 
-
+            console.log("cancelPayment-command:" + tmpVal);
             let loading = this.loadingCtrl.create({
             content: '결제 취소 준비중입니다.'
             });

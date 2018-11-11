@@ -99,9 +99,17 @@ getShopInfoAll(takitId){
     }
 
  checkFilter(menu){
+      console.log("menu.filter:"+JSON.stringify(menu.filter));
       if(!menu.filter ||menu.filter==null){
         return {filter:false,options:[]};
       }
+      ////////////////////////////////////////////
+      try {
+            JSON.parse(menu.filter);
+      } catch(e) {
+            return {filter:false,options:[]};
+      }
+      /////////////////////////////////////////////
       let filter=JSON.parse(menu.filter);
       if(typeof filter ==='string'){    //왜 이런 오류가 발생하는가? ㅜㅜ
             filter=JSON.parse(filter);

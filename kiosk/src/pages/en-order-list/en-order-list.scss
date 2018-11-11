@@ -81,4 +81,168 @@ page-en-order-list {
             background-color: black !important;
         }
     }
+
+///////////////////////////////////////////////
+.paymentDone{
+    font-size:calc((36/800)*100vw);
+    color: #fff471; 
+    padding-top:calc((78/800)*100vw);
+    padding-bottom:calc((78/800)*100vw);
+
+    font-family: TTOmniGothicM;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.2px;
+};
+
+.orderNumberLabel{
+  font-family: TTOmniGothicL;
+  font-size:calc((21/800)*100vw);
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.4px;
+  text-align: center;
+  color: #ffffff;
+};
+
+.orderNumber{
+  font-family: Barlow;
+  font-size:calc((110/800)*100vw);
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -2px;
+  text-align: center;
+  color: #ffffff;
+};
+
+.orderName{
+  font-family: TTOmniGothicL;
+  font-size: calc((24/800)*100vw);
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.4px;
+  text-align: center;
+  color: #ffffff;
+};
+
+.checkbox{
+     width:calc((38/800)*100vw);
+     height:calc((38/800)*100vw);
+     margin-top: calc((86/800)*100vw);
+     margin-bottom:0px;
+};
+
+.remember{
+  font-family: TTOmniGothicL;
+  font-size: calc((21/800)*100vw);
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.57;
+  letter-spacing: -0.2px;
+  text-align: center;
+  color: #6a2a06;
+};
+
+.orderCheck{
+  font-family: TTOmniGothicM;
+  font-size: calc((21/800)*100vw);
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.57;
+  letter-spacing: -0.2px;
+  text-align: center;
+  color: #6a2a06;
+  padding-bottom: calc((57/800)*100vw);
+}
+
+.phoneNotifyLabel{
+  padding-top:calc((20/800)*100vw);
+  padding-bottom:calc((20/800)*100vw);
+  font-family: TTOmniGothicL;
+  font-size: calc((24/800)*100vw);
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.4px;
+  text-align: center;
+  color: #494747;
+}
+
+.inputHeight{
+    height:calc((110/800)*100vw);
+}
+
+.footer{
+    height: calc((248/800)*100vw);
+    button{
+        span{
+            font-family: OTDarakbangL;
+            font-size: calc((36/800)*100vw);
+            font-weight: normal;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: normal;
+            letter-spacing: -0.6px;
+            color: #ff7f39;
+        }
+    }
+}
+
+.border-round{
+  border-radius: 37.5px;
+  border: solid 1px #ff7f39;
+  margin-right: calc((72/800)*100vw);
+  margin-left:calc((72/800)*100vw);
+  ion-col{
+    button{
+        span{
+            font-family: TTOmniGothicM;
+            font-size: calc((24/800)*100vw);
+            font-weight: normal;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: normal;
+            letter-spacing: -0.4px;
+            text-align: right;
+            color: #ff7f39;           
+        }
+    }
+  }
+}
+
+.cancelButtonHeight{
+    height:calc((20/800)*100vw);
+}
+
+.notifyDone{
+    height:calc((189/800)*100vw);
+    color: #ff7f39;
+    font-family: TTOmniGothicM;
+    font-size: calc((24/800)*100vw);
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: -0.4px;
+    text-align: center;
+}
+
+.waitee-symbol{
+    width: calc((56/800)*100vw); 
+    height: calc((61/800)*100vw);
+    margin-top: calc((40/800)*100vw); 
+    margin-bottom:calc((33/800)*100vw); 
+}
+
 }

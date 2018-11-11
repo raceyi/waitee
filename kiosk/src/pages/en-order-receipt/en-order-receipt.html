@@ -4,115 +4,75 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-content>
-  <ion-row>
-    <ion-col>
-     <img *ngIf="storageProvider.shop.shopInfo && storageProvider.shop.shopInfo.imagePath" class="shop-img" [src]="storageProvider.shop.shopInfo.imagePath"> 
-     <span class="by-pos"> by</span> 
-     <img class="logo-img" src="assets/imgs/waitee-logo.png">
-    </ion-col>
-  </ion-row>
-  <ion-row style="padding-top:80px;">
-    <ion-col text-center  style="font-size:4.5vw;">
-    Delivery Order Information
-    </ion-col>
-  </ion-row>
-  <ion-row style="padding-top:10px;">
-    <ion-col text-center  style="font-size:3vw;">
-    Order number
-    </ion-col>
-  </ion-row>
-  <ion-row style="padding-top:5px;">
-    <ion-col text-center style="font-size:13vw;">
-    {{order.orderNO}}
-    </ion-col>
-  </ion-row>
-  <ion-row style="padding-top:10px;">
-    <ion-col text-center style="font-size:3.5vw;">
-    {{order.orderNameEn}}
-    </ion-col>
-  </ion-row>
 
-<div>
-  <ion-row class="notify-check">
+<ion-content style="background-color:#ff7f39;">
+  <div *ngIf="order.paymentType!='cash'" text-center class="paymentDone" >Your payment is complete.</div>
+  <div *ngIf="order.paymentType=='cash'" text-center class="paymentDone"> 
+  Please Pass <amount-display [amount]="order.amount"></amount-display> won to the shop owner.
+  </div>
+
+  <div tex-center align-self-center>
+    <ion-row>
+      <ion-col text-right align-self-center class="orderNumberLabel">Order NO</ion-col>
+      <ion-col text-left align-self-center class="orderNumber">{{order.orderNO}}</ion-col>
+    </ion-row>
+   <p class="orderName"> {{order.orderNameEn}}</p>
+  </div>      
+  <div text-center>
+    <img class="checkbox" src="assets/imgs/check.png">
+    <p class="remember" style="margin-top:0px;margin-bottom:0px;">Please Remember  Order Number.</p>
+    <p class="orderCheck" style="margin-top:0px;">You Can Check Order Infomration Upper Left at Main Page</p>
+  </div>
+<div style="background-color:#f6f6f6;" *ngIf="!orderNotifyDone">
+  <ion-row class="phoneNotifyLabel">
+    <ion-col col-9 text-center align-self-center>Get Your Ordr Infomration </ion-col>
+    <ion-col col-3 text-left align-self-center no-margin no-padding> <button  *ngIf="notifyMethodWaitee!=undefined" class="cancelButtonHeight" ion-button  (click)="cancelNotify()" clear style="font-size:3vw;color:#ff7f39;">CANCEL</button></ion-col>
+  </ion-row>
+  <div class="inputHeight" *ngIf="notifyMethodWaitee==undefined">
+    <ion-row>
+    <ion-col text-center> <button style="font-size:3vw;" ion-button outline round  (click)="configureNotifyMethod(true)"> with WAITEE number </button></ion-col>
+    <ion-col text-center> <button style="font-size:3vw;" ion-button outline round (click)="configureNotifyMethod(false)"> with cell phone number</button> </ion-col>
+    </ion-row>
+  </div>
+   <div class="inputHeight" *ngIf="notifyMethodWaitee==false">
+    <ion-row class="border-round">
+      <ion-col col-8>
+          <ion-input align-self-center text-center #phoneInput style="font-size:3vw;" type="tel" placeholder="cell phone number" (keyup)="inputPhoneNumber($event)" [(ngModel)]="phoneNumber"> </ion-input>
+      </ion-col>
     <ion-col col-4>
+      <button ion-button clear (click)="sendReceipt()"> SEND </button>
+    </ion-col>          
+    </ion-row>
+   </div>
+  <div class="inputHeight" *ngIf="notifyMethodWaitee==true">
+    <ion-row class="border-round">
+    <ion-col col-8>
+      <ion-input align-self-center text-center #phoneInput style="font-size:3vw;" type="number" placeholder="WAITEE number" (keyup)="inputWaiteeNumber($event)" [(ngModel)]="waiteeNumber"> </ion-input>
     </ion-col>
-    <ion-col col-1 no-padding no-margin text-center align-self-center>
-      <ion-icon *ngIf="notifyMethodWaitee" (click)="configureNotifyMethod()" name="md-checkbox-outline">
-      </ion-icon>
-      <ion-icon *ngIf="!notifyMethodWaitee" (click)="configureNotifyMethod()" name="md-square-outline">
-      </ion-icon>
+    <ion-col col-4>
+      <button ion-button clear (click)="sendReceipt()"> SEND </button>
     </ion-col>
-    <ion-col text-left>
-        <ion-label>WAITEE registration number</ion-label>
-    </ion-col>
-  </ion-row>
-  <ion-row [hidden]="notifyMethodWaitee">
-    <ion-col col-4></ion-col>
-    <ion-col text-center style="font-size:3vw;">
-      <ion-item>
-      <ion-input text-center #phoneInput style="font-size:4vw;" type="tel" placeholder="Phone number" (keyup)="inputPhoneNumber($event)" [(ngModel)]="phoneNumber"> </ion-input>
-      </ion-item>
-    </ion-col>
-    <ion-col col-3></ion-col>
-  </ion-row>
-
-  <ion-row [hidden]="!notifyMethodWaitee">
-    <ion-col col-4></ion-col>
-    <ion-col text-center style="font-size:3vw;">
-      <ion-item>
-      <ion-input text-center #phoneInput style="font-size:4vw;" type="number" placeholder="last digits of phone number" (keyup)="inputWaiteeNumber($event)" [(ngModel)]="waiteeNumber"> </ion-input>
-      </ion-item>
-    </ion-col>
-    <ion-col col-3></ion-col>
-   </ion-row>
-  <ion-row [hidden]="!notifyMethodWaitee">
-    <ion-col text-center style="font-size:3vw;">
-     After deliverying to mobile number<br>
-     You can register your WAITEE number.
-    </ion-col>
-  </ion-row>
-
-<div *ngIf="order.paymentType=='cash'" text-center class="order-completed">
-  If you pass <amount-display [amount]="order.amount"></amount-display> won to the shop owner, an order information will be sent to your phone.
+    </ion-row>
+ </div>
 </div>
+ <div text-center style="background-color:#f6f6f6;" class="notifyDone" *ngIf="orderNotifyDone">
+   <div text-center>
+   <img class="waitee-symbol" src="assets/imgs/waitee-symbol.png" />
+   </div>
+    Order Information is sent to Given Number 
+ </div>
+<div>
+<img style="width:100%;" src="assets/imgs/waiteeAdEn.png" />
 </div>
-  <ion-row>
-    <ion-col text-center style="padding-top:20px;font-size:3.8vw;">
-     3% off all menus if you use WAITEE<br>
-                  Download now!
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col no-padding no-margin text-center>
-      <img src="assets/imgs/store.jpg">
-    </ion-col>
-  </ion-row>
-<!--
-  <ion-row *ngIf="!orderNotify">
-    <ion-col text-center>
-      <button (click)="print()" ion-button>주문서출력/영수증 출력</button> 
-    </ion-col>
-  </ion-row>    
-
-  <ion-row *ngIf="!orderNotify">
-    <ion-col text-center>
-      *점원분께 주문서와 영수증을 전달받으시기 바랍니다. 
-    </ion-col>
-  </ion-row>
--->
 </ion-content>
-<ion-footer no-padding no-margin>
-    <div class="balloon"  style="font-size:3vw;">
-      Please remember your order number. <br>
-      You can view order details at order information page.
-    </div>
-  <ion-row style="background-color:#ff7f39;color:white;height:60px;">
-    <ion-col style="border-right:solid 2px white;" text-center align-self-center no-padding no-margin >
-      <button no-padding no-margin clear color="white" style="font-size:4.75vw;" (click)="goHome()" ion-button>Complete order</button>      
-    </ion-col>
-    <ion-col align-self-center no-padding no-margin text-center>
-      <button no-padding no-margin clear color="white" style="font-size:4.75vw;" (click)="sendReceipt()" ion-button> Deliver order info</button>
-    </ion-col>
-  </ion-row>
+<ion-footer no-padding no-margin style="background-color:white;">
+    <ion-row class="footer">
+      <ion-col text-center align-self-center>
+          <button ion-button clear style="color:#ff7f39;" (click)="goHome()">OK</button>                
+      </ion-col>
+      <ion-col text-center align-self-center>
+          <button ion-button clear style="color:#ff7f39;" (click)="goHome()">한국어 주문</button>                
+      </ion-col>
+    </ion-row>
 </ion-footer>
+

@@ -78,7 +78,7 @@
           cancelled
       </ion-col>
       <ion-col align-self-center>
-        <button ion-button *ngIf="orderInfo.orderStatus=='cancelled' && orderInfo.cardCancel==null" (click)="cancelCardPayment(orderInfo)"> <b>카드취소</b></button>
+        <button ion-button *ngIf="orderInfo.orderStatus=='cancelled' && orderInfo.paymentType=='card' && orderInfo.cardCancel==null" (click)="cancelCardPayment(orderInfo)"> <b>cancel card payment</b></button>
       </ion-col>            
     </ion-row>      
 <div class="menu" *ngFor="let menu of orderInfo.orderList; let i=index;">
