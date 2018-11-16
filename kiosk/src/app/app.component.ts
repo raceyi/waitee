@@ -12,6 +12,7 @@ import { ErrorPage } from '../pages/error/error';
 import { HomePage } from '../pages/home/home';
 import {SelectorPage} from '../pages/selector/selector';
 import {OrderReceiptPage} from '../pages/order-receipt/order-receipt';
+declare var cordova:any;
 
 @Component({
   templateUrl: 'app.html'
@@ -44,6 +45,7 @@ export class MyApp {
                             var password=this.storageProvider.decryptValue("password",decodeURI(value));
                             this.login.EmailServerLogin(id,password).then((res:any)=>{
                                     console.log("MyApp:"+JSON.stringify(res));
+                                    this.scheduleRestart();
                                     if(res.result=="success"){
                                         this.shoplistHandler(res.shopUserInfo);
                                     }else if(res.result=='invalidId'){
@@ -68,6 +70,7 @@ export class MyApp {
             }else{
                     this.login.EmailServerLogin(this.configProvider.testAccount,this.configProvider.testPassword).then((res:any)=>{
                             console.log("MyApp:"+JSON.stringify(res));
+                            this.scheduleRestart();
                             if(res.result=="success"){
                                 //this.shoplistHandler(res.shopUserInfo);
                                 this.storageProvider.myshop={takitId:this.configProvider.testShop,manager:true,GCMNoti:"on"};
@@ -113,5 +116,28 @@ export class MyApp {
              }
         }
     }
+
+
+  scheduleRestart(){
+              //24시에 reboot하자.
+              let midnight=new Date();
+              let now = new Date();
+              this.storageProvider.bootTime= now.toLocaleString();
+
+              midnight.setHours(23, 59, 59, 999);
+              let diff = midnight.getTime()-now.getTime();
+
+              console.log("midnight time:"+midnight.toLocaleString()+" diff:"+diff);
+              if(diff==0){
+                    setTimeout(function(){
+                            cordova.plugins.restart.restart();    
+                    },24*60*60*1000);
+              }else{
+                    setTimeout(function(){
+                            cordova.plugins.restart.restart();    
+                    },diff);
+              }
+  }
+
 }
 

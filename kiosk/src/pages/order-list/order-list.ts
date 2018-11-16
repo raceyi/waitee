@@ -172,12 +172,12 @@ export class OrderListPage {
         }, 3*60*1000); //3분    
         //
 
-        //this.webIntent.startActivityForResult({ action: this.webIntent.ACTION_VIEW, url: reqVal }).then(function(res:any){ 
+        this.webIntent.startActivityForResult({ action: this.webIntent.ACTION_VIEW, url: reqVal }).then(function(res:any){ 
           clearTimeout(gOrderListPage.paymentTimer);
           gOrderListPage.storageProvider.clearPaymentFailure();
           gOrderListPage.activityInProgress=false;
           loading.dismiss();
-          let res={"extras":{"resultval":"0","servicetip":"0","amount":"91","cardno":"943116******4576","surtax":"9","tranno":"[object Promise]","resultCode":0,"printmessage":"","shopName":"타킷 주식회>사","totalamount":"100","merchantno":"145852535","serverres":"00","outmessage":"정상승인\u001e30000172","shopAddress":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","mode":"normal","catid":"9968333001","approvaldate":"20180825192450","shopOwnerName":"이경주","approvalno":"30000172","acquiercode":"0011","acquiername":"농협중앙회      ","tranuniqe":"900000498433","receipt":"on","requestCode":1,"trantype":"card","issuercode":"0171","issuername":"NH기업체크","dongleInfo":"####SMT-M2410101FC180512701001000000FC01.01.00.10","dongletype":"5","businessno":"1428800447","batteryInfo":"94%","receiptmode":"2","installment":"0"},"flags":0};          
+          //let res={"extras":{"resultval":"0","servicetip":"0","amount":"91","cardno":"943116******4576","surtax":"9","tranno":"[object Promise]","resultCode":0,"printmessage":"","shopName":"타킷 주식회>사","totalamount":"100","merchantno":"145852535","serverres":"00","outmessage":"정상승인\u001e30000172","shopAddress":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","mode":"normal","catid":"9968333001","approvaldate":"20180825192450","shopOwnerName":"이경주","approvalno":"30000172","acquiercode":"0011","acquiername":"농협중앙회      ","tranuniqe":"900000498433","receipt":"on","requestCode":1,"trantype":"card","issuercode":"0171","issuername":"NH기업체크","dongleInfo":"####SMT-M2410101FC180512701001000000FC01.01.00.10","dongletype":"5","businessno":"1428800447","batteryInfo":"94%","receiptmode":"2","installment":"0"},"flags":0};          
           console.log('★★startActivityForResult '+JSON.stringify(res)); 
           console.log("res.extras:"+res.extras+" res.extras.resultval:"+res.extras.resultval);
           let output=gOrderListPage.serverProvider.smartroResultParser(res);
@@ -185,7 +185,7 @@ export class OrderListPage {
           if(res.extras && res.extras.resultval=="0"){ 
                 let phoneNumber=gOrderListPage.phoneNumber.replace(/-/g, "");
                 let output=gOrderListPage.serverProvider.smartroResultParser(res);
-                let loading = this.loadingCtrl.create({
+                let loading = gOrderListPage.loadingCtrl.create({
                   content: '결제에 성공했습니다. 서버에 주문 정보를 등록합니다.',
                   duration: 10000
                 });
@@ -197,7 +197,7 @@ export class OrderListPage {
                                                         ,undefined,undefined,undefined).then((response:any)=>{
                    loading.dismiss();                                       
                    if(response.result=="success"){   
-                          let loadingPage = this.loadingCtrl.create({
+                          let loadingPage = gOrderListPage.loadingCtrl.create({
                             content: '주문번호['+ response.order.orderNO+'] 주문완료 화면으로 전환중입니다. \n 오류 발생시 홈->주문확인에서 주문번호로 주문내역 확인이 가능합니다.',
                             duration: 10000
                           });
@@ -231,9 +231,11 @@ export class OrderListPage {
                             {
                               text: 'OK',
                               handler: () => {
-                                  gOrderListPage.serverProvider.smartroCancelPayment(amount,output.approvalNO,output.approvalTime).then(()=>{
+                                  gOrderListPage.serverProvider.smartroCancelPayment(amount,output.approvalNO,output.approvalTime).then((response)=>{
+                                        let output=gOrderListPage.serverProvider.smartroResultParser(JSON.parse(response));
                                         let alert = gOrderListPage.alertCtrl.create({
                                           title: '카드결제를 취소하였습니다.',
+                                          subTitle:'취소 승인 번호: '+ output.approvalNO,
                                           buttons: ['OK']
                                         });
                                         alert.present();
@@ -277,7 +279,7 @@ export class OrderListPage {
                 });
                 alert.present();
           }
-        /*           
+        /* */          
         }, function(err){ 
           clearTimeout(gOrderListPage.paymentTimer);
           gOrderListPage.storageProvider.clearPaymentFailure();
@@ -290,9 +292,9 @@ export class OrderListPage {
                 });
                 alert.present();
           })
-          */
-        //});        
+        /*  카드 결제 없는 검증을 위해서는 아래 라인을 comment out한다.  */
     }); 
+        /* */
     }
   }
 

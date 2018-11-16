@@ -162,12 +162,12 @@ export class EnOrderListPage {
         }, 3*60*1000); //3분    
         //
 
-       // this.webIntent.startActivityForResult({ action: this.webIntent.ACTION_VIEW, url: reqVal }).then(function(res:any){ 
+        this.webIntent.startActivityForResult({ action: this.webIntent.ACTION_VIEW, url: reqVal }).then(function(res:any){ 
           clearTimeout(gOrderListPage.paymentTimer);
           gOrderListPage.storageProvider.clearPaymentFailure();
           gOrderListPage.activityInProgress=false;
           loading.dismiss();
-          let res={"extras":{"resultval":"0","servicetip":"0","amount":"91","cardno":"943116******4576","surtax":"9","tranno":"[object Promise]","resultCode":0,"printmessage":"","shopName":"타킷 주식회>사","totalamount":"100","merchantno":"145852535","serverres":"00","outmessage":"정상승인\u001e30000172","shopAddress":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","mode":"normal","catid":"9968333001","approvaldate":"20180825192450","shopOwnerName":"이경주","approvalno":"30000172","acquiercode":"0011","acquiername":"농협중앙회      ","tranuniqe":"900000498433","receipt":"on","requestCode":1,"trantype":"card","issuercode":"0171","issuername":"NH기업체크","dongleInfo":"####SMT-M2410101FC180512701001000000FC01.01.00.10","dongletype":"5","businessno":"1428800447","batteryInfo":"94%","receiptmode":"2","installment":"0"},"flags":0};          
+          //let res={"extras":{"resultval":"0","servicetip":"0","amount":"91","cardno":"943116******4576","surtax":"9","tranno":"[object Promise]","resultCode":0,"printmessage":"","shopName":"타킷 주식회>사","totalamount":"100","merchantno":"145852535","serverres":"00","outmessage":"정상승인\u001e30000172","shopAddress":"서울 서초구 강남대로 479  (반포동) B1층 131호 피치트리랩","mode":"normal","catid":"9968333001","approvaldate":"20180825192450","shopOwnerName":"이경주","approvalno":"30000172","acquiercode":"0011","acquiername":"농협중앙회      ","tranuniqe":"900000498433","receipt":"on","requestCode":1,"trantype":"card","issuercode":"0171","issuername":"NH기업체크","dongleInfo":"####SMT-M2410101FC180512701001000000FC01.01.00.10","dongletype":"5","businessno":"1428800447","batteryInfo":"94%","receiptmode":"2","installment":"0"},"flags":0};          
           console.log('★★startActivityForResult '+JSON.stringify(res)); 
           console.log("res.extras:"+res.extras+" res.extras.resultval:"+res.extras.resultval);
           let output=gOrderListPage.serverProvider.smartroResultParser(res);
@@ -179,7 +179,7 @@ export class EnOrderListPage {
                                                         "card",
                                                         JSON.stringify(res),true,undefined,undefined,undefined).then((response:any)=>{
                    if(response.result=="success"){   
-                        let loadingPage = this.loadingCtrl.create({
+                        let loadingPage = gOrderListPage.loadingCtrl.create({
                             content: 'Order Number['+ response.order.orderNO+'] Moving into order information page. \n You can check order information Upper Left at Main Page.',
                             duration: 10000
                             });
@@ -214,9 +214,11 @@ export class EnOrderListPage {
                             {
                               text: 'OK',
                               handler: () => {
-                                  gOrderListPage.serverProvider.smartroCancelPayment(amount,output.approvalNO,output.approvalTime).then(()=>{
-                                        let alert = gOrderListPage.alertCtrl.create({
-                                          title: 'Card payment canceled',//카드결제를 취소하였습니다.',
+                                  gOrderListPage.serverProvider.smartroCancelPayment(amount,output.approvalNO,output.approvalTime).then((response)=>{
+                                        let output=gOrderListPage.serverProvider.smartroResultParser(JSON.parse(response));
+                                        let alert = gOrderListPage.alertController.create({
+                                            title: 'The card payment is cancelled.',
+                                            subTitle:  'Approval NO for cancellation:'+  output.approvalNO,                                      
                                           buttons: ['OK']
                                         });
                                         alert.present();
@@ -247,7 +249,7 @@ export class EnOrderListPage {
                 });
                 alert.present();
           }
-/*                  
+      /*  */                
         }, function(err){ 
           clearTimeout(gOrderListPage.paymentTimer);
           gOrderListPage.storageProvider.clearPaymentFailure();
@@ -260,8 +262,9 @@ export class EnOrderListPage {
                 });
                 alert.present();
           })
+          /*  카드 결제 없는 검증을 위해서는 아래 라인을 comment out한다.  */
         //});       
-*/      
+        /* */      
     });
     }
   }

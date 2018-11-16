@@ -182,7 +182,7 @@ export class ServerProvider {
                 console.log('smartroCancelPayment:'+JSON.stringify(res));
                 console.log("res.extras:"+JSON.stringify(res.extras));
                 if(res.extras.resultval==0){ 
-                        resolve();
+                        resolve(res);
                 }else{
                         reject();
                 }

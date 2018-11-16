@@ -167,9 +167,10 @@ configureMode(){
                           this.storageProvider.cancelFailurePayment.splice(index,1);
                           this.storageProvider.updateCancelFailure();
                       }
-
+                      let output=this.serverProvider.smartroResultParser(JSON.parse(res));
                       let alert = this.alertController.create({
                         title: '카드 결제 취소에 성공했습니다.',
+                        subTitle:'취소 승인 번호: '+ output.approvalNO,
                          buttons: ['OK']                       
                         /*
                         subTitle:'취소 영수증을 출력하시겠습니까?',
@@ -245,9 +246,10 @@ configureMode(){
             this.serverProvider.smartroCancelPayment(this.cancelAmount,
                                                 this.cancelApprovalNO,
                                                 orderDate).then((res:any)=>{
+                      let output=this.serverProvider.smartroResultParser(JSON.parse(res));
                       let alert = this.alertController.create({
                         title: '카드 결제 취소에 성공했습니다.',
-                        subTitle:'취소 승인 번호: ',
+                        subTitle:'취소 승인 번호: '+ output.approvalNO,
                         buttons: ['OK']
                       });
                       alert.present();
@@ -291,9 +293,11 @@ configureMode(){
                                                 orderInfo.cardPayment.approvalNO,//orderInfo.cardApprovalNO,
                                                 orderDate).then((res:any)=>{
                       //!!!!server 에 결제 취소를 저장한다.!!!!
+                      let output=this.serverProvider.smartroResultParser(JSON.parse(res));
+
                       let alert = this.alertController.create({
                         title: '카드 결제 취소에 성공했습니다.',
-                        subTitle:'취소 승인 번호: ',
+                        subTitle:'취소 승인 번호: '+output.approvalNO,
                         buttons: ['OK']
                       });
                       alert.present();

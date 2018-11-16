@@ -154,9 +154,10 @@ configureMode(){
                           this.storageProvider.cancelFailurePayment.splice(index,1);
                           this.storageProvider.updateCancelFailure();
                       }
-
+                      let output=this.serverProvider.smartroResultParser(JSON.parse(res));
                       let alert = this.alertController.create({
                         title: 'The card payment is cancelled.',
+                        subTitle:  'Approval NO for cancellation:'+  output.approvalNO,
                          buttons: ['OK']                       
                         /*
                         subTitle:'취소 영수증을 출력하시겠습니까?',
@@ -231,9 +232,10 @@ configureMode(){
             this.serverProvider.smartroCancelPayment(this.cancelAmount,
                                                 this.cancelApprovalNO,
                                                 orderDate).then((res:any)=>{
+                      let output=this.serverProvider.smartroResultParser(JSON.parse(res));
                       let alert = this.alertController.create({
-                        title: 'Successful cancellation of card payment',
-                        //subTitle:'취소 승인 번호', => 구현이 필요하다.
+                        title: 'The card payment is cancelled.',
+                        subTitle:  'Approval NO for cancellation:'+  output.approvalNO,
                         buttons: ['OK']
                       });
                       alert.present();
@@ -277,9 +279,10 @@ configureMode(){
                                                 orderInfo.cardApprovalNO,
                                                 orderDate).then((res:any)=>{
                       //!!!!server 에 결제 취소를 저장한다.!!!!
+                      let output=this.serverProvider.smartroResultParser(JSON.parse(res));
                       let alert = this.alertController.create({
-                        title: 'Successful cancellation of card payment.',
-                        //subTitle:'취소 승인 번호: ',
+                        title: 'The card payment is cancelled.',
+                        subTitle:  'Approval NO for cancellation:'+  output.approvalNO,
                         buttons: ['OK']
                       });
                       alert.present();

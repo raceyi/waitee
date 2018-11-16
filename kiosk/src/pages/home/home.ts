@@ -44,7 +44,7 @@ export class HomePage {
           */
         }
         this.getShopInfoAll(this.storageProvider.myshop.takitId).then(()=>{
-            this.scheduleRestart();
+            
         },err=>{
 
         });
@@ -53,45 +53,10 @@ export class HomePage {
      
   }
 
-  scheduleRestart(){
-              console.log("this.storageProvider.shop.businessTime:"+this.shop.shopInfo.businessTime);
-              //this.storageProvider.shop.businessTime=JSON.parse(this.shop.shopInfo.businessTime);
-              let businessTime=JSON.parse(this.shop.shopInfo.businessTime);;
-              let today=new Date();
-              let weekday=today.getDay();
-              let startHour,startMin;
-              if(weekday==6){
-                    weekday=0;
-              }else{
-                    weekday=weekday+1;
-              }              
-              ////////////////////////////
-              console.log("tomorrow open hour:"+businessTime[weekday].substr(0,2));
-              this.storageProvider.bootTime=today.toLocaleString();
 
-              let hour=parseInt(businessTime[weekday].substr(0,2));
-              // 오늘에서 24시간 더한후에 open hour로 시간설정하고 다시 1시간뺀이후에 timer를 걸면된다.
-              let tomorrow=new Date(today.getTime()+24*60*60*1000);
-              tomorrow.setHours(hour,0,0,0);
-              let restart=new Date(tomorrow.getTime()-60*60*1000); // one hour ago 
-              let diff = restart.getTime()-today.getTime();
-              console.log("restart time:"+restart.toLocaleString()+" diff:"+diff);
-              if(diff>60*60*1000){
-                    setTimeout(function(){
-                        //remove logs in DB
-                        // 나중에 적용하자 우선은 버튼으로 수동으로 삭제하기.
-                            cordova.plugins.restart.restart();    
-                    },diff);
-              }else{
-                    setTimeout(function(){
-                        //remove logs in DB
-                         // 나중에 적용하자 우선은 버튼으로 수동으로 삭제하기.
-                            cordova.plugins.restart.restart();    
-                    },diff+24*60*60*1000);
-              }
-  }
 
   ionViewDidLoad() {
+      console.log("!!! HomePage ionViewDidLoad !!!");
       ///////////////////////////////////////////////////////////  
             let ready = true;          
             this.platform.registerBackButtonAction(()=>{
