@@ -100,6 +100,7 @@ export class ConfigurePage {
     }
     this.storageProvider.savepollingInterval(this.pollingInterval);
     console.log("this.pollingInterval:"+this.pollingInterval);
+    this.storageProvider.saveIPAddress(this.storageProvider.IPAddress);
   }
 
   configureStore(){

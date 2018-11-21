@@ -103,6 +103,7 @@ export class MenuModalPage {
       }
       console.log("construct menu:"+JSON.stringify(this.menu));
       console.log("flags"+JSON.stringify(this.flags));
+      this.storageProvider.storeType = this.storageProvider.shopInfo.storeType;      
       if(storageProvider.storeType=='restaurant'){
             if(this.isNull(this.menu.filter) /* !this.menu.filter || this.menu=='null' */){
                 this.menu.filter={beef:{include:false, freeKor:undefined, freeEn:undefined},
@@ -882,7 +883,7 @@ fileChange(event){
 
            // var options = { content: formData };
 
-            this.serverProvider.http.post(url,formData).timeout(this.storageProvider.timeout).subscribe((response:any)=>{
+            this.serverProvider.http.post(url,formData).timeout(120000 /* 2 minutes */).subscribe((response:any)=>{
                     let res=response.json();
                     console.log("uploadMenuImageWeb:"+JSON.stringify(res));
                     

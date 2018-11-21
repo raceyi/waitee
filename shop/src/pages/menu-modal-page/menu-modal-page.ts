@@ -96,24 +96,25 @@ export class MenuModalPage {
       }
       console.log("construct menu:"+JSON.stringify(this.menu));
       console.log("flags"+JSON.stringify(this.flags));
-
-      if(this.isNull(this.menu.filter) /* !this.menu.filter || this.menu=='null' */){
-          this.menu.filter={beef:{include:false, freeKor:undefined, freeEn:undefined},
-                            pork:{include:false, freeKor:undefined, freeEn:undefined},
-                            chicken:{include:false, freeKor:undefined, freeEn:undefined},
-                            fish:{include:false, freeKor:undefined, freeEn:undefined},
-                            egg:{include:false, freeKor:undefined, freeEn:undefined}};
-      }else if(typeof this.menu.filter ==='string'){
-          console.log("filter:"+this.menu.filter);
-          let filter=JSON.parse(this.menu.filter);
-          if(typeof filter ==='string'){
-              console.log("invalid filter type!!");
-              filter=JSON.parse(filter);
-              if(typeof filter==='string'){
-                  console.log("invalid type2");
-              }
-          }
-          this.menu.filter=filter;
+      if(storageProvider.storeType=='restaurant'){
+            if(this.isNull(this.menu.filter) /* !this.menu.filter || this.menu=='null' */){
+                this.menu.filter={beef:{include:false, freeKor:undefined, freeEn:undefined},
+                                    pork:{include:false, freeKor:undefined, freeEn:undefined},
+                                    chicken:{include:false, freeKor:undefined, freeEn:undefined},
+                                    fish:{include:false, freeKor:undefined, freeEn:undefined},
+                                    egg:{include:false, freeKor:undefined, freeEn:undefined}};
+            }else if(typeof this.menu.filter ==='string'){
+                console.log("filter:"+this.menu.filter);
+                let filter=JSON.parse(this.menu.filter);
+                if(typeof filter ==='string'){
+                    console.log("invalid filter type!!");
+                    filter=JSON.parse(filter);
+                    if(typeof filter==='string'){
+                        console.log("invalid type2");
+                    }
+                }
+                this.menu.filter=filter;
+            }
       }
   }
 
@@ -201,7 +202,7 @@ export class MenuModalPage {
                 });
                 alert.present();
             }else{
-                console.log(res.error);
+                console.log("res.error:"+JSON.stringify(res.error));
                 let alert = this.alertController.create({
                     title : "사진 업로드에 실패하였습니다.",
                     buttons : ['확인']
@@ -211,7 +212,7 @@ export class MenuModalPage {
         }
         
     },err=>{
-        console.log(err);
+        console.log("err:"+JSON.stringify(err));
         let alert = this.alertController.create({
             title : "사진 업로드에 실패하였습니다.",
             buttons : ['확인']
@@ -375,6 +376,8 @@ export class MenuModalPage {
                 if(this.storageProvider.storeType=='restaurant'){
                     console.log("this.menu.filter:"+JSON.stringify(this.menu.filter))
                     this.menu.filter=JSON.stringify(this.menu.filter);
+                }else{
+                    delete this.menu.filter;
                 }
 
                 this.serverProvider.modifyMenuInfo(this.menu)
@@ -528,6 +531,14 @@ export class MenuModalPage {
                     this.menu.imagePath = this.storageProvider.myshop.takitId+"_"+this.menu.imagePath;
                 }
 
+                //filter 정보를 추가한다. storeType=='restaurant'이라면 영문정보를 위해
+                if(this.storageProvider.storeType=='restaurant'){
+                    console.log("this.menu.filter:"+JSON.stringify(this.menu.filter))
+                    this.menu.filter=JSON.stringify(this.menu.filter);
+                }else{
+                    delete this.menu.filter;
+                }
+
                 this.serverProvider.addMenuInfo(this.menu)
                 .then((res:any)=>{
                     if(res.result === "success"){
@@ -573,30 +584,6 @@ export class MenuModalPage {
                             });
                 alert.present();
             }
-            //else{
-            //     let optionsFlags
-
-            //     for(let i=0; i<this.menu.options.length; i++){
-            //         if(this.menu.options[i].name === null){
-            //             break;
-            //         }
-            //         if(this.menu.options[i].choice !== undefined){
-
-            //         }
-            //     }
-            // }
-            // console.log(this.menu.options);
-            // if(this.menu.options !== undefined && this.menu.options[0] !== null && this.menu.options[0].name !== null){
-            //     
-            // }
-            // if(this.menu.optionsEn !== undefined && this.menu.optionsEn[0] !== null && this.menu.options[0].name !== null){
-            //     for(let i=0; i<this.menu.options.length; i++){
-            //         this.menu.optionsEn[i]= JSON.stringify(this.menu.optionsEn[i]);
-            //     }
-            // }
-
-            //this.menu.menuNO = 
-            
         }
     }else{
         this.showAlert({title:"메뉴 정보를 정확히 입력해주세요.",

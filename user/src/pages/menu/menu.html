@@ -53,7 +53,7 @@
   <amount-display [amount]="menu.price"></amount-display>원
   </ion-col>
 </ion-row>
-<ion-row *ngIf="storageProvider.shopInfo.stamp!=null &&  storageProvider.shopInfo.stamp  && menu.stampCount!=null && menu.stampCount>0">
+<ion-row *ngIf="menu.stampCount!=null && menu.stampCount>0">
   <ion-col col-1>
   </ion-col>
   <ion-col class="option-name"  text-left>

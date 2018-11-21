@@ -10,18 +10,16 @@
        <ion-col [hidden]="!storageProvider.isTestServer" class="title">
         검증 
        </ion-col>
+       <ion-col col-4 style="color:white;" align-self-center>
+           {{storageProvider.lastPollResponseTime}}
+       </ion-col>
+       <!--
        <ion-col text-center *ngIf="storageProvider.pollingInterval && storageProvider.pollingInterval>0" style="color:white;" align-self-center>
          {{storageProvider.pollingInterval}}분
        </ion-col>
        <ion-col text-center>
             &nbsp;
             <ion-icon class="store-status" [style.color]="storeColor" name="bulb" (click)="configureStore()"></ion-icon>
-       </ion-col>
-       <!--
-       <ion-col text-center *ngIf="storageProvider.pollingInterval">
-         {{storageProvider.pollingInterval}}분
-            &nbsp;
-            <ion-icon class="store-status" [style.color]="notiColor" name="person" (click)="configureGotNoti()"></ion-icon>
        </ion-col>
        -->
       <ion-col text-center>
@@ -356,9 +354,9 @@
                    <div *ngIf="order.orderStatus!='cancelled'">
                      <ion-row>
                        <ion-col no-padding no-margin text-center col-6>
-                         <!--  just test -begin -->
-                        <a [href]="order.userPhoneHref" style="color:#979797;font-size:3.4vw;"> 고객연락 {{order.userPhoneHref}} <custom-icon set="customs" name="phone"></custom-icon></a>                    
-                         <!-- just test -end--> 
+                         <!--
+                        <a [href]="order.userPhoneHref" style="color:#979797;font-size:3.4vw;">{{order.userPhoneHref}} <custom-icon set="customs" name="phone"></custom-icon></a>                    
+                          --> 
                         <a *ngIf="!AfterOnedayCompleteCancel(order)" [href]="order.userPhoneHref" style="color:#979797;font-size:3.4vw;"> 고객연락 <custom-icon set="customs" name="phone"></custom-icon></a>                                             
                        </ion-col>
                        <ion-col no-padding no-margin text-center col-6>

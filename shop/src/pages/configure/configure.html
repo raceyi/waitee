@@ -17,9 +17,12 @@
 <ion-item *ngIf="storageProvider.bootTime!=undefined">
  앱실행시간: {{storageProvider.bootTime}}
 </ion-item>   
-<ion-item *ngIf="storageProvider.lastTokenSent!=undefined">
- token전송시간: {{storageProvider.lastTokenSent}}
+<ion-item *ngIf="storageProvider.lastPollRequestTime!=undefined">
+ 주문 요청시간: {{storageProvider.lastPollRequestTime}}
 </ion-item>   
+<ion-item *ngIf="this.storageProvider.kiosk==true">
+    <ion-input type="text" placeholder="소리알림 IP주소" [(ngModel)]="storageProvider.IPAddress"></ion-input>    
+</ion-item>
 <ion-item> 소리 조절</ion-item>
 <ion-item>
     <ion-range  (ionBlur)='updateVolume()' no-padding no-margin style="padding-top:0px;" [(ngModel)]="volumeValue" color="danger" pin="true">

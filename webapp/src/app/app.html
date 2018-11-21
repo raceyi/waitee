@@ -9,9 +9,11 @@
       <button class="menu" clear ion-button icon-left full  menuClose (click)="openPrint()" >
         <ion-icon name="print"></ion-icon>&nbsp;&nbsp;프린터설정
       </button>
+      -->
       <button class="menu" clear ion-button icon-left full  menuClose [hidden]="storageProvider.id==undefined || storageProvider.tourMode==true" (click)="openSoldOut()">
         <ion-icon name="person"></ion-icon>&nbsp;&nbsp;판매종료
       </button>
+      <!--
       <button class="menu" clear ion-button icon-left full menuClose [hidden]="storageProvider.myshop.manager==undefined || !storageProvider.myshop.manager" (click)="openCash()">
         <ion-icon name="cash"></ion-icon>&nbsp;&nbsp;캐쉬인출   
       </button>

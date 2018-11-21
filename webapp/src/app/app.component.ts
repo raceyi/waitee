@@ -21,7 +21,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-declare var cordova:any;
+//declare var cordova:any;
 
 @Component({
   selector:'page-menu',
@@ -212,8 +212,8 @@ export class MyApp {
           text: '네',
           handler: () => {
             console.log('Logout Agree clicked');
-            console.log("cordova.plugins.backgroundMode.disable");
-            cordova.plugins.backgroundMode.disable();
+            //console.log("cordova.plugins.backgroundMode.disable");
+            //cordova.plugins.backgroundMode.disable();
             
                 this.emailProvider.logout().then(()=>{
                     this.removeStoredInfo();

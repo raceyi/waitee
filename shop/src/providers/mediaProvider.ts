@@ -78,8 +78,9 @@ export class MediaProvider {
   }
 
   playWarning(){
-      this.volumeControl.setVolume(this.storageProvider.volume/100);
+      this.volumeControl.setVolume(1.0); // 경고음으로 크게 출력한다.
       // play the file
+      console.log("play warning.mp3");
       this.warning.play();      
   }
 

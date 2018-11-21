@@ -22,6 +22,11 @@ export class SoldOutPage {
   shop:any={};
   nowMenus;
 
+  categoryLevel=false;
+  storeSelected:number=0;
+  nowStore:any={};
+  stores:any=[];
+
   constructor(public navCtrl: NavController, public navParams: NavParams,
               public serverProvider:ServerProvider,
               public alertController:AlertController,public storageProvider:StorageProvider) {
@@ -68,17 +73,52 @@ export class SoldOutPage {
     });
         //console.log("categories len:"+this.categories.length);
      
-        this.categorySelected=0; // hum...
-        
+        if(this.categoryLevel){ //store 구조체를 만든다.
+                        this.categories.forEach(category=>{
+                   let substrs=category.categoryName.split("@");
+                   let substrsEn,categoryNameEn; 
+                   if(category.categoryNameEn!=null){
+                       substrsEn=category.categoryNameEn.split("@");
+                       if(category.categoryNameEn.includes('@')){
+                          category.categoryNameEn=substrsEn[0].trim();
+                       }
+                   }
+                   if(substrs.length>=2){
+                        let substrs2= substrs[1].split(';');
+                        let sequence,name,nameEn;
+                        if(substrs2.length>=2){
+                            sequence=parseInt(substrs2[1]);
+                            name=substrs2[0].trim();
+                        }else{
+                            name=substrs[1].trim();
+                        }
+                        if(substrsEn && substrsEn.length>=2){ // 영어 category에는 sequence는 없다. categoryName@storeName 
+                            nameEn=substrsEn[1].trim();
+                        }else if(substrsEn && substrsEn.length==1){ //store name만 있을 경우 @storeName. 맞는지 확인하자.
+                            nameEn=substrsEn[0].trim();
+                        }
+                        let index=this.stores.findIndex(function(element){
+                            //console.log("compare store name: "+ name+" "+element.name.trim());
+                            return (name==element.name.trim());
+                        })
+                        category.categoryName=substrs[0].trim();
+
+                        if(index<0){
+                            this.stores.push({name:name,nameEn:nameEn,sequence:sequence,categories:[category]});
+                        }else{
+                            this.stores[index].categories.push(category); 
+                        }
+                   }
+            });
+            if(this.stores.length>0){
+                this.nowStore=Object.assign({}, this.stores[this.storeSelected]); 
+            }
+            if(this.nowStore.categories)
+                this.categories=this.nowStore.categories;
+        }
+        this.categorySelected=0; // hum...        
         console.log("categories!!!!!!!!!!!!!!!!info:"+this.categories[0].menus[0].menuName);
         this.nowMenus=this.categories[0].menus;
-        for(var i=0;i<this.nowMenus.length/2;i++){
-           let pair=[];
-           pair.push(this.nowMenus[i*2]);
-           pair.push(this.nowMenus[i*2+1]);
-           this.menus.push(pair);
-           console.log("i:"+i);
-        }       
 
         for(var j=0;j<this.nowMenus.length;j++){
               this.nowMenus[j].ngStyle={'background-image': 'url('+ this.storageProvider.awsS3+this.nowMenus[j].imagePath + ')'};
@@ -90,10 +130,11 @@ export class SoldOutPage {
     console.log('ionViewDidLoad SoldOutPage');
     this.serverProvider.getShopInfoAll(this.storageProvider.myshop.takitId).then((res:any)=>{
           console.log("res:"+JSON.stringify(res));
-          console.log("this.shop.categories:"+JSON.stringify(res.categories));
-          console.log("this.shop.categories:"+JSON.stringify(res.menus));
+          console.log("SoldOutPage-shop.categories:"+JSON.stringify(res.categories));
+          console.log("SoldOutPage-shop.menus:"+JSON.stringify(res.menus));
           this.shop.categories= res.categories;
           this.shop.menus=res.menus;
+          this.categoryLevel=(res.shopInfo.categoryLevel=='1')? true : false;
           this.configureShopInfo();
     });
   }
@@ -108,24 +149,11 @@ export class SoldOutPage {
   categoryClick(sequence){ // please use the sequence value
     console.log("[categoryChange] sequence:"+sequence+" previous:"+this.categorySelected);
     console.log("sequence type:"+typeof sequence+"categorySelected type:"+typeof this.categorySelected)
-    // console.log("this.categoryMenuRows.length:"+this.categoryMenuRows.length);
-    // if(this.categoryMenuRows.length>0){
-        //why do need this length?
-        //console.log("change menus");
-        this.nowMenus=this.categories[sequence-1].menus;
-        for(var j=0;j<this.nowMenus.length;j++){
-              this.nowMenus[j].ngStyle={'background-image': 'url('+ this.storageProvider.awsS3+this.nowMenus[j].imagePath + ')'};
-        }           
-        
-        this.menus=[];
-        for(var i=0;i<this.nowMenus.length/2;i++){
-           let pair=[];
-           pair.push(this.nowMenus[i*2]);
-           pair.push(this.nowMenus[i*2+1]);
-           this.menus.push(pair);
-           console.log("i:"+i);
-        }       
-        this.categorySelected=sequence-1; //Please check if this code is correct.
+    this.nowMenus=this.categories[sequence-1].menus;
+    for(var j=0;j<this.nowMenus.length;j++){
+            this.nowMenus[j].ngStyle={'background-image': 'url('+ this.storageProvider.awsS3+this.nowMenus[j].imagePath + ')'};
+    }           
+    this.categorySelected=sequence-1; //Please check if this code is correct.
     console.log("categorySelected:"+this.categorySelected);
   }
 
@@ -147,6 +175,12 @@ export class SoldOutPage {
                         let body = JSON.stringify({menuNO:menu.menuNO,menuName:menu.menuName,soldout:true});
                         this.serverProvider.post("/configureSoldOut",body).then((res:any)=>{
                                 menu.soldout=true;
+                            let alert = this.alertController.create({
+                                                title: menu.menuName+'이 판매종료 되었습니다',
+                                                buttons: ['OK']
+                                            });
+                            alert.present();
+                                
                         },(err)=>{
                             let alert = this.alertController.create({
                                                 title: '판매종료 설정에 실패했습니다.',
@@ -189,11 +223,242 @@ export class SoldOutPage {
       }
   }
 
+  allSoldOut(category){
+      for(let i=0;i<category.menus.length;i++){
+            if(category.menus[i].soldout=='0')
+                return false;
+      }
+      return true;
+  }
+
+  allSoldOutStore(index){
+      console.log("******allSoldOutStore:"+JSON.stringify(this.stores[index].categories));
+      let categories=this.stores[index].categories;
+      for(let j=0;j<categories.length;j++){
+          //console.log("allSoldOutStore:"+JSON.stringify(categories[j]));
+          let menus=categories[j].menus;
+          for(let i=0;i<menus.length;i++){
+                if(menus[i].soldout=='0')
+                    return false;
+          }
+      }
+      return true;
+  }
+
+configureTextDecoration(category){
+    if(this.allSoldOut(category)){
+        return "overline line-through underline";
+    }
+    return "none";
+}
+
+configureTextDecorationStore(i){
+    if(this.allSoldOutStore(i)){
+        return "overline line-through underline";
+    }
+    return "none";
+}
+
+saleStore(store){
+    let categories=[];
+    store.categories.forEach(category=>{
+        categories.push(category.categoryNO);
+    });
+
+    let body={ categories:categories,
+               soldout:false,
+               takitId:this.storageProvider.myshop.takitId
+             };
+           let confirm = this.alertController.create({
+                message: store.name+'를 판매 하시겠습니까?',
+                buttons: [
+                  {
+                    text: '아니오',
+                    handler: () => {
+                      console.log('Disagree clicked');
+                    }
+                  },
+                  {
+                    text: '네',
+                    handler: () => {
+                        this.serverProvider.post("/configureSoldOutCategory",JSON.stringify(body)).then((res:any)=>{
+                            store.categories.forEach(category=>{
+                                category.menus.forEach(menu=>{
+                                        menu.soldout=false;
+                                });
+                            });    
+                        },(err)=>{
+                            let alert = this.alertController.create({
+                                                title: '판매 설정에 실패했습니다.',
+                                                subTitle: '네트웍 상태를 확인하시고 다시 시도해주시기 바랍니다.',
+                                                buttons: ['OK']
+                                            });
+                            alert.present();
+                        });
+                    }}
+                ]});
+                confirm.present();
+}
+
+soldOutStore(store){
+    let categories=[];
+    store.categories.forEach(category=>{
+        categories.push(category.categoryNO);
+    });
+
+    let body={ categories:categories,
+               soldout:true,
+               takitId:this.storageProvider.myshop.takitId
+             };
+
+    let confirm = this.alertController.create({
+    message: store.name+'을 판매종료 하시겠습니까?',
+    buttons: [
+        {
+        text: '아니오',
+        handler: () => {
+            console.log('Disagree clicked');
+        }
+        },
+        {
+        text: '네',
+        handler: () => {
+            this.serverProvider.post("/configureSoldOutCategory",JSON.stringify(body)).then((res:any)=>{
+                store.categories.forEach(category=>{
+                    category.menus.forEach(menu=>{
+                            menu.soldout=true;
+                    });
+                });    
+                let alert = this.alertController.create({
+                                    title: store.name+'이 판매종료 되었습니다',
+                                    buttons: ['OK']
+                                });
+                alert.present();
+                    
+            },(err)=>{
+                let alert = this.alertController.create({
+                                    title: '판매종료 설정에 실패했습니다.',
+                                    subTitle: '네트웍 상태를 확인하시고 다시 시도해주시기 바랍니다.',
+                                    buttons: ['OK']
+                                });
+                alert.present();
+
+            });
+        }}
+    ]});
+    confirm.present();
+}
+
+saleCategory(category){
+      let body={ categories:[category.categoryNO],
+               soldout:false,
+               takitId:this.storageProvider.myshop.takitId
+             };
+    let confirm = this.alertController.create({
+        message: category.categoryName+'를 판매 하시겠습니까?',
+        buttons: [
+            {
+            text: '아니오',
+            handler: () => {
+                console.log('Disagree clicked');
+            }
+            },
+            {
+            text: '네',
+            handler: () => {
+                this.serverProvider.post("/configureSoldOutCategory",JSON.stringify(body)).then((res:any)=>{
+                        category.menus.forEach(menu=>{
+                                menu.soldout=false;
+                        });
+                },(err)=>{
+                    let alert = this.alertController.create({
+                                        title: '판매 설정에 실패했습니다.',
+                                        subTitle: '네트웍 상태를 확인하시고 다시 시도해주시기 바랍니다.',
+                                        buttons: ['OK']
+                                    });
+                    alert.present();
+                });
+            }}
+        ]});
+        confirm.present();
+}
+
+soldOutCategory(category){
+    let body={ categories:[category.categoryNO],
+               soldout:true,
+               takitId:this.storageProvider.myshop.takitId
+             };
+
+    let confirm = this.alertController.create({
+    message: category.categoryName+'을 판매종료 하시겠습니까?',
+    buttons: [
+        {
+        text: '아니오',
+        handler: () => {
+            console.log('Disagree clicked');
+        }
+        },
+        {
+        text: '네',
+        handler: () => {
+            this.serverProvider.post("/configureSoldOutCategory",JSON.stringify(body)).then((res:any)=>{
+                
+                    category.menus.forEach(menu=>{
+                            menu.soldout=true;
+                    });
+                    
+                let alert = this.alertController.create({
+                                    title: category.categoryName+'이 판매종료 되었습니다',
+                                    buttons: ['OK']
+                                });
+                alert.present();
+                    
+            },(err)=>{
+                let alert = this.alertController.create({
+                                    title: '판매종료 설정에 실패했습니다.',
+                                    subTitle: '네트웍 상태를 확인하시고 다시 시도해주시기 바랍니다.',
+                                    buttons: ['OK']
+                                });
+                alert.present();
+
+            });
+        }}
+    ]});
+    confirm.present();
+}
+
   configureMenuColor(menu){
-      if(!menu.soldout){
+      console.log(menu.menuName+ " soldout:"+menu.soldout);
+      if(menu.soldout==0){
           return 'white';
       }else{
           return '#bdbdbd';
       }
+  }
+
+  storeClick(i){
+        this.storeSelected=i;
+        this.nowStore=Object.assign({}, this.stores[this.storeSelected]); 
+        if(this.nowStore.categories){
+            this.categories=this.nowStore.categories;
+            if(this.categories.length>0){
+                this.nowMenus=this.categories[0].menus;
+                for(var j=0;j<this.nowMenus.length;j++){
+                    this.nowMenus[j].ngStyle={'background-image': 'url('+ this.storageProvider.awsS3+this.nowMenus[j].imagePath + ')'};
+                }           
+            }else{
+                this.nowMenus=[];
+            }
+        }
+        this.categorySelected=0; // hum...    
+        this.categoryClick(0);
+  }
+
+  configureStoreButtonColor(i){
+      if(i==this.storeSelected)
+          return '#6441a5';
+      else
+          return '#bdbdbd';    
+
   }
 }

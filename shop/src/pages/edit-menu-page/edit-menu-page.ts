@@ -472,7 +472,7 @@ export class EditMenuPage {
                                                                         //카테고리 삭제했으므로 선택된 카테고리 1번으로 초기화.
                                                                         this.categorySelected=1;
                                                                         this.nowCategory.categoryName="";
-                                                                        this.nowCategory
+                                                                        //this.nowCategory
                                                                         this.loadShopInfo();
                                                                     }}]
                                                     });
